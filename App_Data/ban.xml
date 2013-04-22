@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+    Ban "types": ip, range.
+    Range specified as: 1.2.3.1-1.2.3.99
+-->
+<Bans>
+    <item type="ip"></item>
+    <item type="range"></item>
+</Bans>
+

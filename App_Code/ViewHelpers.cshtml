@@ -1,0 +1,94 @@
+﻿@using Countersoft.Gemini.Commons
+@using Countersoft.Gemini.Commons.Entity
+@using Countersoft.Gemini.Commons.Dto
+
+@helper CardColorClass(ProjectTemplatePageType pageType)
+{
+    switch(pageType)
+    {
+        case ProjectTemplatePageType.Changelog:
+        case ProjectTemplatePageType.Burndown:
+        case ProjectTemplatePageType.Roadmap:
+            @:roadmap
+            break;
+
+        case ProjectTemplatePageType.Planner:
+            @:planner
+            break;
+
+        case ProjectTemplatePageType.Activity:
+        case ProjectTemplatePageType.ActivityClosedRecently:
+        case ProjectTemplatePageType.ActivityDueToday:
+        case ProjectTemplatePageType.ActivityDueTomorrow:
+        case ProjectTemplatePageType.ActivityOpenedRecently:
+        case ProjectTemplatePageType.ActivityOverdue:
+            @:activity
+            break;
+
+        case ProjectTemplatePageType.Documents:
+            @:item
+            break;
+
+        case ProjectTemplatePageType.Testing:
+            @:item
+            break;
+
+        case ProjectTemplatePageType.Reports:
+            @:item
+            break;
+
+        case ProjectTemplatePageType.Item:
+            @:item
+            break;
+
+        case ProjectTemplatePageType.Items:
+            @:items
+            break;
+
+        case ProjectTemplatePageType.Custom:
+            @:custom
+            break;
+
+        default:       
+            @:project
+            break;
+    }
+}
+
+@helper CardNotSeenBefore(NavigationCard card)
+    {
+    if (card.LastSeen == null)
+    {
+@:not-seen
+    }
+}
+
+@helper IssueStriked(IssueDto issue)
+    {
+        if (issue.IsClosed)
+        {
+@:strike-through
+    }
+}
+
+@helper ViewItem_SameIssue(IssueDto issue1, IssueDto issue2)
+    {
+        if (issue1.Id == issue2.Id)
+        {
+@:current-item-highlight
+    }
+}
+
+@helper IssueTypeImage(IssueDto issue)
+    {
+<img src='@issue.TypeImage' />
+}
+
+@helper HighlightIssueRow(IssueDto issue, List<int> ids)
+{
+    if(ids.Contains(issue.Id))
+    {
+@:issue-highlight
+}
+}
+
