@@ -60,7 +60,7 @@
                                     <div class="item-author">@data.Item.Reporter</div>
                                     <br />
                                     <div class="item-title">@data.Item.Title</div>
-                                    <div class="item-desc">@Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText(data.Item.Description.ToMaxMore(1000), true).ToMaxMore(250)</div>
+                                    <div class="item-desc hardBreak">@Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText2(data.Item.Description.ToMaxMore(1000)).ToMaxMore(250)</div>
                                     <div class="dated">@data.Item.CreatedString</div>
                                 </a>
                             </li>
@@ -80,7 +80,7 @@
                                     <div class="item-title">@item.Title</div>
                                     @foreach (ActivityTimelineModel.UpdatedModel.ChangeLog changeEntry in item.Changes)
                                     {
-                                        <div class="item-desc"><span class="bold">@changeEntry.Field</span> @changeEntry.Change</div>
+                                        <div class="item-desc hardBreak"><span class="bold">@changeEntry.Field</span> @changeEntry.Change</div>
                                     }
                                 </a>
                             </li>
@@ -99,7 +99,7 @@
                                     </div>
                                     <div class="item-key">@item.Author</div>
                                     <br />
-                                    <div class="item-desc">@item.Comment</div>
+                                    <div class="item-desc hardBreak">@item.Comment</div>
                                     <div class="dated">@item.Dated</div>
                                 </a>
                             </li>

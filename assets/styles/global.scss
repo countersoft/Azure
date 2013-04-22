@@ -1214,3 +1214,9 @@ a img
 
 .z-index-max {z-index:2147483620 !important;}
 .mceListBoxMenu,#mce_fullscreen_container,.clearlooks2,.mceSplitButtonMenu,.mce_forecolor,.mce_backcolor, ul.ui-autocomplete {z-index:2147483620 !important;}
+
+.hardBreak { 
+  word-wrap: break-word; /* Internet Explorer 5.5+, 6, 7, 8 compability-mode */
+  -ms-word-break: break-all; /* Internet Explorer 8 */
+  word-break:break-all;
+}
