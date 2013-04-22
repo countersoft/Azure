@@ -1,0 +1,150 @@
+﻿@{
+    Layout = "~/Views/Shared/_Master.iPad.cshtml";
+    ViewBag.Title = "Home Page iPad";
+}
+
+@section Pane
+{
+  <ul id='attributes' class='no-wrap'>
+        <li class='progress-box'><table class='progress'><tr><td class='progress-image'><div>10%</div></td><td class='filler'>&nbsp;</td><td><div class='ok-button'>DONE?</div></td></tr>
+        <tr><td colspan="3">
+            <div class='progress-dates'>
+                <div class='label'>Logged:&nbsp;<span class='data' >100h 53m</span></div>
+                <div class='label'>Estimated:&nbsp;<span class='data' >50h 40m</span></div>
+            </div>
+        </td></tr>
+        </table>
+        </li>
+        <li class='pane-attribute-header'><div class='label'>Type</div></li>
+        <li class='pane-attribute-value item-type'><img src='@Url.Content("~/assets/images/meta/type-task.png")' class='meta-icon'/>Todo</li>
+        <li class='pane-attribute-header'><div class='label'>Priority</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value'><img src='@Url.Content("~/assets/images/meta/priority-high.png")' class='meta-icon' />High</li>
+        <li class='pane-attribute-header'><div class='label'>Severity</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-severity'><img src='@Url.Content("~/assets/images/meta/severity-trivial.png")' class='meta-icon' />Major</li>
+        <li class='pane-attribute-header'><div class='label'>Status</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-status'><img src='@Url.Content("~/assets/images/meta/status-ready-for-approval.png")' class='meta-icon' />Assigned<span class='label'>&nbsp;(<span class='data' title='@System.DateTime.Now'>1 day ago)</span></span></li>
+        <li class='pane-attribute-header'><div class='label'>Resolution</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-resolution'>Unresolved<span class='label'>&nbsp;(<span class='data' title='@System.DateTime.Now'>1 day ago)</span></span></li>
+        <li class='pane-attribute-header'><div class='label'>Resources</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-resouce'>Dilan</li>
+        <li class='pane-attribute-header'><div class='label'>Component</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-component'>Database</li>
+        <li class='pane-attribute-header'><div class='label'>Fixed In Version</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-version'>5.0</li>
+        <li class='pane-attribute-header'><div class='label'>Affected Versions</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-affectedversions'>4.0</li>
+        <li class='pane-attribute-header'><div class='label'>Visibility</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-affectedversions'>Everyone</li>
+        <li class='pane-attribute-header'><div class='label'>Start Date</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-startdate'>06/10/2011</li>
+        <li class='pane-attribute-header'><div class='label'>Due Date</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-duedate'>06/11/2011</li>
+        <li class='pane-attribute-header additional-down'><div class='label'>More....</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>6 Attachments</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>3 Tests</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>5 Followers</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>0 Source Files</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>2 Suggestions</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-header additional'><div class='label'>History</div><div class='action'>&nbsp;</div></li>
+    </ul>
+    <br />
+}
+
+<div id='content'>
+    <div id='view-item-content'>
+    <div>
+        <div class='links'><span class='label'>See also:</span>&nbsp;<span class='data'><a href='#'>IMS-20</a></span><span class='data'><a href='#'>IMS-20</a></span><span class='data'><a href='#'>IMS-20</a></span></div>
+        <div class='info'><span class='label data' title='@System.DateTime.Now'>1 day ago by Mark Wing</span>&nbsp;<span class='label'>Revised:</span>&nbsp;<span class='data' title='@System.DateTime.Now'>1 day ago</span><span class='label'>Source:</span>&nbsp;<span class='data'><a href='#'>Test Run</a></span></div>
+    </div>
+    <div>&nbsp;</div>
+        <span class='repeat'><img src='@Url.Content("~/assets/images/design/default/curve-arrow.png")' />&nbsp;repeated once every x days</span>
+        <span class='votes'><img src='@Url.Content("~/assets/images/design/default/curve-arrow.png")' />&nbsp;6 Votes</span>
+        <div class='description'><p>
+        I am using the Schedule calender view and have pressed "Week" (Could have been the "Day" view as well). It now gives me an overview of the items with a due date on that given day, but the item is marked as an all day event. 
+        My suggestion is this: make it possible for me to set a certain time. So I for instance can set a due date on the 19/9-2011, 10:00 (or even 10:00 - 10:30)?
+        It seems as if you have had this thought allready, but just haven't followed through. I look forward to a solution:)
+        BR
+        Kathrine</p>
+        <p>
+        I am using the Schedule calender view and have pressed "Week" (Could have been the "Day" view as well). It now gives me an overview of the items with a due date on that given day, but the item is marked as an all day event. 
+        My suggestion is this: make it possible for me to set a certain time. So I for instance can set a due date on the 19/9-2011, 10:00 (or even 10:00 - 10:30)?
+        It seems as if you have had this thought allready, but just haven't followed through. I look forward to a solution:)
+        BR
+        Kathrine</p>
+        <p>
+        I am using the Schedule calender view and have pressed "Week" (Could have been the "Day" view as well). It now gives me an overview of the items with a due date on that given day, but the item is marked as an all day event. 
+        My suggestion is this: make it possible for me to set a certain time. So I for instance can set a due date on the 19/9-2011, 10:00 (or even 10:00 - 10:30)?
+        It seems as if you have had this thought allready, but just haven't followed through. I look forward to a solution:)
+        BR
+        Kathrine</p>
+        </div>
+        <div class='hierarchy'>
+            <div class='header'>
+                <table>
+                <tr>
+                <td>
+                <span>Hierarchy (3)</span>
+                </td>
+                <td align="right">
+                    <div class='share button'>&nbsp;</div>                  
+                    <div class='follow button'>&nbsp;</div>
+                    <div class='print button'>&nbsp;</div>
+                </td>
+                </tr>
+                </table>
+            </div>
+            <div class='data'>
+                <div class='item'>
+                    <a href='#'><span class='key'>HELP-1654</span>&nbsp; Hoshi Doshi (<span style='color:green;'>Closed</span>)&nbsp;<span class='time'><span>Estimate:</span> 5h 43m <span>Logged:</span> 4h 32m</span></a>
+                </div>
+                <div class='item' style='padding-left:10px;'>
+                    <a href='#'><span class='key'>ITRA-48</span>&nbsp; Hoshi Doshi (<span style='color:green;'>Closed</span>)&nbsp;<span class='time'><span>Estimate:</span> 5h 43m <span>Logged:</span> 4h 32m</span></a>
+                </div>
+                <div class='item' style='padding-left:20px;'>
+                    <a href='#'><span class='key'>ITRA-248</span>&nbsp; Hoshi Doshi (<span style='color:blue;'>Closed</span>)&nbsp;<span class='time'><span>Estimate:</span> 5h 43m <span>Logged:</span> 4h 32m</span></a>
+                </div>
+                <div class='item' style='padding-left:10px;'>
+                    <a href='#'><span class='key'>ITRA-148</span>&nbsp; Hoshi Doshi (<span style='color:Red;'>Closed</span>)&nbsp;<span class='time'><span>Estimate:</span> 5h 43m <span>Logged:</span> 4h 32m</span></a>
+                </div>
+            </div>
+        </div>
+        <div class='item-tabs-data'>
+            <div class='comments'>
+                <div class='header'>
+                    <table>
+                    <tr>
+                    <td>
+                    <span>Comments (2)</span>
+                    </td>
+                    <td>
+                        <div class='print button'>&nbsp;</div>
+                        <div class='create button'>&nbsp;</div>
+                    </td>
+                    </tr>
+                    </table>
+                </div>
+                <div class='comment'>
+                    <div class='data'><p>
+                        I am using the Schedule calender view and have pressed "Week" (Could have been the "Day" view as well). It now gives me an overview of the items with a due date on that given day, but the item is marked as an all day event. 
+                        My suggestion is this: make it possible for me to set a certain time. So I for instance can set a due date on the 19/9-2011, 10:00 (or even 10:00 - 10:30)?
+                        It seems as if you have had this thought allready, but just haven't followed through. I look forward to a solution:)
+                        BR
+                        Kathrine</p>
+                    </div>
+                    <div class='stamp'>Emir Alili&nbsp;&nbsp;<span title='@System.DateTime.Now'>1 day ago</span></div>
+                </div>
+                <div class='comment'>
+                    <div class='data'><p>
+                        I am using the Schedule calender view and have pressed "Week" (Could have been the "Day" view as well). It now gives me an overview of the items with a due date on that given day, but the item is marked as an all day event. 
+                        My suggestion is this: make it possible for me to set a certain time. So I for instance can set a due date on the 19/9-2011, 10:00 (or even 10:00 - 10:30)?
+                        It seems as if you have had this thought allready, but just haven't followed through. I look forward to a solution:)
+                        BR
+                        Kathrine</p>
+                    </div>
+                    <div class='stamp'>Emir Alili&nbsp;&nbsp;<span title='@System.DateTime.Now'>45 minutes ago</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

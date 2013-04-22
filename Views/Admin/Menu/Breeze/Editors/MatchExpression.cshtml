@@ -1,0 +1,56 @@
+﻿@model BreezeMatchExpressionEditModel
+<div id="BreezeMatchExpressionsItemContainer">
+    <form id="regular-form">
+    <input type="hidden" value="@Model.Expression.Id" name="Id" id="Id" />
+    <table id="table-admin-breezematchexpression" class="admin-data-entry">
+        <tbody>
+            <tr>
+                <td class="field-name">Name
+                </td>
+                <td>
+                    <input type="text" id="Name" name="Name" 
+                               class="input-field required input-size9" value="@Model.Expression.Name"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top">Expression
+                </td>
+                <td>
+                    <input type="text" id="Expression" name="Expression" 
+                           class="input-field required input-size9" value="@Model.Expression.Expression" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top">Replace Value
+                </td>
+                <td>
+                    <input type="text" id="ReplaceValue" name="ReplaceValue" 
+                              class="input-field input-size9" value="@Model.Expression.ReplaceValue" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#popup-button-yes").click(function (e) {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall("configure/Breeze/MatchExpression", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

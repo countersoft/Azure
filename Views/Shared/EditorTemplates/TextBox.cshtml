@@ -1,0 +1,3 @@
+﻿@model TextBoxFieldModel
+
+<input type="@(Model.Hidden ? "hidden" : "text")" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" value="@Model.Value" class="input-tall input-size8 @Model.Classes @(Model.Required ? "required" : "")"  @if(Model.MaxLength.GetValueOrDefault() > 0) { <text>maxlength="@Model.MaxLength.Value"</text> } />

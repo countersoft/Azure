@@ -1,0 +1,2 @@
+﻿@model TestCaseDto
+<a href='@NavigationHelper.GetTestingPageUrl(@Model.Project.Id, Model.Project.Code, null, @Model.Entity.Id, null, GeminiContext.Url)'>@Model.Entity.Summary</a>

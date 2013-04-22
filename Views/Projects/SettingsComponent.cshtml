@@ -1,0 +1,121 @@
+﻿@model ProjectSettingsComponentModel
+
+<table class="width-100" >
+    <tr>
+        <td class="valign-top pad-right-20">
+            <div id="cs-admin" class="left width-100">
+                <div id="components-container" class="admin-datatable-holder width-100">
+                    <table id="project-admin-components" class="basic width-100">
+                        <thead>
+                            <tr>
+                                <th data-field="Name" data-required='true'>@GetResource(ResourceKeys.Name)</th>                
+                                <th data-field="Description" data-required='true'>@GetResource(ResourceKeys.Description)</th>
+                                <th data-field="ParentId" data-required='false' data-edit-type="select">@GetResource(ResourceKeys.Parent)</th>
+                                <th data-field="ReadOnly" data-edit-type='checkbox' class="centered">@GetResource(ResourceKeys.Locked)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var component in Model.Components)
+                            {
+                                <tr data-id="@component.Entity.Id" id="@component.Entity.Id" data-message="@GetResource(ResourceKeys.Delete)">
+                                    <td>@component.Entity.Name</td>                
+                                    <td>@component.Entity.Description</td>
+                                    <td style="width: 150px;">@component.ParentComponentName</td>
+                                    <td class="centered">@(component.Entity.ReadOnly ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                                    <td data-edit="false" class="actions">
+                                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete" data-message="@GetResource(ResourceKeys.Delete)"></span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </td>
+        <td class="valign-top pad-right-20">
+            <div id="project-admin-tree">
+                <p>@GetResource(ResourceKeys.DragDropAdminTip)</p>
+                <div id="tree">&nbsp;</div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    
+    $(document).ready(function ()
+    {
+        gemini_admin.initDatatables("#project-admin-components", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [4] }], fnDrawCallback: function (value, y) {
+            gemini_ui.inlineEdit("#project-admin-components td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/components/getproperty", "project/" + @Model.ProjectId + "/settings/components/setproperty");
+        } });
+        
+
+        $("#project-admin-components_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function ()
+        {
+            gemini_popup.centerPopup("project/" + @Model.ProjectId + "/settings/components", "Add");
+        });
+
+        $("#project-admin-components").off('click', ".action-button-delete").on('click', ".action-button-delete", function (e)
+        {
+            var item = $(this);
+            var tr = item.closest("tr");
+            var id = tr.data("id");
+            var component = $("td:first", tr).html();
+            var message = $(this).attr("data-message");
+
+            gemini_popup.modalConfirm(message + " <span class='bold'>'" + component + "' ?</span>", null, function ()
+            {
+                gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                gemini_ajax.call("project/" + @Model.ProjectId + "/settings/components", "delete", function (response)
+                {
+                    if (response.Success)
+                    {
+                        gemini_admin.removeRow(item);
+                        var dt = $("#tree").dynatree("getTree");
+                        dt.getNodeByKey(id).remove();
+
+                        // gemini_projects.settingsComponents(@Model.ProjectId);
+                    }
+                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+            });
+        });
+
+        $("#tree").dynatree({
+            debugLevel: 0,
+            persist: false,
+            generateIds: true, //important for inline editing to work
+            clickFolderMode: 1,
+            fx: { height: "toggle", duration: 200 },
+            children: @Html.Raw(Model.Tree.ToJson()),
+            imagePath: csVars.Url + "/assets/images/",
+            dnd: {
+                preventVoidMoves: true,
+                onDrop: function (node, sourceNode, hitMode, ui, draggable)
+                {
+                    sourceNode.move(node, hitMode);
+
+                    var draggedId = sourceNode.data.Id;
+                    var droppedId = node.data.Id;
+                    
+                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/components", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode });
+                },
+                onDragStart: function (node) {
+                    return true;
+                },
+                onDragEnter: function (node, sourceNode) {
+                    // Prevent dropping a parent below another parent (only sort
+                    // nodes under the same parent)
+                    if(node.parent !== sourceNode.parent){
+                        //return false;
+                    }
+                    // Don't allow dropping *over* a node (would create a child)
+                    return ["before", "after"];
+                }
+            }
+        });
+    });
+</script>

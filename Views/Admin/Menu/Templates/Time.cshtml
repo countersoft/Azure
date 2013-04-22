@@ -1,0 +1,61 @@
+﻿@model Countersoft.Gemini.Models.Admin.TemplatesTimeModel
+
+@{Html.RenderPartial("~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates);}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define the different type of <strong>Time</strong> values that projects based on this template will use during time recording (e.g. Billable).</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-time" class="basic">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Label" data-required='true'>Time</th>                
+                <th data-field="Description" data-required='true'>Comment</th>                
+                <th></th>  
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (TimeType item in Model.Types)
+            {
+                <tr data-id="@item.Id" id="@item.Id">
+                    <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
+                    <td>@item.Label</td>                
+                    <td>@item.Description</td>       
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>         
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {       
+        gemini_admin.initDatatablesWithEdit("#table-admin-time", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,3] }] });
+        gemini_admin.initTableDnD("#table-admin-time");
+
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-time").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Time", "DeleteForm", { id: id }, null, "Delete");
+        });
+
+        $("#table-admin-workflow").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Time", "Editor", { id: id });
+
+        });
+
+        $("#table-admin-time_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Templates/Time", "Add");
+        });
+
+    });
+</script>

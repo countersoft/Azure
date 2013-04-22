@@ -1,0 +1,62 @@
+﻿@model TemplatesLinksModel
+
+@{Html.RenderPartial("~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates);}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define <strong>Link</strong> values to identify reasons why different items might be related (e.g. Duplicate).</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-links" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Label" data-required='true'>Link</th>
+                <th data-field="Description">Comment</th>
+                <th></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (IssueLinkType item in Model.Types)
+            {
+                <tr data-id="@item.Id">
+                    <td>@item.Label</td>                
+                    <td>@item.Description</td>                
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-links", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2] }] });
+        
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-links").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e) {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Links", "DeleteForm", { id: id }, null, "Delete");
+
+        });
+
+        $("#table-admin-links").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Links", "Editor", { id: id });
+
+        });
+
+
+        $("#table-admin-links_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Templates/Links", "Add");
+        });
+
+
+    });
+</script>

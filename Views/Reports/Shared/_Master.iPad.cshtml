@@ -1,0 +1,75 @@
+@{
+    Layout = "_Master.Base.cshtml";
+}
+
+@section Head
+{
+    <title>@ViewBag.Title</title>
+    @if(HttpContext.Current.IsDebuggingEnabled) {
+    <link rel="stylesheet" href="@AssetsPath/@ThemeCss" type="text/css" media="screen, projection" />
+    } else {
+    <link rel="stylesheet" href="@AssetsPath/@ThemeCssZipped" type="text/css" media="screen, projection" />
+    }
+    
+    <link rel="shortcut icon" href='@Url.Content("~/favicon.ico")' type="image/x-icon" />
+}
+<section id='page-content' style='padding-bottom:0px;'>
+    <header id='header-bar' class='liquid-pane'>
+        @RenderSection("Header", false) 
+    </header>
+<section class='liquid-pane'>
+<section id='pane' class='left-pane pane-border side-pane shadow'>
+    <section class='headers pane-header active theme'>
+        @RenderSection("HeaderPane", false)
+    </section>
+    <section>
+        @RenderSection("Pane", true)
+    </section>
+    <section id='pane-marketing'>
+    </section>
+    <section id='pane-filler'>
+    </section>
+</section>
+<section class='right-pane'>
+    <section id='page-header' class='headers page-header active-light theme'>
+        @RenderSection("HeaderContent", false)
+        <section id='page-menu'>
+                
+        </section>
+    </section>
+    <section id='sub-tabs'>
+        @{Html.RenderPartial("NewItemButton", "");}
+    </section>
+    <section id='content'>
+        @RenderBody()
+    </section>
+</section>
+</section>
+<footer id='footer'>
+    <nav>
+        @RenderSection("Playlist", false)
+    </nav>
+<section>@{Html.RenderPartial("Footer");}</section>
+</footer>
+</section>
+
+@section DocumentReady
+{
+    gemini_commons.resize();
+    window.onresize = gemini_commons.resize;
+    /*$('#play-list-items').jcarousel({
+        wrap:'circular',
+        scroll:2
+    });
+
+    $('#play-list-items').css('width', $('#footer').width()-50);
+    $('.jcarousel-clip').width($('#footer').width()-50);*/
+
+    @RenderSection("DocumentReady", false)
+}
+
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+

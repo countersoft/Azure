@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "~/Views/Shared/_Master.cshtml";
+    ViewBag.Title = "Home Page!";
+}
+
+@section HeaderPane 
+{
+<div id='header-pane' class='no-wrap'>
+        <div class='padding'></div>
+        <div id='new-button'><div>&nbsp;</div>&nbsp;new</div>
+        <div class='padding'></div>
+        <div class='header'>Item Filter</div>
+  </div>
+}
+
+@section HeaderContent
+{
+<div class='item-header clearfix'>
+        <div class='filler'></div>
+        <div class='header'>Vegas Event Prep...</div>
+</div>
+}
+
+@section HeaderExtra
+{
+<div class='item-tabs'>
+        <div class='filler'></div>
+        <table cellpadding="5px">
+            <tr>
+                <td class='tab'><div class='key'>INT-1098</div><div class='close'>&nbsp;</div></td>
+                <td class='filler'></td>
+                <td class='tab'><div class='key'>INT-2375</div><div class='close'>&nbsp;</div></td>
+            </tr>
+        </table>
+</div>
+}
+
+@section Pane
+{   
+    <ul id='attributes' class='no-wrap'>
+        <li class='progress-box'><table class='progress'><tr><td class='progress-image'><div>10%</div></td><td class='filler'>&nbsp;</td><td><div class='ok-button'>DONE?</div></td></tr>
+        <tr><td colspan="3">
+            <div class='progress-dates'>
+                <div class='label'>Logged:&nbsp;<span class='data' >100h 53m</span></div>
+                <div class='label'>Estimated:&nbsp;<span class='data' >50h 40m</span></div>
+            </div>
+        </td></tr>
+        </table>
+        </li>
+        <li class='pane-attribute-header'><div class='label'>Type</div></li>
+        <li class='pane-attribute-value item-type'><img src='@Url.Content("~/assets/images/meta/type-task.png")' class='meta-icon'/>Todo</li>
+        <li class='pane-attribute-header'><div class='label'>Priority</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value'><img src='@Url.Content("~/assets/images/meta/priority-high.png")' class='meta-icon' />High</li>
+        <li class='pane-attribute-header'><div class='label'>Severity</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-severity'><img src='@Url.Content("~/assets/images/meta/severity-trivial.png")' class='meta-icon' />Major</li>
+        <li class='pane-attribute-header'><div class='label'>Status</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-status'><img src='@Url.Content("~/assets/images/meta/status-ready-for-approval.png")' class='meta-icon' />Assigned<span class='label'>&nbsp;(<span class='data' title='@System.DateTime.Now'>1 day ago)</span></span></li>
+        <li class='pane-attribute-header'><div class='label'>Resolution</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-resolution'>Unresolved<span class='label'>&nbsp;(<span class='data' title='@System.DateTime.Now'>1 day ago)</span></span></li>
+        <li class='pane-attribute-header'><div class='label'>Resources</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-resouce'>Dilan</li>
+        <li class='pane-attribute-header'><div class='label'>Component</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-component'>Database</li>
+        <li class='pane-attribute-header'><div class='label'>Fixed In Version</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-version'>5.0</li>
+        <li class='pane-attribute-header'><div class='label'>Affected Versions</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-affectedversions'>4.0</li>
+        <li class='pane-attribute-header'><div class='label'>Visibility</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-affectedversions'>Everyone</li>
+        <li class='pane-attribute-header'><div class='label'>Start Date</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-startdate'>06/10/2011</li>
+        <li class='pane-attribute-header'><div class='label'>Due Date</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-value item-duedate'>06/11/2011</li>
+        <li class='pane-attribute-header additional-down'><div class='label'>More....</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>6 Attachments</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>3 Tests</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>5 Followers</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>0 Source Files</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-tab'><div class='label'>2 Suggestions</div><div class='action'>&nbsp;</div></li>
+        <li class='pane-attribute-header additional'><div class='label'>History</div><div class='action'>&nbsp;</div></li>
+    </ul>
+    <br />
+}
+
+<div id='content'>
+   
+</div>
+

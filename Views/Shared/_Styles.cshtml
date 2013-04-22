@@ -1,0 +1,56 @@
+﻿@using Countersoft.Gemini.Infrastructure.Helpers;
+@if (HttpContext.Current.IsDebuggingEnabled)
+{
+    <link rel="stylesheet" href="@AssetsPath/styles/fonts.css?@BuildNumber" media="screen, projection" />
+    <link rel="stylesheet" href="@AssetsPath/styles/global.css?@BuildNumber" media="screen, projection" />
+    <link rel="stylesheet" href="@AssetsPath/styles/default/theme.css?@BuildNumber" media="screen, projection" />
+    <link rel="stylesheet" href="@AssetsPath/styles/default/ui-template.css?@BuildNumber" media="screen, projection" />
+    <link rel="stylesheet" href="@AssetsPath/styles/default/third-party.css?@BuildNumber" media="screen, projection" />
+}
+else
+{
+    <link rel="stylesheet" href="@AssetsPath/all.min.css?@BuildNumber" media="screen, projection" />
+}
+
+@{
+    var ieVersion = Url.GetInternetExplorerVersion();
+
+    if (ieVersion != -1)
+    {
+        if (ieVersion < 8)
+        {
+            <link rel="stylesheet" href="@AssetsPath/styles/ie7.css?@BuildNumber" />
+        }
+        if (ieVersion < 9)
+        {
+            <link rel="stylesheet" href="@AssetsPath/styles/ie8.css?@BuildNumber" />
+        }
+    }
+}
+
+@if (Request.Headers["Request-for-PDF"] != null)
+{
+    if (Request.Url.AbsolutePath.Contains("/item/"))
+    {
+        <link rel="stylesheet" href="@AssetsPath/styles/pdf-item.css?@BuildNumber" type="text/css" />
+    }
+    else
+    {
+        <link rel="stylesheet" href="@AssetsPath/styles/pdf.css?@BuildNumber" type="text/css" />
+    }
+}
+else
+{
+    if (Request.Url.AbsolutePath.Contains("/item/"))
+    {
+        <link rel="stylesheet" href="@AssetsPath/styles/print-item.css?@BuildNumber" type="text/css" media="print" />
+    }
+    else
+    {
+        <link rel="stylesheet" href="@AssetsPath/styles/print.css?@BuildNumber" type="text/css" media="print" />
+    }
+}
+
+<link rel="shortcut icon" href='~/favicon.ico' type="image/x-icon" />
+<link rel="apple-touch-icon" sizes="72x72" href="~/72x72.png" />
+

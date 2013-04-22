@@ -1,0 +1,129 @@
+@{
+    Layout = "_Master.Base.cshtml";
+}
+
+@section Head
+{
+    @if(HttpContext.Current.IsDebuggingEnabled) 
+    {
+        <link rel="stylesheet" href="@AssetsPath/styles/global.css" media="screen, projection" />
+        <link rel="stylesheet" href="@AssetsPath/styles/layout.css" media="screen, projection" />
+        <link rel="stylesheet" href="@AssetsPath/styles/default/theme.css" media="screen, projection" />
+        <link rel="stylesheet" href="@AssetsPath/styles/default/desktop/desktop.css" media="screen, projection" />
+        <link rel="stylesheet" href="@AssetsPath/styles/default/desktop/login.css" media="screen, projection" />
+        <!--
+        <link rel="stylesheet" href="@AssetsPath/@ThemeCss" type="text/css" media="screen, projection" />
+        -->
+    }
+    else
+    {
+        <link rel="stylesheet" href="@AssetsPath/@ThemeCssZipped" type="text/css" media="screen, projection" />
+    }
+    
+    <link rel="shortcut icon" href='@Url.Content("~/favicon.ico")' type="image/x-icon" />
+}
+
+<!-- header -->
+<header>
+    <nav>
+        @RenderSection("Header", false) 
+        @RenderSection("Playlist", false)
+        @RenderSection("Search", false)
+    </nav>
+</header>
+
+<!-- All content below header and above footer this can all be themed-->
+<section id="page-contents">
+
+    <section id="page-contents-inner">
+        <!-- lhs column -->
+        <section id="panel">
+            @RenderSection("HeaderPane", false)
+            @RenderSection("Pane", true)
+        </section>
+        <!-- rhs workarea -->
+        <section id="page">
+            @RenderSection("HeaderContent", false)
+            @RenderBody()
+        </section>
+    </section>
+
+</section>
+
+<!-- footer -->
+<footer>
+    <div id="last-row">
+        @{Html.RenderPartial("Footer");}
+    </div>
+</footer>
+
+<script type="text/javascript" src="/G5/assets/scripts/jquery.percentage.js"></script>
+
+@section DocumentReady
+{
+    gemini_commons.resize();
+    //window.onresize = gemini_commons.resize;
+
+    @RenderSection("DocumentReady", false)
+
+    var hasStorage = false, hasCanvas = false;
+
+    /* check for localStorage */
+    try 
+    {
+        localStorage.setItem("foo", "foo");
+        localStorage.removeItem("foo");
+        hasStorage = true;
+    } 
+    catch(e) {}
+
+    /* check for canvas */
+    var elem = document.createElement('canvas');
+    hasCanvas = !!(elem.getContext && elem.getContext('2d'));
+
+    if ( hasCanvas )
+    {
+        gemini_pages.tinyCounter('#playlist > #1', 110,4, 10, '#F00', '#FFF', 6);
+        gemini_pages.tinyCounter('#playlist > #2', 215,4, 10, '#F00', '#FFF', 5);
+        gemini_pages.tinyCounter('#playlist > #3', 320,4, 10, '#0F0', '#000', 3);
+        gemini_pages.tinyCounter('#playlist > #3', 335,4, 10, '#FF0', '#000', 1);
+
+        gemini_pages.percentGauge('#playlist > #2', 382,33, 32, '#00B060', 65);
+    }
+
+    if ( hasStorage )
+    {
+        // look for a session variable - 'seenStart'
+        var seen = localStorage.getItem('seenStart');
+        if ( seen == undefined )
+        {
+            // set a timer and then after 5 seconds hide "slow"
+            var elem = $("#start-here").show().addClass("on");
+
+            setTimeout( function() {
+
+                    $("#start-here").removeClass("on").hide("fast");
+                    setTimeout( function() {
+                        $("#start-here").hide();
+                        localStorage.setItem('seenStart', true);
+                    }
+                    , 1500 );
+                }
+                , 5000 );
+        }
+        else
+        {
+            $("#start-here").hide();
+        }
+    }
+    else
+    {
+        $("#start-here").hide();
+    }
+}
+
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+

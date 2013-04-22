@@ -1,0 +1,13 @@
+﻿@model List<TestCaseDto>
+
+<table id="case-details" class="width-100" ><tbody>
+@foreach (var x in Model)
+{
+<tr id='case-@x.Entity.Id'>
+<td class='cs-simple'>@Html.Partial("~/views/testing/_TestAutomated.cshtml", x.Entity.IsAutomated)</td>
+<td class='cs-status'>@Html.Partial("~/views/testing/_TestStatus.cshtml", new TestStatus() { HasPassed = x.Entity.HasPassed })</td>
+<td class='cs-testtype' >@Html.Partial("~/views/testing/_TestType.cshtml", new Countersoft.Gemini.Models.TestType() { Id = x.Entity.TypeId, Type = x.Type })</td>
+<td class='cs-title-link'>@Html.Partial("~/views/testing/_CaseSummaryLink.cshtml", x)</td>
+</tr>
+}
+</tbody></table>

@@ -1,0 +1,19 @@
+﻿@model ShareModel
+
+<form id='share-form'>
+    @if (Model.Groups.Count > 0)
+    {
+        <div>
+            <ul>
+                @Html.EditorFor(m => m.Groups)
+            </ul>
+        </div>
+
+        @Html.HiddenFor(m => m.Card)
+        <span id='share-submit'>@GetResource(ResourceKeys.Share)</span>
+    }
+    else
+    {
+        <p>@GetResource(ResourceKeys.NobodyToShareWith)</p>
+    }
+</form>

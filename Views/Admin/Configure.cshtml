@@ -1,0 +1,65 @@
+﻿@model BaseModel
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+<div id="cs-admin">
+    
+    <div id="support-button">
+        <a href="~/help">Support</a>    
+    </div>
+
+    <div id="tabs-left" class="left">
+        <span id="tabs-left-content">
+        </span>
+
+        <div class="help">
+            Use the product <a href="~/help" target="_blank">resource center</a> if you need assistance. Enterprise customers can also use our Gotomeeting remote service.
+        </div>
+    </div>
+
+    <div id="tabs-top" class="left">
+        <div id="tab-templates" data-tab="Templates" class="selected tab">Templates</div><div class="breaker">&nbsp;</div><div id="tab-projects" data-tab="Projects" class="normal tab">Projects</div><div class="breaker">&nbsp;</div><div id="tab-people" data-tab="People" class="normal tab">People</div><div class="breaker">&nbsp;</div><div id="tab-breeze" data-tab="Breeze" class="normal tab">Breeze</div><div class="breaker">&nbsp;</div>@if(Countersoft.Gemini.Infrastructure.Apps.AppManager.Instance.GetGlobalConfigApps().Count > 0){<div id="tab-apps" data-tab="Apps" class="normal tab">Apps</div><div class="breaker">&nbsp;</div>}<div id="tab-system" data-tab="System" class="normal tab">System</div>
+        <div id="configure-page-content" class="margin-20">
+        </div>
+    </div>
+</div>
+
+<div id="attribute-options-picker">
+    <div class="clearfix margin-bottom-20">
+        <div id="option-groups">
+            <h3 class="margin-top-10">Groups</h3>
+            @Html.ListBox("attribute-options-ProjectGroup", Model.Groups, new {@class = "input-size9"})
+        </div>
+        <div id="option-required" class=" margin-top-10">
+            <input type="checkbox" id="field-required" name="field-required"/><label for="field-required" class="bold">Required</label>
+        </div>
+    </div>
+    <div class="attribute-options-picker-buttons clearfix margin-top-20">
+        <div id="option-apply" class='right margin-top-10'>
+            <input id="option-apply-button" type="button" class="button-primary button-small" value="Apply" />
+        </div>
+        <div id="option-delete" class='left margin-top-10'>
+            <input id="option-cancel-button" type="button" class="button-primary button-small" value="Delete" />
+        </div>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+@section DocumentReady
+{
+    @{
+        var session = new Countersoft.Gemini.Infrastructure.Managers.HttpSessionManager();
+    }
+    gemini_admin.currentTab = '@session.Get(SessionKey.ConfigureTab, "Templates")';
+    gemini_admin.currentSubTab = '@session.Get(SessionKey.ConfigureSubTab, "Process")';
+    
+    gemini_admin.initGlobal(@session.Get(SessionKey.ConfigureTemplate, @ViewBag.Template.ToString()));
+}
+

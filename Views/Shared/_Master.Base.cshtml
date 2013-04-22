@@ -1,0 +1,162 @@
+﻿@model BaseModel
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie6 oldie" lang="en" data-root="~/"> <![endif]-->
+<!--[if IE 7]>    <html class="ie7 oldie" lang="en" data-root="~/"> <![endif]-->
+<!--[if IE 8]>    <html class="ie8 oldie" lang="en" data-root="~/"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" data-root="~/">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>@ViewBag.Title</title>
+    @if (HttpContext.Current.IsDebuggingEnabled)
+    {
+        @Countersoft.Gemini.Infrastructure.Helpers.MiniProfilerHelper.RenderIncludes(MvcMiniProfiler.RenderPosition.Right)
+    }
+    @RenderSection("Head")
+    @{Html.RenderPartial("_Scripts");}
+
+</head>
+<body>
+    <script type="text/javascript">        window.jQuery || document.write('<script src="@Url.Content("~/assets/all.min.js?v=1")"><\/script>')</script>
+    @RenderBody()
+    <script type="text/javascript">
+    var csVars = {
+        Url: "@GeminiContext.Url",
+        ProjectUrl: "project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/",
+        AssetsPath: "@AssetsPath/",
+        IEVersion: @Url.GetInternetExplorerVersion(),
+        IsOpera: @Url.IsOpera().ToJSBool(),
+        FirstDayOfWeek: @((int)GeminiContext.User.CultureInfo.DateTimeFormat.FirstDayOfWeek),
+        Licensed: @((GeminiApp.GeminiLicense.LicenseType == Rhino.Licensing.LicenseType.Standard && !GeminiApp.GeminiLicense.InvalidInstance).ToJSBool()),
+        TourStatus: @Html.Raw(GeminiContext.User.GetSettings().TourStatus.ToJson())
+    };
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            @if (DeviceContext.IsMobile)
+            {
+                <text>
+                $(".dropdown").click(function() 
+                {
+                    $(this).find("ul.inner").toggleClass("show");
+                });
+                </text>
+            }
+
+            @if (DeviceContext.IsDesktop)
+            {
+                <text>
+                </text>
+            }
+
+            @if (Model.HasCurrentPageCard)
+            {
+                @:gemini_appnav.pageCard = @Html.Raw(Model.CurrentPageCard.ToJson());
+            }
+
+            gemini_master.initBase(@Model.DisplayPageActions.ToJSBool(), @Model.ModelStatus);
+
+            @RenderSection("DocumentReady", false)
+        });
+
+    @RenderSection("JavaScript", false)
+    </script>
+    <div class="hide">
+        <div id="modal-confirm" class="pad-10">
+            <p class="message margin-bottom-20 margin-top-10">
+            </p>
+            <div class="margin-top-10">
+                &nbsp;</div>
+            <div class="modalar-confirm-buttons" style="position: absolute; bottom: 10px; right: 10px;">
+                <input id="modal-button-yes" type="button" class="button-primary button-small button-modal" value="@GetResource(ResourceKeys.Yes)"/>
+                <input id="modal-button-no" type="button" class="button-secondary button-small button-modal" value="@GetResource(ResourceKeys.No)"/>
+            </div>
+        </div>
+    </div>
+    <div id="cs-popup">
+        <div id="cs-popup-zone">
+            <div id='cs-popup-content'>
+            </div>
+            <div id="cs-popup-buttons" class='margin-top-20'>
+                @if (GeminiApp.GeminiLicense.InvalidInstance)
+                {
+                    <div id="invalid-instance" class="left margin-top-15 margin-left-15">
+                        No more than @GeminiApp.GeminiLicense.MaxUsers users permitted with this license
+                    </div>
+                }
+                <div class="buttons right">
+                    @if (!GeminiApp.GeminiLicense.InvalidInstance)
+                    {
+                        <input id="cs-popup-save" type="button" class="button-primary button-popup" value="@GetResource(ResourceKeys.Save)"/>
+                    }
+                    <input id="cs-popup-close" type="button" class="button-secondary button-popup" value="@GetResource(ResourceKeys.Close)"/>
+                </div>
+            </div>
+        </div>
+        <div class='clearfix'>
+        </div>
+    </div>
+    <div id="cs-popup-add" class='clearfix'>
+        <div id="cs-popup-add-zone">
+            <div class="cs-pills right">
+                <span class="cs-pill cs-pill-active" data-tab-id="full-item">
+                    @GetResource(ResourceKeys.Item)
+                </span>
+                @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard))
+                {
+                    <span class="cs-pill cs-pill-inactive" data-tab-id="quick-items">
+                        @GetResource(ResourceKeys.Plan)
+                    </span>
+                }
+            </div>
+            <div class="clearfix">
+            </div>
+            <div id='cs-popup-add-content'>
+            </div>
+            <div id="cs-popup-add-buttons" class='margin-top-15'>
+                @if (GeminiApp.GeminiLicense.InvalidInstance)
+                {
+                    <div id="invalid-instance" class="left margin-top-15 margin-left-15">
+                        No more than @GeminiApp.GeminiLicense.MaxUsers users permitted with this license
+                    </div>
+                }
+                <div class="buttons right">
+                    @if (!GeminiApp.GeminiLicense.InvalidInstance)
+                    {
+                       <input id="cs-popup-add-save" type="button" class="button-primary button-popup" value="@GetResource(ResourceKeys.Create)"/>
+                    }
+                    <input id="cs-popup-add-close" type="button" class="button-secondary button-popup" value="@GetResource(ResourceKeys.Cancel)"/>
+                </div>
+            </div>
+        </div>
+        <div class='clearfix'>
+        </div>
+    </div>
+    @*<div class="hide">*@
+        <div id="cs-popup-center" style="display:none">
+            <div id="cs-popup-center-zone">
+                <div id='cs-popup-center-content' class="pad-10">
+                </div>
+                <div id="cs-popup-center-buttons" class="margin-top-20">
+                    <div class="buttons right">
+                        <input id="popup-button-yes" type="button" class="button-primary button-small button-modal" value="@GetResource(ResourceKeys.Save)"/>
+                        <input id="popup-button-no" type="button" class="button-secondary button-small button-modal" value="@GetResource(ResourceKeys.Cancel)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @*</div>*@
+    <div class="toast">
+        <span class="fonticon-tick"></span><p class="toast-message"></p>
+    </div>
+    <div id="progress-indicator" class='hide' style="width:100px;max-width:100px;position:absolute;left:-200px;top:-200px;"></div>
+    
+    @{ Html.RenderPartial("Tour"); }
+</body>
+</html>

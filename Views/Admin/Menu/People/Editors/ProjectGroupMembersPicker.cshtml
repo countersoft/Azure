@@ -1,0 +1,36 @@
+﻿@model ProjectGroupMembershipPickerModel
+
+<div>
+    <form id="PGPICKER-FORM">
+        <input type="hidden" name="mode" id="mode" value="projectmembers"/>
+        <input type="hidden" name="PGPICKER-PROJECT" id="PGPICKER-PROJECT" value="@Model.ProjectId"/>
+        <input type="hidden" name="PGPICKER-GROUP" id="PGPICKER-GROUP" value="@Model.GroupId"/>
+        @Html.ListBox("PGPICKER", Model.Users, new { @class = "input-size9" })
+        <span id="PGPICKER-APPLY" class="fonticon-tick" style="font-size:14px;" />
+        <span id="PGPICKER-CANCEL" class="fonticon-cross" style="font-size:14px;"  />
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    var projectId = $('#PGPICKER-PROJECT').val();
+    var anchor = "<a href='#' class='summary-line' id='summary-line-" + projectId + "'>";
+    var summary = $('#summary-cell-' + projectId);
+    gemini_ui.chosen("#PGPICKER", null, true);
+
+    $("#PGPICKER-CANCEL").unbind('click').click(function (e) {
+        gemini_commons.stopClick(e);
+        summary.html(anchor + summary.attr('data-summary') + '</a>');
+        currentParent = null;
+    });
+    
+    $("#PGPICKER-APPLY").unbind('click').click(function (e) {
+        gemini_ajax.postCall("configure/People/ProjectGroups", "SaveData", function (response) {
+            summary.html(anchor + response.Result + '</a>');
+            summary.attr('data-summary', response.Result);
+        }, null, $("#PGPICKER-FORM").serialize());
+        currentParent = null;
+        
+    });
+
+</script>

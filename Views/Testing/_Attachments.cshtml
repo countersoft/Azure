@@ -1,0 +1,28 @@
+﻿
+
+<div class="attachments-container">
+@foreach(var file in Model)
+{
+    <div class="attachment">
+        <a href='~/apps/countersoft/testing/runner/download/@(file.Id)' title='@file.FileSize (@file.Created)'><span class="attachment-filename">@file.FileName</span></a>
+        @{
+            var b = Html.ViewBag.DeleteAttachments;
+            bool canDelete = true;
+            if(b != null)
+            {
+                canDelete = (bool) b;
+            }
+        } 
+        @if(canDelete)
+        {
+            <span class="action-button-delete cursor-pointer" data-id="@file.Id" title="@GetResource(ResourceKeys.Delete)"></span>
+        }
+        else
+        {
+            <span style="width:10px; display:inline-block"></span>
+        }
+    </div>
+}
+</div>
+
+                            

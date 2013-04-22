@@ -1,0 +1,31 @@
+﻿@model PlanInfo
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-plans' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Plans) (@Model.Plans.Count)</h3></div>
+<div class='toolbar actions right'>
+@Html.Partial("_AddPlanLink", Model.Info)
+@Html.Partial("_AddTraceability", Model.Info)
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+
+
+@if (Model.Plans.Count > 0)
+{
+<table id="case-details" class="width-100" ><tbody>
+<tr class="cs-grid-column">
+    <th>@GetResource(ResourceKeys.Status)</th>
+    <th>@GetResource(ResourceKeys.Plan)</th>
+</tr>
+
+@foreach (var x in Model.Plans)
+{
+<tr id='case-@x.Entity.Id'>
+<td class='cs-status'>@Html.Partial("_PropertiesStatus", x)</td>
+<td class='cs-title-link'>@Html.Partial("_PlanSummaryLink", x)</td>
+</tr>
+}
+</tbody></table>
+}
+</div></div>

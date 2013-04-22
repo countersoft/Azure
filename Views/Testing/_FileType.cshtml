@@ -1,0 +1,3 @@
+﻿@model TestAttachment
+<div class='cs-icon cs-withtext' style='background:url(@ImageHelper.GetFileAttachmentIconPath(GeminiContext.AssetsUrl, Countersoft.Gemini.Infrastructure.Helpers.FileHelper.GetFileExtension(@Model.ShortFileName))) no-repeat'></div>
+<span class="cs-filename"><a href='@NavigationHelper.GetTestAttachmentUrl(@Model, @GeminiContext.Project.Entity.Code, @GeminiContext.Url)'>@Model.ShortFileName</a></span>

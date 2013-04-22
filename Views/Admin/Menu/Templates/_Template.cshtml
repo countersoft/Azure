@@ -1,0 +1,10 @@
+﻿@model SelectList
+
+<div id="template-picker">
+    <h2 class="inline">Project Template:&nbsp;</h2>@Html.DropDownList("Template", Model, new {@class="input-size10"})
+    &nbsp;
+    <a id="delete-template" href="~/configure/template/delete/" class="export right margin-top-10 margin-left-10">Delete</a>
+    <a id="load-templates" href="~/configure/template/load/" class="export right margin-top-10 margin-left-10">Load</a>
+    <a id="export-template" href="~/configure/template/export/" class="export right margin-top-10 margin-left-10">Export</a>
+    <a id="duplicate-template" href="~/configure/template/duplicate/" class="export right margin-top-10 margin-left-10">Duplicate</a>
+</div>

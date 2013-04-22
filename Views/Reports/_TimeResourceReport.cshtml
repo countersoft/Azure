@@ -1,0 +1,216 @@
+﻿@using Countersoft.Gemini.Infrastructure.Managers
+@using Countersoft.Gemini.Models.Reports
+@model Countersoft.Gemini.Models.Reports.ReportResultModel
+
+@*<ul>
+@foreach(var item in Model.ResultsAsTimeReport)
+{
+    <li>@item.Display @item.DisplayTime @item.Date</li>
+}
+</ul>*@
+
+ @if (!Model.ResultsAsTimeReport.Any())
+ {
+     <div id="cs-template">
+     <div id="no-data">
+         @GetResource(ResourceKeys.NoData)
+     </div>
+     </div>
+ }
+ else
+ {
+ 
+
+<div id="cs-template" class="fix-first-column">
+    <table id="tableResourceAllocation" style="width:100%;">
+        <thead>
+            <tr class="cs-grid-column">
+                <th class="headcol" style="background: transparent; border:none;">
+                </th>
+                @{
+                    var countDays = 0;
+                    var date = Model.StartDate.Value;
+                    while (date <= Model.EndDate)
+                    {
+                        <th class="center">
+                            <span class="day-name">@date.ToString("ddd")</span><br/>
+                            <span class="date-part">@date.ToString("dd-MMM")</span>
+                        </th>
+                        date = date.AddDays(1);
+                        countDays++;
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+           
+               @* <tr>
+                    <td colspan="1" class="headcol">
+                        @GetResource(ResourceKeys.NoData)
+                    </td>
+                    <td colspan="@countDays">
+                        $1$<hr />#1#&nbsp;
+                    </td>
+                </tr>*@
+          @{
+                IEnumerable<IGrouping<int, TimeReportModel>> people = Model.ResultsAsTimeReport.GroupBy(tr => tr.KeyId);
+
+                foreach (var person in people)
+                {
+                    date = Model.StartDate.Value.ClearTime();
+                    <tr class="MainItem" data-key="@person.Key" data-state="hidden">
+                        <td class="headcol" title="@person.First().Display">
+                            @person.First().Display
+                        </td> 
+                        @{
+                            while (date <= Model.EndDate)
+                            {
+                                string cls = "";
+                                if(ReportManager.GetWeekends().Contains(date.DayOfWeek))
+                                {
+                                    cls = "weekend";
+                                }
+                                var today = person.FirstOrDefault(r => r.KeyId == person.Key && r.Date.Value.ClearTime() == date);
+                                if (today == null)
+                                {
+                                    <td class="@cls">-</td>
+                                }
+                                else
+                                {
+                                    <td class="@cls"><span class="no-wrap">@today.DisplayTime</span></td>
+                                }
+                                date = date.AddDays(1);
+                            }
+                    
+                        }
+                    </tr>
+                    
+
+                    IEnumerable<IGrouping<int, TimeReportModel>> issuesByPerson = person.SelectMany(p => p.SubItems).GroupBy(i => i.KeyId);
+                    if(!issuesByPerson.Any())
+                    {
+                        <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-0" data-state="hidden">
+                            <td class="headcol">@GetResource(ResourceKeys.NoData)</td>
+                            <td colspan="@countDays"><hr />&nbsp;</td>
+                        </tr>
+                    }
+                    foreach (var issue in issuesByPerson)
+                    {
+                        
+                        <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-@issue.Key" data-state="hidden">
+                            <td class="headcol" title="@issue.First().Display">
+                                <span  style="margin-left: 3px;"><a href="@NavigationHelper.GetIssueUrl(GeminiContext, issue.First().ReportItem as IssueDto)"> @(((IssueDto) issue.First().ReportItem).IssueKey)</a> @issue.First().Display</span>
+                            </td>
+                            @{
+                                date = Model.StartDate.Value.ClearTime();
+                                while (date <= Model.EndDate)
+                                {
+                                    var today = issue.FirstOrDefault(r => r.KeyId == issue.Key && r.Date == date);
+                                    if (today == null)
+                                    {
+                                        <td>-</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="">&nbsp;&nbsp;<span class="no-wrap">@today.DisplayTime</span></td>
+                                    }
+                                    date = date.AddDays(1);
+                                }
+                        
+                            }
+                        </tr>
+
+                        var times = issue.SelectMany(i => i.SubItems).ToList();
+                        for (int index = 0; index < times.Count; index++)
+                        {
+                            var source = times[index];
+                            
+                            string  classname = "";
+                            if (index == times.Count - 1)
+                            {
+                                classname = " last-child";
+                            }
+                            
+                            <tr class="SubItem2 @classname" data-main-key="@person.Key" data-subitem1-key="@person.Key-@issue.Key" data-state="hidden">
+                                <td class="headcol" title="@source.Display">
+                                    <span  style="margin-left: 20px;">@source.Display</span>
+                                </td>
+                                
+                                @{
+                                    date = Model.StartDate.Value;
+                                    while (date <= Model.EndDate)
+                                    {
+                                        if (source.Date.Value.ClearTime() != date)
+                                        {
+                                            <td>-</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="">&nbsp;&nbsp;&nbsp;<span class="no-wrap">@source.DisplayTime</span></td>
+                                        }
+                                        date = date.AddDays(1);
+                                    }
+                                } 
+                    
+                            </tr>
+                        }
+                    }
+
+                }
+            }
+        </tbody>
+    </table>
+    
+</div>
+
+                
+                
+                
+
+<script type="text/javascript" language="javascript">
+    $(".SubItem1").hide();
+    $(".SubItem2").hide();
+
+    //$(".fix-first-column").jScrollPane({});
+    
+    $(".MainItem").click(function () {
+        var key = $(this).data("key");
+        var state = $(this).data("state");
+
+        if (state == "hidden") {
+            $("tr.SubItem1[data-main-key=" + key + "]").show();
+            $(this).data("state", "shown");
+            $(this).addClass("SubItem1Expanded");
+        }
+        else {
+            $(this).data("state", "hidden");
+            $(this).removeClass("SubItem1Expanded");
+            $("tr.SubItem1[data-main-key=" + key + "]").hide().data("state", "hidden");
+            $("tr.SubItem2[data-main-key=" + key + "]").hide();
+        }
+        //gemini_ui.destroyJScrollPane($(".fix-first-column"));
+        //$(".fix-first-column").jScrollPane({});
+    });
+
+    $(".SubItem1").click(function () {
+        var key = $(this).data("key");
+        var state = $(this).data("state");
+
+        if (state == "hidden") {
+            $("tr[data-subitem1-key=" + key + "]").show();
+            $(this).data("state", "shown");
+            $(this).addClass("SubItem2Expanded");
+        }
+        else {
+            $("tr[data-subitem1-key=" + key + "]").hide();
+            $(this).data("state", "hidden");
+            $(this).removeClass("SubItem2Expanded");
+        }
+        //gemini_ui.destroyJScrollPane($(".fix-first-column"));
+//        $(".fix-first-column").jScrollPane({});
+    });
+    
+</script>
+ }
+
+

@@ -1,0 +1,15 @@
+﻿@model ViewIssueModel
+
+@if(Model[ItemAttributeVisibility.Description]) { <a class="selected" href="#description">@GetResource(ResourceKeys.Description)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedComments]) { <a href="#comments">@GetResourceTemplate(ResourceKeys.Comments)&nbsp;(@Model.Issue.Comments.Count)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedHierarchy]) { <a href="#dependencies">@GetResourceTemplate(ResourceKeys.Dependencies)&nbsp;(@(Model.Issue.Hierarchy.Count == 0 ? 0 : Model.Issue.Hierarchy.Count))</a> }
+@if(Model.Issue.CustomFields.Count > 0) { <a href="#additional">@GetResourceTemplate(ResourceKeys.AdditionalInformation)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedAttachments]) { <a href="#attachments">@GetResourceTemplate(ResourceKeys.Attachments)&nbsp;(@Model.Issue.Attachments.Count)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedTime]) { <a href="#timelog">@GetResourceTemplate(ResourceKeys.Time)&nbsp;(@Model.Issue.TimeEntries.Count)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedWatchers]) { <a href="#watchers">@GetResourceTemplate(ResourceKeys.Followers)&nbsp;(@Model.Issue.Watchers.Count)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedSourceControl]) { <a href="#sourcecode">@GetResourceTemplate(ResourceKeys.SourceControl)&nbsp;(@Model.Issue.SourceControlFiles.Count)</a> }
+
+//TODO is this needed
+@*@if(Model[ItemAttributeVisibility.AssociatedTestCases]) { <a href="#testing">@GetResourceTemplate(ResourceKeys.Testing)&nbsp;(@Model.Issue.Cases.Count)</a> }*@
+@if(Model[ItemAttributeVisibility.AssociatedHierarchy]) { <a href="#history">@GetResourceTemplate(ResourceKeys.History)&nbsp;(@Model.Issue.History.Count)</a> }
+@if(Model[ItemAttributeVisibility.AssociatedLinks]) { <a href="#link">@GetResourceTemplate(ResourceKeys.LinkedItems)&nbsp;(@Model.Issue.Links.Count)</a> }

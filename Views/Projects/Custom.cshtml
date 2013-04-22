@@ -1,0 +1,15 @@
+﻿@model CustomPageModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+    @{Html.RenderPartial("ContentHeader");}
+
+}
+<div id="cs-template" >
+    <div id="page-custom" >
+    
+        @Html.Raw(Model.Html)
+    </div>
+</div>

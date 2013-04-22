@@ -1,0 +1,118 @@
+﻿@model ActivityModel
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+<div id="contents-wrapper" class="clearfix">
+<article>  
+    <div id="activity" class="clearfix">    
+        <ul class="streams">
+            <li class="stream">
+                <a href="activity/overdue">
+                <div class="header"><div class="color-code overdue-color"></div><div class="column-head">@GetResource(ResourceKeys.Overdue, Resourcing.Lower) (@Model.Overdue.Count)</div></div>
+                <ul class="cards">
+                    @foreach (IssueDto item in Model.Overdue.Take(5))
+                    {
+                    <li>
+                        <div class="card">
+                            <div class="title">@item.Title.ToMaxMore(80)</div>
+                            <div class="meta-info"><img src="@item.TypeImage"  alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                            <div class="meta-status">@item.Status</div>
+                        </div>
+                    </li>                    
+                    }
+                </ul>
+                </a>
+            </li>
+        
+            <li class="stream">
+                <a href="activity/due-today">
+                <div class="header"><div class="color-code today-color"></div><div class="column-head">@GetResource(ResourceKeys.Today, Resourcing.Lower) (@Model.DueToday.Count)</div></div>
+                <ul class="cards">
+                    @foreach (IssueDto item in Model.DueToday.Take(5))
+                    {
+                    <li>
+                        <div class="card">
+                            <div class="title">@item.Title.ToMaxMore(80)</div>
+                            <div class="meta-info"><img src="@item.TypeImage"  alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                            <div class="meta-status">@item.Status</div>
+                        </div>
+                    </li>                    
+                    }
+                </ul>
+                </a>
+            </li>
+
+            <li class="stream">
+                <a href="activity/due-tomorrow">
+                <div class="header"><div class="color-code tomorrow-color"></div><div class="column-head">@GetResource(ResourceKeys.Tomorrow, Resourcing.Lower) (@Model.DueTomorrow.Count)</div></div>
+                <ul class="cards">
+                    @foreach (IssueDto item in Model.DueTomorrow.Take(5))
+                    {
+                    <li>
+                        <div class="card">
+                            <div class="title">@item.Title.ToMaxMore(80)</div>
+                            <div class="meta-info"><img src="@item.TypeImage"  alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                            <div class="meta-status">@item.Status</div>
+                        </div>
+                    </li>                    
+                    }
+                </ul>
+                </a>
+            </li>
+
+            <li class="stream">
+                <a href="activity/opened-recently">
+                <div class="header"><div class="color-code opened-color"></div><div class="column-head">@GetResource(ResourceKeys.OpenedRecently, Resourcing.Lower) (@Model.OpenedRecently.Count)</div></div>
+                <ul class="cards">
+                    @foreach (IssueDto item in Model.OpenedRecently.Take(5))
+                    {
+                        <li>
+                            <div class="card">
+                                <div class="title">@item.Title.ToMaxMore(80)</div>
+                                <div class="meta-info"><img src="@item.TypeImage"  alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                                <div class="meta-status">@item.Status</div>
+                            </div>
+                        </li>                    
+                    }
+                </ul>
+                </a>
+            </li>
+
+            <li class="stream">
+                <a href="activity/closed-recently">
+                <div class="header"><div class="color-code closed-color"></div><div class="column-head">@GetResource(ResourceKeys.ClosedRecently, Resourcing.Lower) (@Model.ClosedRecently.Count)</div></div>
+                <ul class="cards">
+                    @foreach(IssueDto item in Model.ClosedRecently)
+                    {
+                    <li>
+                        <div class="card">
+                            <div class="title">@item.Title.ToMaxMore(80)</div>
+                            <div class="meta-info"><img src="@item.TypeImage"  alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                            <div class="meta-status">@item.Status</div>
+                        </div>
+                    </li>                    
+                    }
+                </ul>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</article>
+</div>
+
+@section JavaScript
+{
+}
+
+@section DocumentReady
+{
+    gemini_sizing.sameHeight('ul.cards');
+}

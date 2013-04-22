@@ -1,0 +1,26 @@
+﻿@model List<TestPlanDto>
+@if (Model.Count > 0)
+{
+<table id="test-plans" class="width-100" >
+<thead>
+<tr class="cs-grid-column">
+<th></th>
+<th>@GetResource(ResourceKeys.Summary)</th>
+<th>@GetResource(ResourceKeys.Status)</th>
+<th>@GetResource(ResourceKeys.Revised)</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+@foreach (var x in Model)
+{
+<tr id='plan-@x.Entity.Id'>
+<td class='cs-link'>@Html.Partial("_PlanLink", x)</td>
+<td class='cs-title'>@x.Entity.Summary</td>
+<td class='cs-status'>@Html.Partial("_PropertiesStatus", x)</td>
+<td class='cs-date'>@x.Entity.Revised.ToString()</td>
+<td class='cs-simple'>@Html.Partial("_DeletePlanLink", x)</td>
+</tr>
+}
+</tbody></table>
+}

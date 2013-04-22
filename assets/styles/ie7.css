@@ -1,0 +1,12 @@
+﻿html, body
+{
+    min-width:0;    /* peek-a-boo hack */
+}
+.clearfix 
+{ 
+    display:block; 
+}    
+*:first-child+html .clearfix 
+{
+    zoom:1          /* ensure hasLayout */
+}

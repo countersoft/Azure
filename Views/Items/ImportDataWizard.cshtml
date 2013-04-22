@@ -1,0 +1,518 @@
+﻿@model ImportDataModel 
+
+<div id="ImportDataWizardContainer">
+    <h2 class="wizardTitle">Import Wizard</h2>
+    <div class="error"></div>
+    @if (Model.initialLoad) 
+    {
+        <div class="margin-top-5">
+            The first row in your file must contain column headers (e.g. Title, Priority, Status). <br />
+            Excel is recommended where you have HTML or multi-line data.
+        </div>
+        
+        <div class="margin-top-10">
+            <img src="@AssetsPath/images/import-example.png" width="700"/>
+        </div>
+        
+        <div id="file-upload-container" class="margin-top-20">
+            <div class="bold">Select a file to upload - supported formats: Microsoft Excel and CSV (text files delimited by PIPE, COMMA or TAB).</div><br />
+            <form id="regular-form" method="post" enctype="multipart/form-data"  action="@Url.Action("getimportdatafields", "AjaxItems", new RouteValueDictionary(new { option = "mapvalues" }))">
+                <input type="file" name="file" id="file" />
+                <input id='uploadFile' type="submit" name="uploadFile" value="" class="hide"/>
+            </form>
+        </div>
+    }
+
+    @{ var number = 0;
+       var checkboxIndex = 0;
+       }
+
+    @if (Model.Rows != null) 
+    {
+        var headerIndex = 0;
+        <div class="margin-top-5">Map imported columns to Gemini data fields</div>
+        <div id="value-order-container" class="margin-top-20">
+            <div id="js-value-wrapper">
+                <form id="field-order" method="post" action="@Url.Action("getimportdatafields", "AjaxItems", new RouteValueDictionary(new {  option = "mapextra" }))">
+                    <input type="hidden" name="filename" value="@Model.Filename"/>
+                    <div class="right ignore_label">Ignore?</div>
+                    <div class="clearfix"></div>
+                    <div id="value-order-inner-container">                       
+                    @foreach (var row in Model.Rows)
+                    {
+                      
+                        <div class="wizard-row">
+                            <div class="left row1" title="@Model.Headers[headerIndex]">@Model.Headers[headerIndex++].ToMaxMore(15)&nbsp;</div>
+                            <div class="left row2">@Html.DropDownList("value[]", row.Key, new { @class = "input-size6", @id = "colums" + number++ })</div>
+                            <div class="left row2">@Html.DropDownList("colums[]", row.Value, new { @class = "input-size6", @id = "colums" + number++ })</div>
+                            <div class="left margin-left-10 margin-top-10"><input type="checkbox" name="ignore[]" value="@(checkboxIndex++)"/></div>                           
+                        </div>
+                        <div class="clearfix"></div>                      
+                    }
+                    </div>
+                    <input id="mapValues" type="submit" name="submit" value="@GetResource(ResourceKeys.Next)"/>                
+                </form>
+             </div>
+        </div>
+    }
+
+    <div id="map-values-message" class="margin-top-5 hide">Map incoming column values to Gemini field values</div>
+    <div id="ImportData-container" class="margin-top-20">
+        <div id="js-extra-wrapper">
+            <form id="ImportData" method="post" class="hide" action="@Url.Action("importdata", "AjaxItems", new RouteValueDictionary(new { }))">
+                <input type="hidden" name="filename" value="@Model.Filename"/>
+                <div id="ImportData-inner-container">
+                @if (@Model.Types != null && @Model.Types.Count() > 0)
+                {             
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Type)</legend>  
+                        <br />                                
+                        @foreach (var columns in Model.Types.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                            <div class="wizard-row">
+                                <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                <div class="width-50 left">@Html.DropDownList(string.Concat("types-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++ })</div>
+                            </div>
+                            }
+                        }               
+                    </fieldset>
+                }
+
+                @if (Model.Statuses != null && Model.Statuses.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Status)</legend> 
+                        <br />                  
+                        @foreach (var columns in Model.Statuses.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("statuses-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Priorities != null && Model.Priorities.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Priority)</legend> 
+                        <br />                  
+                        @foreach (var columns in Model.Priorities.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("priorities-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Severities != null && Model.Severities.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Severity)</legend> 
+                        <br />                  
+                        @foreach (var columns in Model.Severities.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("severities-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Components != null && Model.Components.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Component)</legend> 
+                        <br />                  
+                        @foreach (var columns in Model.Components.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("components-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Versions != null && Model.Versions.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.FixedInVersion)</legend>
+                        <br />                   
+                        @foreach (var columns in Model.Versions.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("versions-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Resources != null && Model.Resources.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Resource)</legend>
+                        <br />             
+                        @foreach (var columns in Model.Resources.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("resources-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.Resolutions != null && Model.Resolutions.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.Resolution)</legend>
+                        <br />           
+                        @foreach (var columns in Model.Resolutions.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("resolutions-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.ReportedBy != null && Model.ReportedBy.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.ReportedBy)</legend>
+                        <br />        
+                        @foreach (var columns in Model.ReportedBy.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("reportedby-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.AffectedVersions != null && Model.AffectedVersions.Count() > 0)
+                {
+                    <fieldset>
+                        <legend>@GetResource(ResourceKeys.AffectedVersions)</legend>
+                        <br /> 
+                        @foreach (var columns in Model.AffectedVersions.Values)
+                        {
+                            foreach (var column in columns)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>                             
+                                    <div class="width-50 left">@Html.DropDownList(string.Concat("affectedversions-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})</div>
+                                </div>
+                            }
+                        }
+                    </fieldset>
+                }
+
+                @if (Model.CustomFields != null && Model.CustomFields.Count() > 0)
+                {
+                    var index = 0;
+                    foreach (var fields in Model.CustomFields.Values) 
+                    {
+                        <fieldset>
+                            <legend>@Model.CustomFieldNames[index].Value</legend>
+                            <br />   
+                            @foreach (var column in fields)
+                            {
+                                <div class="wizard-row">
+                                    <div class="width-50 left" title="@column.Key">@column.Key.ToMaxMore(35)&nbsp;</div>
+                                    <div class="width-50 left">
+                                        @if (column.Value.GetType().Name == "SelectList")
+                                        {
+                                            @Html.DropDownList(string.Concat("customfield-",@Model.CustomFieldNames[index].Key,"-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})
+                                        }
+                                        else
+                                        {
+                                            @Html.ListBox( string.Concat("customfield-",@Model.CustomFieldNames[index].Key,"-",column.Key), column.Value, new { @class = "input-size6",  @id = "colums" + number++})
+                                        }
+                                    </div>
+                                    
+                                </div>
+                            }
+                            @{index++;}
+                        </fieldset>
+                    }
+                }
+
+                </div>
+                <input type="submit" name="submit" value="@GetResource(ResourceKeys.Upload)" id="import-data"/>
+            </form>
+        </div>
+    </div> 
+    
+</div>
+
+<script type="text/javascript">
+
+    (function ($) {
+        $.fn.formToWizard = function (options) {
+            options = $.extend({
+                submitButton: ""
+            }, options);
+
+            var element = this;
+
+            var steps = $(element).find("fieldset");
+            var count = steps.size();
+            var submmitButtonName = "#" + options.submitButton;
+
+            if (count != 1) $(submmitButtonName).hide();
+           
+            // 2
+            //$(element).before("<ul id='steps'></ul>");
+
+            steps.each(function (i) {
+
+                $("#map-values-message").show();
+
+                $(this).wrap("<div class='step-container' id='step" + i + "'></div>");
+                $(this).append("<p id='step" + i + "commands'></p>");
+                // 2
+                var name = $(this).find("legend").html();
+                //$("#steps").append("<li id='stepDesc" + i + "'>Step " + (i + 1) + "<span>" + name + "</span></li>");
+
+                if (i == 0) {
+                    if (count != 1) createNextButton(i);
+                    selectStep(i);
+                }
+                else if (i == count - 1) {
+                    $("#step" + i).hide();
+                    createPrevButton(i);
+                }
+                else {
+                    $("#step" + i).hide();
+                    createPrevButton(i);
+                    createNextButton(i);
+                }
+            });
+
+            function createPrevButton(i) {
+                var stepName = "step" + i;
+                $("#" + stepName + "commands").append("<div class='left'><a href='#' id='" + stepName + "Prev' class='prev'> Back</a></div>");
+
+                $("#" + stepName + "Prev").bind("click", function (e) {
+                    $("#" + stepName).hide();
+                    $("#step" + (i - 1)).show();
+                    $(submmitButtonName).hide();
+                    selectStep(i - 1);
+                });
+            }
+
+            function createNextButton(i) {
+                var stepName = "step" + i;
+                $("#" + stepName + "commands").append("<div class='right'><a href='#' id='" + stepName + "Next' class='next'>Next </a></div>");
+
+                currentStep = $("#step0Next");
+                $("#" + stepName + "Next").bind("click", function (e) {
+                    currentStep = $(this);
+                    $("#" + stepName).hide();
+                    $("#step" + (i + 1)).show();
+                    if (i + 2 == count) {
+                        //$(submmitButtonName).show();
+                        $('#cs-popup-center-buttons #popup-button-yes').show().val('Upload').addClass('upload');
+                    }
+                    selectStep(i + 1);
+                    $("#step" + (i + 1)).css('height', '300px').css('overflow', 'auto').css('width', '100%');
+                    $("#step" + (i + 1)).jScrollPane({ autoReinitialiseDelay: 250 });
+                });
+
+            }
+
+            function selectStep(i) {
+                $("#steps li").removeClass("current");
+                $("#stepDesc" + i).addClass("current");
+            }
+        }
+    })(jQuery);
+
+    $(document).ready(function () {
+        var screenUploadFile = ($("#regular-form").length > 0) ? true : false;
+        var screenMapColumns = ($('#value-order-container').length > 0) ? true : false;
+        var screenMapValues = (!screenUploadFile && !screenMapColumns) ? true : false;
+
+        var currentStep = false;      
+        $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed        
+
+        if (screenUploadFile)
+        {
+            $('#file').change(function () {
+                $('#uploadFile').click();
+            });
+
+            var options1 = {
+                dataType: "json",
+                success: function (responseText, statusText, xhr, $form) {                   
+                    if (responseText.success) {
+                        $('#ImportDataWizardContainer').replaceWith(responseText.Data);
+                        gemini_ui.chosen('#ImportDataWizardContainer select', "", true);
+                    }
+                    else {
+                        var message = (responseText.message != 'undefined') ? responseText.message : '';
+                        $('.error').text(message).show();
+                    }
+
+                }, // post-submit callback  
+                error: function () {
+                    gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
+                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                }
+            };
+
+            $("#regular-form").ajaxForm(options1);
+            $('#cs-popup-center-buttons #popup-button-yes').hide();
+        }
+
+        if (screenMapColumns)
+        {
+            $("#js-value-wrapper").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });         
+           
+            var options2 = {
+                dataType: "json",
+                success: function (responseText, statusText, xhr, $form) {
+                    gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
+                    if (responseText.success) {
+                        $('#ImportDataWizardContainer').replaceWith(responseText.Data);
+                        gemini_ui.chosen('#ImportDataWizardContainer select', "", true);
+                        $('#ImportData').removeClass('hide');
+                        if ($('#ImportDataWizardContainer fieldset').length == 0) $('#import-data').click();                        
+                    }
+                    
+                }, // post-submit callback  
+                error: function () {
+                    gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
+                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                }
+            };
+
+            $("#field-order").ajaxForm(options2);
+            $('#cs-popup-center-buttons #popup-button-yes').val('Next');
+            $('#cs-popup-center-buttons #popup-button-yes').show();
+        }
+
+        if (screenMapValues)
+        {
+            $("#ImportData").formToWizard({ submitButton: "import-data" });
+           
+            $("#js-extra-wrapper").jScrollPane({ autoReinitialise: true })
+
+            var options3 = {
+                dataType: "json",
+                success: function (responseText, statusText, xhr, $form) {                    
+                    if (responseText.success) {                        
+                        var currentPage = $('#pager-next').attr('data-page');
+                        if (currentPage != 0) currentPage -= 1;
+                        gemini_filter.getFilteredItemsPage(currentPage);
+                    }
+                    
+                    $('#ImportData-container').html('');
+                    $('#map-values-message').html('');
+                    $('#ImportDataWizardContainer .wizardTitle').html('Import Wizard Results');
+
+                    $('#ImportData-container').append('<div class="result-container summary-row margin-left-20"><span class="title">' + (parseInt(responseText.failednr) + parseInt(responseText.successfulnr)) + ' ROWS FOUND</span></div>');
+                    $('#ImportData-container').append('<div class="success-container summary-row margin-left-20"><span class="title">' + responseText.successfulnr + '</b> ROWS IMPORTED</span></div>');
+
+                    if (responseText.istypeadded)
+                        $('#ImportData-container').append("<div class='type-added-container summary-row margin-left-20'>A Type was added. Please go to Customize -> Templates -> Process, select your Project Template <br /> and update the 'Screen' settings for your Type. </div>");
+
+                    if (responseText.failednr != "0")
+                        $('#ImportData-container').append('<div class="failed-container summary-row margin-left-20"><span class="title">' + responseText.failednr + '</span> ROWS SKIPPED:</span></div>');
+                
+                    if (responseText.errored != null) {                   
+                        jQuery.each(responseText.errored, function (i, val) {
+                            $('#ImportData-container').append('<div class="margin-left-20"><p class="margin-left-20"><b>Row ' + (parseInt(i)+1) + ':</b> ' + val + '</p></div>');
+                        });
+                    }
+
+                    $('#ImportData-container').css('height','325px').css('overflow','auto').css('width','100%');
+                    $("#ImportData-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+                    gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
+                    $('#cs-popup-center-buttons #popup-button-yes').hide();
+                    $('#cs-popup-center-buttons #popup-button-no').val('Finish');
+
+                }, // post-submit callback  
+                error: function () {
+                    gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
+                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                }
+            };
+
+            $("#ImportData").ajaxForm(options3);
+     
+            var fieldsetCount = $('#ImportDataWizardContainer').find("fieldset").size();
+       
+            if (fieldsetCount > 1)
+                $('#cs-popup-center-buttons #popup-button-yes').hide();
+            else
+                $('#cs-popup-center-buttons #popup-button-yes').show().val('Upload').addClass('upload');
+        }              
+
+        $("#popup-button-yes").unbind('click');
+        $("#popup-button-yes").click(function (e) {           
+            if ($(this).hasClass('upload'))
+            {
+                gemini_ui.startBusy('#cs-popup-center-buttons #popup-button-yes');
+                $(this).removeClass('upload');
+
+                $('#ImportData-inner-container .wizard-row').each(function (index, value) {
+                    var input = $(value).find('.add_item');
+                    
+                    if (input.length > 0)
+                    {
+                        $(value).find('select').remove();
+                        input.val("add#_"+input.val());
+                    }                
+                });
+
+                $("#ImportData-container #import-data").click();
+            }
+            else if ($("#mapValues").length > 0) {
+                gemini_ui.startBusy('#cs-popup-center-buttons #popup-button-yes');
+                $("#mapValues").click();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) {
+            $('#cs-popup-center-buttons #popup-button-yes').removeClass('upload');
+            gemini_popup.popupClose(e);
+        });
+    });
+
+</script>

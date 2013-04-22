@@ -1,0 +1,26 @@
+﻿@model ComboBoxFieldModel
+
+@{
+    bool wasOptionGroup = false;
+}
+
+<select title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" data-original="@Model.Value" data-trigger='@Model.TriggerValues' 
+    data-customfield-trigger='@Model.CustomFieldTriggerValues' class="input-tall input-size6 @Model.Classes @(Model.Required ? "required" : "")" >
+    @foreach (var item in Model.Values)
+    {
+        if (item.IsOptionGroup)
+        {
+            if (wasOptionGroup)
+            { @Html.Raw("</optgroup>") }
+            <text><optgroup label="@item.ItemText"></text>
+            wasOptionGroup = true;
+        }
+        else
+        {
+            <option @if (Model.Value == item.ItemId)
+                    { <text>selected="selected"</text> } @if(item.Disabled) { <text>disabled="disabled"</text> } value="@item.ItemId">@item.ItemText</option>
+        }
+    }
+    @if (wasOptionGroup)
+    { @Html.Raw("</optgroup>") }
+</select>

@@ -1,0 +1,184 @@
+﻿@using Countersoft.Gemini.Infrastructure.Managers
+@using Countersoft.Gemini.Models.Reports
+@model Countersoft.Gemini.Models.Reports.ReportResultModel
+
+@*<ul>
+@foreach(var item in Model.ResultsAsTimeReport)
+{
+    <li>@item.Display @item.DisplayTime @item.Date</li>
+}
+</ul>*@
+
+
+ @if (!Model.ResultsAsTimeReport.Any())
+ {
+     <div id="cs-template">
+     <div id="no-data">
+         @GetResource(ResourceKeys.NoData)
+     </div>
+     </div>
+ }
+ else
+ {
+
+     <div id="cs-template" class="">
+         <table id="tableResourceAllocation">
+             <thead>
+                 <tr class="cs-grid-column">
+                     <th style="width: 250px;">
+                     </th>
+                     @{
+                         var countTypes = 0;
+                         var types = Model.ResultsAsTimeReport.Select(i => i.TimeTypeId.GetValueOrDefault()).Distinct();
+                         foreach (var source in types)
+                         {
+                             <th class="no-wrap no-width">@Model.Dictionary[source]</th>
+                             countTypes++;
+                         }
+                     }
+                 </tr>
+             </thead>
+             <tbody>
+                 @{
+                     IEnumerable<IGrouping<int, TimeReportModel>> people = Model.ResultsAsTimeReport.GroupBy(tr => tr.KeyId);
+
+                     foreach (var person in people)
+                     {
+
+                         <tr class="MainItem" data-key="@person.Key" data-state="hidden">
+                             <td class="headcol" title="@person.First().Display">
+                                 @person.First().Display
+                             </td> 
+                             @{
+                                 foreach (var type in types)
+                                 {
+
+                                     var today = person.FirstOrDefault(r => r.KeyId == person.Key && r.TimeTypeId == type);
+                                     if (today == null)
+                                     {
+                                         <td>-</td>
+                                     }
+                                     else
+                                     {
+                                         <td class=""><span class="no-wrap">@today.DisplayTime</span></td>
+                                     }
+                                 }
+
+                             }
+                         </tr>
+
+
+                         IEnumerable<IGrouping<int, TimeReportModel>> issuesByPerson = person.SelectMany(p => p.SubItems).GroupBy(i => i.KeyId);
+                         if (!issuesByPerson.Any())
+                         {
+                             <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-0" data-state="hidden">
+                                 <td class="headcol">@GetResource(ResourceKeys.NoData)</td>
+                                 <td colspan="@countTypes"><hr />&nbsp;</td>
+                             </tr>
+                         }
+                         foreach (var issue in issuesByPerson)
+                         {
+
+                             <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-@issue.Key" data-state="hidden">
+                                 <td class="headcol" title="@issue.First().Display">
+                                     <span  style="margin-left: 10px;"><a href="@NavigationHelper.GetIssueUrl(GeminiContext, issue.First().ReportItem as IssueDto)"> @(((IssueDto) issue.First().ReportItem).IssueKey)</a> @issue.First().Display</span>
+                                 </td>
+                                 @{
+
+                                     foreach (var type in types)
+                                     {
+                                         var today = issue.FirstOrDefault(r => r.KeyId == issue.Key && r.TimeTypeId == type);
+                                         if (today == null)
+                                         {
+                                             <td>-</td>
+                                         }
+                                         else
+                                         {
+                                             <td class="">&nbsp;&nbsp;<span class="no-wrap">@today.DisplayTime</span></td>
+                                         }
+                                     }
+
+                                 }
+                             </tr>
+
+                             var times = issue.SelectMany(i => i.SubItems).ToList();
+                             for (int index = 0; index < times.Count; index++)
+                             {
+                                 var source = times[index];
+
+                                 string classname = "";
+                                 if (index == times.Count - 1)
+                                 {
+                                     classname = " last-child";
+                                 }
+
+                                 <tr class="SubItem2 @classname" data-main-key="@person.Key" data-subitem1-key="@person.Key-@issue.Key" data-state="hidden">
+                                     <td class="headcol" title="@source.Display">
+                                         <span  style="margin-left: 20px;">@source.Display</span>
+                                     </td>
+                                
+                                     @{
+                                         foreach (var type in types)
+                                         {
+                                             if (source.TimeTypeId != type)
+                                             {
+                                                 <td>-</td>
+                                             }
+                                             else
+                                             {
+                                                 <td class="">&nbsp;&nbsp;&nbsp;<span class="no-wrap">@source.DisplayTime</span></td>
+                                             }
+                                         }
+                                     } 
+                    
+                                 </tr>
+                             }
+                         }
+
+                     }
+                 }
+             </tbody>
+         </table>
+     </div>
+
+
+     <script type="text/javascript" language="javascript">
+
+         $(".SubItem1").hide();
+         $(".SubItem2").hide();
+
+         $(".MainItem").click(function() {
+             var key = $(this).data("key");
+             var state = $(this).data("state");
+
+             if (state == "hidden") {
+                 $("tr.SubItem1[data-main-key=" + key + "]").show();
+                 $(this).data("state", "shown");
+                 $(this).addClass("SubItem1Expanded");
+             } else {
+                 $(this).data("state", "hidden");
+                 $(this).removeClass("SubItem1Expanded");
+                 $("tr.SubItem1[data-main-key=" + key + "]").hide().data("state", "hidden");
+                 $("tr.SubItem2[data-main-key=" + key + "]").hide();
+             }
+         });
+
+         $(".SubItem1").click(function() {
+             var key = $(this).data("key");
+             var state = $(this).data("state");
+
+             if (state == "hidden") {
+                 $("tr[data-subitem1-key=" + key + "]").show();
+                 $(this).data("state", "shown");
+                 $(this).addClass("SubItem2Expanded");
+             } else {
+                 $("tr[data-subitem1-key=" + key + "]").hide();
+                 $(this).data("state", "hidden");
+                 $(this).removeClass("SubItem2Expanded");
+             }
+         });
+
+     </script>
+
+
+ }

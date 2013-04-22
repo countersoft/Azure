@@ -1,0 +1,81 @@
+﻿@model Countersoft.Gemini.Models.Admin.SystemOptionsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide user options such as Language, Theme, Administrator email and more.</p>
+
+<div id="cs-adhoc-page">
+    <form id="system-options-form" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tr>
+                <td>Welcome Title</td>
+                <td><input type="text" id="WelcomeTitle" name="WelcomeTitle" class="input-size9 required" value="@Model.WelcomeTitle"/></td>
+            </tr>
+            <tr>
+                <td valign="top">Welcome Message</td>
+                <td>
+                    <div class="wysiwyg-container wysiwyg-height1">
+                        <textarea id="WelcomeMessage" name="WelcomeMessage" class="input-size9 required wysiwyg-editor cs-wysiwyg">@Model.WelcomeMessage</textarea>
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Administrator Email(s)</td>
+                <td><input type="text" id="AdminEmail" name="AdminEmail" class="input-size9 required" value="@Model.AdminEmail"/></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            
+            <tr>
+                <td>@GetResource(ResourceKeys.Language)</td>
+                <td>@Html.DropDownList("Language", Model.Languages, new {@class="input-size9"})</td>
+            </tr>
+            <tr>
+                <td>@GetResource(ResourceKeys.Theme)</td>
+                <td>@Html.DropDownList("Theme", Model.Themes, new {@class="input-size9"})</td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Working Hours in Day</td>
+                <td><input type="text" id="WorkingHours" name="WorkingHours" class="input-size2 required" value="@Model.WorkingHours"/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="DebugMode" name="DebugMode" @if(Model.DebugMode){ <text>checked="checked"</text> } /> <label for="DebugMode">Enable diagnostic output</label></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td colspan="2" align="right">
+                    <input id="system-options-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                </td>
+            </tr>
+              
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        gemini_ui.htmlEditor("#WelcomeMessage", gemini_sizing.stretchWindow);
+
+        $("#system-options-form").validate();
+
+        $("#WorkingHours").mask("99:99");
+
+        $("#system-options-save").click(function (e) {
+            gemini_commons.stopClick(e);
+
+            if (!$("#system-options-form").valid()) { return; }
+
+            var formData = $("#system-options-form").serialize();
+            gemini_ui.startBusy('#cs-adhoc-page .data-entry-box #system-options-save');
+            gemini_ajax.postCall("configure/System/Options", "savedata",
+            function () {
+                gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-options-save');
+                gemini_admin.saveFinished("#system-options-save");
+            }, function () { gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-options-save'); }, formData);
+        });
+    }); 
+</script>

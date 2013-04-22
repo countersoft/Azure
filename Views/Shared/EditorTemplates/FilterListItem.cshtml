@@ -1,0 +1,38 @@
+﻿@model CustomFieldFilterModel
+@{
+    string cssClass = ViewData["CssClass"] as string ?? string.Empty;
+    string headerCss = string.Empty;
+    cssClass = string.Concat(cssClass, ' ', "filter-changer");
+}
+@if(Model.Type == CustomFieldFilterModel.FilterType.List || Model.Type == CustomFieldFilterModel.FilterType.Check)
+{
+foreach(var item in Model.Items)
+{
+    /*if (item.IsHeaderOnly) { cssClass = string.Concat(cssClass, ' ', "invisible"); headerCss = "drop-down-header"; }
+    else if(!cssClass.Contains("project-filter") && !cssClass.Contains("columns-picker-item"))
+    {
+        cssClass = string.Concat(cssClass, ' ', "filter-changer");
+    }
+    else if (cssClass.Contains("columns-picker") && item.ItemId.StartsWith("fcf_", StringComparison.InvariantCulture))
+    {
+        headerCss = "bold";
+    }*/
+    <li>
+        <input type="checkbox" class="@cssClass" id="fcf_@(Model.CustomFieldId)_@item.ItemId" name="fcf_@(Model.CustomFieldId)_@item.ItemId" @if (item.IsSelected){<text>checked="checked"</text> }/><label for="fcf_@(Model.CustomFieldId)_@item.ItemId" title= "@item.ItemLabel" class="@headerCss">@item.ItemText</label>
+    </li>
+}
+}
+else if (Model.Type == CustomFieldFilterModel.FilterType.Text)
+{
+        <input type="text" class="@cssClass" id="fcf_@(Model.CustomFieldId)" name="fcf_@(Model.CustomFieldId)" value="@Model.TextData" />
+}
+else if (Model.Type == CustomFieldFilterModel.FilterType.Date)
+{
+        <input type="text" data-date-format="@Model.Format" class="@cssClass datepicker dateFormatted" id="fcf_@(Model.CustomFieldId)_from" name="fcf_@(Model.CustomFieldId)_from" value="@Model.From" />
+        <input type="text" data-date-format="@Model.Format" class="@cssClass datepicker dateFormatted" id="fcf_@(Model.CustomFieldId)_to" name="fcf_@(Model.CustomFieldId)_to" value="@Model.To" />
+}
+else if (Model.Type == CustomFieldFilterModel.FilterType.Numeric)
+{
+        <input type="text" class="@cssClass" id="fcf_@(Model.CustomFieldId)_from" name="fcf_@(Model.CustomFieldId)_from" value="@Model.From" />
+        <input type="text" class="@cssClass" id="fcf_@(Model.CustomFieldId)_to" name="fcf_@(Model.CustomFieldId)_to" value="@Model.To" />
+}

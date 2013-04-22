@@ -1,0 +1,72 @@
+﻿@model DefaultValuesModel
+
+@using Countersoft.Gemini.Infrastructure.Grid;
+@{
+    var classes = new Dictionary<string, object>();
+    classes.Add("class", "admin-data-entry cs-no-hover");
+    
+    var required = new Dictionary<string, object>();
+    required.Add("class", "bold");
+
+    var blank = new Dictionary<string, object>();
+    
+    var alignLeft = new Dictionary<string, object>();
+    alignLeft.Add("style", "text-align:left;");
+
+    var dataTD = new Dictionary<string, object>();
+    dataTD.Add("class", "td-data");
+}
+
+<div>
+    <div id="defaults-container">
+        <form id="defaults-form" enctype="multipart/form-data" method="post">
+            @{
+                var fields = Model.Fields.FindAll(f => !f.Value.Hidden);
+            }
+            
+            <div class="margin-bottom-20">
+                @Html.DropDownList("defaulttype", Model.Types, new { @class="input-size10" })
+            </div>
+
+            <div class="margin-bottom-20">
+                <input type="button" class="defaults-save button-primary" value="@GetResource(ResourceKeys.Save)" />
+            </div>
+
+            <div style="margin: 0 auto;">
+            @Html.Grid(fields).Attributes(classes).Columns( 
+                col => 
+                    { 
+                        col.For(x=> x.Key).Attributes( x=> x.Item.Value.Required ? required : blank);
+                        col.For(x => Html.Partial(x.Value.TemplateFile, x.Value)).Attributes(x => dataTD);
+                    }
+                   ).RenderHeaders(false).RowAttributes(x => classes)
+            </div>
+        </form>
+
+        <div class="margin-top-20">
+            <input type="button" class="defaults-save button-primary" value="@GetResource(ResourceKeys.Save)" />
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(".defaults-save").click(function (e) {
+        gemini_ui.startBusy('#defaults-container .defaults-save');
+        gemini_ajax.postCall("project/@(GeminiContext.Project.Entity.Id)/settings/defaults", 'save', function () {
+            gemini_popup.toast('@(GetResource(ResourceKeys.Saved))');
+            gemini_ui.stopBusy('#defaults-container .defaults-save');
+        }, function () { gemini_ui.stopBusy('#defaults-container .defaults-save'); }, $('#defaults-form').serialize());
+    });
+    
+    $('#defaulttype', '#defaults-form').change(function () {
+        gemini_projects.settingsDefaults(@(GeminiContext.Project.Entity.Id), $(this).val());
+    });
+    gemini_ui.chosen('#defaults-form select', null, false);
+    gemini_ui.datePicker('#defaults-form .datepicker');
+    gemini_ui.htmlEditor('#defaults-form .wysiwyg-editor');
+
+    //$('input[type="hidden"][value="0"]').removeAttr('name');
+
+</script>
+

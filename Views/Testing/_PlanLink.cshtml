@@ -1,0 +1,2 @@
+﻿@model TestPlanDto
+<a href='@NavigationHelper.GetTestingPageUrl(@Model.Project.Id, Model.Project.Code, @Model.Entity.Id, null, null, GeminiContext.Url)'>@GetResource(ResourceKeys.Plan)-@Model.Entity.Id</a>

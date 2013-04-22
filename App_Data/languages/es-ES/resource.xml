@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Resource>
+  <!-- Misc -->
+  <item id="Thanks">Gracias</item>
+  <item id="Yes">sí</item>
+  <item id="No">No</item>
+  <item id="Cancel">Cancele</item> 
+  <item id="Create">Cree</item> 
+  <item id="Theme">Tema</item>
+  <item id="Item">Tarea</item>
+  <item id="Items">Tareas</item>
+  <item id="Help">Ayuda</item> 
+  <item id="Settings">Ajustes</item>
+  <item id="Alerts">Alarmas</item> 
+  <item id="Login">Inicio de sesión</item> 
+  <item id="Logout">Cierre de sesión</item> 
+  <item id="User">Usuario</item>
+  <item id="Username">Nombre de usuario</item>
+  <item id="Password">Contraseña de aceso</item>
+  <item id="ApiKey">Código de API</item>
+  <item id="Reset">Reinicializar</item>
+  <item id="Register">Registro</item>
+  <item id="Profile">Perfil</item>
+  <item id="Picture">Imagen</item>
+  <item id="Preferences">Preferencias</item>
+  <item id="Timezone">Huso horario</item>
+  <item id="Culture">Fecha formato</item>
+  <item id="Language">Idioma</item>
+  <item id="Configure">Configurar</item>
+  <item id="Customize">Personalizar</item>
+  <item id="ConfirmPassword">Confirmar contraseña de aceso</item>
+  <item id="Email">Correo electrónico</item>
+  <item id="EmailMe">Al receive correo electrónico pone sobre aviso</item>
+  <item id="EmailMeMyChanges">Enviarme mis cambioss</item>
+  <item id="Surname">Apellido</item>
+  <item id="Firstname">Primer nombre</item>
+  <item id="Open">Abierto</item>
+  <item id="Page">Página</item>
+  <item id="Of">De</item>
+  <item id="Change">Cambio</item>
+  <item id="Changed">Cambiado</item>
+  <item id="From">De</item>
+  <item id="Removed">Quitado</item>
+  <item id="Locked">Cerrado</item>
+  <item id="Archived">Archivado</item>
+  <item id="Released">Soltado</item>
+  <item id="Now">Ahora</item>
+  <item id="To">A</item>
+  <item id="Collapse">Colapso</item>
+  <item id="Expand">expandir</item>
+  <item id="Clear">Libre</item>
+  <item id="Close">Cerrar</item>
+  <item id="Closed">Cerrado</item>
+  <item id="Total">Total</item>
+  <item id="Summary">Resumen</item>
+  <item id="SeeAlso">Véase también</item>
+  <item id="Description">Descripción</item>
+  <item id="Other">Otro</item>
+  <item id="View">Ver</item>
+  <item id="Title">Título</item>
+  <item id="Any">Cualquiera</item>
+  <item id="Age">Edad</item>
+  <item id="Keywords">Palabras clave</item>
+  <item id="ItemId">Tarea identificación</item>
+  <item id="ItemKey">Código de tarea</item>
+  <item id="ReportedBy">Informado por</item>
+  <item id="FollowedBy">Seguido por</item>
+  <item id="GroupDependencies">Agrupo dependencias</item>
+  <item id="Grouped">Agrupado</item>
+  <item id="ShowSequence">Artículos secuenciados</item>
+  <item id="FilterNoType">&lt; Todas las tareas &gt;</item>
+  <item id="FilterIncludeClosed">Incluir tareas cerradas</item>
+  <item id="FilterOpenIssues">Abrir</item>
+  <item id="FilterClosedIssues">Cerrado</item>
+  <item id="FilterLateIssues">Tarde</item>
+  <item id="FilterRecentlyCreatedIssues">Creado recientemente</item>
+  <item id="FilterRecentlyUpdatedIssues">Actualizado recientemente</item>
+  <item id="FilterRecentlyClosedIssues">Cerrado recientemente</item>
+  <item id="FilterDueYesterdayIssues">Ayer debido</item>
+  <item id="FilterDueTodayIssues">Hoy debido</item>
+  <item id="FilterDueTomorrowIssues">Mañana debida</item>
+  <item id="FilterDueNext7DaysIssues">Debidos próximos siete días</item>
+  <item id="FilterDueNext14DaysIssues">Debidos próximos catorce días</item>
+  <item id="FilterDueNext30DaysIssues">Debidos próximos treinta días</item>
+  <item id="FilterSubmittedByMeIssues">sometido por mí</item>
+  <item id="None">ninguno</item>
+  <item id="Milestones">Mojones</item>
+  <item id="Milestone">Mojón</item>
+
+  <item id="Assigned">Asignado</item>
+  <item id="Following">Siguiente</item>
+
+  <item id="New">Nuevo</item>
+  <item id="ProjectCode">Número de proyecte</item>
+  <item id="Project">Proyecto</item>
+  <item id="Projects">Proyectos</item>
+  <item id="AllProjects">Todos los proyectos</item>
+  <item id="VersionUnscheduled">No programado</item>
+  <item id="VersionUnaffected">Sin afectación</item>
+  <item id="ResourceUnassigned">No asignado</item>
+  <item id="Unassigned">** No asignado **</item>
+
+  <item id="More">Más</item>
+  <item id="Find">Encontrar</item>
+  <item id="Search">Buscar</item>
+  <item id="Date">Fecha</item>
+  <item id="TimeType">Tiempo tipo</item>
+  <item id="Hours">Horas</item>
+  <item id="Minutes">Minutos</item>
+  <item id="Days">Días</item>
+  <item id="Day">Día</item>
+  <item id="Comment">Comentario</item>
+  <item id="Field">Campo</item>
+  <item id="Before">Antes</item>
+  <item id="After">Después</item>
+  <item id="Name">Nombre</item>
+  <item id="UserAlreadyExists">El usuario ya es registrado</item>
+  
+  <!-- Tester additional -->
+  <item id="Details">Detalles</item>
+  <item id="Plans">Planes</item>
+  <item id="Plan">Plan</item>
+  <item id="PlanId">Identificación</item>
+  <item id="Cases">Casos</item>
+  <item id="LinkedCases">Prueba</item>
+  <item id="LinkedItems">Tareas relacionadas</item>
+  <item id="Links">Enlaces</item>
+  <item id="LinkType">Tipo de enlaces</item>
+  <item id="Link">Enlace</item>
+  <item id="Case">Caso</item>
+  <item id="CaseDetail">Detalles del caso</item>
+  <item id="CaseId">Id</item>
+  <item id="TestSteps">Pasos de prueba</item>
+  <item id="TestPlans">La prueba planea</item>
+  <item id="CaseNoPlans">El caso no está en mis planes</item>
+  <item id="Runs">Ejecuciones</item>
+  <item id="RunHistory">Ejecute la historia</item>
+  <item id="Run">Ejecutes</item>
+  <item id="RunDetail">Los detalles del ejecute</item>
+  <item id="RunId">Identificación</item>
+  <item id="NoRuns">Ningunas ejecuciones anteriores</item>
+  <item id="NoRelatedItems">Ningunos artículos relacionaron</item>
+  <item id="Steps">Instrucciones</item>
+  <item id="Step">Instrucción</item>
+  <item id="StepId">Identificación</item>
+  <item id="AffectedArea">Area afectada</item>
+  <item id="Preconditions">Condiciones previas</item>
+  <item id="ExpectedResults">Resultados esperados</item>
+  <item id="ActualResults">Resultados exatos</item>
+  <item id="AssignedResource">Recurso asignado</item>
+  <item id="RunStatistics">Ejecute la estadística</item>
+  <item id="Pending">Pendiente</item>
+  <item id="Failed">Fallado</item>
+  <item id="Fail">Falle</item>
+  <item id="Passed">Passed</item>
+  <item id="Pass">Paso</item>
+  <item id="FailedCreateItem">Fail &amp; Log</item>
+  <item id="FailRun">Falle ejecute</item>
+  <item id="CaseRunner">Case Runner</item>
+  <item id="TestStepRunner">Pruebe ejecución</item>
+  <item id="Inactive">Previa espera de pruebas</item>
+  <item id="PlanItems">Planificar las tareas de prueba</item>
+  <item id="RemoveStep">Cancellar el paso</item>
+  <item id="RemoveCase">Cancellar el caso</item>
+  <item id="RemoveLink">Quitar elemento vinculado</item>
+  <item id="FromCase">De caso</item>
+  <item id="FromPLan">De plan</item>
+  <item id="NoCasesOrSteps">No casos o pasos en este plan para ser ejecutado</item>
+  <item id="FailRunMessage">¿Completar la carrera que ha fallado?</item>
+  <item id="RunName">Nombre de la ejecución</item>
+  <item id="ItemsTested">Tareas testados</item>
+  <item id="NewRun">Nueva ejecución</item>
+  <item id="ItemCases">Tarea probado en casos</item>
+  <item id="ItemsRaised">Tareas planteadas</item>
+
+  <item id="ResetConfirm">Reiniciar esto y en este caso, observe los pasos siguientes: se eliminarán todos los archivos adjuntos en pasos posteriores. Desea continuar?</item>
+
+
+  <!-- Table / Grid / Records -->
+  <item id="NoData">No hay datos</item>
+  <item id="Select">&lt;Seleccione&gt;</item>
+
+  <!-- Planner  -->
+  <item id="SaveAs">Guardar como</item>
+  <item id="Zoom">Enfocar</item>
+  <item id="GroupBy">Grupo por</item>
+  <item id="Rows">Filas</item>
+  <item id="Columns">Columnas</item>
+  <item id="Limit">Límite de Lane</item>
+  <item id="AutoLimit">Límite de la tarjeta</item>
+  <item id="OrderBy">Orden por</item>
+  <item id="ThenBy">Luego por</item>
+  <item id="Color">Color</item>
+  <item id="Filter">Quitar filtrando</item>
+  <item id="Options">Opciones</item>
+  <item id="DateRanges">Variedad de fecha</item>
+  <item id="Totting">Puntuación obtenida por</item>
+
+  <!-- Additional Planner -->
+  <item id="Nothing">Nada</item>
+  <item id="NotOrdered">No ordenada</item>
+  <item id="Informal">Informal</item>
+  <item id="Formal">Formal</item>
+  <item id="ItemCount">Número de tareas</item>
+  <item id="AsIs">Como es</item>
+  <item id="Daily">Diario</item>
+  <item id="Weekly">Weekly</item>
+  <item id="Monthly">Semanal</item>
+  <item id="Effort">Esfuerzo</item>
+
+  <!-- Calendar-->
+
+
+
+
+  <item id="Duration">Duración</item>
+  <item id="Start">Inicio</item>
+  <item id="Due">Llega</item>
+
+  <!-- Documents -->
+  <item id="DropZoneText">Arrastre los archivos aquí para subir</item>
+  <item id="Folders">Carpetas</item>
+  <item id="File">Archivo</item>
+  <item id="FileId">Identificación de archivo</item>
+  <item id="FileName">Nombre de archivo</item>
+  <item id="FileSize">Tamaño del archivo</item>
+  <item id="Upload">Subir</item>
+
+  <!-- general Terms -->
+  <item id="Created">Creado</item>
+  <item id="Revised">Revisado</item>
+  <item id="Source">Fuente</item>
+  <item id="Type">Tipo</item>
+  <item id="Priority">Prioridad</item>
+  <item id="Severity">Gravedad</item>
+  <item id="Status">Estado</item>
+  <item id="Resolution">Resolución</item>
+  <item id="Resources">Recursos</item>
+  <item id="Resource">Recursos</item>
+  <item id="Component">Componente</item>
+  <item id="Components">Componentes</item>
+  <item id="FixedInVersionNone">Ninguno</item>
+  <item id="FixedInVersion">Solucionado en la versión</item>
+  <item id="FixedInVersions">Solucionado en versiones</item>
+  <item id="Versions">Versiones</item>
+  <item id="Version">Versión</item>
+  <item id="AffectedVersions">Versiones afectadas</item>
+  <item id="Estimated">Estimado</item>
+  <item id="Remaining">Restante</item>
+  <item id="Logged">Apuntado</item>
+  <item id="StartDate">Date de Início</item>
+  <item id="DueDate">Fecha de vencimiento</item>
+  <item id="ReleaseDate">Fecha de lanzamiento</item>
+  <item id="ClosedDate">Cerrado</item>
+  <item id="ResolvedDate">Resuelto</item>
+  <item id="Visibility">Visibilidad</item>
+  <item id="CommentVisibility">Visibilidad de comentario</item>
+  <item id="Repeat">Repetir</item>
+  <item id="Votes">Votos</item>
+  <item id="Followers">Seguidores</item>
+  <item id="FollowUnfollow">Siga / No siga</item>
+  <item id="Time">Tiempo</item>
+  <item id="SourceControl">Control de código fuente</item>
+  <item id="History">Historia</item>
+  <item id="ExcessTime">El exceso de tiempo</item>
+  <item id="TimeRemaining">Tiempo restante</item>
+  <item id="TimeExceeded">Tiempo excedido</item>
+  <item id="TimeLogged">Tiempo apuntado</item>
+  <item id="EstimatedEffort">Esfuerzo</item>
+  <item id="ItemsRemaining">Tareas restantes</item>
+  <item id="Planner">Planner visual</item>
+  <item id="Activity">Actividad</item>
+  <item id="Changelog">Changelog</item>
+  <item id="Documents">Documentos</item>
+  <item id="Document">Documento</item>
+  <item id="Reports">Informes</item>
+  <item id="Roadmap">Hoja de ruta</item>
+  <item id="Testing">Pruebas</item>
+  <item id="Tests">Pruebas</item>
+  <item id="Burnup">Quemado</item>
+  <item id="Burndown">Incendio</item>
+  <item id="AdditionalInformation">Información adicional</item>
+  <item id="Comments">Comentarios</item>
+  <item id="Attachments">Archivos adjuntos</item>
+  <item id="Dependencies">Dependencias</item>
+  <item id="Timeline">Línea de tiempo</item>
+  <item id="Calendar">Calendario</item>
+
+  <item id="Untitled">Sin título</item>
+  <item id="MissingData">Faltan datos</item>
+
+  
+  <!--Report Specific-->
+  <item id="AvgCloseTime">Avg. Hora de cierre</item>
+  <item id="GroupByName">Grupo de informes</item>
+  <item id="TimeReportProjectName">Informe del tiempo - Proyecto</item>
+  <item id="TimeReportUserName">Informe del tiempo - Mina</item>
+  <item id="ActivityByComponentName">Activity By Component</item>
+  <item id="ActivityByTypeName">Actividad por componente</item>
+  <item id="ActivityByPriorityName">Actividad por prioridad</item>
+  <item id="ActivityByResourceName">Actividad por recurso</item>
+  <item id="ActivityBySeverityName">Actividad por gravedad</item>
+  <item id="ActivityByVersionName">Activity By Version</item>
+  <item id="SummaryByComponentName">Resumen por componente</item>
+  <item id="SummaryByTypeName">Resumen por tipo</item>
+  <item id="SummaryByVersionName">Resumen por versión</item>
+  <item id="ResourceAllocationName">Asignación de recursos</item>
+  <item id="ProjectSummaryName">Resumen del proyecto</item>
+
+  <item id="Release">Versión</item>
+  <item id="NextRelease">Próxima versión</item>
+  <item id="TypeInformation">Información de tipo</item>
+  <item id="StatusInformation">Información de estado</item>
+  <item id="Loading">Carga...</item>
+  
+  <!-- Actions -->
+  <item id="Update">Actualización</item>
+  <item id="Updates">Actualizaciones</item>
+  <item id="Updated">Actualizado</item>
+  <item id="Apply">Aplicar</item>
+  <item id="Save">Guardar</item>
+  <item id="Saved">Guardado</item>
+  <item id="Edit">Editar</item>
+  <item id="Move">Mover</item>
+  <item id="Copy">Copia</item>
+  <item id="Delete">Eliminar</item>
+  <item id="Deleted">Eliminado</item>
+  <item id="Add">Añadir</item>
+  <item id="Added">Agregado</item>
+  <item id="Vote">Voto</item>
+  <item id="Print">Imprimir</item>
+  <item id="SaveAsPDF">Guardar como PDF</item>
+  <item id="Follow">Siga</item>
+  <item id="Unfollow">No siga</item>
+  <item id="Share">Compartir</item>
+  <item id="Subscribe">Suscribirse</item>
+  <item id="NobodyToShareWith">Tienes a nadie a compartir con :(</item>
+  <item id="Pin">Pin</item>
+  <item id="PinUnPin">Poner / Liberar</item>
+  <item id="SetAsHome">Establecer como página principal</item>
+  <item id="Rename">Cambiar el nombre</item>
+  <item id="Remove">Quitar</item>
+
+  <item id="Progress">Progreso</item>
+
+  <item id="Overdue">Atrasados</item>
+  <item id="Today">Hoy</item>
+  <item id="Tomorrow">Mañana</item>
+  <item id="OpenedRecently">Abierto recientemente</item>
+  <item id="ClosedRecently">Cerrado recientemente</item>
+
+  <item id="Points">Puntos</item>
+  <item id="Elapsed">Elapsed</item>
+  <item id="Found">Encontrados</item>
+  <item id="ItemsFound">Tareas encontradas</item>
+  <item id="PercentComplete">% Completar</item>
+  <item id="Complete">Completar</item>
+  <item id="Prev">Anterior</item>
+  <item id="Next">Siguiente</item>
+  <item id="Successful">Exitosa</item>
+  <item id="GlobalGroups">Gruposglobales</item>
+  <item id="ProjectGroups">Gruposdeproyecto</item>
+  <item id="Parent">Padre</item>
+  <item id="Child">Niño</item>
+  <item id="Repository">Repositorio</item>
+  <item id="FilePath">Ruta del archivo</item>
+  <item id="EntryDate">Fecha de entrada</item>
+  <item id="DragDropAdminTip">Arrastrar a la secuencia y guión</item>
+  <item id="TopThree">3 principales</item>
+  <item id="SubscribeTip">Recibir alertas por correo electrónico cuando las cosas cambian.</item>
+  <item id="Defaults">Valores predeterminados</item>
+  <item id="All">Todos</item>
+  <item id="Voted">votado</item>
+  <item id="Id">ID</item>
+  <item id="ImportWizard">Import Wizard</item>
+  <item id="InvalidCredentials">Invalid Credentials</item>
+</Resource>

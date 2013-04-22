@@ -1,0 +1,53 @@
+﻿@using Countersoft.Gemini.Commons.System
+@model SystemSystemLogModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;System reported and diagnostic messages appear here.</p>
+
+<div class="admin-datatable-holder">
+    <div class="margin-bottom-20"><input type="button" class="button-primary" value="Delete" id="truncate" /> </div>
+
+    <table id="table-admin-log" class="basic">
+        <thead>
+            <tr>
+                <th>Dated</th>
+                <th>Entry</th>
+                <th>User</th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (SystemMessage item in Model.Messages)
+            {
+                <tr data-id="@item.Id">
+                    <td data-edit="false" class="no-width no-wrap valign-top">@item.Created</td>
+                    <td data-edit="false">@item.Message</td>
+                    <td data-edit="false" class="no-width no-wrap valign-top">@item.Username</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        gemini_admin.initDatatables("#table-admin-log", {"aaSorting": []});
+
+        // Delete
+        $("#truncate").unbind('click').click(function (e)
+        {
+            gemini_popup.modalConfirm("Delete all system log entries?", null, function ()
+            {
+                gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                gemini_ajax.call("configure/System/SystemLog", "Delete", function (response)
+                {
+                    if (response.Success)
+                    {
+                        gemini_admin.getPage();                        
+                    }
+                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: 0 });
+            });
+        });
+
+    });
+</script>

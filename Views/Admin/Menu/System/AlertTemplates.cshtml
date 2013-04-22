@@ -1,0 +1,81 @@
+﻿@model SystemAlertTemplatesModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Tweak the HTML email format for each email alert type sent by Gemini.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-appnav" class="basic">
+        <thead>
+            <tr>
+                <th>Label</th>
+                <th>Alert Type</th>
+                <th>Associated Projects</th>
+                <th class="centered"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (AlertTemplateDto item in Model.Templates)
+            {
+                <tr data-id="@item.Entity.Id">
+                    <td data-edit="false">@item.Entity.Label</td>
+                    <td data-edit="false">@if (item.Entity.AlertType == AlertTemplateType.Breeze) { <text>Acknowledge Email (Breeze)</text> } else if(item.Entity.AlertType == AlertTemplateType.BreezeReply) { <text>Email Reply (Breeze)</text> } else { @item.Entity.AlertType }</td>
+                    <td data-edit="false" >@item.AssociatedProjects</td>
+                    <td data-edit="false" class="centered actions">
+                        <span title="@GetResource(ResourceKeys.Edit)" class="cursor-pointer action-button-edit"></span>
+                        <span title="@GetResource(ResourceKeys.Delete)" class="cursor-pointer action-button-delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <div id="alert-template-preview" class="margin-top-20 hide"></div>
+    <div id="alert-template-trace" class="margin-top-10 pad-10 border-all"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-appnav", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2,3] }] });
+        
+        $("#table-admin-appnav_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function (e)
+        {
+            gemini_commons.stopClick(e);
+
+            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", { id: 0 });
+
+        });
+
+        // Delete
+        $("#table-admin-appnav_wrapper").off('click', ".action-button-delete").on('click',".action-button-delete", function (e)
+        {
+            var item = $(this);
+            var tr = item.closest("tr");
+            var id = tr.data("id");
+            var label = $("td:first", tr).html();
+
+            gemini_popup.modalConfirm("Delete '<span class='bold'>" + label + "</span>' alert template?", null, function ()
+            {
+                gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                gemini_ajax.call("configure/System/AlertTemplates", "Delete", function (response)
+                {
+                    if (response.Success)
+                    {
+                        gemini_admin.removeRow(item);
+                        gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                    }
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+            });
+        });
+
+        // Edit
+        $("#table-admin-appnav_wrapper").off('click', ".action-button-edit").on('click',".action-button-edit", function (e)
+        {
+            var item = $(this);
+            var tr = item.closest("tr");
+            var id = tr.data("id");
+
+            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", {id : id} );
+        });
+    });
+</script>

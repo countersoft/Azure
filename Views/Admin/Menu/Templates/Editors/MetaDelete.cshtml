@@ -1,0 +1,42 @@
+﻿@model TemplatesMetaDeleteModel
+
+<div class="DeleteItemContainer" style="width: 300px;">
+    <form id="regular-form">
+
+    <h2>Delete @Model.ObjectName : @Model.Label</h2>
+
+        <p>Update all items to use this:</p>
+        <br/>
+    @Html.Hidden("Id", Model.Id)
+    @Html.DropDownList("Replacement", Model.Replacements, new{@class="input-size5"})
+    </form>
+</div>
+
+
+<script type="text/javascript">
+
+    gemini_ui.chosen("#Replacement", null, true);
+    
+    $("#popup-button-yes").click(function (e) {
+
+        if ($("#regular-form").valid()) {
+            gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/Templates/@(Model.ObjectName)", "Delete", function () {
+                gemini_popup.toast("Deleted");
+
+                gemini_popup.popupClose(e);
+                gemini_admin.getPage();
+                gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+
+        }
+        else {
+            $('.error:not(label)', '#cs-popup-content').first().focus();
+        }
+
+    });
+
+
+
+    $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+</script>

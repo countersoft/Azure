@@ -1,0 +1,141 @@
+﻿@model RoadmapModel
+@using Countersoft.Foundation.Commons.Extensions
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+<div id="progress">
+
+    @{Html.RenderPartial("StatusBar");}
+
+    <table class='width-100'>
+    <tr>
+    <td class='valign-top noprint'>
+        @{Html.RenderPartial("VersionProgress", Model);}
+    </td>
+    <td class='valign-top width-100'>
+    
+
+        <div>
+            <div id="page-options-box" class="right burndown">
+                <div class="box-right size-1">
+                    <div>
+                    @using (Html.BeginForm("burndown", "progress", FormMethod.Post, new {@id="burndown-form"}))
+                    {
+                        
+                        <div class="option">
+                            
+                            <select id="days" name="days" class="input-size3">
+                                <option value="1" @if(Model.Days==1){<text>selected="selected"</text>}>1 @GetResource(ResourceKeys.Day)</option>
+                                <option value="5" @if(Model.Days==5){<text>selected="selected"</text>}>5 @GetResource(ResourceKeys.Days)</option>
+                                <option value="7" @if(Model.Days==7){<text>selected="selected"</text>}>7 @GetResource(ResourceKeys.Days)</option>
+                                <option value="30" @if(Model.Days==30){<text>selected="selected"</text>}>30 @GetResource(ResourceKeys.Days)</option>
+                            </select>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="option radio-check">
+                           
+                                <input type="radio" id="itemhouri" name="itemhour" value="items" title="items" @if(Model.ItemHours){<text>checked="checked"</text>}/>    
+                                 <label for="itemhouri">@GetResource(ResourceKeys.Items)</label>
+                                <input type="radio" id="itemhourh" name="itemhour" value="hours" title="hours" @if(! Model.ItemHours){<text>checked="checked"</text>}/>
+                                <label for="itemhourh">@GetResource(ResourceKeys.Hours)</label>
+                  
+                                                        
+                        </div>
+
+                        @*<div class="divider"></div>
+                        <div class="option radio-check">
+                            <input id="stones" type="checkbox" name="stones" />
+                            <label for="stones" title="bar size" style="">@GetResource(ResourceKeys.Milestones)</label>
+                        </div>*@
+                    }
+                    </div>   
+                </div>     
+            </div>
+        </div>
+        <table class="border-all pad-10 width-100">
+            <tr>
+                <td>
+                            <div class="clearfix">
+            <h2 class="pad-bottom-10">@GetResource(ResourceKeys.Burndown)</h2>
+            <div id='burndown' style="width:700px; height: 400px;"></div>
+            <h2 class="pad-top-10 pad-bottom-10">@GetResource(ResourceKeys.Burnup)</h2>
+            <div id='burnup' style="width:700px; height: 400px;"></div>
+        </div>                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+            <div class='clearfix pad-top-10'>
+                @if (Model.ResourceBreakdown.Count > 0)
+                {
+                    <h2 class="pad-bottom-10">@GetResource(ResourceKeys.Summary)</h2>
+                    <table class="default-style">
+                        <tr>
+                            <th>@GetResource(ResourceKeys.Resources)</th>
+                            <th>@GetResource(ResourceKeys.ItemsRemaining)</th>
+                            <th>@GetResource(ResourceKeys.TimeRemaining)</th>
+                        </tr>
+                        @foreach (VersionWorkBreakdown item in Model.ResourceBreakdown)
+                        {
+                            <tr>
+                                <td>@item.User.Fullname</td>
+                                <td class="center">@item.OpenIssues</td>
+                                <td class="center">@item.TimeLeft</td>
+                            </tr>
+                        }
+                    </table>
+                }
+            </div>                    
+                </td>
+            </tr>
+
+        </table>
+
+    </td>
+    </tr>
+    </table>
+
+</div>
+@section DocumentReady
+{
+    gemini_progress.init("@Model.VersionId","@Model.VersionLabel",csVars.Url + csVars.ProjectUrl);
+    var totalClosed = @Model.Closed;
+    var totalOpen = @Model.Open;
+    var total = @Model.Total;
+    var completeness = total > 0 ? Math.floor((totalClosed * 100)/total) : 0;
+
+    var versionid = '@Model.VersionId';
+    var burndownCategory = @Html.Raw(Model.Burndown.Select(b => b.Category).ToJson());
+    var burndownOpenData = @Html.Raw(Model.Burndown.Select(b => b.OpenCount).ToJson());
+    var burndownCreatedData = @Html.Raw(Model.Burndown.Select(b => b.CreatedCount).ToJson());
+    var burndownIdealLine = @Html.Raw(Model.IdealLine.ToJson());
+    var burnupCategory = @Html.Raw(Model.Burnup.Select(b => b.Category).ToJson());
+    var burnupTotalData = @Html.Raw(Model.Burnup.Select(b => b.TotalCount).ToJson());
+
+ 
+    
+     var burnupClosedData = @(Model.Burnup.Any(a => a.CountType == CountTypes.Issues) ? Html.Raw(Model.Burnup.Select(b => b.ClosedCount).ToJson()) : Html.Raw(Model.Burnup.Select(b => b.TotalLoggedHours).ToJson()));
+       
+    
+
+    var milestoneData = @Html.Raw(Model.Milestones.ToJson());
+
+    var translation = {Items: '@(Model.ItemHours ? GetResource(ResourceKeys.Items) : GetResource(ResourceKeys.Hours))', Total: '@GetResource(ResourceKeys.Total, Resourcing.Colon)', Created: '@GetResource(ResourceKeys.Created)', Open: '@GetResource(ResourceKeys.Open)', Closed: '@GetResource(ResourceKeys.Closed)' };
+   
+    gemini_progress.burddownChart(translation,burndownCategory,burndownOpenData,burndownCreatedData,burndownIdealLine);
+    gemini_progress.burdupChart(translation,burnupCategory,burnupTotalData,burnupClosedData);
+    gemini_progress.showCompleteness(completeness);
+    gemini_progress.showDelta(@Model.Remain);
+    gemini_progress.showDays(@Model.Estimated,@Model.Logged);
+    
+    gemini_progress.chart(@Html.Raw(Model.Statuses.Select( s=> s.First ).ToJson()),@Model.Issues.Count,@Html.Raw(Model.Statuses.Select(s => new { s.Second, s.Third }).ToJson()));
+}

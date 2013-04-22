@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CreateJS export from listcolumn.fla</title>
+
+<script src="libs/easeljs-0.4.2.min.js"></script>
+<script src="libs/tweenjs-0.2.0.min.js"></script>
+<script src="libs/movieclip-0.4.1.min.js"></script>
+<script src="libs/preloadjs-0.1.0.min.js"></script>
+<script src="listcolumn.js"></script>
+
+<script>
+var canvas, stage, exportRoot, images;
+
+function init() {
+	canvas = document.getElementById("canvas");
+	images = {};
+
+	var manifest = [
+		{src:"images/pointercursor.png", id:"pointercursor"},
+		{src:"images/_6_1.png", id:"_6_1"},
+		{src:"images/_5_1.png", id:"_5_1"},
+		{src:"images/_4_1.png", id:"_4_1"},
+		{src:"images/_3_1.png", id:"_3_1"},
+		{src:"images/_2_1.png", id:"_2_1"},
+		{src:"images/_1.png", id:"_1"}
+	];
+
+	var loader = new PreloadJS(false);
+	loader.onFileLoad = handleFileLoad;
+	loader.onComplete = handleComplete;
+	loader.loadManifest(manifest);
+}
+
+function handleFileLoad(o) {
+	if (o.type == "image") { images[o.id] = o.result; }
+}
+
+function handleComplete() {
+	exportRoot = new lib.listcolumn();
+
+	stage = new Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+
+	Ticker.setFPS(24);
+	Ticker.addListener(stage);
+}
+</script>
+</head>
+
+    <body onload="init();" style="margin:0 0 0 10px;padding:0;" >
+        <p style="margin:0 0 22px 0; line-height: 2em; font-family: Verdana; font-size:12px;">Select which columns you wish to display on the items grid. Drag-drop column headers to control the order. Go full-screen mode to remove the filter and display even more items within the grid.</p>
+        <canvas id="canvas" width="550" height="400" style="background-color:white;"></canvas>
+    </body>
+</html>

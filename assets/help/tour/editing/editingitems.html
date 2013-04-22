@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CreateJS export from editingitems.fla</title>
+
+<script src="libs/easeljs-0.4.2.min.js"></script>
+<script src="libs/tweenjs-0.2.0.min.js"></script>
+<script src="libs/movieclip-0.4.1.min.js"></script>
+<script src="libs/preloadjs-0.1.0.min.js"></script>
+<script src="editingitems.js"></script>
+
+<script>
+var canvas, stage, exportRoot, images;
+
+function init() {
+	canvas = document.getElementById("canvas");
+	images = {};
+
+	var manifest = [
+		{src:"images/pointercursor.png", id:"pointercursor"},
+		{src:"images/_12_1.png", id:"_12_1"},
+		{src:"images/_11_1.png", id:"_11_1"},
+		{src:"images/_10_1.png", id:"_10_1"},
+		{src:"images/_9_1.png", id:"_9_1"},
+		{src:"images/_8_1.png", id:"_8_1"},
+		{src:"images/_7_1.png", id:"_7_1"},
+		{src:"images/_6_1.png", id:"_6_1"},
+		{src:"images/_5_1.png", id:"_5_1"},
+		{src:"images/_4_1.png", id:"_4_1"},
+		{src:"images/_3_1.png", id:"_3_1"},
+		{src:"images/_2_1.png", id:"_2_1"},
+		{src:"images/_1.png", id:"_1"}
+	];
+
+	var loader = new PreloadJS(false);
+	loader.onFileLoad = handleFileLoad;
+	loader.onComplete = handleComplete;
+	loader.loadManifest(manifest);
+}
+
+function handleFileLoad(o) {
+	if (o.type == "image") { images[o.id] = o.result; }
+}
+
+function handleComplete() {
+	exportRoot = new lib.editingitems();
+
+	stage = new Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+
+	Ticker.setFPS(24);
+	Ticker.addListener(stage);
+}
+</script>
+</head>
+    <body onload="init();" style="margin:0 0 0 10px;padding:0;" >
+        <p style="margin:0 0 22px 0; line-height: 2em; font-family: Verdana; font-size:12px;">Inline editing evolved with point-click-edit capability to help you update in an instant. Smarter inline editing means you can change multiple fields at once. Fine control over Permissions means you decide who can change which field and when.</p>
+        <canvas id="canvas" width="550" height="400" style="background-color:white;"></canvas>
+    </body>
+</html>

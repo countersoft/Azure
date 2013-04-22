@@ -1,0 +1,200 @@
+﻿@import "../mixin", "_theme"; 
+
+@mixin border
+{
+	@include base-border($color-grayscale3, solid);
+}
+@mixin border-dashed
+{
+	@include base-border($color-grayscale3, dashed);
+}
+
+@mixin border-bottom
+{
+	@include base-border-bottom($color-grayscale3, solid);
+}
+
+@mixin border-bottom-thick
+{
+	@include base-border-bottom($color-grayscale3, solid, 2px);
+}
+
+@mixin border-theme($size: 1px)
+{
+	border: $size solid $theme-color;
+}
+
+@mixin border-dotted
+{
+	@include base-border($color-grayscale3, dotted);
+}
+@mixin border-dotted-right
+{
+	@include base-border-right($color-grayscale3, dotted);
+}
+@mixin border-dotted-left
+{
+	@include base-border-left($color-grayscale3, dotted);
+}
+@mixin border-dotted-bottom
+{
+	@include base-border-bottom($color-grayscale3, dotted);
+}
+
+@mixin border-none
+{
+	border: 0;
+}
+@mixin border-none-right
+{
+	border-right: 0;
+}
+@mixin border-none-left
+{
+	border-left: 0;
+}
+@mixin border-none-bottom
+{
+	border-bottom: 0;
+}
+
+
+@mixin divider-line
+{
+	border-bottom: 1px solid $color-white;
+	border-top: 1px solid $color-grayscale3;
+}
+
+@mixin gradient-header
+{
+    color: $color-grayscale;
+    background: $color-grayscale4;
+
+    background: -moz-linear-gradient(top, $color-white 0%, $color-grayscale4 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color-white), color-stop(100%,$color-grayscale4));
+    background: -webkit-linear-gradient(top, $color-white 0%, $color-grayscale4 100%);
+    background: -o-linear-gradient(top, $color-white 0%, $color-grayscale4 100%);
+    background: -ms-linear-gradient(top, $color-white 0%, $color-grayscale4 100%);
+    background: linear-gradient(top, $color-white 0%, $color-grayscale4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$color-white}', endColorstr='#{$color-grayscale3}',GradientType=0 );
+
+    border-color: $color-grayscale4;
+    -moz-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
+    -webkit-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
+    box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
+}
+
+@mixin info-label-1
+{
+	padding: 5px 10px 5px 10px;
+	background-color: $color-white;
+	border: 3px solid $color-hover;
+	@include rounded(20px);
+}
+
+@mixin info-label-2
+{
+	padding: 5px 10px 5px 10px;
+	background-color: $color-hover;
+	border: 2px solid #ffe4b5;
+	@include rounded(20px);
+}
+
+@mixin info-label-3
+{
+	padding: 5px 10px 5px 10px;
+	background-color: $color-grayscale4;
+  	border: 2px solid $color-grayscale3;
+	@include rounded(20px);
+}
+
+@mixin info-label-4
+{
+	padding: 5px 10px 5px 10px;
+	background-color: $color-grayscale4;
+  	border-bottom: 2px solid $color-grayscale3;
+}
+
+@mixin cs-menu($color: $theme-color, $radius: 0px, $font: 11px, $width: 120px)
+{
+	position: absolute;
+	min-width: $width;
+	z-index: 15;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+	display:none;
+	font-family: $font-body;
+	font-size: $font;
+
+	@include box-inset-shadow-none();
+	border: 1px solid $theme-color-border;
+	@include gradient($theme-color, $theme-color-gradient);	 
+
+	li
+	{
+		list-style: none;
+		padding: 0px;
+		margin: 0px;
+		white-space:nowrap;
+	}
+	a
+	{
+		text-decoration: none;
+		display: block;
+		line-height: 20px;
+		height: 20px;
+		background-position: 6px center;
+		background-repeat: no-repeat;
+		outline: none;
+		padding: 3px 10px 3px 10px;
+		color: $color-white;
+
+		&:hover
+		{
+			color: $color-white;
+			background-color: $theme-color-secondary;
+		}
+	}
+	li.hover a
+	{
+		color: $color-white;
+		background-color: $theme-color-secondary;
+	}
+	li.disabled a
+	{
+		color: $color-grayscale2;                          
+		cursor: default;
+	}
+	li.hover.disabled a
+	{
+		background-color: transparent;
+	}
+	li.separator 
+	{
+		border-top: 1px solid $theme-color-border !important;
+		border-bottom: none !important;
+		margin: 0 1px 0 1px;
+	}
+	li.highlight 
+	{
+		font-weight: bold;
+		background-color: $theme-color-border !important;
+	}
+	li:first-child
+	{
+		padding-top: 3px;
+	}
+	li:last-child
+	{
+		padding-bottom: 3px;
+	}	
+}
+
+@mixin theme-banner($border: 1px)
+{
+	background: $theme-color;
+	border: $border solid $theme-color-border;
+	box-shadow: 0 0 0 1px lighten($theme-color-secondary, 5) inset;
+	color: $color-white;
+}

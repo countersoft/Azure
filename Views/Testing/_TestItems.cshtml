@@ -1,0 +1,31 @@
+﻿@model List<IssueDto>
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-items' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Items) (@Model.Count)</h3></div>
+<div class='toolbar actions right'>
+<!--Html.Partial("_AddRunLink", Model) -->
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+@if (Model.Count > 0)
+{
+<table id="item-details" class="width-100" ><tbody>
+<tr class="cs-grid-column">
+<th></th>
+<th></th>
+<th>@GetResource(ResourceKeys.Item)</th>
+<th>@GetResource(ResourceKeys.Status)</th>
+</tr>
+    @foreach (var x in Model)
+    {
+<tr id='item-@x.Entity.Id'>
+<td class='cs-simple'>@Html.Partial("_TestItemType", new TestType() { Id = x.Entity.TypeId, Type = x.Type })</td>
+<td class='cs-title-link'>@Html.Partial("_ItemLink", x)</td>
+<td class='cs-title'>@Html.Raw(x.Title)</td>
+<td class='cs-item-status'>@Html.Partial("_TestItemState", new TestType() { Id = x.Entity.StatusId, Type = x.Status })</td>
+</tr>
+    }
+</tbody></table>
+}
+</div></div>

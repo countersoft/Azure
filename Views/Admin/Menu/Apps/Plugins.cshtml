@@ -1,0 +1,31 @@
+﻿@model AppsPluginsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Enable and disable Gemini event based apps.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-appnav" class="basic">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th data-edit-type="checkbox">Enabled?</th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (var item in Model.Plugins)
+            {
+                <tr data-id="@item.GUID">
+                    <td data-edit="false">@item.Title</td>
+                    <td data-edit="false">@item.Description</td>
+                    <td>@(item.Enabled ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-appnav", false, null);
+    });
+</script>

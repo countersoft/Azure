@@ -1,0 +1,30 @@
+﻿@model RoadmapModel
+
+<div id="items-grid">      
+    <div id="page-options-box" class="right">
+        <div class="box-right size-0">
+            <div>
+                <div class="option vertical-align pos-relative">
+                    <div id="grid-export-excel" class="control-icon export" title="@GetResource(ResourceKeys.Reports)"></div>
+
+                </div>
+                <div class="option vertical-align">
+                    <div id="grid-column-picker" class="control-icon gear" title=" @GetResource(ResourceKeys.Columns)"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clear-both"></div>
+    <div id="progress-items-table">
+    @Html.DisplayFor(m => m, "IssueDto")
+    </div>
+</div>
+<div class="export-to-container">
+    <ul>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/xls",@Model.VersionId)">Excel</a></li>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/xlsx",@Model.VersionId)">Excel 2010</a></li>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/csv",@Model.VersionId)">CSV</a></li>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/html",@Model.VersionId)">Html</a></li>
+    </ul>
+</div>

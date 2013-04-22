@@ -1,0 +1,34 @@
+﻿@model BaseAdminModel
+
+<div id="AppNavAddContainer">
+    <form id="license-form">
+        <table id="add-appnav-card" class="admin-data-entry">
+            <tr>
+                <td>License Key</td>
+                <td><textarea id="licensekey" name="licensekey" class="input-size12 required" rows="25" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $("#license-form").validate();
+    $("#licensekey").focus();
+
+    $("#popup-button-yes").unbind('click').click(function (e)
+    {
+        gemini_commons.stopClick(e);
+
+        if (!$("#license-form").valid()) return;
+        gemini_ui.startBusy('#colorbox #popup-button-yes');
+        gemini_ajax.postCall("configure/System/Licensing", "SaveData", function (response) {
+            gemini_popup.popupClose(e);
+            gemini_admin.getPage();
+            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#license-form").serialize());
+    });
+
+    $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

@@ -1,0 +1,78 @@
+﻿    /* make some assumption about it being a black and white printout */
+    body 
+    {
+        margin:0; padding:0; color: #000;
+        background:none;
+    }
+
+    /* Improve colour contrast of links */
+    a:link, a:visited 
+    {
+        background: transparent; 
+        color: #781351;
+        text-decoration:none;
+    }
+    a:link[href^="http://"]:after, a[href^="http://"]:visited:after 
+    {
+        content: " (" attr(href) ") "; font-size: 11px;
+    }
+    a[href^="http://"] 
+    {
+        color:#000;
+    } 
+    
+    /* Image */
+    img, img a, .more-link a 
+    {
+        border:none;
+    }
+
+    /* Remove the various Element that we don't want to print */
+    /* don't show the playlist or seacrh boxes  on the printout */
+    #header, #playlistbox, #searchbox, #panel, #search, #account-box
+    {
+        display:none;
+    }
+    #tabledata 
+    {
+        margin-top:20px;
+    }
+    #tabledata thead td
+    {
+        border:1px solid #000;
+    }
+
+    /* if there is a style says don't print - then don't */
+    .noprint 
+    {
+        display: none;
+    }
+
+    /* don't show any of the dropdown menu UL's and LI's in print view or indicator lights*/
+    .dropdown, .indicator
+    {
+        display:none;
+    }
+    
+    /* don't display the font-icons on teh menu bars, titles, action links, buttons, footer and panel headings */
+    [class*="fonticon-"] 
+    {
+        display:none;	
+    }
+
+    .arrow:after
+    {
+        content: "+";
+    }
+    .arrow::after
+    {
+        content: "-";
+    }    
+    
+    * html 
+    {
+        background-color:white;
+        color:#000;
+    }
+    
+    

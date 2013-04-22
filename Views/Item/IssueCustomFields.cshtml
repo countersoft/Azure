@@ -1,0 +1,23 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5"></div>
+<article>
+    <a id="additional"></a>
+    <div class="section-header clearfix">
+    <div class='clearfix'>
+        <div id='additional-section' class="left"><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.AdditionalInformation)</h3></div>
+    </div>
+    <div class="divider"></div>
+    <div id="additional-info-data" class="section-content expanded additional">
+        <table class="cs-properties cursor-pointer">
+        @foreach (var customField in Model.ContentCustomFields)
+        {
+            <tr class="attribute-header attribute" data-attribute-id='cf_@customField.Entity.CustomFieldId'>
+                <td valign="top">@Html.Raw(customField.Title)</td>
+                <td valign="top" @if (customField.Type == Constants.CUSTOM_FIELD_TYPE_RICHTEXT){ <text>class="cs-wysiwyg"</text>} >@Html.Raw(customField.FormattedData)</td>
+            </tr>
+        }
+        </table>
+    </div>
+    </div>
+</article>

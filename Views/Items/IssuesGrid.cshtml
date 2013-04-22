@@ -1,0 +1,77 @@
+﻿@model ItemsGridModel
+<div id="items-grid-control-box">
+    <div id="grid-pager" class="left pad-top-20">
+        @Model.Pager.TotalItems @GetResource(ResourceKeys.ItemsFound, Resourcing.Lower) @if(Model.Pager.TotalItems > 0) {
+        <text>(@GetResource(ResourceKeys.Page) @Model.Pager.CurrentPage @GetResource(ResourceKeys.Of, Resourcing.Lower)
+        @Model.Pager.TotalPages)</text> }
+    </div>
+    <div id="page-options-box" class="right">
+        <div class="box-right size-0">
+            <div>
+                <div class="option vertical-align">
+                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="@GetResource(ResourceKeys.Prev)" data-page="@Model.Pager.CurrentPage" />
+                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value="@GetResource(ResourceKeys.Next)" data-page="@Model.Pager.CurrentPage" />
+                </div>
+                @if(GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations))
+                {
+                <div class="divider">
+                </div>
+                <div class="option vertical-align">
+                    <input class="button-secondary button-small" id='bulk-update' type="button" title="@GetResource(ResourceKeys.Update)" value="@GetResource(ResourceKeys.Update)" />
+                </div>
+                }
+                <div class="divider">
+                </div>
+                @if (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations) && GeminiContext.Project.Entity.Id != Constants.AllProjectsId) 
+                {
+                    <div class="option vertical-align pos-relative">
+                        <div id="grid-import-data" class="control-icon import" title="@GetResource(ResourceKeys.ImportWizard)"></div>
+                    </div>
+                }
+                <div class="option vertical-align pos-relative">
+                    <div id="grid-export-excel" class="control-icon pie" title="@GetResource(ResourceKeys.Reports)"></div>
+                </div>
+                <div class="option vertical-align">
+                    <div id="grid-column-picker" class="control-icon gear" title="@GetResource(ResourceKeys.Columns)">
+                    </div>
+                </div>
+                <div class="option vertical-align">
+                    <div id="filter-up" class="control-icon filterup" title="@GetResource(ResourceKeys.Expand)">
+                    </div>
+                          <div id="filter-down" class="control-icon filterdown" title="@GetResource(ResourceKeys.Collapse)">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clear-both">
+</div>
+<div id="items-grid">
+    @Html.DisplayFor(m => m, "IssueDto")
+</div>
+<div class="export-to-container">
+    <ul>
+        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/csv">CSV</a></li>
+        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/xlsx">Excel</a>&nbsp;<a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/xls">(XLS)</a></li>
+        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/html">Html</a></li>
+        
+        @if (Model.ExcelReports.Count > 0)
+        {
+            <text><li class="divider">&nbsp;</li></text>
+            
+            foreach (var report in Model.ExcelReports)
+            {
+                <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexportxlsx/@report.Key">@report.Value</a></li>
+            }
+        }
+    </ul>
+</div>
+<div id='column-picker'>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_filter.gridColumnPickerInit();
+    });
+</script>

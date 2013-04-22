@@ -1,0 +1,28 @@
+﻿@model List<TestCaseDto>
+@if (Model.Count > 0)
+{
+<table id="test-cases" class="width-100" >
+<thead>
+<tr class="cs-grid-column">
+<th></th>
+<th>@GetResource(ResourceKeys.Type)</th>
+<th>@GetResource(ResourceKeys.Summary)</th>
+<th>@GetResource(ResourceKeys.Status)</th>
+<th>@GetResource(ResourceKeys.Revised)</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+@foreach (var x in Model)
+{
+<tr id='case-@x.Entity.Id'>
+<td class='cs-link'>@Html.Partial("_CaseLink", x)</td>
+<td class='cs-testtype'>@Html.Partial("_TestType", new TestType() { Id = x.Entity.TypeId, Type = x.Type })</td>
+<td class='cs-title'>@x.Entity.Summary</td>
+<td class='cs-status'>@Html.Partial("_TestStatus", new TestStatus() { HasPassed = x.Entity.HasPassed })</td>
+<td class='cs-date'>@x.Entity.Revised.ToString()</td>
+<td class='cs-simple'>@Html.Partial("_DeleteCaseLink", x)</td>
+</tr>
+}
+</tbody></table>
+}

@@ -1,0 +1,224 @@
+﻿@using Countersoft.Gemini.Infrastructure.Managers
+@model Countersoft.Gemini.Models.Reports.ReportResultModel
+
+<div id="cs-template">
+    <table id="tableSummary" class="reportTable">
+        <thead>
+            <tr class="cs-grid-column">
+                <th>
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.Items)
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.Closed)
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.Open)
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.AvgCloseTime)
+                    
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.Release)
+                </th>
+                <th>
+                    @GetResource(ResourceKeys.NextRelease)
+                </th>
+                @if(Model.ResultsAsSummary.Any(i=> i.TypeGraph != null && i.TypeGraph.Any()))
+                {
+                <th>
+                    @GetResource(ResourceKeys.TypeInformation)
+                </th>
+                }
+                <th>
+                    @GetResource(ResourceKeys.StatusInformation)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var lastProject = 0;
+                var showProjects = Model.ResultsAsSummary.Select(s => s.ProjectId).Distinct().Count() > 1;
+            }
+            @foreach (var item in Model.ResultsAsSummary)
+            {
+                if(showProjects && lastProject != item.ProjectId)
+                {
+                    <tr>
+                        <td><span class="info-label-3">@item.ProjectName</span></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        @if (item.TypeGraph != null && item.TypeGraph.Any())
+                        {
+                            <td></td>
+                        }
+                    </tr>
+                    lastProject = item.ProjectId;
+                }
+                
+                <tr>
+                    <td>@item.ItemName</td>
+                    <td style="text-align: center"><a href="@string.Format("items?projects={0}&{1}={2}&includeClosed=true&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','), @Model.FilterName,@item.DataItemId)">@item.TotalIssues.ToString("#,#0")</a>
+                    </td>
+                    <td style="text-align: center"><a href="@string.Format("items?projects={0}&{1}={2}&statuses={3}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','),@Model.FilterName,@item.DataItemId,@Model.FilterByClosedStatuses)">@item.ClosedIssues.ToString("#,#0")</a>
+                    </td>
+                    <td style="text-align: center"><a href="@string.Format("items?projects={0}&{1}={2}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','),@Model.FilterName,@item.DataItemId)">@item.OpenIssues.ToString("#,#0")</a>
+                    </td>
+                    <td style="text-align: center">@TimeHelper.GetNumberOfDays(item.AverageTimeToCloseInMinutes).ToString("#0.#")
+                    </td>
+                    <td style="text-align: center">@item.LastReleaseCount.ToString("#,#0")
+                    </td>
+                    <td style="text-align: center">@item.NextReleaseCount.ToString("#,#0")
+                    </td>
+                    @if (item.TypeGraph != null && item.TypeGraph.Any())
+                    {
+                        <td>                      
+                            @{
+                                var height = 27 + 25 * item.TypeGraph.Count() + "px";
+                                <div id='@item.TypeGraphKey("chart")' style="width:300px; height:@(height);">
+                                </div>
+                            }
+                        </td>
+                    }
+                    <td>
+                        @{
+                            if (item.StatusGraph == null || !item.StatusGraph.Any())
+                            {
+                                @GetResource(ResourceKeys.NoData)
+                            }
+                            else
+                            {
+                                var sheight = 27 + 25*item.StatusGraph.Count() + "px";
+                         
+                                <div id='@item.StatusGraphKey("chart")' style="width: 300px; height: @(sheight);">
+                                </div>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+   
+
+    
+    function DoChart(divId, data, plabels) {
+        var chart = new Highcharts.Chart({
+            chart: {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                renderTo: divId,
+                type: 'bar',
+                marginLeft: 100
+            },
+            colors:["#63b6db"],
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                labels: {
+                    style: {
+                        width: '100px' 
+                    }
+                },
+                categories: plabels,
+                title: {
+                    text: null
+                }
+                
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                },
+                labels: {
+                    enabled: false
+                },
+                gridLineWidth: 0
+            },
+            tooltip: {
+                formatter: function() {
+                    return '' + this.y + '%';
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return this.y + "%";
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -100,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true,
+                itemWidth: 100
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: '',
+                data: data}]
+
+        });
+    }
+  
+     @{
+    
+         foreach (var item in Model.ResultsAsSummary)
+         {
+             if (item.TypeGraph != null && item.TypeGraph.Any())
+             {
+                 var graphId = item.TypeGraphKey("chart");
+
+                 var graphVals = item.TypeGraph.Aggregate("[", (s, model) => s += model.GraphPercent.Value.ToString("#") + ",").TrimEnd(',') + "]";
+
+                 var graphLabels = item.TypeGraph.Aggregate("[", (s, model) => s += "'" + model.GraphRefName + "',").TrimEnd(',') + "]";
+
+                 var code = "var " + "datatype_" + item.DataItemId + " = " + graphVals + ";";
+
+                 code = "DoChart('" + graphId + "', " + graphVals + "," + graphLabels + ");";
+
+                @Html.Raw(code)
+             }
+             if (item.StatusGraph != null && item.StatusGraph.Any())
+             {
+                 var graphSVals = item.StatusGraph.Aggregate("[", (s, model) => s += model.GraphPercent.Value.ToString("#") + ",").TrimEnd(',') + "]";
+
+                 var graphSLabels = item.StatusGraph.Aggregate("[", (s, model) => s += "'" + model.GraphRefName + "',").TrimEnd(',') + "]";
+
+                 var scode = "var " + "datatype_" + item.DataItemId + " = " + graphSVals + ";";
+
+                 scode = "DoChart('" + item.StatusGraphKey("chart") + "', " + graphSVals + "," + graphSLabels + ");";
+
+                @Html.Raw(scode)
+             }
+         }
+    }
+  </script>
+

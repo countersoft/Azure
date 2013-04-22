@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Resource>
+    <item id="VersionUnscheduled">Not Planned</item>
+    <item id="FixedInVersion">Campaign</item>
+    <item id="FixedInVersions">Campaigns</item>
+    <item id="AffectedVersions">Affected Campaigns</item>
+    <item id="Component">Channel</item>
+    <item id="Components">Channels</item>
+    <item id="Item">Initiative</item>
+    <item id="Items">Initiatives</item>
+    <item id="Planner">Wall</item>
+    <item id="ItemsFound">Initiatives Found</item>
+</Resource>

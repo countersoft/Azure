@@ -1,0 +1,1 @@
+﻿<span class='@(string.IsNullOrWhiteSpace(Model) ? "italic missing" : "")'>@(string.IsNullOrWhiteSpace(Model) ? GetResource(ResourceKeys.NoDescription) : @Html.Raw(Model))</span>

@@ -1,0 +1,8 @@
+﻿@model CheckedListBoxFieldModel
+
+@foreach (var item in Model.Values)
+{
+    <li>
+        @Html.CheckBox(string.Concat(Model.Id,'-', item.ItemId), item.IsSelected, new { @class = "", tabindex = item == Model.Values[0] ? string.Empty : "-1" })@Html.Label(string.Concat(Model.Id, '-', item.ItemId), item.ItemText/*, new {title = Model.ItemLabel, @class = headerCss}*/)
+    </li>
+}

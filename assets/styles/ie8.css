@@ -1,0 +1,22 @@
+﻿input[type=text], input[type=password]
+{
+    line-height:32px;
+}
+#user-box
+{
+    width: 220px;
+}
+#playlist .card-small .textaraea .text div:first-child
+{
+    font-size:10px;
+}
+#playlistbox .card-small .textaraea .text
+{
+    font-size:10px
+}
+
+#support-button > a
+{
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+    margin-right: -39px;
+}

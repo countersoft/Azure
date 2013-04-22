@@ -1,0 +1,2 @@
+﻿@model TestStatus
+<div class='cs-status @( @Model.HasPassed != null ? ((bool)Model.HasPassed ? "pass" : "fail") : "pend")'><span>@(Model.HasPassed != null ? ((bool)Model.HasPassed ? GetResource(ResourceKeys.Passed) : GetResource(ResourceKeys.Failed)) : GetResource(ResourceKeys.Pending))</span></div>

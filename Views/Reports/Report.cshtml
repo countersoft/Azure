@@ -1,0 +1,92 @@
+﻿@model Countersoft.Gemini.Models.Reports.ReportsModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+    @{Html.RenderPartial("ContentHeader");}
+}
+<div id="page-reports">
+    <div class="right clearfix" id="page-options-box">
+        <div class="box-right size-0">
+            <div id="report-menu">
+                <form name="ReportParams" id="ReportParams">
+                <div class="option vertical-align">
+                    <div class="control-icon gear" title="@GetResource(ResourceKeys.Filter)">
+                    </div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            <div id="ProjectFilterContainer" class="clearfix">
+                                @Html.Label("ProjectId", GetResource(ResourceKeys.Project))
+                                <div class="left">
+                                    @Html.ListBox("ProjectId", Model.ProjectList, new { Multiple = "Multiple" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="option" id="TimeReportExtraControls">
+                            <div class="break">
+                                &nbsp;
+                            </div>
+                            <div class="clearfix">
+                                <div id="ResourceFilterContainer">
+                                    @Html.Label("ResourceId", GetResource(ResourceKeys.Resource))
+                                    <div class="left">
+                                        @Html.ListBox("ResourceId", Model.ResourceList)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="break">&nbsp;</div>
+                            <div class="clearfix">
+                                <div id="TimeFilterContainer" class="clearfix">
+                                    @Html.Label("ResourceId", GetResource(ResourceKeys.TimeType))
+                                    <div class="left">
+                                        @Html.ListBox("TimeTypeId", Model.TimeList)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="break">&nbsp;</div>
+                            <div class="clearfix">
+                                <div id="TimeFilterContainer" class="clearfix">
+                                    @Html.Label("GroupBy", GetResource(ResourceKeys.GroupBy))
+                                    <div class="left">
+                                        @Html.DropDownList("GroupBy", Model.GroupByList)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option">
+                    <span id="FieldFilterContainer">
+                        @Html.DropDownList("FieldId", Model.FieldList)
+                    </span><span id="FilterContainer">
+                        @Html.DropDownList("FilterId", Model.FilterList)
+                    </span><span id="HoursAllocationContainer">
+                        <select id="SubChart" name="SubChart" class="input-size3">
+                            <option value="items" @(Model.ReportOptions.SubChart == "items" ? " selected" : "")>@GetResource(ResourceKeys.Items)</option>
+                            <option value="time" @(Model.ReportOptions.SubChart == "time" ? " selected" : "")>@GetResource(ResourceKeys.Time)</option>
+                        </select>
+                    </span><span id="ProjectSummaryControlsContainer">
+                        @Html.Hidden("ProjectSummaryChart")
+                        <div class="control-icon chart-icon report-summary-chart-button">
+                        </div>
+                        <div class="control-icon table-icon report-summary-table-button">
+                        </div>
+                    </span>&nbsp;&nbsp;
+                    @Html.TextBox("StartDate", "", new { @class = "datepicker", data_date_format=string.Format("{0}",@GeminiContext.User.GeminiDateFormat) })
+                    @Html.TextBox("EndDate", "", new { @class = "datepicker", data_date_format=string.Format("{0}",@GeminiContext.User.GeminiDateFormat) })
+                    @Html.DropDownListFor(model => model.Reports, Model.Reports, new { @class = "input-size7" })
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="report-content" class="clear-both">
+    </div>
+</div>
+@section DocumentReady
+{
+    @*  passing in here as do not want to make an ajax call for the usual JS translate. It is for a loading screen and do not want it to take longer than necessary**@
+    gemini_reports.init( { Loading: "@GetResource(ResourceKeys.Loading)" } );
+}

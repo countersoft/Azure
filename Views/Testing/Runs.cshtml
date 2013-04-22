@@ -1,0 +1,40 @@
+﻿@model TestRunsModel
+@using Countersoft.Gemini.Infrastructure.Grid
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+    ViewBag.ViewType = "Runs";
+}
+
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+
+<div id="cs-template">
+
+<div id="test-tab-box" class="border-bottom">
+<div class="left">
+</div>
+<div id="cs-tabs" class="clearfix"><ul class='tab-choice-links'>
+<li>@Html.ActionLink(GetResource(ResourceKeys.Plans), "Plans", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+<li>@Html.ActionLink(GetResource(ResourceKeys.Cases), "Cases", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+<li class="selected">@Html.ActionLink(GetResource(ResourceKeys.Runs), "Runs", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+</ul></div>
+</div>
+
+<div id='filter' class='clearfix margin-bottom-15'>
+    <form id='filter-form'>@{Html.RenderPartial("_GenericFilter", Model.Filter);}</form>
+</div>
+
+<div id='cs-sections'>
+@Html.Partial("_TestAllRuns", Model.Runs)
+</div>
+</div>
+
+@section DocumentReady
+{
+    testing.initialize();
+    //gemini_filter.init('@GeminiContext.Project.Entity.Code', @GeminiContext.Project.Entity.Id, @((int)ProjectTemplatePageType.Testing));
+}

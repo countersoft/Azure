@@ -1,0 +1,40 @@
+@{
+    Layout = "_Master.Desktop.cshtml";
+}
+
+@section Header
+{
+     @{ Html.RenderPartial("HeaderEmpty"); }
+}
+
+@section Playlist
+{
+}
+
+@section DocumentReady
+{
+    @RenderSection("DocumentReady", false)
+}
+
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+
+@section Pane
+{
+    @RenderSection("Pane", true)
+}
+
+@section HeaderPane
+{
+    @RenderSection("HeaderPane", true)
+}
+
+@section HeaderContent
+{
+    @RenderSection("HeaderContent", false)
+}
+@RenderBody()
+
+

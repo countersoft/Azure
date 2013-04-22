@@ -1,0 +1,86 @@
+﻿@model ViewIssueModel
+
+<div id="CopyIssueContainer">
+    <form id="CopyIssueForm" action="@Url.Action("CopyIssue", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id }))" method="post">
+        <table id="CopyIssueTable">
+            <tr>
+                <td><span>@GetResourceTemplate(ResourceKeys.Project)</span></td>
+                <td data-issueid="@Model.Issue.Id">@Html.DropDownList("ProjectId", @Model.Projects, new {@class="input-size8"})</td>
+            </tr>
+            <tr>
+                <td><span>@GetResourceTemplate(ResourceKeys.Type)</span></td>
+                <td>@Html.DropDownList("TypeId", @Model.Types, new {@class="input-size8"})</td>
+            </tr>
+            <tr><td>&nbsp;</td><td></td></tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="checkbox" name="attachments" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Attachments)</label>
+                    <input type="checkbox" name="time" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Time)</label>
+                    <input type="checkbox" name="comments" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Comments)</label>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="checkbox" name="links" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Links)</label>
+                    <input type="checkbox" name="watchers" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Followers)</label>
+                    
+                </td>
+            </tr>
+            <tr>
+                <div class="buttons">
+                    <input type="submit" value="@GetResourceTemplate(ResourceKeys.Add)" class="button-primary button-popup cs-button-save right">                                
+                </div>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #ProjectId", null, true);
+        gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #TypeId", null, true);
+
+        $("#popup-button-yes").unbind("click");
+        $("#popup-button-yes").click(function (e) {
+            gemini_ui.startBusy('#colorbox #popup-button-yes');
+            $("#CopyIssueContainer .cs-button-save").click();
+        });
+        
+        var options = {
+            dataType: "json",
+            success: function (responseText, statusText, xhr, $form) {
+                if (responseText.success) {
+                    window.location.href = responseText.Result.Data.RedirectUrl;
+                }
+            } // post-submit callback  
+
+        };
+        $("#CopyIssueForm").ajaxForm(options);
+
+        $("#popup-button-no").unbind("click");
+        $("#popup-button-no").click(function (e) {
+            gemini_popup.popupClose(e);
+        });
+        
+        $("#popup-button-no").unbind("change");
+        
+        $('#ProjectId').change(function (index) {
+            if (gemini_edit.triggerXHR != null) {
+                gemini_edit.triggerXHR.abort();
+            }
+
+            gemini_edit.triggerXHR = gemini_ajax.call(csVars.ProjectUrl + "item/" + $(this).parent().attr('data-issueid') + "/copyissue", "popup/" + $(this).val(),
+                function (response) {
+                    $("#cs-popup-center-content").html(response.Result.Html);
+            });
+        });
+        
+
+
+    });
+</script>

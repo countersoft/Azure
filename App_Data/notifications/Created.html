@@ -1,0 +1,51 @@
+﻿<table style="width: 100%; font-family: arial; font-size: 16px; font-weight: bold; border: none; background-color: #8f0929;" cellpadding="20">
+   <tbody>
+      <tr>
+         <td style="color: white;">GEMINI TRACKER</td>
+      </tr>
+   </tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c;">Just to let you know that a new <strong>@(Model.TheItem.Type)</strong> has been added to <strong>@(Model.TheItem.ProjectName).</strong></td>
+      </tr>
+   </tbody>
+</table>
+<table style="margin-left: 20px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;">@(Model.TheItem.IssueKey)</td>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;">@(Model.TheItem.Title)</td>
+      </tr>
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5;"><strong>Status:</strong></td>
+         <td style="border: 1px solid #f5f5f5;">@(Model.TheItem.Status)</td>
+      </tr>
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5;"><strong>Resourced:</strong></td>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5;">@(Model.TheItem.ResourceNames)</td>
+      </tr>
+   </tbody>
+</table>
+<table style="margin-left: 20px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c;">@Html.Raw(Model.LinkViewItem)</td>
+      </tr>
+   </tbody>
+</table>
+<table style="font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c;">Thanks.</td>
+      </tr>
+   </tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 11px; font-weight: normal; border: none; background-color: #8f0929;" cellpadding="5">
+   <tbody>
+      <tr>
+         <td style="color: white;">Sent by Countersoft Gemini v@(Model.Version)</td>
+      </tr>
+   </tbody>
+</table>

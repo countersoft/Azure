@@ -1,0 +1,31 @@
+﻿@model AttachmentInfo
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-attachments' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Attachments) (@Model.Files.Count) </h3></div>
+<div class='toolbar actions right'>
+@Html.Partial("_AddAttachment", Model.Info)
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+@if (Model.Files.Count > 0)
+{
+<table id="test-runs" class="width-100" >
+<tr class="cs-grid-column">
+<th>@GetResource(ResourceKeys.File)</th>
+<th></th>
+<th>@GetResource(ResourceKeys.Revised)</th>
+<th></th>
+</tr>
+@foreach (var file in Model.Files)
+{
+<tr id='plan-@file.Id'>
+<td class="cs-filetype">@Html.Partial("_FileType", file)</td>
+<td class="cs-filesize">@file.FileSize</td>
+<td class="cs-date">@file.Revised</td>
+<td class='cs-simple'>@Html.Partial("_DeleteAttachment", file)</td>
+</tr>        
+}
+</table>
+}
+</div></div>

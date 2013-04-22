@@ -1,0 +1,86 @@
+﻿@model BaseIssuesModel
+ 
+@if (Model != null && Model.Columns != null)
+{
+    
+    List<int> cardIds = new List<int>();
+    bool showSequencing = false;
+    bool allowSequencing = false;
+    if (Model is ItemsGridModel)
+     {
+         showSequencing = ((ItemsGridModel) Model).ShowSequencing;
+         allowSequencing = ((ItemsGridModel)Model).AllowSequencing;
+     }
+    if (Model.CurrentPageCard.CardData.Badges.Count > 0)
+    {
+        var ids = Model.CurrentPageCard.CardData.Badges;
+        foreach(var id in ids)
+        {
+            cardIds.Add(id);
+        }
+    }
+    HierarchyGridModel hierarchy = Model as HierarchyGridModel;
+    foreach (var issue in Model.Issues)
+    {
+        bool firstCol = true;
+
+        string dependant = hierarchy != null && hierarchy.DependancySpacing.ContainsKey(issue.Entity.Id) ? "dependant" : string.Empty;
+        <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds) @dependant'>
+        @{
+            var data = Model.DisplayData[issue.Entity.Id];
+            foreach (var coldata in data)
+            {
+<td class='@coldata.cssClass'>
+@if (firstCol && showSequencing)
+{
+if(hierarchy == null)
+{
+if(allowSequencing)
+{
+<span class='dragHandle item-drag-handle fonticon-drag-handle'></span>
+}
+else 
+{
+    <span class=''></span>
+}
+}
+else
+{
+<span class='invisible fonticon-drag-handle'></span>
+}
+}
+                
+@if (firstCol)
+{
+if (hierarchy != null && hierarchy.DependancySpacing.ContainsKey(issue.Entity.Id))
+{
+
+for (int i = 0; i < hierarchy.DependancySpacing[issue.Entity.Id] - 2; i++)
+{
+@:&nbsp;
+}
+<span class="indented">L</span>
+}
+}
+@Html.Raw(coldata.FormattedData)
+@if(firstCol)
+{
+if(hierarchy == null && Model.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+{
+<span class='parent fonticon-arrow-down expander'></span>
+}
+                    
+firstCol = false;
+}
+</td>
+            }
+        }
+        </tr>
+    }
+}
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            gemini_items.initComments();
+        });
+    </script>

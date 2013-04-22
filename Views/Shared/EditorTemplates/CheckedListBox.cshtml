@@ -1,0 +1,11 @@
+﻿@model CheckedListBoxFieldModel
+
+@{
+    bool wasOptionGroup = false;
+}
+
+<div class='checked-select input-size6' data-original="@Model.SelectValues.ToDelimited("|")" data-trigger='@Model.TriggerValues' >
+<ul>
+@Html.EditorFor(m => m, "DataEntryListItem")
+</ul>
+</div>

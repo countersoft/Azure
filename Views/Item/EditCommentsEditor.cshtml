@@ -1,0 +1,67 @@
+﻿@model ViewIssueModel
+
+<div class="comments-wysiwyg-container" data-id="@Model.Issue.Id" data-controller="@Model.Controller">
+    <h2>@Model.Issue.IssueKey</h2>
+    <form class="comments-form"  action="@Url.Action("addcomment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id }))" method="post" enctype="multipart/form-data">
+        <div class='wysiwyg-container'>
+            <textarea id="comments-wysiwyg-content" name="commentsWysiwygContent"></textarea>         
+        </div> 
+        <div class="comment-extra-options">
+            <div class="option-row">
+                    <span class="left comment-label">@GetResource(ResourceKeys.Attachments)</span>  <input type="file" class="file-upload-button" name="comment-attachment"/>
+            </div>
+            @if (Model.CanUserSeeCommentVisibility)
+            {
+            <div class="option-row">
+                <span class="left comment-label">@GetResource(ResourceKeys.Visibility)</span> @Html.DropDownList("visibility", Model.Groups, new {@class="input-size8"})
+            </div>
+            }
+        </div>
+        <div class="cs-comment-wysiwyg-option">
+            <div class="buttons">
+                    <input type="button" value="@GetResourceTemplate(ResourceKeys.Cancel)" class="button-secondary button-popup cs-comment-add-close right">
+                    <input type="submit" value="@GetResourceTemplate(ResourceKeys.Add)" class="button-primary button-popup cs-comment-add-save right">                                
+            </div>
+        </div>  
+    </form>
+</div>
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        if ($("#cs-popup-center .comments-wysiwyg-container").attr("data-controller") == "items") {
+            setTimeout(function () {
+                gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "");
+            }, 25);
+
+            gemini_ui.chosen("#cs-popup-center-content .comments-wysiwyg-container .option-row .input-size8", null, true);
+
+            $("#popup-button-yes").click(function (e) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                $(".cs-comment-wysiwyg-option .cs-comment-add-save").click();
+            });
+
+            var options = {
+                dataType: "json",
+                success: function (responseText, statusText, xhr, $form) {
+                    if (responseText.success) {
+                        gemini_popup.popupClose();
+                        $("#cs-popup-center-content .comments-wysiwyg-container").remove();
+                    }
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                },
+                error: function (responseText, statusText) {
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }// post-submit callback
+
+            };
+            $(".comments-form").ajaxForm(options);
+
+            $("#popup-button-no").click(function (e) {
+                gemini_popup.popupClose(e);
+                $("#cs-popup-center-content .comments-wysiwyg-container").remove();
+            });
+        }
+
+    });
+</script>

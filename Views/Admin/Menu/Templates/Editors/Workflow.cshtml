@@ -1,0 +1,327 @@
+﻿@model TemplatesWorkflowModel
+
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsBezier-0.5.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-util-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-dom-adapter-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-drag-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-defaults-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-connectors-statemachine-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-renderers-svg-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-renderers-canvas-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jsPlumb-renderers-vml-1.4.0-RC1.js"></script>
+<script type="text/javascript" src="@AssetsPath/scripts/ui/jsplumb/jquery.jsPlumb-1.4.0-RC1.js"></script>
+
+<div id="workflow-popup" class="templates" style="height: 700px;">
+    <div class="pad-bottom-15 clearfix">
+        <div class="pad-bottom-10">
+            @if (Model.ReferenceWorkflows.Count() > 1)
+            {
+                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span> or use an existing workflow: @Html.DropDownList("ReferenceId", Model.ReferenceWorkflows, new {@class = "input-size5", style = "position:absolute; z-index:10;"})</text>
+            }
+            else
+            {
+                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span>.</text>
+            }            
+        </div>
+        <div>
+            Click color handles to create transitions between states. Click on transitions lines to set who can make the transition.
+        </div>
+    </div>
+    <input type='hidden' id="type-id" value="@Model.Id"/>
+    <div id="workflow-container">
+        
+        <div id="workflow-surface">
+            @{
+                var top = 10;
+                var left = 10;
+                foreach (var status in Model.Workflow)
+                {
+                    var topLabel = status.top != "0" ? status.top + "px" : top.ToString() + "px";
+                    var leftLabel = status.left != "0" ? status.left + "px" : left.ToString() + "px";
+
+                    var color = status.color.HasValue() ? status.color : "#4c4c4c";
+                
+                    <div style="top: @topLabel; left: @leftLabel;" class="w" id="status-@status.id" data-color="@color" data-label="@status.label" data-transitions="@status.transitions" data-status="@status.id" data-groups="@status.groups">
+                        <div id="ep-@status.id" class="ep" data-color="@color" style="background-color: @color;"></div><div class="ep-name" title="@status.label">@status.label.ToMaxMore(40)</div>
+                    </div>
+            
+                    if (status.left == "0")
+                    {
+                        left = left + 150;
+
+                        if (left > 780)
+                        {
+                            left = 10;
+                            top = top + 70;
+                        }
+                    }
+                }
+            }
+        </div>        
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $("#popup-button-yes").unbind("click.workflow").bind('click',function (e) {
+
+            gemini_commons.stopClick(e);
+
+            var data = [];
+
+            $(".w", "#workflow-container").each(function ()
+            {
+                data.push({
+                    id: $(this).attr("data-status"),
+                    top: $(this).css("top").replace("px", ""),
+                    left: $(this).css("left").replace("px", ""),
+                    transitions: $(this).attr("data-transitions"),
+                    groups: $(this).attr("data-groups")
+                });
+            });
+            gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/Templates/Process", "savedata",
+                function (response) {
+                    $('#attribute-options-picker').hide();
+                    gemini_popup.popupClose(e);
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'workflow', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() });
+        });
+
+        $("#popup-button-no").unbind("click").click(function (e) {
+            $('#attribute-options-picker').hide();
+            gemini_popup.popupClose(e);
+        });
+
+        window.jsPlumbDemo = {
+
+            init: function () {
+
+                jsPlumb.importDefaults({
+                    Endpoint: ["Rectangle", { width: 5, height: 5 }],
+                    HoverPaintStyle: { strokeStyle: cs_colors.color_grayscale, lineWidth: 4 },
+                    ConnectionOverlays: [ ["Arrow", { location: 1, id: "arrow", length: 10, foldback: 0.8 }], ["Label", { label: "", id: "label" }] ]
+                });
+
+                // initialise draggable elements.  note: jsPlumb does not do this by default from version 1.3.4 onwards.
+
+                var canEdit = false;
+
+                @if((int)Model.ReferenceWorkflows.SelectedValue == 0)
+                {
+                    <text>
+                        jsPlumb.draggable(jsPlumb.getSelector(".w"), { containment: "parent" });
+                        canEdit = true;
+                    </text>
+                }
+
+                // bind a click listener to each connection; the connection is deleted.
+                jsPlumb.bind("click", function(c, e)
+                {
+                    if (!canEdit) return;
+                    e.stopPropagation();
+                    var connectionId = c;
+                    var source = $("#" + c.sourceId);
+                    var transitions = $("#" + c.sourceId).attr("data-transitions");
+                    var groups = $("#" + c.sourceId).attr("data-groups");
+                    var targetId = c.targetId.replace("status-", "");
+
+                    var transitionsArray, groupsList, groupsArray, pos;
+
+                    if (transitions.length > 1)
+                    {
+                        transitionsArray = $.grep(transitions.split('|'),function(n){return(n);});
+                    }
+                    else 
+                    {
+                        transitionsArray = [];
+                    }
+                    
+                    if (groups.length > 2)
+                    {
+                        groupsList = $.grep(groups.split('|'),function(n){return(n);});   
+                    }
+                    else
+                    {
+                        groupsList = [];                        
+                    }
+
+                    $('option', '#attribute-options-ProjectGroup').attr('selected', false);
+
+                    pos = 0;
+                    if (transitionsArray.length > 0 && groupsList.length > 0)
+                    {
+                        pos = jQuery.inArray(targetId, transitionsArray);
+                        
+                        if (pos >= 0)
+                        {
+                            if (groupsList[pos] != undefined)
+                            {
+                                groupsArray = $.grep(groupsList[pos].split(','), function(n) { return (n); });
+
+                                $(groupsArray).each(function(e) {
+                                    if (this != '') $('option[value="' + this + '"]', '#attribute-options-ProjectGroup').attr('selected', true);
+                                });
+                            }
+                        }
+                    }
+
+                    $("#attribute-options-ProjectGroup").trigger("liszt:updated"); 
+                    
+                    $('#attribute-options-picker').show();
+                    $('#option-required', '#attribute-options-picker').hide();
+                    $('#option-delete', '#attribute-options-picker').show();
+                    $('#attribute-options-picker').css("top", e.pageY);
+                    $('#attribute-options-picker').css("left", e.pageX);
+
+                    $("#option-cancel-button", '#attribute-options-picker').unbind('click').click(function(e)
+                    {
+                        jsPlumb.detach(connectionId);
+
+                        var result = '';
+                        $(transitionsArray).each(function() {
+                            if (this != targetId) result = result + this + "|";
+                            else result = result + "0|";
+                        });
+
+                        source.attr("data-transitions", result);
+
+                        $('#attribute-options-picker').hide();
+                    });
+
+                    $("#option-apply-button", '#attribute-options-picker').unbind('click').click(function (e)
+                    {
+                        //var update = $('#attribute-options-picker').attr('data-field');
+                        var selected = '';
+
+                        $(':selected', '#attribute-options-ProjectGroup').each(function () {
+                            selected = selected + $(this).val() + ","; 
+                        });
+
+                        groupsList[pos] = selected;
+
+                        var result = '';
+                        $(groupsList).each(function() {
+                            result = result + this + "|"; 
+                        });
+
+                        source.attr("data-groups", result);
+                        
+                        $('#attribute-options-picker').hide();
+                    });
+
+                });
+
+                // bind a click listener to each connection; the connection is deleted.
+                jsPlumb.bind("beforeDrop", function(c)
+                {
+                    if (!canEdit) return;
+                    
+                    if (c.sourceId == c.targetId) return false;
+
+                    var existing = jsPlumb.getConnections({ source: c.sourceId, target: c.targetId });
+
+                    if (existing.length > 0) return false;
+
+                    var transitions = $("#" + c.sourceId).attr("data-transitions");
+                    transitions = transitions + c.targetId.replace("status-", "") + "|";
+                    $("#" + c.sourceId).attr("data-transitions", transitions);
+
+                    var everyone = 1;
+
+                    var groups = $("#" + c.sourceId).attr("data-groups");
+                    groups = groups + everyone + "|";
+                    $("#" + c.sourceId).attr("data-groups", groups);
+
+                    return true;
+                });
+
+
+                // hand off to the library specific demo code here.  not my ideal, but to write common code
+                // is less helpful for everyone, because all developers just like to copy stuff, right?
+                // make each ".ep" div a source and give it some parameters to work with.  here we tell it
+                // to use a Continuous anchor and the StateMachine connectors, and also we give it the
+                // connector's paint style.  note that in this demo the strokeStyle is dynamically generated,
+                // which prevents us from just setting a jsPlumb.Defaults.PaintStyle.  but that is what i
+                // would recommend you do.
+                jsPlumbDemo.initEndpoints();
+
+                jsPlumb.bind("jsPlumbConnection", function(conn) {
+                    conn.connection.setPaintStyle({ strokeStyle: conn.source.attr("data-color"), lineWidth: 4 });
+                    conn.connection.getOverlay("label").setLabel(conn.target.attr("data-label"));
+                });
+
+                jsPlumb.makeTarget(jsPlumb.getSelector(".w"), {
+                    dropOptions: { hoverClass: "dragHover" },
+                    anchor: "Continuous"
+                    //anchor:"TopCenter"			
+                });
+            }
+        };
+
+        jsPlumbDemo.initEndpoints = function () {
+            $(".ep").each(function (i, e) {
+                var p = $(e).parent();
+                jsPlumb.makeSource($(e), {
+                    parent: p,
+                    //anchor:"BottomCenter",
+                    anchor: "Continuous",
+                    connector: ["StateMachine", { curviness: 20 }],
+                    connectorStyle: { strokeStyle: cs_colors.color_grayscale2, lineWidth: 4 },
+                    connectorOverlays: [ ["Arrow", { location: 1, id: "arrow", length: 10, foldback: 0.8 }], ["Label", { label: "", id: "label" }] ],
+                    maxConnections: -1
+                });
+            });
+        };
+
+        jsPlumb.bind("ready", function ()
+        {
+            // chrome fix
+            document.onselectstart = function () { return false; };
+
+            var renderMode = jsPlumb.VML;
+
+            if (jsPlumb.isCanvasAvailable()) renderMode = jsPlumb.CANVAS;
+                else if (jsPlumb.isSVGAvailable()) renderMode = jsPlumb.SVG;
+
+            jsPlumb.setRenderMode(renderMode);
+            jsPlumbDemo.init();
+        });
+    });
+
+    $('#ReferenceId').change(function (e) {
+            
+        gemini_ajax.postCall("configure/Templates/Process", "Editor",
+            function (response) {
+                $("#workflow-popup").replaceWith(response.Result.Html);
+            }, null, { id: $('#type-id').val(), mode: 'workflow', template: gemini_admin.currentTemplate, ReferenceId: $('#ReferenceId').val() });
+    });
+            
+    //plot saved connections
+
+    @foreach(TemplatesWorkflowEditModel status in Model.Workflow)
+    {
+        if (!status.transitions.HasValue())
+        {
+            continue;
+        }
+        var transitions = status.transitions.ToIntList('|');
+        foreach(int transition in transitions)
+        {
+            if (transition > 0)
+            {
+                <text>
+                    jsPlumb.connect({source: 'status-@status.id', target: 'status-@transition',
+                    HoverPaintStyle: { strokeStyle: cs_colors.color_grayscale, lineWidth: 4 },
+                    ConnectionOverlays: [ ["Arrow", {location: 1, id: "arrow", length: 10, foldback: 0.8 }], ["Label", { label: "", id: "label" }] ]
+                    });
+                </text>
+            }
+        }
+    }
+
+    setTimeout(jsPlumb.repaintEverything, 100);
+</script>

@@ -1,0 +1,81 @@
+﻿@import "_theme"; 
+/*DO NOT CHANGE THIS FILE*/
+
+.color-shadow			{ color: $color-shadow;}
+
+.theme-color			{ color: $theme-color;}
+.theme-color-secondary	{ color: $theme-color-secondary; }
+.theme-color-gradient	{ color: $theme-color-gradient;	}
+.theme-color-border			{ color: $theme-color-border;}
+.theme-color-text			{ color: $theme-color-text;}
+.theme-color-plus			{ color: $theme-color-plus;}
+.theme-background			{ color: $theme-background;}
+
+.color-green			{ color: $color-green;}
+.color-red			{ color: $color-red;}
+.color-black			{ color: $color-black;}
+.color-white			{ color: $color-white;}
+.color-yellow			{ color: $color-yellow;}
+.color-orange			{ color: $color-orange;}
+
+.color-text			{ color: $color-text;}
+.color-grayscale			{ color: $color-grayscale;}
+.color-grayscale0			{ color: $color-grayscale0;}
+.color-grayscale1			{ color: $color-grayscale1;}
+.color-grayscale2			{ color: $color-grayscale2;}
+.color-grayscale3			{ color: $color-grayscale3;}
+.color-grayscale4			{ color: $color-grayscale4;}
+.color-grayscale5			{ color: $color-grayscale5;}
+
+.color-tooltip			{ color: $color-tooltip;}
+.color-tooltip-border			{ color: $color-tooltip-border;}
+.color-hover			{ color: $color-hover;}
+
+.color-menu-text			{ color: $color-menu-text;}
+.color-menu-key			{ color: $color-menu-key;}
+.color-highlight			{ color: $color-highlight;}
+.color-error			{ color: $color-error;}
+.color-placeholder			{ color: $color-placeholder;}
+.color-link-action			{ color: $color-link-action;}
+
+/* Pins, Indicators and Card colors - can be replaced */
+.color-project		{ color: $color-project ;}
+.color-docs 		{ color: $color-docs    ;}
+.color-planner		{ color: $color-planner ;}
+.color-roadmap		{ color: $color-roadmap ;}
+.color-testing		{ color: $color-testing ;}
+.color-activity		{ color: $color-activity ;}
+.color-sysmsg 		{ color: $color-sysmsg ;}
+.color-ads    		{ color: $color-ads    ;}
+.color-custom	    { color: $color-custom    ;}
+.color-report 		{ color: $color-report ;}
+.color-admin  		{ color: $color-admin  ;}
+.color-items  		{ color: $color-items  ;}
+.color-item   		{ color: $color-item   ;}
+
+/* button colors */
+.color-button-standard		{ color: $color-button-standard;}
+.color-button-default		{ color: $color-button-default;}
+.color-button-success		{ color: $color-button-success;}
+.color-button-primary		{ color: $color-button-primary;}
+
+/* password colors */
+.color-password-very-weak		{ color: $color-password-very-weak;}
+.color-password-weak    		{ color: $color-password-weak    ;}
+.color-password-good    		{ color: $color-password-good    ;}
+.color-password-strong  		{ color: $color-password-strong  ;}
+
+/* Special color */
+.color-panel-header		{ color: $color-panel-header;}
+
+/* Heat Map colors */
+.heatmap1		{ color: $heatmap1;}
+.heatmap2		{ color: $heatmap2;}
+.heatmap3		{ color: $heatmap3;}
+.heatmap4		{ color: $heatmap4;}
+.heatmap5		{ color: $heatmap5;}
+.heatmap6		{ color: $heatmap6;}
+.heatmap7		{ color: $heatmap7;}
+.heatmap8		{ color: $heatmap8;}
+.heatmap9		{ color: $heatmap9;}
+.heatmap10		{ color: $heatmap10;}

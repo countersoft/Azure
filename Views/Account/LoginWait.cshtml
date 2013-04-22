@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Views/Shared/_Master.Desktop.External.cshtml";
+    ViewBag.Title = "Login Wait";
+}
+
+@section HeaderContent
+{
+<div class='item-header clearfix'>
+        <div class='filler'></div>
+        <div class='header'>@GetResource(ResourceKeys.Login)</div>
+</div>
+}
+
+<div id='content'>
+    @{Html.RenderPartial("Spinner");}
+</div>
+
+@section DocumentReady
+{
+    gemini_account.initLoginWait();
+}
+

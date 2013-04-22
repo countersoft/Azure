@@ -1,0 +1,36 @@
+﻿@model TestPlanModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+<div id="cs-template">
+
+<div id="test-tab-box" class="border-bottom">
+<div class="left">
+</div>
+<div id="cs-tabs" class="clearfix"><ul class='tab-choice-links'>
+<li class="selected">@Html.ActionLink(GetResource(ResourceKeys.Plans), "Plans", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+<li>@Html.ActionLink(GetResource(ResourceKeys.Cases), "Cases", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+<li>@Html.ActionLink(GetResource(ResourceKeys.Runs), "Runs", new RouteValueDictionary(new { GeminiContext.Project.Entity.Code, GeminiContext.Project.Entity.Id }))</li>
+</ul></div>
+</div>
+
+<div id='cs-sections'>
+@Html.Partial("_TestPlanProperties", Model)
+@Html.Partial("_RunTests")
+@Html.Partial("_TestCases", Model.Cases)
+@Html.Partial("_TestRuns", Model.Runs)
+@Html.Partial("_TestItems", Model.Items)
+@Html.Partial("_TestAttachments", Model.Attachments)
+@Html.Partial("_TestHistory", Model.Dto.Entity.History)
+</div>
+</div>
+
+@section DocumentReady
+{
+    testing.initialize();
+}

@@ -1,0 +1,15 @@
+﻿<article class='item-tabs-data item-content-widget' data-gemini-control-id='@Model.ControlId' data-gemini-app-id='@Model.AppId'>
+    <a id="w-@Model.ControlId"></a>
+    <div class="section-header clearfix">
+    <div class="clearfix">
+    <div id='section-widget-@Model.ControlId' class="left"><span class="expander fonticon-arrow-down"></span><h3>@Model.Title</h3></div>
+    <div class="toolbar actions right">
+        @foreach (var button in Model.Buttons) { <a class="button fonticon-plus" href="#" data-gemini-action='@button.Action' onclick="@button.OnClick"></a> }
+    </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-content expanded additional">
+        <div id='@Model.AppId-@Model.ControlId' class='contents'></div>
+    </div>
+    </div>
+</article>

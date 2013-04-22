@@ -1,0 +1,28 @@
+﻿@model ProjectSettingsDeleteComponentModel
+
+<div class="DeleteCpomponentContainer" style="width: 400px;">
+    <form id="regular-form">
+        <h2>@GetResource(ResourceKeys.Delete) @Model.Component.Name?</h2>
+        <br/>
+        <p>Update all items to use this:</p>
+        <br/>
+        @Html.DropDownList("Component", Model.Components, new {@class="input-size7"})
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    gemini_ui.chosen("#Component", null, true);
+    
+    $("#popup-button-yes").click(function (e) {
+
+        if (!$("#regular-form").valid()) return;
+
+        gemini_ajax.call("project/" + @Model.ProjectId + "/settings/components", "delete", function (response)
+        {
+            gemini_popup.popupClose(e);
+        }, null, { id: @Model.Component.Id });
+    });
+
+    $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+</script>

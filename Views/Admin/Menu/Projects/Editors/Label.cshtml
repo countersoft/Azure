@@ -1,0 +1,57 @@
+﻿@model Countersoft.Gemini.Models.Admin.ProjectsLabelsEditModel
+
+<div id="ProjectLabelContainer" style="height: 300px;">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.Label.Entity.Id" name="Id" id="Id" />
+        <table id="table-admin-projectlabel" class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="field-name">Name</td>
+                    <td>
+                        <input type="text" id="LabelName" name="LabelName" class="input-field required input-size9" value="@Model.Label.Entity.Name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Projects</td>
+                    <td>
+                        @Html.ListBox("ProjectsList", Model.Projects, new { @class = "input-size9" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        gemini_ui.chosen("#ProjectsList", null, true);
+
+        $("#popup-button-yes").click(function (e) {
+
+
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                gemini_ajax.postCall("configure/Projects/Labels", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+                    var tr = $("tr[data-id=@(Model.Label.Entity.Id)]");
+                    if (tr) {
+                        tr.find("td:eq(0)").html($("#LabelName").val());
+                        tr.find("td:eq(1)").html($("#Email").val());
+                    }
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize());
+
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+
+        });
+       
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

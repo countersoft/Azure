@@ -1,0 +1,23 @@
+﻿@model ListBoxFieldModel
+
+@{
+    bool wasOptionGroup = false;
+}
+<input type="hidden" name="@Model.Id" value="0" />
+<select title="@Model.Tooltip" id="@Model.Id" size="@Model.Rows" name="@Model.Id" data-original="@Model.SelectValues.ToDelimited("|")" 
+   data-customfield-trigger='@Model.CustomFieldTriggerValues' data-trigger='@Model.TriggerValues' class="input-size6  @Model.Classes @(Model.Required ? "required" : "")" @if(Model.Multiselect) { <text>multiple="multiple"</text> } >
+    @foreach (var item in Model.Values)
+    {
+        if (item.IsOptionGroup)
+        {
+            if(wasOptionGroup) { @Html.Raw("</optgroup>") }
+            <text><optgroup label="@item.ItemText"></text>
+            wasOptionGroup = true;           
+        }
+        else
+        {
+            <option @if(Model.SelectValues.Contains(item.ItemId)) { <text>selected="selected"</text> } value="@item.ItemId">@item.ItemText</option>
+        }
+    }
+    @if(wasOptionGroup) { @Html.Raw("</optgroup>") }
+</select>

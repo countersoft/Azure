@@ -1,0 +1,70 @@
+﻿@model Countersoft.Gemini.Models.Admin.ProjectsLabelsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Add and maintain the <strong>Labels</strong> that you will use to group your <strong>Projects.</strong> <strong>Labels</strong> can represent any grouping you require (e.g. Client, Business Unit, Department) or a combination of grouping types.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-projectlabels" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Name" data-required='true'>Label</th>          
+                <th>Projects</th>
+                <th></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (ProjectsLabelsModel.LabelModel item in Model.Labels)
+            {
+                <tr data-id="@item.Id">
+                    <td>@item.Label</td>
+                    <td data-edit="false">@item.Projects</td>
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-projectlabels", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2] }] });
+        
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-projectlabels").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+
+            gemini_ajax.call("configure/Projects/Labels", "DeleteMessage", function (response) {
+
+                gemini_popup.modalConfirm(response.Result, null, function () {
+                    gemini_ui.startBusy('#colorbox #modal-confirm #modal-button-yes');
+                    gemini_ajax.call("configure/Projects/Labels", "Delete", function (delResponse) {
+                        if (delResponse.Success) {
+                            gemini_admin.removeRow(item);
+                            gemini_ui.stopBusy('#colorbox #modal-confirm #modal-button-yes');
+                        }
+                    }, function () { gemini_ui.stopBusy('#colorbox #modal-confirm #modal-button-yes'); }, { id: id });
+                });
+            },
+                null, { id: id });
+        });
+        
+        $("#table-admin-projectlabels").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Projects/Labels", "Editor", { id: id });
+
+        });
+
+
+        $("#table-admin-projectlabels_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Projects/Labels", "Add");
+        });
+
+    });
+</script>

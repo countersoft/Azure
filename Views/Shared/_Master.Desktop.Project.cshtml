@@ -1,0 +1,26 @@
+@{
+    Layout = "_Master.Desktop.cshtml";
+}
+
+@section Playlist
+{
+    @{ Html.RenderPartial("Playlist"); }
+}
+@section Search
+{
+    @{ Html.RenderPartial("Search"); }
+}
+@section HeaderContent
+{
+    @RenderSection("HeaderContent", true)
+}
+@section DocumentReady
+{
+    @RenderSection("DocumentReady", false);
+}
+@section JavaScript
+{
+    @RenderSection("JavaScript", false);
+}
+
+@RenderBody()

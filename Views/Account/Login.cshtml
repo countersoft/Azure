@@ -1,0 +1,131 @@
+﻿@model UserModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.External.cshtml";
+    ViewBag.Title = "Gemini " + @GetResource(ResourceKeys.Login);
+}
+
+@section HeaderContent
+{
+}
+
+<div id="login-page" class="clearfix">
+    @if(DeviceContext.IsDesktop)
+    {
+    <div class="left-box">
+        <table id="welcome-message-zone">
+            <tr><td><h1 id="welcome-title">@GeminiContext.Config.WelcomeTitle</h1></td></tr>
+            <tr><td><div id="cs-template"><div id="welcome-message" class="cs-wysiwyg">@Html.Raw(GeminiContext.Config.WelcomeMessage)</div></div></td></tr>
+        </table>   
+    </div>
+    }
+
+    <div class="right-box">
+            <table>
+            <tr>
+                <td>
+                    <table> 
+                        <tr>        
+                            <td valign="top">    
+                                <table class="signin-form" style="width:330px; height: 260px;">
+                                    <tr>
+                                        <td class="regular">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <form action="~/account/login" method="post" id="regular-form">
+                                                            <input type="hidden" name="returnUrl" id="returnUrl" value="@Model.ReturnUrl" />
+                                                            <table id="regular-credentials" cellpadding="5px" cellspacing="5px">
+                                                                <tr>
+                                                                    <td>@GetResource(ResourceKeys.Username, Resourcing.Colon)</td>
+                                                                    <td><input type="text" id="Username" name="Username" class="input-field required input-size5" value="@Model.User.Username" /> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>@GetResource(ResourceKeys.Password, Resourcing.Colon)</td>
+                                                                    <td><input type="password" id="regular-password" name="regular-password" class="input-field required input-size5" /> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="2" align="right" style="padding-top:21px;">
+                                                                        <input id="regular-signin" type="submit" value='@GetResource(ResourceKeys.Login)' class='button-primary button-small' />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td><div class="invalid-credentials">@Model.ErrorMessage</div></td>
+                                                                </tr>
+                                                                @if(GeminiContext.Config.ShowUserRegistrationLink)
+                                                                {
+                                                                    <tr>
+                                                                        <td align="left" >
+                                                                        </td>
+                                                                        <td align="left" >
+                                                                            <a href="~/account/register">Register</a> »
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </table>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+            
+                                <div class='help-box'><span>@GetResource(ResourceKeys.Help, Resourcing.Lower)</span></div>
+
+                                <div class='hide help-popup'><h3>Forgot your password?</h3>
+                                    Enter your email address below to reset your password:
+                                    <div class="margin-top-10">
+                                        <form action="forgot-password" method="post" id="forgot-password-form">
+                                            <input type="text" id="email" name="email" class="input-field required email input-size5" />&nbsp;&nbsp;<input id="forgot-password" name='forgot-password' type="submit" value='@GetResource(ResourceKeys.Reset)' class='button-secondary button-small' />
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>                
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @if (GeminiContext.Config.EnableOpenId)
+                    { 
+                        <table class="signin-form" style="width:330px; height: 260px; margin-top:30px;">
+                            <tr>
+                                <td align="center" class="regular no-wrap">
+                                    <form action="openid?ReturnUrl=" method="post" id="openid-form" autocomplete="off">
+                                        <div id='openid-login-box' style="margin: 0 auto;">
+                                            <input type="hidden" name="action" value="verify" />
+                                            <table>
+                                                <tr><td><a id="openid-provider-google" class="google openid-provider-button" title="Google" onclick="gemini_account.openIdUrl('google')" ></a></td><td><a id="openid-provider-yahoo" class="yahoo openid-provider-button" title="Yahoo!" onclick="gemini_account.openIdUrl('yahoo')" ></a></td></tr>
+                                                <tr><td><a id="openid-provider-openid" class="openid openid-provider-button" title="Openid" onclick="gemini_account.openIdUrl('openid')" ></a></td><td>
+                                                                                                                                                                                                        @if (GeminiContext.Config.EnableFacebookIntegration)
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            <a id="openid-provider-facebook" class="facebook openid-provider-button" title="Facebook"  
+                                                                                                                                                                                                                href='https://www.facebook.com/dialog/oauth?client_id=@(GeminiContext.Config.FacebookAppId)&redirect_uri=@Countersoft.Foundation.Utility.Helpers.HttpHelper.GetWebsiteUrl()account/loginwait&scope=email&response_type=token'></a>
+                                                                                                                                                                                                        }</td></tr>
+                                            </table>                    
+                                        </div>
+        
+                                        <br class="clear-both" />
+                                        <div id="openid-inputs">
+                                            <input id="openid-provider" name="openid-provider" class='input-field required input-size5' type="text" value="<Your Account>.myopenid.com" />
+                                            <input id="openid-signin" type="submit" value="@GetResource(ResourceKeys.Login)" class='button-primary button-small' />
+                                            @{Html.RenderPartial("Spinner");}
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+@section DocumentReady
+{
+    gemini_account.initLogin();
+}

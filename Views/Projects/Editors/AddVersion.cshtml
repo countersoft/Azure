@@ -1,0 +1,39 @@
+﻿@model BaseModel
+
+<div>
+    <form id="version-form">
+        <table class="admin-data-entry">
+            <tr>
+                <td>@GetResource(ResourceKeys.Name)</td>
+                <td><input type="text" id="name" name="name" class="input-size9 required" /></td>
+            </tr>
+            <tr>
+                <td>@GetResource(ResourceKeys.Description)</td>
+                <td><input type="text" id="description" name="description" class="input-size9" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $("#version-form").validate();
+
+    $("#popup-button-yes").unbind('click').click(function (e)
+    {
+        gemini_commons.stopClick(e);
+
+        if (!$("#version-form").valid()) return;
+        gemini_ui.startBusy('#colorbox #popup-button-yes');
+        gemini_ajax.postCall("project/@ViewBag.ProjectId/settings/versions", "Save", function (response)
+        {
+            gemini_popup.popupClose(e);
+
+            gemini_projects.settingsVersions(@ViewBag.ProjectId);
+            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#version-form").serialize());
+    });
+
+    $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

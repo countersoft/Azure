@@ -1,0 +1,113 @@
+﻿@using Countersoft.Gemini.Infrastructure.Managers
+@model Countersoft.Gemini.Models.Reports.ReportResultModel
+
+
+<div id="cs-template">
+    @if (!Model.ResultsAsResourceAllocation.Any())
+    {
+     
+        <div id="no-data">
+            @GetResource(ResourceKeys.NoData)
+        </div>
+    }
+    else
+    {
+
+
+        <div class="fix-first-column">
+            <table id="tableResourceAllocation" class="width-100">
+                <thead>
+                    <tr class="cs-grid-column">
+                        <th class="headcol" style="background: transparent">
+                        </th>
+                        @{
+                            var countDays = 0;
+                            var date = Model.StartDate.Value;
+                            while (date <= Model.EndDate)
+                            {
+
+                                <th class="center">
+                                    <span class="day-name">@date.ToString("ddd")</span><br/>
+                                    <span class="date-part">@date.ToString("dd-MMM")</span>
+                                </th>
+
+                                date = date.AddDays(1);
+                                countDays++;
+                            }
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var resources = from r in Model.ResultsAsResourceAllocation group r by r.FullName into g select new {UserId = g, Fullname = g.Key};
+
+
+                        foreach (var resource in resources)
+                        {
+                            date = Model.StartDate.Value;
+
+                            <tr class="MainItem">
+                                <td class="headcol">@resource.Fullname
+                                </td>
+                                @{
+
+                                    while (date <= Model.EndDate)
+                                    {
+                                        var uid = resource.UserId.First().UserId;
+                                        var today = Model.ResultsAsResourceAllocation.Where(r => r.UserId == uid && r.Day == date.Day && r.Month == date.Month && r.Year == date.Year).FirstOrDefault();
+                                        if (today == null)
+                                        {
+                                            string cls = "";
+                                            if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                                            {
+                                                cls = "weekend";
+                                            }
+                                            <td class="@cls">
+                                                -
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            //TODO use culture weekend days
+                                            var cls = "";
+                                            if (today.OverLoad)
+                                            {
+                                                cls = "highlight";
+                                            }
+                                            else if (ReportManager.GetWeekends().Contains(date.DayOfWeek))
+                                            {
+                                                cls = "weekend";
+                                            }
+
+                                            <td class="@cls center" >
+                                                <span class="no-wrap">
+                                            
+                                                    @{
+                                                        if (!Model.Flag)
+                                                        {
+                                                            @today.Total.ToString("#0")
+                                                            @:(@today.Closed)
+                                                        }
+                                                        else
+                                                        {
+                                                            @today.Total.ToString("#0.0")
+                                                        }
+                                                    }
+                                                </span>
+                                
+                                            </td>
+
+                                        }
+                                        date = date.AddDays(1);
+                                    }
+
+                                }
+                            </tr>
+                        }
+                    }
+           
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

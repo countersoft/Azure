@@ -1,0 +1,25 @@
+﻿@model ActivityDrilldownModel
+
+<div id="contents-wrapper" class="clearfix">
+<article>  
+    <div id="activity" class="clearfix">    
+            <div class="stream no-stream left" style="width:100%">
+                <div class="header clearfix"><div class="color-code @Model.ColorClass"></div><div class="column-head">@Model.SectionTitle (@Model.Issues.Count)</div></div>
+                <div class="cards" style="">
+                    @foreach (IssueDto item in Model.Issues)
+                    {
+                        <div class="left">
+                            <a href="@NavigationHelper.GetIssueUrl(GeminiContext, item)">
+                            <div class="card" style="margin-right:20px;">
+                                <div class="title">@item.Title.ToMaxMore(80)</div>
+                                <div class="meta-info"><img src="@item.TypeImage" alt="@item.Type" title="@item.Type"/> @item.IssueKey</div>
+                                <div class="meta-status" title="@item.Status">@item.Status</div>
+                            </div>
+                            </a>
+                        </div>                    
+                    }
+                </div>
+            </div>
+    </div>
+</article>
+</div>

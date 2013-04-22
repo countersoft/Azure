@@ -1,0 +1,72 @@
+﻿@model TemplatesStatusModel
+
+@{Html.RenderPartial("~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates);}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define the <strong>Status</strong> values for this project template. Also define <strong>Workflow</strong> and set user permissions in <strong>Process &#62; Workflow</strong> after you have created the <strong>Status</strong> values. <strong>Status</strong> values are Template specific.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-workflow" class="basic">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Image" data-required='true'></th>                
+                <th data-field="Label" data-required='true'>Status</th>                
+                <th data-field="Comment" data-required='true'>Comment</th>                
+                <th data-field="Color" data-edit-type='color'>Color</th> 
+                <th data-field="IsFinal" data-edit-type='checkbox' class="centered">Final?</th>    
+                <th></th>                           
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (IssueStatusDto item in Model.Status)
+            {
+                <tr data-id="@item.Entity.Id" id="@item.Entity.Id">
+                    <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
+                    <td data-edit="false" class="no-width"><img src="@item.FullImagePath" class="valign-text-bottom"/></td>
+                    <td>@item.Entity.Label</td>
+                    <td>@item.Entity.Comment</td>
+                    <td>@item.Entity.Color</td>
+                    <td class="centered">@(item.Entity.IsFinal ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-workflow", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 6] }] });
+        gemini_admin.initTableDnD("#table-admin-workflow");
+        
+
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-workflow").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Status", "DeleteForm", { id: id, Template: gemini_admin.currentTemplate }, null, "Delete");
+
+        });
+
+        $("#table-admin-workflow").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Status", "Editor", { id: id });
+
+        });
+
+
+        $("#table-admin-workflow_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Templates/Status", "Add");
+        });
+
+
+    });
+</script>

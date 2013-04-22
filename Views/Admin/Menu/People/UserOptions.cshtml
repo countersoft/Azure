@@ -1,0 +1,101 @@
+﻿@model Countersoft.Gemini.Models.Admin.PeopleUserOptionsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define whether to permit anonymous user access or whether users are allowed to self-register.</p>
+
+<div id="cs-adhoc-page">
+    <form id="people-options-form" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="AllowRegistrations" name="AllowRegistrations" @if(Model.AllowRegistrations){ <text>checked="checked"</text> } /> <label for="AllowRegistrations">Allow users to self-register</label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="AllowAnonymousAccess" name="AllowAnonymousAccess" @if(Model.AllowAnonymousAccess){ <text>checked="checked"</text> } /> <label for="AllowAnonymousAccess">Allow users to browse Gemini without logging in first</label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="AllowOpenId" name="AllowOpenId" @if(Model.AllowOpenId){ <text>checked="checked"</text> } /> <label for="AllowOpenId">Allow users to authenticate with Gemini using Open Id </label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="EnableFacebookIntegration" name="EnableFacebookIntegration" onclick="$('#FacebookAppId').toggleClass('required').removeClass('error');" @if(Model.EnableFacebookIntegration){ <text>checked="checked"</text> } /> 
+                    <label for="EnableFacebookIntegration">Allow users to authenticate with Gemini using Facebook</label></td>
+            </tr>
+            <tr>
+                <td>Facebook App Id</td>
+                <td><input type="text" id="FacebookAppId" name="FacebookAppId" class="input-size9 @if(Model.EnableFacebookIntegration){<text>required</text>}" value="@Model.FacebookAppId"/></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Reset Password Email Subject</td>
+                <td><input type="text" id="ResetPasswordEmailSubjectLine" name="ResetPasswordEmailSubjectLine" class="input-size9 required" value="@Model.ResetPasswordEmailSubjectLine"/></td>
+            </tr>
+            <tr>
+                <td valign="top">Reset Password Email Text</td>
+                <td><textarea id="ResetPasswordEmailMessage" name="ResetPasswordEmailMessage" rows="5" class="input-size9 required">@Model.ResetPasswordEmailMessage</textarea></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Force New User Password Reset</td>
+                <td>@Html.DropDownList("NewUserPasswordOption", Model.NewUserPasswordOptions, new { @class = "input-size9" })</td>
+            </tr>
+            <tr>
+                <td>New User Default Groups</td>
+                <td>@Html.ListBox("DefaultUserGroup", Model.DefaultUserGroups, new { @class = "input-size9" })</td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Portal User Group</td>
+                <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })</td>
+            </tr>
+            <tr>
+                <td>Portal Welcome Title</td>
+                <td><input type="text" id="PortalWelcomeTitle" name="PortalWelcomeTitle" class="input-size9 required" value="@Model.PortalWelcomeTitle"/></td>
+            </tr>
+            <tr>
+                <td valign="top">Portal Welcome Message</td>
+                <td>
+                    <div class="wysiwyg-container wysiwyg-height1">
+                        <textarea id="PortalWelcomeMessage" name="PortalWelcomeMessage" class="input-size9 required wysiwyg-editor cs-wysiwyg">@Model.PortalWelcomeMessage</textarea>
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td colspan="2" align="right">
+                    <input id="people-options-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                </td>
+            </tr>
+              
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_ui.htmlEditor("#PortalWelcomeMessage", gemini_sizing.stretchWindow);
+
+        $("#people-options-form").validate();
+
+        $("#people-options-save").click(function (e)
+        {
+            gemini_commons.stopClick(e);
+
+            if (!$("#people-options-form").valid()) { return; } 
+            gemini_ui.startBusy('#people-options-form #people-options-save');
+            var formData = $("#people-options-form").serialize();
+
+            gemini_ajax.postCall("configure/People/UserOptions", "savedata", 
+            function()
+            {
+                gemini_popup.toast("Saved");
+                gemini_ui.stopBusy('#people-options-form #people-options-save');
+            }, function () { gemini_ui.stopBusy('#people-options-form #people-options-save'); }, formData);
+        });
+    });
+</script>

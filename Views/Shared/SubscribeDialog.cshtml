@@ -1,0 +1,16 @@
+﻿@model SubscribeModel
+
+<form id='subscribe-form'>
+    <div>
+        <div class="margin-bottom-10" style="white-space: normal;">
+            <p>@GetResource(ResourceKeys.SubscribeTip)</p>
+        </div>
+
+        <div class="margin-bottom-5"><input type="checkbox" id="Created" name="Created" @if(Model.Created){ <text>checked="checked"</text> }/><label for="Created">@GetResource(ResourceKeys.Created)</label></div>
+        <div class="margin-bottom-5"><input type="checkbox" id="Updated" name="Updated" @if(Model.Updated){ <text>checked="checked"</text> }/><label for="Updated">@GetResource(ResourceKeys.Updated)</label></div>
+        <div class="margin-bottom-5"><input type="checkbox" id="Commented" name="Commented" @if(Model.Commented){ <text>checked="checked"</text> }/><label for="Commented">@GetResource(ResourceKeys.Comments)</label></div>
+    </div>
+
+    @Html.HiddenFor(m => m.Id)
+    <span id='subscribe-submit'>@GetResource(ResourceKeys.Subscribe)</span>
+</form>

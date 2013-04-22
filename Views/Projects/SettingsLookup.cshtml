@@ -1,0 +1,31 @@
+﻿@model ProjectSettingsLookupModel
+
+
+<div id="cs-adhoc-page">
+    <table class="data-entry-box margin-bottom-20">
+        <tr>
+            <td class="input-size3">@GetResource(ResourceKeys.Field)</td>
+            <td class="input-size9">@Html.DropDownList("Field", new SelectList(Model.CustomFields, "Entity.Id", "Entity.ScreenLabel", Model.SelectedField), new {style = "width:404px"})</td>
+        </tr>
+    </table>
+    <div id="lookup-data"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Field").chosen();
+
+        $("#Field").change(function (e) {
+            var cat = $("#Field :selected").attr("value");
+            showField(cat);
+        });
+
+        showField(@Model.CustomFields.First().Entity.Id);
+
+        function showField(id) {
+            if(id == 0) return;
+            gemini_ajax.postCall("configure/Templates/CustomFields", 'Editor', function (response) {
+                $('#lookup-data').html(response.Result.Html);
+            }, null, {id:id, mode:"lookup", projectid: @Model.ProjectId, hideProject : true});
+        }
+    });
+</script>

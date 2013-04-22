@@ -1,0 +1,324 @@
+﻿@using System.Text
+@model TemplatesCustomFieldsEditModel
+
+<div id="TemplatesMetaItemContainer" style="height: 610px;">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.CustomField.Id" name="Id" id="Id" />
+        <table id="table-admin-customfield" class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr data-custom="true" data-shown="All">
+                    <td>Custom Field Type
+                    </td>
+                    <td>
+                        @Html.DropDownList("Type", Model.FieldTypes, new { @class = "input-size6" })
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="All">
+                    <td>Custom Field Name
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name" 
+                               class="input-field required input-size9" value="@Model.CustomField.Name"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="All">
+                    <td>Screen Label
+                    </td>
+                    <td>
+                        <input type="text" id="ScreenLabel" name="ScreenLabel" 
+                           class="input-field required input-size9" value="@Model.CustomField.ScreenLabel"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="All">
+                    <td>Screen Tooltip
+                    </td>
+                    <td>
+                        <input type="text" id="ScreenTooltip" name="ScreenTooltip" 
+                           class="input-field required input-size9" value="@Model.CustomField.ScreenTooltip"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_TYPE_COMPONENT|@Constants.CUSTOM_FIELD_TYPE_VERSION|@Constants.CUSTOM_FIELD_TYPE_USER">
+                    <td>Can Multi-Select
+                    </td>
+                    <td>
+                        <input type="checkbox" name="MultiSelect" id ="MultiSelect" @{if (Model.CustomField.CanMultiSelect)
+                                                                                      {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        Yes
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="All">
+                    <td>Can Filter</td>
+                    <td>
+                        <input type="checkbox" name="CanFilter" id ="CanFilter" @{if (Model.CustomField.CanFilter)
+                                                                                  {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        Yes
+                    </td>
+                </tr>
+
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_NUMERIC">
+                    <td>Minimum Value
+                    </td>
+                    <td>
+                        <input type="text" id="MinimumValue" name="MinimumValue" 
+                           class="input-field input-size9" value="@Model.CustomField.MinValue"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_NUMERIC">
+                    <td>Maximum Value
+                    </td>
+                    <td>
+                        <input type="text" id="MaximumValue" name="MaximumValue" 
+                           class="input-field input-size9" value="@Model.CustomField.MaxValue"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_TEXT">
+                    <td>Maximum Length
+                    </td>
+                    <td>
+                        <input type="text" id="MaximumLength" name="MaximumLength" 
+                           class="input-field required input-size9" value="@(Model.CustomField.MaxLen == 0 ? "" : Model.CustomField.MaxLen.ToString())"/>
+                    </td>
+                </tr>
+                <tr id="SQLStaticRow" data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST">
+                    <td>Select Lookup Type
+                    </td>
+                    <td>
+
+                        <input type="radio" name="LookupType" id="LookupTypeSQL" value ="SQL" @if (!Model.CustomField.UseStaticData)
+                                                                                              {
+                                                                                                  @: checked ="checked" 
+                                                                                              }/>SQL Driven
+                        <input type="radio" name="LookupType" id="LookupTypeStatic" value ="Static" @if (Model.CustomField.UseStaticData)
+                                                                                                    {
+                                                                                                        @: checked ="checked" 
+                                                                                                    }/>Static
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Cascading Parent Field</td>
+                    <td>
+                        @Html.DropDownList("CascadingField", Model.ParentField, new { @class = "input-size6" })
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_CASCADING">
+                    <td>Cascading Lookup Field Name</td>
+                    <td>
+                        <input type="text" id="CascadingLookupValueField" name="CascadingLookupValueField" 
+                           class="input-field required input-size9" value="@Model.CustomField.CascadingLookupValueField"/>
+                    </td>
+                </tr>
+
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Lookup Table Name
+                    </td>
+                    <td>
+                        <input type="text" id="LookupTableName" name="LookupTableName" 
+                           class="input-field required input-size9" value="@Model.CustomField.LookupName"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Lookup Key Field Name
+                    </td>
+                    <td>
+                        <input type="text" id="LookupKeyFieldName" name="LookupKeyFieldName" 
+                           class="input-field required input-size9" value="@Model.CustomField.LookupValueField"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Lookup Description Field Name
+                    </td>
+                    <td>
+                        <input type="text" id="LookupDescriptionFieldName" name="LookupDescriptionFieldName" 
+                           class="input-field required input-size9" value="@Model.CustomField.LookupTextField"/>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Lookup Sort Field Name
+                    </td>
+                    <td>
+                        <input type="text" id="LookupSortFieldName" name="LookupSortFieldName" 
+                           class="input-field required input-size9" value="@Model.CustomField.LookupSortField"/>
+                        <br />
+                        <span style="font-size: small">Will default to description if left blank</span>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_LOOKUP_STATIC" style="display: none">
+                    <td>Static Lookup Data
+                    </td>
+                    <td>
+                        <textarea id="LookupStaticData" name="LookupStaticData" rows="8"
+                            class="input-field required input-size9 ignorefield">@Model.CustomField.LookupData.Aggregate("", (s, data) => s += data.Value + "\n")</textarea>
+                    </td>
+                </tr>
+                @if (Model.CustomField.Id == 0)
+                {
+                    <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                        <td>Create Table in SQL
+                        </td>
+                        <td>
+                            <input type="checkbox" name="CreateTable" id="CreateTable" />
+                            Yes
+                        </td>
+                    </tr>    
+                }
+
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_VERSION" style="display: none">
+                    <td>Limit Version
+                    </td>
+                    <td>
+                        @Html.DropDownList("VersionRestriction", Model.VersionRestrictions, new { @class = "input-size6" })
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMPONENT" style="display: none">
+                    <td>Limit Version
+                    </td>
+                    <td>
+                        @Html.DropDownList("ComponentRestriction", Model.ComponentRestrictions, new { @class = "input-size6" })
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
+                    <td>Filter by Project
+                    </td>
+                    <td>
+                        <input type="checkbox" name="FilterByProject" id ="FilterByProject" @{if (Model.CustomField.ProjectIdFilter)
+                                                                                              {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        Yes
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_USER" style="display: none">
+                    <td>User Groups
+                    </td>
+                    <td>
+                        @Html.ListBox("GroupRestriction", Model.UserRestrictions, new { @class = "input-size9 required ignorefield" })
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="All">
+                    <td>Show with Attributes
+                    </td>
+                    <td>
+                        <input type="checkbox" name="ShowInAttributes" id ="ShowInAttributes" @{if (Model.CustomField.ShowInAttributes)
+                                                                                                {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        Yes
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        gemini_ui.chosen("#Type", null, true);
+        gemini_ui.chosen("#VersionRestriction", null, true);
+        gemini_ui.chosen("#ComponentRestriction", null, true);
+        gemini_ui.chosen("#GroupRestriction", null, true);
+        gemini_ui.chosen("#CascadingField", null, true);
+
+
+        $("input[name='LookupType']").click(function () {
+
+            if ($("#LookupTypeSQL").is(":checked")) {
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL]").show();
+                $("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC]").hide();
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL] input").removeClass("ignorefield");
+                $("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC] textarea").addClass("ignorefield");
+            } else {
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL]").hide();
+                $("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC]").show();
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL] input").addClass("ignorefield");
+                $("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC] textarea").removeClass("ignorefield");
+
+            }
+        });
+
+        $("#Type").change(function () {
+            var type = $(this).val();
+            setupForm(type);
+        });
+
+        $("#CascadingField").change(function () {
+            var field = $(this).val();
+            setupCascading(field > 0);
+        });
+        
+        function setupCascading(isCascading) {
+            if(!isCascading) {
+                //Hide cascading stuff
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_CASCADING]").hide();
+                $("#CascadingLookupValueField").addClass("ignorefield");
+                $("#SQLStaticRow").show();
+            } else {
+                $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_CASCADING]").show();
+                $("#CascadingLookupValueField").removeClass("ignorefield");
+                $("#SQLStaticRow").hide();
+            }
+        }
+
+        function setupForm(type) {
+            $("tr[data-custom=true]").hide();
+            $("tr[data-custom=true] input").addClass("ignorefield");
+            $("tr[data-shown*=" + type + "]").show();
+            $("tr[data-shown*=" + type + "] input").removeClass("ignorefield");
+            $("tr[data-shown=All]").show();
+            $("tr[data-shown=All] input").removeClass("ignorefield");
+            $('#GroupRestriction').addClass("ignorefield");
+
+            if (type == '@Constants.CUSTOM_FIELD_TYPE_LIST' || type == '@Constants.CUSTOM_FIELD_TYPE_COMBO') {
+                @{
+                    if (Model.CustomField.UseStaticData)
+                    {
+                     <text>$("#LookupTypeStatic").attr('checked', 'checked');</text>
+                     <text>$("#LookupTypeStatic").click();</text>
+                  
+                    }
+                    if(Model.CustomField.CascadingParentField!= null && Model.CustomField.CascadingParentField > 0)
+                    {
+                        @:setupCascading(true);
+                    }else{
+                        @:setupCascading(false);
+                    }
+                    
+                }
+            } else if (type == '@Constants.CUSTOM_FIELD_TYPE_USER') {
+                $('#GroupRestriction').removeClass("ignorefield");
+            }
+
+        }
+
+        $("#popup-button-yes").click(function (e) {
+
+            $("#regular-form").validate({ ignore: ".ignorefield" });
+
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                gemini_ajax.postCall("configure/Templates/CustomFields", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+
+        });
+        setTimeout(function () { setupForm($("#Type").val()) }, 10);
+        setupCascading($("#CascadingField").val() > 0);
+            
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

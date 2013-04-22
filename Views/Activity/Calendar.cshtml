@@ -1,0 +1,107 @@
+﻿@model ActivityCalendarModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+    @{Html.RenderPartial("ContentHeader");}
+    
+}
+@section JavaScript
+{
+}
+@section DocumentReady
+{
+gemini_activity.initCalendar();
+}
+@Html.Raw(Model.Styles)
+<div id="Colors">
+    
+</div>
+
+<div id="calendar-title" class="left">
+</div>
+<div id="calendar-control-box">
+    <div id="page-options-box" class="right">
+        <div class="box-right">
+            <div>
+            <div class="option vertical-align">
+                <input class="button-primary button-small" id='calendar-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="@GetResource(ResourceKeys.Prev)" />
+                <input class="button-primary button-small" id='calendar-next' type="button" title="@GetResource(ResourceKeys.Next)" value="@GetResource(ResourceKeys.Next)" />
+            </div>
+            <div class="divider">
+            </div>
+            <div class="option vertical-align">
+                <div id="calendar-month" class="control-icon month" title="@GetResource(ResourceKeys.Monthly)"></div>
+                <div id="calendar-basicweek" class="control-icon basicweek" title="@GetResource(ResourceKeys.Weekly)"></div>
+                <div id="calendar-agendaweek" class="control-icon agendaweek hide"></div>
+                <div id="calendar-basicday" class="control-icon basicday" title="@GetResource(ResourceKeys.Daily)"></div>
+            </div>
+            <div class="divider">
+            </div>
+                <div class="option vertical-align">
+                    <div class="control-icon gear" title="@GetResource(ResourceKeys.Filter)"></div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.CheckBox("IncStartDate", false)
+                            @Html.Label("IncStartDate", GetResource(ResourceKeys.StartDate),new { @class = "checkbox" })
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.CheckBox("IncDueDate", false)
+                            @Html.Label("IncDueDate", GetResource(ResourceKeys.DueDate), new { @class = "checkbox" })
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.CheckBox("IncGantt", false)
+                            @Html.Label("IncGantt", GetResource(ResourceKeys.Duration), new { @class = "checkbox" })
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.ColorBySelected, @GetResource(ResourceKeys.Color))
+                            @Html.DropDownListFor(m => m.ColorBySelected, new SelectList(Model.ColorByValues, "Value", "Text", Model.ColorBySelected))
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='loading' style='display: none'>
+    loading...</div>
+<div id='widget-calendar'>
+</div>
+
+<script type="text/javascript">
+    /*var i = 0;
+    for (i = 0; i < 36; i++) {
+        $("#Colors").append("<div class=\"resource-" + i + "\" style=\"border-left: 30px solid\">" + i + "&nbsp;</div>");
+    }*/
+    /*for (i = 0; i < 36; i= i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    }
+    
+    for (i = 1; i < 36; i = i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    } 
+    for (i = 2; i < 36; i = i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    }
+    for (i =3; i < 36; i = i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    }
+    for (i = 4; i < 36; i = i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    }
+    for (i = 5; i < 36; i = i + 6) {
+        $("#Colors").append("<div class=\"resource-" + i + "\">" + i + "&nbsp;</div>");
+    }
+    */
+</script>
+

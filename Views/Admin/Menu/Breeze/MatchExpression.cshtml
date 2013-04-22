@@ -1,0 +1,72 @@
+﻿@using Countersoft.Gemini.Commons.Breeze
+@model BreezeMatchExpressionModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Regular expressions that can be used to strip or replace email body content. Attach <strong>Match Expressions</strong> to any <strong>Mailbox.</strong></p>
+@if (!GeminiApp.LicenseSummary.HasBreeze())
+{
+    <p id="tab-help-message"><strong>&#187;</strong>&nbsp;@Html.Raw(AppConstants.SalesMessageBreeze)</p>
+}
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-matchexpression" class="basic">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Name" data-required='true'>Name</th>                
+                <th data-field="Expression" data-required='true'>Expression</th>                
+                <th data-field="ReplaceValue" data-required='true'>Replace Value</th>                
+                <th></th>            
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (MatchExpression  item in Model.Expressions)
+            {
+                <tr data-id="@item.Id" id="@item.Id">
+                    <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
+                    <td>@item.Name</td>                
+                    <td>@item.Expression</td>   
+                    <td>@item.ReplaceValue</td>   
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-matchexpression", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 4]}] });
+        gemini_admin.initTableDnD("#table-admin-matchexpression");
+
+        $("#table-admin-matchexpression_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#table-admin-matchexpression").off('click', ".actions span[data-method='delete']").on('click',".actions span[data-method='delete']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_ajax.call("configure/Breeze/MatchExpression", "DeleteMessage", function (response) {
+                gemini_popup.modalConfirm(response.Result, null, function () {
+                    gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                    gemini_ajax.call("configure/Breeze/MatchExpression", "Delete", function (delResponse) {
+                        if (delResponse.Success) {
+                            gemini_admin.removeRow(item);
+                            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                        }
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                });
+            },
+                null, { id: id });
+        });
+
+        $("#table-admin-matchexpression").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Breeze/MatchExpression", "Editor", { id: id });
+        });
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Breeze/MatchExpression", "Add");
+        });
+    });
+</script>

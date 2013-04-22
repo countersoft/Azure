@@ -1,0 +1,134 @@
+﻿@model ProjectsProjectsEditModel
+
+<div id="ProjectLabelContainer" style="height: 450px;">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.Project.Entity.Id" name="Id" id="Id" />
+        <table id="table-admin-projectlabel" class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="field-name">Code</td>
+                    <td>
+                        <input type="text" id="ProjectCode" name="ProjectCode" class="input-field required input-size4" value="@Model.Project.Entity.Code"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Name</td>
+                    <td>
+                        <input type="text" id="ProjectName" name="ProjectName" class="input-field required input-size9" value="@Model.Project.Entity.Name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Description</td>
+                    <td>
+                        <input type="text" id="ProjectDescription" name="ProjectDescription" class="input-field required input-size9" value="@Model.Project.Entity.Description"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Lead</td>
+                    <td>
+                        @Html.DropDownList("ProjectLead", Model.Users, new { @class = "input-size9" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Label</td>
+                    <td>
+                        @Html.DropDownList("ProjectLabel", Model.LabelList, new { @class = "input-size9" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Permissions</td>
+                    <td>
+                        @Html.DropDownList("Permissions", Model.PermissionList, new { @class = "input-size9" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="field-name">Template</td>
+                    <td>@Html.DropDownList("SelectedTemplate", Model.Templates, new { @class = "input-size9" })</td>
+                </tr>
+
+                <tr>
+                    <td class="field-name">Component Assignment Mode</td>
+                    <td>@Html.DropDownList("ComponentAssignment", Model.ComponentAssignmentMode, new { @class = "input-size9" })</td>
+                </tr>
+                <tr>
+                    <td class="field-name">Resource Assignment Mode</td>
+                    <td>@Html.DropDownList("ResourceAssignment", Model.ResourceAssignmentMode, new { @class = "input-size9" })</td>
+                </tr>
+                <tr>
+                    <td class="field-name">Color</td>
+                    <td>
+                        <input type="hidden" name="Color" id="Color" value="@Model.Project.Entity.Color" />
+                        <div id="colorSelector">
+                            <div style="background-color: @Model.Project.Entity.Color"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        @if (Model.Project.Entity.Id > 0)
+        {
+            <text>$("#SelectedTemplate").attr("disabled", "disabled");</text>
+        }
+        
+        gemini_ui.chosen("#ProjectLead", null, true);
+        gemini_ui.chosen("#Permissions", null, true);
+        gemini_ui.chosen("#ProjectLabel", null, true);
+        gemini_ui.chosen("#SelectedTemplate", null, true);
+        gemini_ui.chosen("#ComponentAssignment", null, true);
+        gemini_ui.chosen("#ResourceAssignment", null, true);
+
+        $("#regular-form").validate({ rules: { ProjectCode : { required: true, maxlength: 10 }  } });
+        
+        $("#popup-button-yes").click(function (e)
+        {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+                gemini_ajax.postCall("configure/Projects/Projects", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+                    var tr = $("tr[data-id=@(Model.Project.Entity.Id)]");
+                    if (tr) {
+                        tr.find("td:eq(0)").html($("#ProjectCode").val());
+                        tr.find("td:eq(1)").html($("#ProjectName").val());
+                        tr.find("td:eq(2)").html($("#ProjectLabel option:selected").text());
+                        tr.find("td:eq(4)").html($("#ProjectDescription").val());
+                    }
+                    gemini_popup.popupClose(e);
+                    gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+                    @{
+                        if (Model.Project.Entity.Id == 0)
+                        {
+                            @: gemini_admin.getPage();
+                        }
+                    }
+                }, function () { gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + "&mode=edit");
+
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+        
+        $('#colorSelector', "#ProjectLabelContainer").ColorPicker({
+            onChange: function (hsb, hex, rgb) {
+                $('#colorSelector div', "#ProjectLabelContainer").css('backgroundColor', '#' + hex);
+                $('#ColorCode', "#ProjectLabelContainer").val('#' + hex);
+            },
+            onSubmit: function(hsb, hex, rgb, el) {
+                $(el).val(hex);
+                $(el).ColorPickerHide();
+                $('#Color', "#ProjectLabelContainer").val('#'+hex);
+                $('#Color', "#ProjectLabelContainer").change();
+            },
+            color: '@(Model.Project.Entity.Color)'
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

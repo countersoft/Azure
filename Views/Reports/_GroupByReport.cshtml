@@ -1,0 +1,153 @@
+﻿@model Countersoft.Gemini.Models.Reports.ReportResultModel
+@{
+    if (!Model.ResultsAsGraphModel.All(20).Any())
+    {
+    @GetResource(ResourceKeys.NoData)
+    }
+    else
+    {
+        var height = 20 + 25 * Model.ResultsAsGraphModel.All(120).Count() + "px";
+        
+        <h2>@Model.Title</h2>
+    <br/>
+        
+    <div id='Chart' style="width: 550px; height:@(height);" class="left">
+    </div>
+        
+    <div id="Table" style="width: 400px; padding-top:10px;" class="left ">
+        <div id="cs-template">
+            <table class="cs-properties">
+                <tbody>
+                    @foreach (var item in Model.ResultsAsGraphModel.All(999))
+                    {
+                        <tr>
+                            <td><a href="@string.Format("items?projects={0}&{1}={2}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','),@Model.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphKeyName</a>
+                            </td>
+                            <td><a href="@string.Format("items?projects={0}&{1}={2}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','),@Model.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphCount</a>  
+                            </td>
+                            <td>@item.GraphPercent.GetValueOrDefault().ToString("#0.0") %
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    }
+}
+<script type="text/javascript" language="javascript">
+   
+
+    
+    function DoChart(data, plabels, title) {
+        var chart = new Highcharts.Chart({
+            chart: {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                renderTo: 'Chart',
+                type: 'bar'
+            },
+            colors:[cs_colors.theme_color],
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                labels: {
+                    style: {
+                        width: '100px' 
+                    }
+                },
+                categories: plabels,
+                title: {
+                    text: null
+                }
+                
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                },
+                labels: {
+                    enabled: false
+                },
+                gridLineWidth: 0
+            },
+            tooltip: {
+                formatter: function() {
+                    return '' + this.y;
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return Math.round(this.y);
+                        }
+                    }
+                },
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function () {
+                            location.href = this.options.url;
+                        }
+                    }
+                }
+            }
+            },
+            legend: {
+                enabled:false,
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true,
+                itemWidth: 100
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: '',
+                data: data
+            }],
+
+
+        });
+    }
+    
+     @{
+                          
+         if (Model.ResultsAsGraphModel.All(20).Any())
+         {
+             System.Text.StringBuilder buffer = new System.Text.StringBuilder("[");
+             foreach(var val in Model.ResultsAsGraphModel.All(120))
+             {
+                 buffer.AppendFormat("{{ y:{0}, url:\"{1}\" }},", val.GraphPercent.Value.ToString("#0.00"), "items?projects="+ Model.ProjectIds.ToDelimited(",").TrimEnd(',') + "&" + Model.FilterName + "=" + val.GraphKeys.ToDelimited(",").TrimEnd(',') + "&group=false");
+             }
+             buffer.Remove(buffer.Length - 1, 1);
+             buffer.Append(']');
+             var graphSVals = buffer.ToString();//Model.ResultsAsGraphModel.All(120).Aggregate("[", (s, model) => s += model.GraphPercent.Value.ToString("#0.00") + ",").TrimEnd(',') + "]";
+
+             var graphSLabels = Model.ResultsAsGraphModel.All(120).Aggregate("[", (s, model) => s += "'" + model.GraphKeyName.Replace("'", "\\'") + "',").TrimEnd(',') + "]";
+
+             //var scode = "var " + "datatype_" + item.DataItemId + " = " + graphSVals + ";";
+
+             var scode = "DoChart(" + graphSVals + "," + graphSLabels + ",'" + Model.Title + "');";
+             
+            @Html.Raw(scode)
+       }
+    }
+
+</script>

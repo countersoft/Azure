@@ -1,0 +1,31 @@
+﻿@model RunInfo
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-runs' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Runs) (@Model.Runs.Count)</h3></div>
+<div class='toolbar actions right'>
+@Html.Partial("_AddRunLink", Model.Info)
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+
+@if (Model.Runs.Count > 0)
+{
+<table id="run-details" class="width-100" ><tbody>
+<tr class="cs-grid-column cs-no-hover">
+    <th></th>
+    <th>@GetResource(ResourceKeys.Status)</th>
+    <th>@GetResource(ResourceKeys.Run)</th>
+</tr>
+
+@foreach (var x in Model.Runs)
+{
+<tr id='case-@x.Entity.Id'>
+<td class='cs-simple'>@Html.Partial("_TestAutomated", x.Entity.IsAutomated)</td>
+<td class='cs-status'>@Html.Partial("_TestStatus", new TestStatus() { HasPassed = x.Entity.HasPassed })</td>
+<td class='cs-title-link'>@Html.Partial("_RunSummaryLink", x)</td>
+</tr>
+}
+</tbody></table>
+}
+</div></div>

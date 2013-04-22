@@ -1,0 +1,18 @@
+@{
+    Layout = "_Master.Desktop.cshtml";
+}
+
+@section DocumentReady
+{
+    @RenderSection("DocumentReady", false)
+}
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+@section HeaderContent
+{
+    @RenderSection("HeaderContent", false)
+}
+
+@RenderBody()

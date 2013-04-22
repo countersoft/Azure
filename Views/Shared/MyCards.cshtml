@@ -1,0 +1,67 @@
+﻿@model BaseModel
+
+@foreach (NavigationCard card in Model.SavedCards)
+{
+    if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null)
+    { 
+        <div id="card-@card.Id" data-card-id="@card.Id" class="card-small card-system shadow border @ViewHelpers.CardNotSeenBefore(card)">
+            <a href="@card.Url" target="_blank">
+            <div class="color-block" style="background-color: @card.Color">
+                <div class="badge-count" data-badge-id="@card.Id" data-counter="0">&#187;</div>
+            </div>
+            <div class="content">
+                <div class="textaraea">
+                    <div class="text">
+                        <div>@card.Key</div>
+                        <div class="card-name">@card.Title</div>
+                    </div>
+                </div>
+            </div>                
+            </a>
+        </div>
+    }
+    else if (card.CardType == ProjectTemplatePageType.Marketing)
+    {
+        <div id="card-@card.Id" data-card-id="@card.Id" class="card-small card-system shadow border">
+            <a href="@GeminiContext.Url@card.Url?card=@card.Id">
+            <div class="color-block" style="background-color: @card.Color">
+                <div class="badge-count" data-badge-id="@card.Id" data-counter="0">&#187;</div>
+            </div>
+            <div class="content">
+                <div class="textaraea">
+                    <div class="text">
+                        <div>@card.Key</div>
+                        <div class="card-name">@card.Title</div>
+                    </div>
+                </div>
+            </div>                
+            </a>
+        </div>
+    }
+    else
+    {
+        <div id="card-@card.Id" data-card-id="@card.Id" class="card-small shadow border @ViewHelpers.CardNotSeenBefore(card)">
+            <a href="@GeminiContext.Url@card.Url?card=@card.Id">
+            <div class="color-block @ViewHelpers.CardColorClass(card.CardType)">
+                @if (card.BadgeCount > 0)
+                {
+                    <div class="badge-count" data-badge-id="@card.Id" data-counter="@card.BadgeCount">@card.BadgeCountLabel</div>
+                }
+                else
+                {
+                    <div class="badge-count" data-badge-id="@card.Id" data-counter="0">&nbsp;</div>
+                }
+            </div>
+            <div class="content">
+                <div class="textaraea">
+                    <div class="text">
+                        <div>@card.Key</div>
+                        <div class="card-name">@card.Title</div>
+                    </div>
+                </div>
+                <div class="card-options-icon"><span class="fonticon-arrow-down"></span></div>
+            </div>                
+            </a>
+        </div>
+    }
+}

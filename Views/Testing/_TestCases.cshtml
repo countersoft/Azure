@@ -1,0 +1,26 @@
+﻿@model CaseInfo
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-cases' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Cases) (@Model.Cases.Count)</h3></div>
+<div class='toolbar actions right'>
+@Html.Partial("_AddCaseLink", Model.Info)
+@Html.Partial("_AddTraceability", Model.Info)
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+@if (Model.Cases.Count > 0)
+{
+<table id="case-details" class="width-100" ><tbody>
+@foreach (var x in Model.Cases)
+{
+<tr id='case-@x.Entity.Id'>
+<td class='cs-simple'>@Html.Partial("_TestAutomated", x.Entity.IsAutomated)</td>
+<td class='cs-status'>@Html.Partial("_TestStatus", new TestStatus() { HasPassed = x.Entity.HasPassed })</td>
+<td class='cs-testtype' >@Html.Partial("_TestType", new TestType() { Id = x.Entity.TypeId, Type = x.Type })</td>
+<td class='cs-title-link'>@Html.Partial("_CaseSummaryLink", x)</td>
+</tr>
+}
+</tbody></table>
+}
+</div></div>

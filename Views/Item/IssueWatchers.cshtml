@@ -1,0 +1,47 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5 clear-watchers-article"></div>
+<article class="watchers-article">
+
+    <div id="watchers-find-item-container" class="hide">
+        <span>@GetResourceTemplate(ResourceKeys.User)</span>
+        <input id="watchers-find-item" name="watchers-find-item" type="text" class="input-size7"/>
+    </div>
+
+    <a id="watchers"></a>
+    <div class="section-header clearfix">
+    <div class="clearfix">
+        <div id='watchers-section' class="left">
+            <span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.Followers)&nbsp;(@Model.Issue.Watchers.Count)</h3>
+        </div>
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedWatchers))
+        {
+        <div class="toolbar actions right">
+            <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Followers)"></a>
+        </div>
+        }
+    </div>
+    <div class="divider"></div>
+    <div class="section-content expanded watchers">
+        @if (Model.Issue.Watchers.Count() > 0) {
+            <table>
+                <tr>
+                    <th>@GetResourceTemplate(ResourceKeys.Name)</th>
+                    <th>@GetResourceTemplate(ResourceKeys.Username)</th>
+                    <th>@GetResourceTemplate(ResourceKeys.Email)</th>
+                    <th></th>
+                </tr>
+            @foreach (var watcher in Model.Issue.Watchers)
+            {
+                <tr data-id="@watcher.Entity.UserId">
+                    <td>@watcher.Fullname</td>
+                    <td>@watcher.Username</td>
+                    <td>@watcher.Email</td>
+                    <td>@if(CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedWatchers)){<span class="cursor-pointer action-button-delete" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Followers)"></span>}</td>
+                </tr>
+            }         
+            </table>
+        }
+    </div>
+    </div>
+</article>        

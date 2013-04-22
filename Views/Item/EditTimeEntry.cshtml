@@ -1,0 +1,108 @@
+﻿@model ViewIssueModel
+
+<div id="EditTimeEntryPopupContainer" data-id="@Model.Issue.Id">
+    <form>
+        <input type="hidden" name="id" value="@Model.TimeEntry.Entity.Id" />
+        <table>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.EntryDate)</td>
+                <td><input type="text" class="input-field required input-size5 datepicker dateFormatted" id="issueTimeEntryDate" name="issueTimeEntryDate"  data-date-format="@GeminiContext.User.GeminiDateFormat" value="@Model.TimeEntry.Entity.EntryDate.Date.ToString(GeminiContext.User.DateFormat)"/></td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.Hours)</td>
+                <td><input type="text" class="input-field required input-size2" id="issueTimeEntryHours" name="issueTimeEntryHours" value="@Model.TimeEntry.Entity.Hours"/></td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.Minutes)</td>
+                <td><input type="text" class="input-field required input-size2" id="issueTimeEntryMinute" name="issueTimeEntryMinute" value="@Model.TimeEntry.Entity.Minutes"/></td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.Resource)</td>
+                <td>@Html.DropDownList("issueTimeResource", Model.Resource, new {@class="input-size5"})</td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.TimeType)</td>
+                <td>@Html.DropDownList("issueTimeTimeType", Model.TimeTypes, new {@class="input-size5 required"})</td>
+            </tr>
+            <tr>
+                <td valign="top">@GetResourceTemplate(ResourceKeys.Comment)</td>
+                <td><textarea name="issueTimeComment" rows="3" class="time-entry-comment-box">@Model.TimeEntry.Entity.Comment</textarea></td>
+            </tr>
+        </table>
+    </form>    
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed
+
+        $("#EditTimeEntryPopupContainer form").validate();
+
+        gemini_ui.chosen("#EditTimeEntryPopupContainer select", null, true);
+
+        $('#issueTimeEntryHours').focus(function () {
+            if ($(this).val().indexOf(0) === 0) $(this).val("");
+            $('#issueTimeEntryHours').mask("9?9");
+        });
+
+        $('#issueTimeEntryMinute').focus(function () {
+            if ($(this).val().indexOf(0) === 0) $(this).val("");
+            $('#issueTimeEntryMinute').mask("9?9");
+        });
+
+        $('#issueTimeEntryHours').blur(function () {
+            if ($(this).val() == "") $(this).val(0);
+            $('#issueTimeEntryHours').unmask();
+            
+        });
+
+        $('#issueTimeEntryMinute').blur(function () {
+            if ($(this).val() == "") $(this).val(0);
+            $('#issueTimeEntryMinute').unmask();
+
+        });
+
+
+        if ($('#issueTimeEntryDate').val() == "")
+        {
+            var currentdate = new Date();
+            $('#issueTimeEntryDate').val(("0" + (currentdate.getMonth() + 1)).slice(-2) + "/" + ("0" + currentdate.getDate()).slice(-2) + "/" + currentdate.getFullYear());
+        }
+
+        gemini_ui.datePicker('#EditTimeEntryPopupContainer #issueTimeEntryDate');
+       
+
+        $("#popup-button-yes").click(function (e) {
+            if ($('#issueTimeEntryHours').val() == 0 && $('#issueTimeEntryMinute').val() == 0)
+            {
+                $('#issueTimeEntryHours').val("");
+                $('#issueTimeEntryMinute').val("");
+            }
+
+            if ($("#EditTimeEntryPopupContainer form").valid()) 
+            {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                e.preventDefault();
+                gemini_ajax.postCall(csVars.ProjectUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id") + "/addtimeentry",
+                        function (response) {
+                            if (response.Success) {
+                                var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;
+                                gemini_item.replaceContent(response.Result.Data);
+                                gemini_ui.flashContent(".issue-time-entries-article [data-id='" + response.Result.Data.timeid + "']");
+                                gemini_popup.popupClose(e);
+
+                                if (isCollapsed) gemini_ui.expandCollapse($('.expander', '.dependencies-article').first().parent());
+                            }
+                            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                        },
+                        function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); },
+                        $("#EditTimeEntryPopupContainer form").serialize()
+                    );
+
+            }
+        });
+
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

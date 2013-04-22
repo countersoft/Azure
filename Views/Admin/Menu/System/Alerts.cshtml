@@ -1,0 +1,75 @@
+﻿@model Countersoft.Gemini.Models.Admin.SystemAlertsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Turn emails globally ON or OFF. Configure the "from" email address and more.</p>
+
+<div id="cs-adhoc-page">
+    <form id="system-alerts-form" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="AlertsEnabled" name="AlertsEnabled" @if(Model.AlertsEnabled){ <text>checked="checked"</text> } /><label for="AlertsEnabled">Send email alerts</label></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="EmailCreator" name="EmailCreator" @if(Model.EmailCreator){ <text>checked="checked"</text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="EmailResource" name="EmailResource" @if(Model.EmailResource){ <text>checked="checked"</text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>From Email Address</td>
+                <td><input type="text" id="From" name="From" class="input-size9 required" value="@Model.From"/></td>
+            </tr>
+            <tr>
+                <td>From Display Name</td>
+                <td><input type="text" id="DisplayName" name="DisplayName" class="input-size9 required" value="@Model.DisplayName"/></td>
+            </tr>
+
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+           
+            <tr>
+                <td colspan="2" align="right">
+                    <input id="system-alerts-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                </td>
+            </tr>
+              
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $("#system-alerts-form").validate();
+
+        gemini_ui.triggerChecked("#AlertsEnabled", 
+            "#EmailCreator, #EmailResource, #From, #DisplayName", 
+            "#EmailCreator, #EmailResource, #From, #DisplayName");
+
+        @if(!Model.AlertsEnabled)
+        {
+            <text>$("#EmailCreator, #EmailResource, #From, #DisplayName").attr('disabled','disabled');</text>
+        }
+
+
+        $("#system-alerts-save").click(function (e)
+        {
+            gemini_commons.stopClick(e);
+
+            if (!$("#system-alerts-form").valid()) { return; }
+
+            var formData = $("#system-alerts-form").serialize();
+            
+            gemini_ui.startBusy('#cs-adhoc-page .data-entry-box #system-alerts-save');
+            gemini_ajax.postCall("configure/System/Alerts", "savedata",
+            function () {
+                gemini_popup.toast("Saved");
+                gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-alerts-save');
+            }, function () { gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-alerts-save'); }, formData);
+        });
+    });
+</script>

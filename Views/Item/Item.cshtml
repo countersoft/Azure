@@ -1,0 +1,105 @@
+﻿@model ViewIssueModel
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+    ViewBag.Title = string.Format("{0} {1}", Model.Issue.IssueKey, Model.Issue.Title);   
+}
+
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+   
+    
+<div id="view-item" class="clearfix">
+    
+    <!-- ATTRIBUTES PANE -->    
+    <div id='item-attributes' class="attributes-pane item-pane left">
+    @{Html.RenderPartial("ItemAttributesPane");}
+    </div>
+    <!-- CONTENT PANE -->    
+    <div id='view-item-content-pane' class="contents-pane item-pane">
+
+        @if (Model[ItemAttributeVisibility.AssociatedLinks] && Model.Issue.Links.Count > 0)
+        {
+            <div class='left'>@GetResourceTemplate(ResourceKeys.SeeAlso, Resourcing.Colon)
+                @foreach (var link in Model.Issue.Links)
+                {
+                    var issue = link.Issue.Id == Model.Issue.Id ? link.OtherIssue : link.Issue;
+                    <a class='bold @ViewHelpers.IssueStriked(issue)' href='@Url.Action("Item", "Item", new RouteValueDictionary(new { projectid = issue.Project.Id, projectcode = issue.Project.Code, issueid = issue.Id }))' title='@issue.Title'>@issue.IssueKey</a>
+                }
+            </div>
+
+        }  
+
+        <div class='right' id="filter-navigator">
+            @if(Model.PreviousIssue != null)
+            {
+                <a href="~/project/@Model.PreviousIssue.Tag1/@Model.PreviousIssue.ProjectId/item/@Model.PreviousIssue.Id"><div class="fonticon-arrow-left inline"></div></a>
+            }
+            <a href="~/project/@Model.FilterProjectCode/@Model.FilterProjectId/items">@GetResource(ResourceKeys.Item) <b>@Model.CurrentIssueLocation</b> @GetResource(ResourceKeys.Of, Resourcing.Lower) <b>@Model.TotalIssues</b></a>
+            @if(Model.NextIssue != null)
+            {
+                <a href="~/project/@Model.NextIssue.Tag1/@Model.NextIssue.ProjectId/item/@Model.NextIssue.Id"><div class="fonticon-arrow-right inline"></div></a>
+            }
+        </div>
+        
+        @if (@IsAuthenticated)
+        {
+            <div id="item-action-types" class='right'>
+                @if (@Model.CanEditIssue)
+                {
+                    <div class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)"></div> 
+                }
+                @if (@Model.CanMoveIssue)
+                {
+                    <div class="action-button-move cursor-pointer" title="@GetResource(ResourceKeys.Move)"></div>
+                    <div class="action-button-copy cursor-pointer" title="@GetResource(ResourceKeys.Copy)"></div>
+                }
+                @if(@Model.HasUserVoted == null && @Model.CanUserVote)
+                {
+                    <div class="action-button-vote cursor-pointer" title="@GetResource(ResourceKeys.Vote)"></div>
+                }
+                @if (@Model.Issue.Watchers.Find(w => w.Entity.UserId == GeminiContext.User.Entity.Id) == null)
+                {
+                    <div id="action-follow-unfollow" class="action-button-base fonticon-star-fill cursor-pointer" data-alt-title="@GetResource(ResourceKeys.Unfollow)" title="@GetResource(ResourceKeys.Follow)"></div>
+                }
+                else 
+                {
+                    <div id="action-follow-unfollow" class="action-button-base fonticon-star-fill cursor-pointer color-gold" data-alt-title="@GetResource(ResourceKeys.Follow)" title="@GetResource(ResourceKeys.Unfollow)"></div>
+                }
+                @if (@Model.CanDeleteIssue)
+                {
+                    <div class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)"></div>
+                }
+            </div>
+        }
+
+        <div class="clearfix"></div><br />
+
+        <article>
+            <div class="item-nav">
+                @{Html.RenderPartial("ItemNav");}
+            </div>
+        </article>
+    
+        <div id='cs-template'>
+            <div id='cs-sections'>
+                @Html.Raw(Model.ContentData)   
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="clearfix"></div><br />
+
+@section DocumentReady
+{
+    gemini_item.initItem('@GeminiContext.Project.Entity.Code', @Model.Issue.Entity.Id, @((int)ProjectTemplatePageType.Item), @GeminiContext.PermissionsManager.CanEditItem(Model.Issue).ToJSBool(),'@GetResource(ResourceKeys.DropZoneText)', '@GetResource(ResourceKeys.Delete)');
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#colorbox, #cs-popup,#cs-popup-add').addClass('z-index-max');
+    });
+</script>

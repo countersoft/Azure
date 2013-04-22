@@ -1,0 +1,86 @@
+﻿@model BulkModel
+
+@using Countersoft.Gemini.Infrastructure.Grid;
+@{
+    var classes = new Dictionary<string, object>();
+    classes.Add("class", "admin-data-entry cs-no-hover width-100");
+    
+    var required = new Dictionary<string, object>();
+    required.Add("class", "bold");
+
+    var blank = new Dictionary<string, object>();
+    
+    var alignLeft = new Dictionary<string, object>();
+    alignLeft.Add("style", "text-align:left;");
+
+    var dataTD = new Dictionary<string, object>();
+    dataTD.Add("class", "td-data");
+}
+
+<div style="width: 800px; height: 600px;">
+    <div id="bulk-edit-container">
+        <form id="bulk-edit-form" enctype="multipart/form-data" method="post">
+            @{
+                var fields = Model.Fields.FindAll(f => !f.Value.Hidden);
+            }
+            @Html.HiddenFor(x => x.IssueIds)
+            @Html.Grid(fields).Attributes(classes).Columns( 
+                col => 
+                    { 
+                        //col.For(x=> x.Key).Attributes( x=> x.Item.Value.Required ? required : blank);
+                        col.For(x => Html.Raw(string.Format("<input type='checkbox' class='bulk-toggler' id='bulk_{0}'/><label for='bulk_{0}'>{1}</label>", x.Value.Id, x.Key))).Attributes(x => alignLeft);
+                        col.For(x => Html.Partial(x.Value.TemplateFile, x.Value)).Attributes(x => dataTD);
+                    }
+                   ).RenderHeaders(false).RowAttributes(x => classes)
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $("#bulk-edit-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+    gemini_ui.userAutocomplete('#bulk-edit-container .user-autocomplete');
+
+    $("#popup-button-no").click(function (e) {
+        gemini_popup.popupClose(e);
+    });
+
+    $("#popup-button-yes").click(function (e) {
+        gemini_ui.startBusy('#colorbox #popup-button-yes');
+        // Remove unwanted update fields.
+        $('.bulk-toggler', '#bulk-edit-form table tr td').each(function () {
+            if (!$(this).is(':checked')) {
+                $('#' + $(this).attr('id').substring(5), '#bulk-edit-form table tr td').removeAttr('name');
+                $('input:hidden[name="' + $(this).attr('id').substring(5) + '"]', '#bulk-edit-form table tr td').removeAttr('name');
+            }
+        });
+       
+        gemini_ajax.postCall(csVars.ProjectUrl + "bulk", 'save', function () {
+            gemini_popup.popupClose(e);
+            gemini_filter.getFilteredItemsCurrentPage();
+            gemini_ui.stopBusy('#colorbox #popup-button-yes');          
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $('#bulk-edit-form').serialize());
+    });
+   
+    $('input, select', '#bulk-edit-form table tr td.td-data').prop('disabled', true);
+    $('textarea', '#bulk-edit-form table tr td.td-data').prop('disabled', false);
+
+    $('.bulk-toggler', '#bulk-edit-form table tr td').click(function () {
+        var control = $('#bulk-edit-container #' + $(this).attr('id').substring(5));
+        if ($(this).is(':checked')) {
+            control.prop('disabled', false);
+            control.trigger("liszt:updated");
+        }
+        else {
+            control.prop('disabled', true);
+            control.trigger("liszt:updated");
+        }
+    });
+
+    gemini_ui.chosen('#bulk-edit-form table tr td.td-data select', null, true);
+    gemini_ui.datePicker('#bulk-edit-form .datepicker');
+    gemini_ui.htmlEditor('#bulk-edit-form .wysiwyg-editor');
+
+</script>
+

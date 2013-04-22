@@ -1,0 +1,194 @@
+﻿@media only print
+{
+    /* make some assumption about it being a black and white printout */
+    body 
+    {
+        margin:0; padding:0; 
+        color: #000;
+        background:none;
+    }
+
+    /* Improve colour contrast of links */
+    a:link, a:visited 
+    {
+        background: transparent; 
+        color: #781351;
+        text-decoration:none;
+    }
+    a:link[href^="http://"]:after, a[href^="http://"]:visited:after 
+    {
+        content: " (" attr(href) ") "; font-size: 0px;
+    }
+    a[href^="http://"] 
+    {
+        color:#000;
+    } 
+    
+    /* Image */
+    img, img a
+    {
+        border:none;
+    }
+   
+    /* deal with un-ordered list - need to reset all style parts */
+    ul 
+    {
+        list-style-image: none;
+        list-style-position: outside;
+        list-style-type: none;
+    }
+    ul li 
+    {
+        background:none;
+    }
+
+    /* Remove the various Element that we don't want to print */
+    /* don't show the playlist or search boxes on the PDF */
+    #header, #playlistbox, #searchbox, #search, #account-box, #versions
+    {
+        display:none;
+    }
+    #item-attributes
+    {
+       margin-top:20px;
+    }
+    .comments-wysiwyg-container, .qq-uploader, .item-nav, #cs-popup-add-zone, #comments-section.fonticon-plus, #filter-navigator, .add-comment
+    {
+        display:none;
+    }
+    #view-item .contents-pane .source-control-article table td:last-child, #view-item .contents-pane .source-control-article table th:last-child
+    {
+        display:none;
+    }
+    .watchers-article table td:last-child, .watchers-article table th:last-child
+    {
+        display:none;
+    }
+    .timelogs table td:last-child, #view-item .timelogs table th:last-child
+    {
+        display:none;
+    }
+    /*Remove tour*/
+    #tour-joyride-home, #tour-joyride-planner, #tour-joyride-timeline, #tour-joyride-roadmap
+    {
+        display:none;
+    }
+    #content-header-navigation-text h2, #content-header-navigation-text div
+    {        
+        display: inline;
+        white-space:nowrap;
+        padding-right:5px;
+    }
+    .item-dates-box .label, .author
+    {
+        font-weight:bold;
+    }
+    #item-attributes
+    {
+        display:inline;
+    }
+    #view-item .comments .author-box
+    {
+        border-bottom:2px solid black;
+    }
+    .item-dates-box
+    {
+        padding-top:10px;
+    }
+    #attributes
+    {
+        display: inline;
+        white-space:nowrap;
+    }
+    .item-dates-box, #attributes ul
+    {
+        padding-bottom:20px;
+    }
+    #cs-sections div.section-content td, #cs-sections div.section-content th
+    {
+        border:1px solid black;
+    }
+    table
+    {
+        border-collapse: collapse;
+    }
+    #footer
+    {
+        font-size:12px;
+        position: absolute;
+        bottom:-30px;
+        padding-left:50px;
+    }
+    #tabledata 
+    {
+        margin-top:20px;
+    }
+    #tabledata thead td
+    {
+        border:1px solid #000;
+    }
+    #cs-sections
+    {
+        float:left;
+    }
+    /* if there is a style says don't print - then don't */
+    .noprint
+    {
+        display: none;
+    }
+    /* don't show any of the dropdown menu UL's and LI's in print view or indicator lights*/
+    .dropdown
+    {
+        display:none;
+    }
+    /* no buttons or input controls will be displayed in printout */
+    button, input 
+    {
+        display:none;	
+    }
+    /* don't display the font-icons on teh menu bars, titles, action links, buttons, footer and panel headings */
+    [class*="fonticon-"] 
+    {
+        display:none;	
+    }
+
+    /* attribute grid */
+    //#attributes-wrapper:after
+    //{
+    //    clear:both;
+    //}
+    ul.attributes:after
+    {
+        clear:both;
+    }
+   .attribute 
+    {
+        padding:0;
+        margin:0;
+        width:200px;
+        min-width:200px;
+        float:left;
+    }
+    #attributes-wrapper .attribute-header
+    {
+        font-weight: bold;
+    }
+    #attributes-wrapper .meta-icon 
+    {
+        padding-right:5px; 
+    }
+    #contents-wrapper 
+    {
+        clear:both;
+        display:block;
+        left:0px;
+    }    
+    #contents-wrapper .info
+    {
+        clear:both;
+        padding-top:20px;
+        display:block;
+        left:0px;
+        font-weight:bold;
+    }    
+}

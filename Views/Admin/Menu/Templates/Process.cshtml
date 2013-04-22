@@ -1,0 +1,82 @@
+﻿@model TemplatesProcessModel
+
+@{Html.RenderPartial("~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates);}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Add and maintain the different types of <strong>Process</strong> that projects based on this template will handle (e.g Task, Ticket, Issue). Specify data capture and field permissions on <strong>Screens</strong> and status changes and permissions on <strong>Workflow</strong>.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-types" class="basic">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Image" data-required='true'></th>                
+                <th data-field="Label" data-required='true'>Type</th>                
+                <th data-field="Color" data-edit-type='color'>Color</th>    
+                <th></th>            
+                <th></th>            
+                <th></th>            
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (IssueTypeDto item in Model.Types)
+            {
+                <tr data-id="@item.Entity.Id" id="@item.Entity.Id">
+                    <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
+                    <td data-edit="false" class="no-width"><img src="@item.FullImagePath" class="valign-text-bottom"/></td>
+                    <td>@item.Entity.Label</td>                
+                    <td>@item.Entity.Color</td>
+                    <td data-edit="false" class="no-width"><a href="#" id="screens">Screens</a></td>
+                    <td data-edit="false" class="no-width"><a href="#" id="workflow">Workflow</a></td>                
+                    <td data-edit="false" class="actions">
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        @if(!Model.Types.Any(t => t.Entity.Screen.ReferenceId == item.Entity.Id || t.Entity.Workflow.ReferenceId == item.Entity.Id)){<span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>}
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-types", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 4, 5, 6] }] });
+        gemini_admin.initTableDnD("#table-admin-types");
+
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-types").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e) {
+        
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Process", "DeleteForm", { id: id }, null, "Delete");
+        });
+
+        $("#table-admin-types").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function ()
+        {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id });
+        });
+
+        $("#table-admin-types").off('click', "#screens").on('click', "#screens", function (e)
+        {
+            gemini_commons.stopClick(e);
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'screens', Template: gemini_admin.currentTemplate });
+        });
+
+        $("#table-admin-types").off('click', "#workflow").on('click', "#workflow", function (e) {
+            gemini_commons.stopClick(e);
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'workflow', Template: gemini_admin.currentTemplate });
+        });
+
+        $("#table-admin-types_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Templates/Process", "Add");
+        });
+
+    });
+</script>

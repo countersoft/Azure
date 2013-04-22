@@ -1,0 +1,92 @@
+﻿@{
+    var userToursettings = GeminiContext.User.GetSettings().TourStatus;
+    bool anonymousUser = GeminiContext.User.Entity.Id == Constants.AnonymousUserId;
+}
+@if(!anonymousUser)
+{
+if (!userToursettings.Contains("items-1"))
+{
+    <ol id="tour-joyride-items-1" class="hide">
+        <li data-id="project-menu-dropdown" data-options="nubPosition: top;" data-button="Okay">
+            <p>You can access your project menu anytime. View planning boards, timelines, calendars, reports and more.</p>
+        </li>
+        <li data-class="filter-general-option" data-options="nubPosition: bottom;" data-button="Neat">
+            <p>Use the instant filter to control what you see in the grid. Roll-up items across all your projects in real-time, real quick.</p>
+        </li>
+        <li data-class="odd" data-options="" data-button="Nice">
+            <p>Left click any field to change the value. Right-click to access the item action menu.</p>
+        </li>
+        <li data-class="drop-zone" data-options="" data-button="Thanks">
+            <p>Drag-drop any item to the 'sequenced' zone to define physical order. Works great for agile teams and everyone sees what you see.</p>
+        </li>
+        <li data-id="grid-column-picker" data-options="nubPosition: right;" data-button="Okay">
+            <p>Pick columns, bulk update, import, excel reporting and full screen mode available here.</p>
+        </li>
+        <li data-id="pin-page" data-options="nubPosition: right;" data-button="Wow">
+            <p>Bookmark this page to create an App-Nav card and share with your co-workers. Retains your filter criteria and receive updates when something changes.</p>
+        </li>
+        <li data-id="plus-header" data-options="nubPosition: right;" data-button="Got it">
+            <p>And finally you can click here to add new items to your project. Take special notice of the Rapid Plan facility!</p>
+        </li>
+    </ol>
+}
+else if (!userToursettings.Contains("home"))
+{
+    <ol id="tour-joyride-home" class="hide">
+        <li data-id="all-projects-menu-box" data-options="" data-button="Okay">
+            <p>You can get to your most used projects from the Gemini start button.</p>
+        </li>
+        <li data-class="projects-dropdown-toggle" data-options="" data-button="Nice">
+            <p>Drop down any project category box to see what projects are inside.</p>
+        </li>
+        <li data-class="user-link" data-options="nubPosition: right;" data-button="Thanks">
+            <p>Access your profile, Gemini customization options and Visual Help from here.</p>
+        </li>
+        <li data-class="card-small" data-options="" data-button="Cool">
+            <p>Say hello to App-Nav - Gemini's unique approach to personal navigation and view sharing. Bookmark, share and subscribe for notifications.</p>
+        </li>
+    </ol>
+}
+else if (!userToursettings.Contains("planner"))
+{
+    <ol id="tour-joyride-planner" class="hide">
+        <li data-id="items-filter" data-options="" data-button="Okay">
+            <p>Filter what you see below on the planner by setting your filter criteria. You can visually plan across multiple projects or resources.</p>
+        </li>
+        <li data-id="PlannerLevel" data-options="nubPosition: right;" data-button="Nice">
+            <p>Zoom in and out to see more or less information per card -- great for planning large projects.</p>
+        </li>
+        <li data-id="planner-axis-option" data-options="nubPosition: right;" data-button="Cool">
+            <p>Change both vertical and horizontal data axes and flip them with a single click.</p>
+        </li>
+        <li data-class="plan-content" data-options="nubPosition: top;" data-button="Got it">
+            <p>Drag-drop to move any card and right-click on the card for its action menu.</p>
+        </li>
+        <li data-class="paging-total" data-options="nubPosition: top;" data-button="Thanks">
+            <p>Here is something you won't find anywhere else - paging swimlanes that enable you to navigate large work logs with ease.</p>
+        </li>
+        <li data-class="axis-label-header" data-options="nubPosition: top;" data-button="Neat">
+            <p>Click the plus sign to create new cards.</p>
+        </li>
+    </ol>
+}
+else if (!userToursettings.Contains("timeline"))
+{
+    <ol id="tour-joyride-timeline" class="hide">
+        <li data-id="timeline-datepicker" data-options="nubPosition: right;" data-button="Okay">
+            <p>Look at the past history of this project by selecting a date range. See what items were created, who made changes and what new comments were added.</p>
+        </li>
+    </ol>
+}
+else if (!userToursettings.Contains("roadmap"))
+{
+    <ol id="tour-joyride-roadmap" class="hide">
+        <li data-id="versions" data-options="nubPosition: top;" data-button="Okay">
+            <p>Choose your release and see its progress. Break down large work plans into smaller manageable deliveries via logical release/phase/version hierarchy.</p>
+        </li>
+        <li data-class="total" data-options="nubPosition: top;" data-button="Got it">
+            <p>Quick facts about the selected release tell you how you are tracking.</p>
+        </li>
+    </ol>
+}
+}

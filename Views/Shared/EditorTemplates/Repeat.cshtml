@@ -1,0 +1,44 @@
+﻿@model RepeatFieldModel
+<div id="repeat-box">
+<span>Every</span>
+                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_Interval" name="@(Model.Id)_Interval" @if(Model.Interval !=0){ <text>value="@Model.Interval"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="9999999" />
+                @Html.Partial("~/views/shared/editortemplates/combobox.cshtml", Model.IntervalType)
+                <span id="repeat-on">on</span>
+                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_OnNumber" name="@(Model.Id)_OnNumber" @if(Model.RepeatOnNumber !=0){ <text>value="@Model.RepeatOnNumber"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="31" />            
+                @Html.Partial("~/views/shared/editortemplates/combobox.cshtml", Model.RepeatDays)            
+                &nbsp;<span id="repeat-maximum" >maximum</span>&nbsp;
+                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_Maximum" name="@(Model.Id)_Maximum" @if(Model.Maximum !=0){ <text>value="@Model.Maximum"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="99999999" />                        
+                &nbsp;times.
+                <div id='repeat-chkWeekdays' class="margin-top-5"><input type="checkbox" id="@(Model.Id)_WeekdaysOnly" name="@(Model.Id)_WeekdaysOnly" @if(Model.WeekdaysOnly) {<text>checked="checked"</text>}  /><label for="@(Model.Id)_WeekdaysOnly">weekdays only</label></div>
+</span>
+<script type="text/javascript">
+
+    $('#@Model.IntervalType.Id').change(function () { SetRepeatInputs(); });
+    SetRepeatInputs();
+
+    function SetRepeatInputs() {
+        var repeatPeriod = $('#@Model.IntervalType.Id').val();
+        
+        $('#@Model.IntervalType.Id').removeClass('input-size6').addClass('input-size3');
+        $('#@Model.RepeatDays.Id').removeClass('input-size6').addClass('input-size3');
+
+        if (repeatPeriod == "days") {
+            $('#@(Model.Id)_OnNumber').hide();
+            $('#@Model.RepeatDays.Id').hide();
+            $('#repeat-on').hide();
+            $('#repeat-chkWeekdays').show();
+        }
+        else if (repeatPeriod == "weeks") {
+            $('#@(Model.Id)_OnNumber').hide();
+            $('#@Model.RepeatDays.Id').show();
+            $('#repeat-on').show();
+            $('#repeat-chkWeekdays').hide();
+        }
+        else {
+            $('#@(Model.Id)_OnNumber').show();
+            $('#@Model.RepeatDays.Id').hide();
+            $('#repeat-on').show();
+            $('#repeat-chkWeekdays').hide();
+        }
+    }
+</script>

@@ -1,0 +1,166 @@
+﻿@model ProjectsProjectsTemplateModel
+
+<div id="cs-template" class="change-template-popup" style="height: 450px; min-width: 600px;">
+    <div id="change-template-container">    
+        <form id="change-template-form">
+            <input type="hidden" value="@Model.Project.Entity.Id" name="id" id="id" />
+        
+            <div class="margin-bottom-20">
+                Select new template: @Html.DropDownList("SelectedTemplate", Model.Templates, new { @class = "input-size6" })
+            </div>
+
+            <table id="table-change-template" class="cs-properties width-100" cellpadding="0" cellspacing="0">
+                <tbody>
+                
+                    <tr><td colspan="2" style="font-size: 16px;">Process</td></tr>
+                    @foreach(var item in Model.SourceType)
+                    {
+                        <tr>
+                            <td style="font-weight: normal;">&nbsp;&nbsp;@item.Entity.Label.ToMaxMore(35)</td>
+                            <td>@Html.DropDownList("type-" + item.Entity.Id, Model.TargetType, new { @class = "input-size6", data_previous = item.Entity.Label })</td>
+                        </tr>
+                    }
+
+                    <tr><td colspan="2" style="font-size: 16px;">Priority</td></tr>
+                    @foreach (var item in Model.SourcePriority)
+                    {
+                        <tr>
+                            <td style="font-weight: normal;">&nbsp;&nbsp;@item.Entity.Label.ToMaxMore(35)</td>
+                            <td>@Html.DropDownList("priority-" + item.Entity.Id, Model.TargetPriority, new { @class = "input-size6", data_previous = item.Entity.Label  })</td>
+                        </tr>
+                    }
+
+                    <tr><td colspan="2" style="font-size: 16px;">Severity</td></tr>
+                    @foreach (var item in Model.SourceSeverity)
+                    {
+                        <tr>
+                            <td style="font-weight: normal;">&nbsp;&nbsp;@item.Entity.Label.ToMaxMore(35)</td>
+                            <td>@Html.DropDownList("severity-" + item.Entity.Id, Model.TargetSeverity, new { @class = "input-size6", data_previous = item.Entity.Label  })</td>
+                        </tr>
+                    }
+
+                    <tr><td colspan="2" style="font-size: 16px;">Status</td></tr>
+                    @foreach (var item in Model.SourceStatus)
+                    {
+                        <tr>
+                            <td style="font-weight: normal;">&nbsp;&nbsp;@item.Entity.Label.ToMaxMore(35)</td>
+                            <td>@Html.DropDownList("status-" + item.Entity.Id, Model.TargetStatus, new { @class = "input-size6", data_previous = item.Entity.Label  })</td>
+                        </tr>
+                    }
+
+                    <tr><td colspan="2" style="font-size: 16px;">Resolution</td></tr>
+                    @foreach (var item in Model.SourceResolution)
+                    {
+                        <tr>
+                            <td style="font-weight: normal;">&nbsp;&nbsp;@item.Entity.Label.ToMaxMore(35)</td>
+                            <td>@Html.DropDownList("resolution-" + item.Entity.Id, Model.TargetResolution, new { @class = "input-size6", data_previous = item.Entity.Label  })</td>
+                        </tr>
+                    }
+                    
+                    @if (Model.SourceLink.Count > 0 && Model.TargetLink.Any())
+                    {
+                        <tr><td colspan="2" style="font-size: 16px;">Links</td></tr>
+                        foreach (var item in Model.SourceLink)
+                        {
+                            <tr>
+                                <td style="font-weight: normal;">&nbsp;&nbsp;@item.Label.ToMaxMore(35)</td>
+                                <td>@Html.DropDownList("link-" + item.Id, Model.TargetLink, new {@class = "input-size6", data_previous = item.Label })</td>
+                            </tr>
+                        }
+                    }
+                    
+                    @if (Model.SourceTime.Count > 0 && Model.TargetTime.Any())
+                    {
+                        <tr><td colspan="2" style="font-size: 16px;">Time</td></tr>
+                        foreach (var item in Model.SourceTime)
+                        {
+                            <tr>
+                                <td style="font-weight: normal;">&nbsp;&nbsp;@item.Label.ToMaxMore(35)</td>
+                                <td>@Html.DropDownList("time-" + item.Id, Model.TargetTime, new {@class = "input-size6", data_previous = item.Label })</td>
+                            </tr>
+                        }
+                    }
+                    
+                    @if (Model.SourceCustomField.Count > 0 && Model.TargetCustomField.Any())
+                    {
+                        <tr><td colspan="2" style="font-size: 16px;">Custom Field</td></tr>
+                        foreach (var item in Model.SourceCustomField)
+                        {
+                            <tr>
+                                <td style="font-weight: normal;">@item.Entity.Name.ToMaxMore(35)</td>
+                                <td>@Html.DropDownList("customfield-" + item.Entity.Id, Model.TargetCustomField, new {@class = "input-size6", data_previous = item.Entity.Name })</td>
+                            </tr>
+                        }
+                    }
+                    else if (!Model.TargetCustomField.Any())
+                    {
+                        <tr><td colspan="2" style="font-size: 16px;">Custom Field</td></tr>
+                        <tr>
+                            <td style="font-weight: normal;"></td>
+                            <td>Warning Custom Field data will NOT be migrated to new template.</td>
+                        </tr>                        
+                    }
+                </tbody>
+            </table>
+            <div class="margin-top-10">
+               <input type="checkbox" name="confirmChange" id="confirmChange"><label id="confirmChange-label" for="confirmChange" style="color:red;">Yes, change project template!</label>
+               <input type="checkbox" name="confirmAgain" id="confirmAgain"><label id="confirmAgain-label" for="confirmAgain" style="color:red;">Yes I am sure!</label>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function showError(checkboxName) {
+        $('#' + checkboxName).focus();
+    }
+
+    $(document).ready(function ()
+    {
+        $("#change-template-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+        
+        $("#popup-button-yes").unbind("click").click(function (e)
+        {
+            if ($('#confirmChange').is(':checked')) {
+                if ($('#confirmAgain').is(':checked')) {
+                    gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                    gemini_ajax.postCall("configure/Projects/Projects", "SaveData", function () {
+                        gemini_popup.toast("Saved");
+                        gemini_popup.popupClose(e);
+                        gemini_admin.getPage();
+                        gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                    }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#change-template-form").serialize() + "&mode=move");
+                }
+                else {
+                    showError('confirmAgain');
+                    //alert("Are you sure? If so, please check 'Confirm the change'");
+                }
+            }
+            else {
+                showError('confirmChange');
+                //alert("Want to change to different template? Please check 'Change to different template'");
+            }
+        });
+
+        $("#popup-button-no").unbind("click").click(function (e) { gemini_popup.popupClose(e); });
+        
+        $('select', '#table-change-template').each(function () {
+            var text = $(this).attr('data-previous');
+            $("option", this).each(function () {
+                if ($(this).text() == text) {
+                    $(this).attr('selected', 'selected');
+                }
+            });
+        });
+
+        $('#SelectedTemplate').unbind("change").change(function (e)
+        {
+            gemini_ajax.postCall("configure/Projects/Projects", "Editor",
+                function (response)
+                {
+                    $(".change-template-popup").replaceWith(response.Result.Html);
+                }, null, { id: $('#id').val(), mode: 'move', other: $('#SelectedTemplate').val() });
+        });
+    });
+</script>

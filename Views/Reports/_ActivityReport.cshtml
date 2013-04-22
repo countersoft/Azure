@@ -1,0 +1,77 @@
+﻿@model Countersoft.Gemini.Models.Reports.ReportResultModel
+
+<div id="cs-template">
+    
+    
+ @if (!Model.ResultsAsActivity.Any())
+ {
+     <div id="no-data">
+         @GetResource(ResourceKeys.NoData)
+     </div>
+ }
+ else
+ {
+    
+
+     <table id="tableComponentActivity" class="reportTable width-100">
+         <thead>
+             <tr class="cs-grid-column center">
+                 <th style="width: 200px;">
+                 </th>
+                 <th colspan="3">@Model.StartDate.Value.ToShortDateString()</th>
+                 <th colspan="3">@Model.StartDate.Value.AddDays(-7).ToShortDateString()</th>
+                 <th colspan="3">@Model.StartDate.Value.AddDays(-14).ToShortDateString()</th>
+                 <th colspan="3">@Model.StartDate.Value.AddDays(-21).ToShortDateString()</th>
+                 <th colspan="3">@GetResource(ResourceKeys.Any)</th>
+             </tr>
+             <tr class="cs-grid-column">
+                 <th>
+                 </th>
+                 <th>@GetResource(ResourceKeys.Created)</th>
+                 <th>@GetResource(ResourceKeys.Closed)</th>
+                 <th>+/-</th>
+                 <th>@GetResource(ResourceKeys.Created)</th>
+                 <th>@GetResource(ResourceKeys.Closed)</th>
+                 <th>+/-</th>
+                 <th>@GetResource(ResourceKeys.Created)</th>
+                 <th>@GetResource(ResourceKeys.Closed)</th>
+                 <th>+/-</th>
+                 <th>@GetResource(ResourceKeys.Created)</th>
+                 <th>@GetResource(ResourceKeys.Closed)</th>
+                 <th>+/-</th>
+                 <th>@GetResource(ResourceKeys.Created)</th>
+                 <th>@GetResource(ResourceKeys.Closed)</th>
+                 <th>+/-</th>
+             </tr>
+         </thead>
+         <tbody>
+             @foreach (var itemActivityModel in Model.ResultsAsActivity)
+             {
+            
+                 <tr>
+                     <td data-item-id="@itemActivityModel.ItemId" class="report-field">@itemActivityModel.ItemName</td>
+                     <td >@itemActivityModel.CreatedW0</td>
+                     <td>@itemActivityModel.ClosedW0</td>
+                     <td class="difference">@(itemActivityModel.ClosedW0 - itemActivityModel.CreatedW0)</td>
+
+                     <td>@itemActivityModel.CreatedW1</td>
+                     <td>@itemActivityModel.ClosedW1</td>
+                     <td class="difference">@(itemActivityModel.ClosedW1 - itemActivityModel.CreatedW1)</td>
+
+                     <td>@itemActivityModel.CreatedW2</td>
+                     <td>@itemActivityModel.ClosedW2</td>
+                     <td class="difference">@(itemActivityModel.ClosedW2 - itemActivityModel.CreatedW2)</td>
+
+                     <td>@itemActivityModel.CreatedW3</td>
+                     <td>@itemActivityModel.ClosedW3</td>
+                     <td class="difference">@(itemActivityModel.ClosedW3 - itemActivityModel.CreatedW3)</td>
+
+                     <td>@itemActivityModel.TotalCreated</td>
+                     <td>@itemActivityModel.TotalClosed</td>
+                     <td class="difference">@(itemActivityModel.TotalClosed - itemActivityModel.TotalCreated)</td>
+                 </tr>                    
+             }
+         </tbody>
+     </table>
+     }
+</div>

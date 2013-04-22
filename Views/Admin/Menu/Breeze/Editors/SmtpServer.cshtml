@@ -1,0 +1,148 @@
+﻿@model BreezeSmtpServerEditModel
+<div id="BreezeQueuesItemContainer" style="height: 365px;">
+    <form id="regular-form">
+    <input type="hidden" value="@Model.SmtpServer.Id" name="Id" Id="Id" />
+    <table id="table-admin-breezequeue" class="admin-data-entry">
+        <tbody>
+            <tr>
+                <td class="field-name">Name
+                </td>
+                <td>
+                    <input type="text" id="Name" name="Name" 
+                               class="input-field required input-size9" value="@Model.SmtpServer.Name"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Server
+                </td>
+                <td>
+                    <input type="text" id="Server" name="Server" 
+                           class="input-field required input-size9" value="@Model.SmtpServer.Server"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Server Port
+                </td>
+                <td>
+                    <input type="text" id="ServerPort" name="ServerPort" 
+                           class="input-field required input-size2" value="@Model.SmtpServer.ServerPort"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Authentication Mode
+                </td>
+                <td>
+                     @Html.DropDownList("AuthMode", Model.AuthModes, new { @class = "input-size6 required" })
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Username
+                </td>
+                <td>
+                    <input type="text" id="Username" name="Username" 
+                           class="input-field input-size9" value="@Model.SmtpServer.Username"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Password
+                </td>
+                <td>
+                    <input type="password" id="Password" name="Password" 
+                           class="input-field input-size9" value="@Model.SmtpServer.Password"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Encoding
+                </td>
+                <td>
+                    @Html.DropDownList("EncodingType", Model.EncodingTypes, new { @class = "input-size6 required" })
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Use SSL
+                </td>
+                <td>
+                    <input type="checkbox" id="UseSsl" name="UseSsl" @if (Model.SmtpServer.UseSsl)
+                                                                     {
+                                                                         @: checked="checked"
+                                                                     }/>
+                </td>
+            </tr>
+            <tr id="ssl-modes" style="display:none;">
+                <td class="field-name">SSL Mode
+                </td>
+                <td>
+                    @Html.DropDownList("SslMode", Model.SslModes, new { @class = "input-size6 required" })
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('option', '#SslMode').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#SslMode", null, true);
+        gemini_ui.setDropdownValue("#SslMode", '@(Model.SmtpServer.SslMode)');
+
+        $('option', '#EncodingType').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#EncodingType", null, true);
+        gemini_ui.setDropdownValue("#EncodingType", '@(Model.SmtpServer.EncodingType)');
+
+        $('option', '#AuthMode').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#AuthMode", null, true);
+        gemini_ui.setDropdownValue("#AuthMode", '@(Model.SmtpServer.AuthMode)');
+
+        //reset validation on AuthMode Change
+          $("#AuthMode").change(function() {
+              if ($("#AuthMode").val() == 'NONE') {
+                  $("#Username").attr('class', 'input-field input-size9');
+                  $("#Password").attr('class', 'input-field input-size9');
+              }
+              else {
+                  $("#Username").attr('class', 'input-field required input-size9');
+                  $("#Password").attr('class', 'input-field required input-size9');
+              }
+          });
+
+        @if (Model.SmtpServer.UseSsl)
+        {
+            @: $("#ssl-modes").toggle();
+        }
+        
+        $("#UseSsl").click(function () {
+            $("#ssl-modes").toggle();
+        });
+
+        $("#popup-button-yes").click(function (e) {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall("configure/Breeze/SmtpServer", "SaveData", function (response) {
+                    
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+
+                    setTimeout(function() {
+                        if (!response.Result == "") {
+                            $("#system-email-trace").html(response.Result).fadeIn('fast');
+                        }
+                    }, 1000);
+
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

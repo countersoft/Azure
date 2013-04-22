@@ -1,0 +1,46 @@
+﻿<div id="TemplateDuplicate">
+    <form id="regular-form">
+        <table id="table-template-duplicate" class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>Template Key</td>
+                    <td><input type="text" id="template-key" name="template-key" class="input-field required input-size5" value=""/></td>
+                </tr>
+                <tr>
+                    <td>Template Name</td>
+                    <td><input type="text" id="template-name" name="template-name" class="input-field required input-size9" value=""/></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#regular-form").validate();
+
+        $("#template-key").rules("add", {
+            alphanumeric: true
+        });
+
+        jQuery.validator.addMethod("alphanumeric", function (value, element, params) {
+            return value.match(/^[a-zA-Z0-9]*$/);
+        }, '');
+
+        $("#popup-button-yes").click(function (e) {
+
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall("configure/template", "duplicate/" + gemini_admin.currentTemplate, function () {
+                    gemini_popup.toast("Saved");
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize());
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

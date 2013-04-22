@@ -1,0 +1,17 @@
+﻿@model ListItem
+@{
+    string cssClass = ViewData["CssClass"] as string ?? string.Empty;
+    string headerCss = string.Empty;
+    if (Model.IsHeaderOnly) { cssClass = string.Concat(cssClass, ' ', "invisible"); headerCss = "drop-down-header"; }
+    else if(!cssClass.Contains("project-filter") && !cssClass.Contains("columns-picker-item"))
+    {
+        cssClass = string.Concat(cssClass, ' ', "filter-changer");
+    }
+    else if (cssClass.Contains("columns-picker") && Model.ItemId.StartsWith("cf_", StringComparison.InvariantCulture))
+    {
+        headerCss = "bold";
+    }
+}
+<li>
+@Html.CheckBoxFor(m => m.IsSelected, new { @class = cssClass })@Html.HiddenFor(m => m.ItemId)@Html.LabelFor(m => m.IsSelected, Model.ItemText, new { title= Model.ItemLabel, @class = headerCss })
+</li>

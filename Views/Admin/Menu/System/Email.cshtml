@@ -1,0 +1,93 @@
+﻿@model Countersoft.Gemini.Models.Admin.SystemEmailModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Configure your <strong>Email</strong> server that Gemini will use for outbound notification emails sent to users.</p>
+
+<div id="cs-adhoc-page">
+    <form id="system-email-form" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tr>
+                <td>Smtp Server</td>
+                <td><input type="text" id="SmtpServer" name="SmtpServer" class="input-size9 required" value="@Model.SmtpServer"/></td>
+            </tr>
+            <tr>
+                <td>Smtp Port</td>
+                <td><input type="text" id="SmtpPort" name="SmtpPort" class="input-size2 required" value="@Model.SmtpPort"/></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            
+            <tr>
+                <td>Authentication Mode</td>
+                <td>@Html.DropDownList("AuthMode", Model.AuthenticationMode, new {@class="input-size5"})</td>
+            </tr>
+            <tr>
+                <td>Authentication Username</td>
+                <td><input type="text" id="AuthenticationUsername" name="AuthenticationUsername" class="input-size9" value="@Model.AuthenticationUsername"/></td>
+            </tr>
+            <tr>
+                <td>Authentication Password</td>
+                <td><input type="password" id="AuthenticationPassword" name="AuthenticationPassword" class="ignore input-size9" value="@Model.AuthenticationPassword"/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="PopBeforeSend" name="PopBeforeSend" @if(Model.PopBeforeSend){ <text>checked="checked"</text> } /> Call POP3 Before Sending Emails</td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" id="Ssl" name="Ssl" @if(Model.Ssl){ <text>checked="checked"</text> } /> Use SSL</td>
+            </tr>
+            <tr>
+                <td>Ssl Protocol</td>
+                <td>@Html.DropDownList("SslMode", Model.SslProtocol, new {@class="input-size5"})</td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>              
+            
+            <tr>
+                <td>Encoding</td>
+                <td>@Html.DropDownList("EncodingType", Model.Encoding, new {@class="input-size5"})</td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>     
+
+            <tr class="button-row">
+                <td colspan="2" align="right">
+                    <input id="system-email-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                </td>
+            </tr>
+            
+            <tr>
+                <td colspan="2"><p id="system-email-trace" class="info-label-2"></p></td>
+            </tr>
+              
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#system-email-form").validate();
+
+        $("#system-email-save").click(function (e) {
+            gemini_commons.stopClick(e);
+            
+            try {
+                if (!$("#system-email-form").valid()) { return; }
+                $("#system-email-trace").hide();
+
+                var formData = $("#system-email-form").serialize();
+                gemini_ui.startBusy('#cs-adhoc-page #system-email-save');
+                gemini_ajax.postCall("configure/System/Email", "savedata",
+                function (response) {
+                    gemini_admin.saveFinished("#system-email-save");
+                     $("#system-email-trace").html(response.Result).fadeIn('fast');
+                    gemini_ui.stopBusy('#cs-adhoc-page #system-email-save');
+                }, function () { gemini_ui.stopBusy('#cs-adhoc-page #system-email-save'); }, formData);
+            } 
+            catch (e) {
+            }
+
+        });
+    });
+    
+</script>

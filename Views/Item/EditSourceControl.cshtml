@@ -1,0 +1,51 @@
+﻿@model ViewIssueModel
+
+<div id="EditScPopupContainer" data-id="@Model.Issue.Id">
+    <form>
+        <table>
+            <tr>
+                <td><span>@GetResourceTemplate(ResourceKeys.FileName)</span></td>
+                <td> <input id="sc-file-name" name="sc-file-name" type="text" class="input-size7 required" maxlength="255"/></td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.FilePath)</td>
+                <td><input id="sc-file-path" name="sc-file-path" type="text" class="input-size7 required" maxlength="255"/></td>
+            </tr>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.Repository)</td>
+                <td><input id="sc-repository" name="sc-repository" type="text" class="input-size7 required" maxlength="255"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed
+
+        $("#sc-add-item-container form").validate();
+
+        $("#popup-button-yes").click(function (e) {
+            if ($("#EditScPopupContainer form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                e.preventDefault();
+                gemini_ajax.postCall(csVars.ProjectUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditScPopupContainer").attr("data-id")+ "/addsourcecontrol",
+                        function AddDependencyResponse(response) {
+                            if (response.Success) {
+                                gemini_item.replaceContent(response.Result.Data);
+                                gemini_ui.flashContent(".source-control-article [data-id='" + response.Result.Data.scId + "']");
+                                gemini_popup.popupClose(e);
+                            }
+                            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                        },
+                        function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); },
+                        $("#EditScPopupContainer form").serialize()
+                    );
+
+            }
+        });
+
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProjectDocumentDto>
+<table id="filelist">
+    <thead>
+        <tr>
+            <th>
+                @GetResource(ResourceKeys.Name)
+            </th>
+            <th>
+                @GetResource(ResourceKeys.Description)
+            </th>
+            <th>
+                @GetResource(ResourceKeys.FileSize)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doc in Model)
+        {
+            <tr>
+                <td>@doc.Entity.Name
+                </td>
+                <td>@doc.Entity.Description
+                </td>
+                <td>@doc.Entity.FileSize
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

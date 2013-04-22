@@ -1,0 +1,17 @@
+﻿<div style='padding:10px;'>
+<div id='inline-edit-pane' style='margin:5px;'>
+{{html FieldsMarkup}}
+</div>
+</div>
+{{if Buttons.Count > 0}}
+<br /><br />
+<div id='inline-save' style='position:absolute;text-align:right;bottom:0px;margin:0 10px 10px 0;width:98%;'>
+<div class="right">
+<div class="actions">
+{{each Buttons}}
+    <button class='btn xbtn-${value.Style.ToString().ToLower()}' data-gemini-action='{{html value.Action}}'>${value.Title}</button> 
+{{/each}}
+</div>
+</div>
+</div>
+{{/if}}

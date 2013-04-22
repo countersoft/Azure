@@ -1,0 +1,92 @@
+﻿@model HistoryRunInfo
+
+@{
+    string arrow = "right";
+    string contentstate = "collapsed";
+    bool autoOpen = false;
+}
+
+@if(Model.HistorySelected.SelectedRun == Model.Run.Entity.Id)
+{
+    arrow = "down";
+    contentstate = "expanded";
+    autoOpen = true;
+}
+
+
+<div class='section-header run clearfix' style="padding-left: 10px;">
+    <div class="clearfix">
+        <div id='section-steps' class="left">
+            @{
+                string state = ResourceKeys.Pending;
+                if (Model.Cases.SelectMany(c => c.RunSteps).Any(s => s.HasPassed.HasValue && s.HasPassed == false))
+                {
+                    state = ResourceKeys.Failed;
+                }
+                else if (Model.Cases.SelectMany(c => c.RunSteps).All(s => s.HasPassed.HasValue && s.HasPassed.Value == true))
+                {
+                    state = ResourceKeys.Passed;
+                }
+            }
+
+            <table class="width-100">
+                <tr class="no-hover">
+                    <td class="no-width">
+                        <span class='expander fonticon-arrow-@arrow'></span>    
+                    </td>
+                    <td class="no-wrap no-width">
+                        <h4>@string.Format("{0}-{1}", GetResource(ResourceKeys.Run), Model.Run.Entity.Id)</h4>
+                    </td>
+                    <td>@Model.Run.BindingText</td>
+                    <td class="no-width no-wrap">
+                        <span class="info-label-4">
+                            <span class="label">@GetResource(ResourceKeys.Created)</span>
+                            <span class="data">@Model.Run.CreatedBy</span>
+                            <span class="label">@GetResource(ResourceKeys.ItemsRaised)</span>
+                            <span class="data">@Model.IssuesRaised.Issues.Count()</span>
+                        </span>
+                    </td>
+                    <td class="no-width no-wrap">@Model.Run.Entity.Revised</td>
+                    <td class="no-width pad-right-10">
+                        <div class='@state.ToLower()'>@GetResource(state)</div>
+                    </td>
+                </tr>
+                <tr class="no-hover">
+                    <td></td>
+                    <td colspan="3">@Model.Run.Entity.Description</td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+
+        </div>
+        @*<div class='heading-row clearfix'>
+            <div class='summary'>@Model.Run.Entity.Summary</div>
+            <div class="date">@Model.Run.Entity.Revised</div>
+            <div class='status'><div class='pending'>Pending</div></div>
+        </div>*@
+    </div>
+    <div class='divider'></div>
+    
+    
+    <div class='section-content @contentstate'>
+        
+        @Html.Partial("~/views/testing/_ItemsRaised.cshtml", Model.IssuesRaised, new ViewDataDictionary
+            {
+                new KeyValuePair<string, object>("state", contentstate), 
+                new KeyValuePair<string, object>("issueid", Model.HistorySelected.SelectedIssue)
+            })
+
+        @foreach (var Case in Model.Cases)
+        {
+            @Html.Partial("~/views/testing/_CaseDetail.cshtml", Case)
+        }
+    </div>
+</div>
+
+
+@if(autoOpen)
+{
+    <script type="text/javascript">
+        $("#section-widget-AC93C4F9-B512-4A3D-8B37-BC3D5F83429D h3").click();
+    </script>
+}

@@ -1,0 +1,71 @@
+﻿@model ViewIssueModel
+
+<div id="EditDescriptionPopupContainer">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.Issue.Id" name="id" id="id"/>
+        <table>
+            @if(Model[ItemAttributeVisibility.Title])
+            {
+            <tr class="TitleContainer">
+                <td></td>
+                <td><input type="text" class="input-field required input-size15" name="IssueTitle" value="@Model.Issue.Title"/></td>
+            </tr>
+            }
+            @if(Model[ItemAttributeVisibility.Description])
+            {
+            <tr class="DescriptionContainer">
+                <td></td>
+                <td><textarea id="DescriptionWysiwygTextarea" name="DescriptionWysiwygTextarea">@Model.Issue.Description</textarea></td>
+            </tr>
+            }
+        </table>
+    </form>
+    
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed
+        
+        // need to have a delay timer otherwise tinymce doesn't find the textarea from partial view
+         @if(Model[ItemAttributeVisibility.Description])
+         {<text>
+             setTimeout(function () {
+                 gemini_ui.htmlEditor("#DescriptionWysiwygTextarea", null, "");
+                 tinyMCE.execCommand('mceFocus', false, 'DescriptionWysiwygTextarea');
+             }, 25);       
+             </text>
+         }
+        $("#popup-button-yes").click(function (e) {
+            postEditDescription()
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+
+            
+        gemini_commons.inputKeyHandler('#EditDescriptionPopupContainer .TitleContainer input',
+            function () {
+                postEditDescription();
+            },
+            false, false)            
+       
+        function postEditDescription()
+        {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall(csVars.ProjectUrl + "item", $('#id', "#EditDescriptionPopupContainer").val() + "/updatedescription", function (response) {
+
+                    gemini_popup.popupClose();
+                    if (response.Success) {
+                        gemini_item.replaceContent(response.Result);
+                    }
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize());
+            }
+        }
+
+    });
+
+
+</script>

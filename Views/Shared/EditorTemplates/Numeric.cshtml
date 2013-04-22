@@ -1,0 +1,8 @@
+﻿@model NumericFieldModel
+
+<input type="text" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" value="@Model.Value" class="@Model.Classes @(Model.Decimal ? "number" : "digits") @(Model.Required ? "required" : "")" min="@Model.MinValue" max="@Model.MaxValue" />
+@if (Model.Associated != null)
+{
+    <span>@Model.AssociatedSpacer</span>
+    <input type="text" title="@Model.Associated.Tooltip" id="@Model.Associated.Id" name="@Model.Associated.Id" value="@Model.Associated.Value" class="@Model.Associated.Classes @(Model.Associated.Decimal ? "number" : "digits") @(Model.Associated.Required ? "required" : "")" min="@Model.Associated.MinValue" max="@Model.Associated.MaxValue" />
+}

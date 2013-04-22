@@ -1,0 +1,71 @@
+﻿@model BreezeReplyAddressesEditModel
+<div id="BreezeReplyaddressessItemContainer">
+    <form id="regular-form">
+    <input type="hidden" value="@Model.Email.Id" name="Id" id="Id" />
+    <table id="table-admin-breezereplyaddresses" class="admin-data-entry">
+        <tbody>
+            <tr>
+                <td class="field-name">From Email
+                </td>
+                <td>
+                    <input type="text" id="Email" name="Email" class="input-field required email input-size9" value="@Model.Email.Email"/>
+                    <p class="pad-bottom-10 pad-top-5">(Use {current-user} for the logged in user's email)</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top"><label for="UseUserFullname">&nbsp;</label>
+                </td>
+                <td valign="middle">
+                    <input type="checkbox" id="UseUserFullname" name="UseUserFullname" @if (Model.Email.UseUserFullname)
+                                                                         {
+                                                                             @: checked="checked" 
+                                                                         }/><label for="UseUserFullname">Set 'From' display name to the user who sends the reply</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top">Projects
+                </td>
+                <td>
+                    @Html.ListBox("Project", Model.Projects, new { @class = "input-size9" })
+                    <p class="pad-bottom-10 pad-top-5">(leave empty to associate this email with all projects)</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top"><label for="UseUserFullname">Disabled</label>
+                </td>
+                <td valign="middle">
+                    <input type="checkbox" id="Disabled" name="Disabled" @if (!Model.Email.Active)
+                                                                         {
+                                                                             @: checked="checked" 
+                                                                         }/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_ui.chosen("#Project", null, true);
+        $("#popup-button-yes").click(function (e) {
+            if ($('#Email').val() == '{current-user}') {
+                $('#Email').removeClass('email');
+            }
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall("configure/Breeze/ReplyAddresses", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

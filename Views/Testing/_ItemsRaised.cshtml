@@ -1,0 +1,69 @@
+﻿@model HistoryIssuesRaised
+
+@{
+    string arrow = "right";
+    string contentstate = "collapsed";    
+}
+
+@if (Model.Issues.Select(i=>i.Entity.Id).Contains(Model.HistorySelected.SelectedIssue))
+{
+    arrow = "down";
+    contentstate = "expanded";    
+}
+
+
+@if (Model.Issues.Any())
+{
+        
+    <div class='section-header items-created clearfix pad-left-20'>
+        <div class="clearfix">
+            <div>
+                <table class="width-100 grid">
+                    <tr class="cs-no-hover">
+                        <td class="no-width">
+                            <span class='expander fonticon-arrow-@arrow'></span>
+                        </td>
+                        <td class="no-width no-wrap">
+                            <h5>@GetResource(ResourceKeys.ItemsRaised)</h5>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class='divider'></div>
+        <div class='section-content @contentstate'>
+            <table class="width-100 grid">
+                <tr>
+                    <th>@GetResource(ResourceKeys.ItemKey)</th>
+                    <th>@GetResource(ResourceKeys.Title)</th>
+                    <th>@GetResource(ResourceKeys.ReportedBy)</th>
+                    <th>@GetResource(ResourceKeys.Revised)</th>
+                    <th>@GetResource(ResourceKeys.Status)</th>
+
+                </tr>
+                <tbody class="grid">
+                    @foreach (var issueDto in Model.Issues)
+                    {
+                        var cls = "";
+                        if(issueDto.Entity.Id == Model.HistorySelected.SelectedIssue)
+                        {
+                            cls = "highlight";
+                        }
+                        <tr class="@cls">
+                            <td class="no-width no-wrap">@Html.Partial("~/views/testing/_ItemLink.cshtml", issueDto)</td>
+                            <td>@Html.Raw(issueDto.Entity.Title)</td>
+                            <td>@Html.Raw(issueDto.Reporter)</td>
+                            <td class="minor no-width no-wrap">@Html.Raw(issueDto.Revised)</td>
+                            <td class="no-wrap no-width">
+                                @Html.Partial("~/views/testing/_TestItemState.cshtml", new TestType() { Id = issueDto.Entity.StatusId, Type = issueDto.Status })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+}

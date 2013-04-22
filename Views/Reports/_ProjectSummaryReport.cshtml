@@ -1,0 +1,103 @@
+﻿@model ProjectDto
+
+<h2>@Model.Entity.Name</h2>
+<br/>
+    
+<ul id="report-summary-items">
+    <li>
+        <div id="ComponentSummaryContainer">
+        </div>
+    </li>
+    <li>
+        <div id="VersionSummaryContainer">
+        </div>
+    </li><li>
+             <div id="ResourceSummaryContainer">
+             </div>
+         </li>
+    <li>
+        <div id="TypeSummaryContainer">
+        </div>
+    </li>
+    <li class="">
+        <div id="PrioritySummaryContainer">
+        </div>
+    </li>
+    <li>
+        <div id="SeveritySummaryContainer">
+        </div>
+    </li>
+    <li>
+        <div id="StatusSummaryContainer">
+        </div>
+    </li>
+    <li>
+        <div id="ResolutionSummaryContainer">
+        </div>
+    </li>
+    
+</ul>
+<script type="text/javascript">
+
+    var options = $("#ReportParams").serializeArray();
+    var reportIndex = 0;
+
+    for (index = 0; index < options.length; ++index) {
+        if (options[index].name == "Reports") {
+            reportIndex = index;
+            break;
+        }
+    }
+
+    options[reportIndex].value = 31;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadComponents, null, jQuery.param(options));
+    options[reportIndex].value = 32;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadVersions, null, jQuery.param(options));
+    options[reportIndex].value = 33;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadResources, null, jQuery.param(options));
+    options[reportIndex].value = 34;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadTypes, null, jQuery.param(options));
+    options[reportIndex].value = 35;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadPriorities, null, jQuery.param(options));
+    options[reportIndex].value = 36;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadSeverities, null, jQuery.param(options));
+    options[reportIndex].value = 37;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadStatuses, null, jQuery.param(options));
+    options[reportIndex].value = 38;
+    gemini_ajax.postCall(csVars.ProjectUrl + "report", "get", LoadResolutions, null, jQuery.param(options));/**/
+    
+    //gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadComponents, null, $.extend(gemini_reports.options, { Reports: 31 }));
+    /*gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadVersions, null, $.extend(gemini_reports.options, { Reports: 32 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadResources, null, $.extend(gemini_reports.options, { Reports: 33 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadTypes, null, $.extend(gemini_reports.options, { Reports: 34 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadPriorities, null,$.extend(gemini_reports.options,  { Reports: 35 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadSeverities, null, $.extend(gemini_reports.options, { Reports: 36 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadStatuses, null, $.extend(gemini_reports.options, { Reports: 37 }));
+    gemini_ajax.call(csVars.ProjectUrl + "report", "get", LoadResolutions, null, $.extend(gemini_reports.options, { Reports: 38 }));*/
+
+    function LoadComponents(response) {
+        $("#ComponentSummaryContainer").html(response.Result.Html);
+    }
+    function LoadVersions(response) {
+        $("#VersionSummaryContainer").html(response.Result.Html);
+    }
+    function LoadResources(response) {
+        $("#ResourceSummaryContainer").html(response.Result.Html);
+    }
+    function LoadTypes(response) {
+        $("#TypeSummaryContainer").html(response.Result.Html);
+    }
+    function LoadPriorities(response) {
+        $("#PrioritySummaryContainer").html(response.Result.Html);
+    }
+    function LoadSeverities(response) {
+        $("#SeveritySummaryContainer").html(response.Result.Html);
+    }
+    function LoadStatuses(response) {
+        $("#StatusSummaryContainer").html(response.Result.Html);
+    }
+    function LoadResolutions(response) {
+        $("#ResolutionSummaryContainer").html(response.Result.Html);
+    }
+
+</script>

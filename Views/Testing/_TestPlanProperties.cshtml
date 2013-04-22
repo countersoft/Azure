@@ -1,0 +1,37 @@
+﻿@model TestPlanModel
+<div class='section-header clearfix'>
+<div class="clearfix">
+<div id='section-properties' class="left"><span class='expander fonticon-arrow-down'></span><h3>@GetResource(ResourceKeys.Details)</h3></div>
+<div class='toolbar actions right'>
+    <!-- Icons -->
+</div>
+</div>
+<div class='divider'></div>
+<div class='section-content expanded'>
+@if (Model.Properties != null)
+{
+<table class= "cs-properties" ><tbody>
+@foreach (var x in Model.Properties)
+{
+<tr class="cs-no-hover">
+<td class='cs-header'>@x.Value</td>
+<td class='cs-title'>@Html.Raw(x.Text)</td>
+</tr>
+}
+<tr class="cs-no-hover">
+<td class='cs-header'>@GetResource(ResourceKeys.RunStatistics)</td>
+<td class='cs-title'>@Html.Partial("_PropertiesStatus", Model.Dto)</td>
+</tr>
+@if (Model.CustomFields.Count > 0)
+{
+    foreach (var x in Model.CustomFields)
+    {
+<tr class="cs-no-hover">
+<td class='cs-header'>@x.Title</td>
+<td class='cs-title'>@Html.Raw(@x.FormattedData)</td>
+</tr>
+    }
+}
+</tbody></table>
+}
+</div></div>

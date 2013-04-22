@@ -1,0 +1,40 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5 clear-source-control-article"></div>
+<article class="source-control-article">
+    <a id="sourcecode"></a>
+    <div class="section-header clearfix">
+    <div class='clearfix'>
+        <div id='sourcecode-section' class="left"><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.SourceControl)&nbsp;(@Model.Issue.SourceControlFiles.Count)</h3></div>
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedSourceControl))
+        {
+            <div class="toolbar actions right">
+                <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.SourceControl)"></a>
+            </div>
+        }
+    </div>
+    <div class="divider"></div>
+    <div class="section-content expanded source-code">
+        @if (@Model.Issue.SourceControlFiles.Count > 0 )
+        {
+            <table>
+               <tr>
+                   <th>@GetResourceTemplate(ResourceKeys.FileName)</th>
+                   <th>@GetResourceTemplate(ResourceKeys.FilePath)</th>
+                   <th>@GetResourceTemplate(ResourceKeys.Repository)</th>
+                   <th></th>
+               </tr>
+            @foreach (var source in Model.Issue.SourceControlFiles)
+            {
+                <tr data-id="@source.Id">
+                    <td>@source.Name</td>
+                    <td>@source.Path</td>
+                    <td>@source.Repository</td>
+                    <td>@if(CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedSourceControl)){<span class="cursor-pointer action-button-delete" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.SourceControl)"></span>}</td>
+                </tr>
+            }
+            </table>
+        }
+    </div>
+    </div>
+</article>        

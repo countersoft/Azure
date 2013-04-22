@@ -1,0 +1,2 @@
+﻿@model TestRunStep
+<div class='cs-icon @string.Format("fonticon-{0}", (Model.HasPassed.HasValue ? ((bool)Model.HasPassed ? "tick" : "cross" ) : "space" ))'></div>

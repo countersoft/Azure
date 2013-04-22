@@ -1,0 +1,190 @@
+﻿@model TemplatesScreensModel
+
+<div id="screen-popup" class="templates" style="height: 500px;">
+    <div class="pad-bottom-15 clearfix">
+        <div class="left">
+            @if (Model.ReferenceScreens.Count() > 1)
+            {
+                <text>Define who can create, edit and view data for <span class="bold">@Model.Label</span>, or use an existing screen layout: @Html.DropDownList("ReferenceId", Model.ReferenceScreens, new {@class = "input-size5"})</text>
+            }
+            else
+            {
+                <text>Define who can create, edit and view data for <span class="bold">@Model.Label</span>.</text>
+            }
+        </div>
+        <div class="right"></div>
+    </div>
+    <input type='hidden' id="type-id" value="@Model.Id"/>
+    <div id="screens-container">
+        <div id="create-screen" class="left" style="width:290px">
+            <div class="screen-title"><input type="checkbox" id="create-screen-select-all" />Creating</div>
+            <ul id="create-list-attributes">
+                <li class="header margin-bottom-10">Attributes</li>
+                @foreach (var field in Model.Create.Attributes)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "create") }); }
+                    </li>
+                }
+            </ul>
+            @if(Model.Create.Content.Count>0)
+            {
+            <ul id="create-list-content">
+                <li class="header margin-top-10 margin-bottom-10">Content</li>
+                @foreach (var field in Model.Create.Content)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "create") }); }
+                    </li>
+                }
+            </ul>
+            }
+        </div>
+        <div id="edit-screen" class="left" style="width:290px">
+            <div class="screen-title"><input type="checkbox" id="edit-screen-select-all" />Editing</div>            
+            <ul id="edit-list-attributes">
+                <li class="header margin-bottom-10">Attributes</li>
+                @foreach (var field in Model.Edit.Attributes)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "edit") }); }
+                    </li>
+                }
+            </ul>
+            @if(Model.Edit.Content.Count>0)
+            {
+            <ul id="edit-list-content">
+                <li class="header margin-top-10 margin-bottom-10">Content</li>
+                @foreach (var field in Model.Edit.Content)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "edit") }); }
+                    </li>
+                }
+            </ul>
+            }
+        </div>
+        <div id="view-screen" class="left" style="width:290px">
+            <div class="screen-title"><input type="checkbox" id="view-screen-select-all" />Viewing</div>            
+            <ul id="view-list-attributes">
+                <li class="header margin-bottom-10">Attributes</li>
+                @foreach (var field in Model.View.Attributes)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "view") }); }
+                    </li>
+                }
+            </ul>
+            <ul id="view-list-content">
+                <li class="header margin-top-10 margin-bottom-10">Content</li>
+                @foreach (var field in Model.View.Content)
+                {   
+                    <li class="screen-field">
+                        @{ Html.RenderPartial("~/Views/Admin/Menu/Templates/Editors/_ScreenAttribute.cshtml", field, new ViewDataDictionary { new KeyValuePair<string, object>("Stage", "view") }); }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $("#screens-container").jScrollPane({ /*autoReinitialise: true, autoReinitialiseDelay: 250*/ });
+
+        applySortable("#create-list-attributes");
+        applySortable("#create-list-content");
+        applySortable("#edit-list-attributes");
+        applySortable("#edit-list-content");
+        applySortable("#view-list-attributes");
+        applySortable("#view-list-content");
+
+        gemini_ui.chosen('#attribute-options-ProjectGroup', null, true);
+
+        $('input[type="checkbox"]', '#screens-container').change(function (e)
+        {
+            $(this).siblings("label").toggleClass("screen-field-selected");
+        });
+
+        gemini_admin.attributeOptionsPicker('#screens-container #attribute-options-trigger', function (e) {
+            return $(e).siblings("input");
+        }, true);
+       
+        $("#popup-button-yes").unbind("click").click(function (e) {
+            gemini_commons.stopClick(e);
+            gemini_admin.hideAttributeOptionsPicker();
+            var data = [];
+            $('input[type="checkbox"]:checked', '#screens-container').each(function (e) {
+
+                var id = $(this).attr('id');
+                if (id != "create-screen-select-all" && id != "edit-screen-select-all" && id != "view-screen-select-all")
+                {
+                    data.push({
+                        Id: id,
+                        GlobalGroups: $(this).attr('data-global-groups'),
+                        ProjectGroups: $(this).attr('data-project-groups'),
+                        Type: $(this).attr('data-type'),
+                        Required: $(this).attr('data-required')
+                    });
+                }
+            });
+            gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/Templates/Process", "savedata",
+                function (response) {
+                    gemini_popup.popupClose(e);
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() });
+        });
+
+        $("#popup-button-no").unbind("click").click(function (e) {
+            gemini_admin.hideAttributeOptionsPicker();
+            gemini_popup.popupClose(e);
+        });
+
+        gemini_ui.toggleCheckbox("#create-screen-select-all", '#create-screen input[type="checkbox"]',
+            function (e) { $(e).siblings("label").addClass("screen-field-selected"); }, 
+            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
+        gemini_ui.toggleCheckbox("#edit-screen-select-all", '#edit-screen input[type="checkbox"]',
+            function (e) { $(e).siblings("label").addClass("screen-field-selected"); },
+            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
+        gemini_ui.toggleCheckbox("#view-screen-select-all", '#view-screen input[type="checkbox"]',
+            function (e) { $(e).siblings("label").addClass("screen-field-selected"); },
+            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
+
+        $('#ReferenceId').change(function (e) {
+            gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/Templates/Process", "Editor",
+                function (response) {
+                    $("#screen-popup").replaceWith(response.Result.Html);
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', ReferenceId: $('#ReferenceId').val() });
+        });
+        
+        processReference(); 
+    });
+    
+    function applySortable(selector) {
+        $(selector).sortable({
+            forcePlaceholderSize: true,
+            placeholder: "drag-placeholder",
+            containment: selector,
+            delay: '250',
+            start: function (event, ui) {
+                $(ui.helper).addClass("drag-highlight");
+            },
+            stop: function (event, ui) {
+                $(ui.item).removeClass("drag-highlight");
+            }
+        });
+    }
+    
+    function processReference() {
+        if ($('#ReferenceId').val() > 0) {
+            $('input[type="checkbox"]', '#screens-container').attr('disabled', 'disabled');
+        }
+        else {
+            $('input[type="checkbox"]', '#screens-container').removeAttr('disabled');
+        }
+    }
+</script>

@@ -1,0 +1,16 @@
+﻿<li class="attribute" >
+    <ul>
+        <li class='attribute-header' data-attribute-id='@Model.Attribute'>
+            <div class='title'>@Model.Title</div>
+            <div class='fonticon-arrow-right action'></div>
+        </li>
+        <li class='widget-item attribute-value'>
+            <span id='@Model.Id'>@if(Model.Image.Length > 0) {
+            <img src='@Model.Image' class='meta-icon' />
+            }
+            @if (Model.HtmlRaw){@Html.Raw(Model.Value)}else{@Model.Value}
+            </span>
+        </li>
+    </ul>
+</li>
+

@@ -1,0 +1,6 @@
+﻿@model UserSettings
+
+@if (GeminiContext.IsAuthenticated && Model.Actions.Count > 0)
+{
+    <div id="user-actions-history-box-latest">»&nbsp;<a href="~/@Model.Actions[0].Url">@Model.Actions[0].Label.ToMaxMore(20)</a></div>
+}

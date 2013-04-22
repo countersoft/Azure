@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tour</title>
+
+<script src="libs/easeljs-0.4.2.min.js"></script>
+<script src="libs/tweenjs-0.2.0.min.js"></script>
+<script src="libs/movieclip-0.4.1.min.js"></script>
+<script src="libs/preloadjs-0.1.0.min.js"></script>
+<script src="appnav.js"></script>
+
+<script>
+var canvas, stage, exportRoot, images;
+
+function init() {
+	canvas = document.getElementById("canvas");
+	images = {};
+
+	var manifest = [
+		{src:"images/pointercursor.png", id:"pointercursor"},
+		{src:"images/linkcursor.png", id:"linkcursor"},
+		{src:"images/card.png", id:"card"},
+		{src:"images/drag.png", id:"drag"},
+		{src:"images/bg.png", id:"bg"}
+	];
+
+	var loader = new PreloadJS(false);
+	loader.onFileLoad = handleFileLoad;
+	loader.onComplete = handleComplete;
+	loader.loadManifest(manifest);
+}
+
+function handleFileLoad(o) {
+	if (o.type == "image") { images[o.id] = o.result; }
+}
+
+function handleComplete() {
+	exportRoot = new lib.Tour();
+
+	stage = new Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+
+	Ticker.setFPS(24);
+	Ticker.addListener(stage);
+}
+</script>
+</head>
+    <body onload="init();" style="margin:0 0 0 10px;padding:0;" >
+        <p style="margin:0 0 22px 0; line-height: 2em; font-family: Verdana; font-size:12px;">Create an AppNav&trade; card by clicking on the Pin icon or by dragging an area of the bar into the space above. Pin whatever is important to you and use the Badge counts to track changes by your co-workers.</p>
+        <canvas id="canvas" width="550" height="400" style="background-color:white;"></canvas>
+    </body>
+</html>

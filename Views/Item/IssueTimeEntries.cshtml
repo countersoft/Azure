@@ -1,0 +1,57 @@
+﻿@model ViewIssueModel
+
+
+<div class="clearfix pad-bottom-5 clear-issue-time-entries-article"></div>
+<article class="issue-time-entries-article">
+   <a id="timelog"></a>
+    <div class="section-header clearfix">
+    <div class="clearfix">
+        <div id='timelog-section' class="left"><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.Time)&nbsp;(@Model.Issue.TimeEntries.Count)</h3></div>
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedTime))
+        {
+        <div class="toolbar actions right">
+                <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Time)"></a>
+        </div>
+        }
+    </div>
+    <div class="divider"></div>
+    <div class="section-content expanded timelogs">
+        @if (Model.Issue.TimeEntries.Count() > 0) 
+        {
+            <table>
+            <tr>
+                <th>@GetResource(ResourceKeys.Date)</th>
+                <th>@GetResource(ResourceKeys.Resource)</th>
+                <th>@GetResource(ResourceKeys.TimeType)</th>
+                <th>@GetResource(ResourceKeys.Hours)</th>
+                <th>@GetResource(ResourceKeys.Minutes)</th>
+                <th>@GetResource(ResourceKeys.Comment)</th>
+                <th></th>
+            </tr>
+            @{int hours = 0;
+              int minutes = 0;}
+
+            @foreach (var time in Model.Issue.TimeEntries)
+            {
+                hours += time.Entity.Hours;
+                minutes += time.Entity.Minutes;
+                <tr data-id="@time.Entity.Id">
+                    <td>@time.Entity.EntryDate.ToShortDateString()</td>
+                    <td>@time.Fullname</td>
+                    <td>@time.TimeType</td>
+                    <td>@time.Entity.Hours<span>h</span></td>
+                    <td>@time.Entity.Minutes<span>m</span></td>
+                    <td>@time.Entity.Comment</td>
+                    <td>@if(CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.AssociatedTime)){<div class="cursor-pointer action-button-edit" title="@GetResource(ResourceKeys.Edit) @GetResource(ResourceKeys.Time)"></div><div class="cursor-pointer action-button-delete" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Time)"></div>}</td>
+                </tr>
+            }
+            </table>
+             int total = ((@hours*60) + @minutes);
+             int hour = @total / 60;
+             int minute = @total % 60;
+             <span class="time-entry-total">@GetResourceTemplate(ResourceKeys.Total) @string.Concat(@GetResourceTemplate(ResourceKeys.Time),": ")  @hour @GetResourceTemplate(ResourceKeys.Hours) @minute @GetResourceTemplate(ResourceKeys.Minutes)</span>
+       
+        }
+    </div>
+    </div>
+</article>

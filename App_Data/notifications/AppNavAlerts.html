@@ -1,0 +1,65 @@
+﻿<table style="width: 100%; font-family: arial; font-size: 16px; font-weight: bold; border: none; background-color: #8f0929;" cellpadding="20">
+   <tbody>
+      <tr>
+         <td style="color: white;">GEMINI TRACKER</td>
+      </tr>
+   </tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c;">Just to let you know that there are <strong>@(Model.ChangeCount) changes </strong> to your <strong>@(Model.CardTitle)</strong> AppNav card.</td>
+      </tr>
+   </tbody>
+</table>
+@if (Model.TheItemsCreated.Count > 0)  {   
+<h2 style="margin: 10px 0 10px 20px;">New</h2>
+<table style="margin-left: 40px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
+   <tbody>
+      @foreach(var item in Model.TheItemsCreated)   {    
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;"><a href="@(Model.GeminiUrl)project/@(item.ProjectCode)/@(item.Entity.ProjectId)/item/@(item.Entity.Id)">@(item.IssueKey)</a></td>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; font-weight: normal; font-size: 12px;">@(item.Title)</td>
+      </tr>
+      }   
+   </tbody>
+</table>
+}    @if (Model.TheItemsUpdated.Count > 0)  {   
+<h2 style="margin: 10px 0 10px 20px;">Changed</h2>
+<table style="margin-left: 40px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
+   <tbody>
+      @foreach(var item in Model.TheItemsUpdated)   {    
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;"><a href="@(Model.GeminiUrl)project/@(item.ProjectCode)/@(item.Entity.ProjectId)/item/@(item.Entity.Id)">@(item.IssueKey)</a></td>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; font-weight: normal; font-size: 12px;">@(item.Title)</td>
+      </tr>
+      }   
+   </tbody>
+</table>
+}    @if (Model.TheItemsCommented.Count > 0)  {   
+<h2 style="margin: 10px 0 10px 20px;">Comments</h2>
+<table style="margin-left: 40px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
+   <tbody>
+      @foreach(var item in Model.TheItemsCommented)   {    
+      <tr>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;">@(item.Comments[0].Entity.Fullname)</td>
+         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; font-weight: normal; font-size: 12px;">     <a href="@(Model.GeminiUrl)project/@(item.ProjectCode)/@(item.Entity.ProjectId)/item/@(item.Entity.Id)#comments">@(item.IssueKey)</a>     &nbsp;@(item.Title)</td>
+      </tr>
+      }   
+   </tbody>
+</table>
+}    
+<table style="font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   <tbody>
+      <tr>
+         <td style="color: #4c4c4c;">Thanks.</td>
+      </tr>
+   </tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 11px; font-weight: normal; border: none; background-color: #8f0929;" cellpadding="5">
+   <tbody>
+      <tr>
+         <td style="color: white;">Sent by Countersoft Gemini v@(Model.Version)</td>
+      </tr>
+   </tbody>
+</table>

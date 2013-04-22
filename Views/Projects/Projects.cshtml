@@ -1,0 +1,68 @@
+﻿@model AllProjectsModel
+
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+@section HeaderContent
+{
+     @{Html.RenderPartial("ContentHeader");}
+}
+
+<div id="projects-dash">
+    
+    <div id="cs-template">
+        <div id="intro">
+            <div class="all-projects-box">
+                <div class="text">@Model.TotalProjectsCount @GetResource(ResourceKeys.Projects)</div>
+            </div>  
+        
+            <div id="welcome-box">
+                <div class="welcome-title">
+                    @GeminiContext.Config.WelcomeTitle
+                </div>
+
+                <div class="welcome-message cs-wysiwyg">
+                    @Html.Raw(GeminiContext.Config.WelcomeMessage)
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="projects-list">
+
+        <ul>
+            @foreach (var data in Model.Labels)
+            {
+                if (data.NumberOfProjects > 0)
+                {
+                    <li class="projects-dropdown-toggle" title="@data.Label (@data.NumberOfProjects)">
+                        <span class="toggle-image fonticon-arrow-right"></span> 
+                        @data.Label.ToMaxMore(25) (@data.NumberOfProjects)
+                      
+                        <div class="projects-dropdown-box">
+                            <table cellpadding="5" cellspacing="0">
+                                @foreach (var project in data.TheProjects)
+                                {
+                                    <tr><td>
+                                            <a class="bold" href="@NavigationHelper.GetProjectPageUrl(project, project.Template.HomePageType, string.Empty,  project.Template.Menu.Count > 0 ? project.Template.Menu[0].ControlId : string.Empty)">@project.Entity.Name</a>
+                                            <div class="description">@project.Entity.Description</div>
+
+                                        </td></tr>
+                                }
+                            </table>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+
+    </div>
+
+</div>
+
+
+@section DocumentReady
+{
+    gemini_projects.initAllProjects();
+    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "home");
+}

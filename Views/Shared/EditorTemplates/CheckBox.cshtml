@@ -1,0 +1,3 @@
+﻿@model CheckBoxFieldModel
+<input type="checkbox" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" @if(Model.Checked) { <text>checked='checked'</text> } class="@Model.Classes" @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>
+<input type="hidden" name="@Model.Id" value="false" />

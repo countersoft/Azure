@@ -1,0 +1,87 @@
+﻿@model ViewIssueModel
+
+        <div class="clearfix pad-bottom-5 clear-comment"></div>
+        <article class="comments-article">
+            <a id="comments"></a>
+            <div class="section-header clearfix">
+            <div class='clearfix'>
+                <div id='comments-section' class="left" title="@GetResourceTemplate(ResourceKeys.Comments)">
+                    <span class="expander fonticon-arrow-down"></span><h3 title="@Model.Issue.Comments.Count">@GetResourceTemplate(ResourceKeys.Comments)&nbsp;(@Model.Issue.Comments.Count)</h3>
+                </div>
+                @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedComments))
+                {
+                <div class="toolbar actions right">
+                    <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Comment)"></a>
+                </div>
+                }
+            </div>
+            <div class="divider"></div>
+            @if(Model.RenderCommentEditor) 
+            {
+            @Html.Partial("~/Views/Item/EditCommentsEditor.cshtml", Model)
+            }
+
+            <div class="section-content comments expanded cs-wysiwyg">
+                @foreach (var comment in Model.Issue.Comments)
+                {
+                    <article data-id="@comment.Entity.Id">
+                        <div class="clear-both"></div>
+                        <div class="comment-wrapper">
+                            <span class="author-box">
+                                @if (comment.Entity.Visibility != Constants.GlobalGroupEveryone && comment.Entity.Visibility != Constants.GlobalGroupEveryoneAuthenticated)
+                                {
+                                    <div title="@comment.Visibility" class="control-icon vote" data-group="@comment.Entity.Visibility"></div>
+                                }
+                                <span class="author">@comment.Entity.Fullname</span>
+                                <span class="dated" data-date-format="@GeminiContext.User.GeminiDateFormat" title="@comment.Entity.Created.ToString()">@comment.Entity.Created.ToString()</span>
+                                @if(CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.AssociatedComments, comment.Entity.Id))
+                                {
+                                <div class="action-button-edit" title="@GetResource(ResourceKeys.Edit) @GetResource(ResourceKeys.Comment)"></div>
+                                }
+                                @if(CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedComments, comment.Entity.Id))
+                                {
+                                <span class="delete" data-id="@comment.Entity.Id" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Comment)"><a class="button fonticon-cross" href="#"></a></span>
+                                }
+                            </span>
+                            <div class="comment" data-id="@comment.Entity.Id" data-url="@Url.Action("updatecomment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, commentid = comment.Entity.Id }))" >
+                                @Html.Raw(comment.Entity.Comment)
+
+                                <div class="attachment">
+                                    @if (comment.Attachments != null && comment.Attachments.Count > 0)
+                                    {
+                                        foreach(var attachment in comment.Attachments)
+                                        {
+                                            if (attachment.IsImage)
+                                            {
+                                                <div  class="thumbnail" data-id="@attachment.Entity.Id">
+                                                    <div class="thumbnail-image">
+                                                        <a target="_blank" href='@Url.Action("ImagePreview", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, fileid = attachment.Entity.Id, width = 0, height = 0 }))'><img class="comments-image" alt='@attachment.Entity.ShortFileName' title="@attachment.Entity.Size - @attachment.CreatedRelative" src='@Url.Action("ImagePreview", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, fileid = attachment.Entity.Id, width = 16, height = 16 }))' /></a>
+                                                    </div>
+                                                    <div class="thumbnail-name" title="@attachment.Entity.ShortFileName">
+                                                        <a href='@Url.Action("DownloadAttachment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, filename = "download", fileid = attachment.Entity.Id }))'>@attachment.Entity.ShortFileName.ToMaxMore(25)</a>
+                                                        <span class="thumbnail-close-image" data-id="@attachment.Entity.Id"><a href="#"><span class="fonticon-cross"></span></a></span>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div  class="thumbnail" data-id="@attachment.Entity.Id">                        
+                                                    <div class="thumbnail-image">                                                            
+                                                        <a href='@Url.Action("DownloadAttachment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, filename = "download", fileid = attachment.Entity.Id }))'><img class="comments-image" alt='@attachment.Entity.ShortFileName' title="@attachment.Entity.Size - @attachment.CreatedRelative" src='@Html.Raw(@attachment.IconPath)'/></a>
+                                                     </div>
+                                                    <div class="thumbnail-name" title="@attachment.Entity.ShortFileName">
+                                                        <a href='@Url.Action("DownloadAttachment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id, filename = "download", fileid = attachment.Entity.Id }))'>@attachment.Entity.ShortFileName.ToMaxMore(25)</a>
+                                                        <span class="thumbnail-close-image" data-id="@attachment.Entity.Id"><a href="#"><span class="fonticon-cross"></span></a></span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </article>        
+                }
+            </div>
+            </div>
+        </article>

@@ -1,0 +1,62 @@
+﻿@model TemplatesResolutionModel
+@{Html.RenderPartial("~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates);}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define <strong>Resolution</strong> values that projects based on this template can have. Specify if a particular <strong>Resolution</strong> value marks an item as <strong>Resolved.</strong></p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-resolution" class="basic">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Label" data-required='true'>Resolution</th>
+                <th data-field="IsResolved" data-edit-type='checkbox' class="centered">Resolved?</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (IssueResolution item in Model.Resolution)
+            {
+                <tr data-id="@item.Id" id="@item.Id">
+                    <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
+                    <td>@item.Label</td>
+                    <td class="centered">@(item.IsResolved ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                    <td data-edit="false" class="actions">
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-resolution", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 3] }] });
+        gemini_admin.initTableDnD("#table-admin-resolution");
+        
+        //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
+        $("#table-admin-resolution").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Resolution", "DeleteForm", { id: id }, null, "Delete");
+
+        });
+
+        $("#table-admin-resolution").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Templates/Resolution", "Editor", { id: id });
+
+        });
+
+
+        $("#table-admin-resolution_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Templates/Resolution", "Add");
+        });
+    });
+</script>

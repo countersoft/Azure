@@ -1,0 +1,45 @@
+﻿@model CaseInfo
+@foreach (var item in Model.Cases)
+{
+    var steps = Model.RunSteps.FindAll(x => x.TestCaseId == item.Entity.Id);
+    
+    <div class='section-header clearfix'>
+    <div class="clearfix">
+    <div class="left"><span class='expander fonticon-arrow-down'></span><h3>@item.Entity.Summary</h3>&nbsp;<span class="cs-counter">(@steps.Count @GetResource(ResourceKeys.Steps))</span></div>
+    <div class='toolbar actions right'>
+    </div>
+    </div>
+    <div class='divider'></div>
+    <div class='section-content expanded'>
+    
+    @if (steps.Count > 0)
+    {
+        var stepId = 1;
+        
+        <table id='@string.Format("test-case-{0}", @item.Entity.Id)' class="width-100 pad-bottom-5"><tbody>
+        <tr class="cs-grid-column">
+            <th>#</th>
+            <th></th>
+            <th>@GetResource(ResourceKeys.Step)</th>
+            <th>@GetResource(ResourceKeys.ExpectedResults)</th>
+            <th>@GetResource(ResourceKeys.ActualResults)</th>
+            <th>@GetResource(ResourceKeys.Status)</th>
+            <th></th>
+        </tr> 
+        @foreach (var x in steps)
+        {
+            <tr id='step-@x.Id'>
+            <td class='cs-simple'>@(stepId++)</td>
+            <td class='cs-simple'>@Html.Partial("_TickAndCross", x)</td>
+            <td class='cs-description'>@Html.Raw(x.Description)</td>
+            <td class='cs-expected'>@Html.Raw(x.ExpectedResult)</td>
+            <td class='cs-expected'>@Html.Raw(x.ActualResult)</td>
+            <td class='cs-status'>@Html.Partial("_TestStatus", new TestStatus() { HasPassed = x.HasErrors })</td>
+            <td class='cs-simple'>@Html.Partial("_DeleteCaseRunStepLink", x)</td>
+            </tr>
+        }
+        </tbody></table>
+    }
+</div>
+</div>
+}

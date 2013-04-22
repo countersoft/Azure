@@ -1,0 +1,41 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5 clear-history-article"></div>
+<article class="history-article">
+    <a id="history"></a>
+    <div class="section-header clearfix">
+    <div class="clearfix">
+        <div id='history-section' class="left">
+            <span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.History)&nbsp;(@Model.Issue.History.Count)</h3>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-content history expanded">
+        <table cellpadding="0" cellspacing="0">
+        <tr>
+            <th>@GetResource(ResourceKeys.Date)</th>
+            <th>@GetResource(ResourceKeys.User)</th>
+            <th>@GetResource(ResourceKeys.Field)</th>
+            <th>@GetResource(ResourceKeys.Before)</th>
+            <th>@GetResource(ResourceKeys.After)</th>
+        </tr>
+        @foreach (var history in Model.Issue.History)
+        {
+            <tr>
+                <td class="no-wrap">@history.Entity.Created.ToString()</td>
+                <td class="no-wrap">@history.Entity.Fullname</td>
+                <td class="no-wrap">@history.Entity.AttributeChanged</td>
+                
+                @{
+                    var valueBefore = Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText(history.Entity.ValueBefore.ToMaxMore(1000), true);
+                    var valueAfter = Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText(history.Entity.ValueAfter.ToMaxMore(1000), true);
+                }
+
+                <td class="before" title="@valueBefore">@valueBefore.ToMaxMore(50)</td>
+                <td class="after" title="@valueAfter">@valueAfter.ToMaxMore(50)</td>
+            </tr>
+        }
+        </table>
+    </div>
+    </div>
+</article>

@@ -1,0 +1,72 @@
+﻿@using Countersoft.Gemini.Commons.Breeze
+@model BreezeReplyAddressesModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbspDefine which email addresses can be used for Breeze <strong>replies</strong> to customers.</p>
+@if (!GeminiApp.LicenseSummary.HasBreeze())
+{
+    <p id="tab-help-message"><strong>&#187;</strong>&nbsp;@Html.Raw(AppConstants.SalesMessageBreeze)</p>
+}
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-replyaddresses" class="basic">
+        <thead>
+            <tr>
+                <th>From Email</th>                
+                <th>Automatic From Display Name</th>
+                <th>Projects</th>
+                <th>Disabled?</th>
+                <th></th>            
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (var item in Model.Emails)
+            {
+                <tr data-id="@item.Key.Id" id="@item.Key.Id">
+                    <td>@item.Key.Email</td>                
+                    <td>@Html.Raw((item.Key.UseUserFullname ? string.Format("{0} <b>(Current User)</b>", GeminiContext.User.Fullname) : string.Empty))</td>
+                    <td data-edit="false">@item.Value</td>   
+                    <td>@(item.Key.Active ? string.Empty : "Yes")</td>
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br/>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatables("#table-admin-replyaddresses", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [1, 4] }] });
+                        
+        $("#table-admin-replyaddresses_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+            $("#table-admin-replyaddresses_wrapper").off('click', ".actions span[data-method='delete']").on('click',".actions span[data-method='delete']", function (){
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_ajax.call("configure/Breeze/ReplyAddresses", "DeleteMessage", function (response) {
+                gemini_popup.modalConfirm(response.Result, null, function () {
+                    gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                    gemini_ajax.call("configure/Breeze/ReplyAddresses", "Delete", function (delResponse) {
+                        if (delResponse.Success) {
+                            gemini_admin.removeRow(item);                            
+                        }
+                        gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                });
+            },
+            null, { id: id });
+        });
+
+            $("#table-admin-replyaddresses").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Breeze/ReplyAddresses", "Editor", { id: id });
+        });
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Breeze/ReplyAddresses", "Add");
+        });
+    });
+</script>

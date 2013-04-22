@@ -1,0 +1,18 @@
+﻿@model CardDataModel
+
+<div class="clearfix">
+    <div class="counter left">@Model.Total @Model.Title</div>
+    <div id='card-data-clear' data-card-id='@Model.Card.Id' class='right'>@GetResource(ResourceKeys.Clear)</div>
+</div>
+
+<div class="data">
+    <table>
+@foreach (var item in Model.Items)
+{
+    <tr>
+        <td><a href='@Html.Raw(item.Url)'>@item.Title</a></td>
+        <td>@item.Description.ToMaxMore(55 - item.Title.Length)</td>
+    </tr>
+}
+    </table>
+</div>

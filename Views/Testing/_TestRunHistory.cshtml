@@ -1,0 +1,9 @@
+﻿@model HistoryInfo
+@*<div id="cs-sections" class='clearfix'>*@
+    
+    @foreach (var run in Model.Runs)
+    {
+        @Html.Partial("~/views/testing/_RunDetail.cshtml", run)
+    }
+    
+@*</div>*@

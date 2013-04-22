@@ -1,0 +1,89 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5 clear-dependencies-article"></div>
+<article class="dependencies-article">
+
+    <div id="dependencies-find-item-container" class="hide">
+        <span>@GetResourceTemplate(ResourceKeys.Item)</span>
+        <input id="dependencies-find-item" name="dependencies-find-item" type="text" class="input-size7"/>
+    </div>
+
+    <a id="dependencies"></a>
+    <div class="section-header clearfix">
+    <div class='clearfix'>        
+        <div class="left" id='dependencies-section'><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.Dependencies)&nbsp;(@(Model.Issue.Hierarchy.Count == 0 ? 0 : Model.Issue.Hierarchy.Count))</h3></div>
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy))
+        {
+        <div class="toolbar actions right">
+            <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Dependencies)"></a>
+        </div>
+        }
+    </div>
+    <div class="divider"></div>
+    <div class="section-content expanded" >
+        @foreach (var hierarchyItem in Model.Issue.Hierarchy)
+        {
+            string status = (hierarchyItem.Value.IsClosed || Model.Issue.IsClosed) ? (Model.Issue.IsClosed ? "fullyClosed" : "closed") : "open";
+            <div class="dependency @status" data-id="@hierarchyItem.Value.Id" >
+                @{
+                    var allowDelete = false;
+                    if (hierarchyItem.Value.ParentIssueId != null)
+                    {
+                        var parent =  Model.Issue.Hierarchy.Find( h => h.Value.Entity.Id == hierarchyItem.Value.ParentIssueId);
+                        if (parent != null)
+                        {
+                            allowDelete = CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedHierarchy, parent.Value);
+                        }
+                    }
+                }
+                    @if(allowDelete)
+                    {
+                    <span  class="fonticon-cross" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Dependencies)"></span>
+                    }
+                    else
+                    {
+                        <span  class="fonticon-cross noshow"></span>
+                    }
+                    @for (int i = 0; i < hierarchyItem.Key; i += 2)
+                    {
+                        <span class="pad-right-20"></span>
+                    }       
+                    @if(CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy, hierarchyItem.Value))
+                    {
+                    <span  class="fonticon-plus" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Dependencies)"></span>
+                    }
+                    else
+                    {
+                        <span  class="fonticon-plus noshow"></span>
+                    }
+                    <a class="item-links" href='@Url.Action("Item", "Item", new RouteValueDictionary(new { projectid = hierarchyItem.Value.Project.Id, projectcode = hierarchyItem.Value.Project.Code, issueid = hierarchyItem.Value.Id }))'>
+                        <span class="bold @ViewHelpers.IssueStriked(hierarchyItem.Value)">@hierarchyItem.Value.IssueKey</span>
+                        <span>@ViewHelpers.IssueTypeImage(hierarchyItem.Value)</span>
+                        <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value) @ViewHelpers.ViewItem_SameIssue(hierarchyItem.Value, Model.Issue)">@hierarchyItem.Value.Title.ToMaxMore(80)</span>
+                    </a>
+                    @if(GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Status, hierarchyItem.Value.Project, hierarchyItem.Value) ) { <span class="status">(@hierarchyItem.Value.Status)</span> }
+          
+                
+                    @if (hierarchyItem.Value.EstimatedHours != 0 && (@hierarchyItem.Value.LoggedHours != 0 || @hierarchyItem.Value.LoggedMinutes != 0))
+                    {
+                        <span class="time info-label-4">@GetResourceTemplate(ResourceKeys.Estimated, Resourcing.Colon)&nbsp;@hierarchyItem.Value.EstimatedEffort &nbsp; @GetResourceTemplate(ResourceKeys.Logged, Resourcing.Colon)&nbsp;@hierarchyItem.Value.TimeLogged</span> 
+                    }
+            </div>
+        }
+
+        @foreach (var hierarchyItem in Model.Issue.Hierarchy)
+        {
+            if (hierarchyItem.Key == 0)
+            {
+                <div class="clearfix pad-bottom-20"></div>
+                <span class="time-box info-label-4">
+                    <span class="label">@GetResource(ResourceKeys.Estimated, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.EstimatedIncludingKids</span>
+                    <span class="label">@GetResource(ResourceKeys.Logged, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.LoggedIncludingKids</span>
+                </span>
+                break;
+            }
+        }
+
+    </div>
+    </div>
+</article>

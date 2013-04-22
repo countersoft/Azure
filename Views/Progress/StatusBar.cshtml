@@ -1,0 +1,53 @@
+﻿@model RoadmapModel
+
+<div id="statusbar" class="clearfix">
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <td>@GetResourceTemplate(ResourceKeys.Progress)</td>
+                <td>@GetResourceTemplate(ResourceKeys.Open)</td>
+                <td>@GetResourceTemplate(ResourceKeys.Closed)</td>
+                <td>@GetResourceTemplate(ResourceKeys.Total)</td>
+                <td>@GetResourceTemplate(ResourceKeys.TopThree)</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="complete">
+                    <div class="center">
+                        <div class="tinyProgress"></div>
+                    </div>
+                </td>
+                <td class="open">@Model.Open</td>
+                <td class="closed">@Model.Closed</td>
+                <td class="total">@Model.Total</td>
+                <td align='center'><div id="status-breakdown" style="width:300px; height:75px;"></div></td>
+                <td class="releaseDate valign-top">
+                  <ul>
+                      @if (@Model.ReleaseStartDate.HasValue)    { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.StartDate, Resourcing.Colon)</div>&nbsp;&nbsp;<span class='releasestartdate right bold'>@Model.ReleaseStartDate.Value.ToShortDateString()</span></li> }
+                      @if (@Model.ReleaseEndDate.HasValue)      { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.ReleaseDate, Resourcing.Colon)</div>&nbsp;&nbsp;<span class='releaseenddate right bold'>@Model.ReleaseEndDate.Value.ToShortDateString()</span></li> }
+                  </ul>
+                </td>
+                <td class="delta">
+                    <div class="center">
+                        <ul>
+                            <li><span class="arrow"></span></li>
+                            <li><span class='delta-hours'></span> <span class='delta-minutes'></span></li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="zones valign-top">
+                    <div class="center">
+                        <ul>
+                            @if(Model[ItemAttributeVisibility.EstimatedEffort]) { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.Estimated, Resourcing.Colon)</div>&nbsp;<span class='days-est right'></span></li> }
+                            @if(Model[ItemAttributeVisibility.CalculatedTimeLogged]) { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.Logged, Resourcing.Colon)</div>&nbsp;<span class='days-cpt right'></span></li> }
+                        </ul>
+                    </div>                                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

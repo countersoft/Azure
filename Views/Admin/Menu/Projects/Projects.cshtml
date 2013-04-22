@@ -1,0 +1,88 @@
+﻿@model ProjectsProjectsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Add and maintain <strong>Projects</strong> and specify the templates that control them. Group related <strong>Projects</strong> with <strong>Labels.</strong> Set permissions and other project options and switch <strong>Project Templates</strong>.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-projects" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Code" data-required='true'>Code</th>          
+                <th data-field="Name" data-required='true'>Project</th>
+                <th data-field="LabelId" data-edit-type='select'>Label</th>          
+                <th>Template</th>          
+                <th data-field="Description" data-required='true'>Description</th>
+                <th data-field="Color" data-edit-type='color'>Color</th>
+                <th data-field="ReadOnly" data-edit-type='checkbox'>Locked?</th>
+                <th data-field="Archived" data-edit-type='checkbox'>Archived?</th>
+                <th></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (ProjectDto item in Model.Projects)
+            {
+                <tr data-id="@item.Entity.Id">
+                    <td>@item.Entity.Code</td>
+                    <td>@item.Entity.Name</td>
+                    <td>@item.Label</td>
+                    <td data-edit="false" >@item.Template.Name (@item.Template.TemplateKey)</td>
+                    <td>@item.Entity.Description</td>
+                    <td>@item.Entity.Color</td>
+                    <td>@(item.Entity.ReadOnly ? "Yes" : string.Empty)</td>
+                    <td>@(item.Entity.Archived ? "Yes" : string.Empty)</td>
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-options cursor-pointer" title="@GetResource(ResourceKeys.Move)" data-method="move"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-projects", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [7] }] });
+
+        $("#table-admin-projects").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+
+            gemini_ajax.call("configure/Projects/Projects", "DeleteMessage", function (response) {
+
+
+                gemini_popup.modalConfirm(response.Result, null, function () {
+                    gemini_ui.startBusy('#colorbox #modal-confirm #modal-button-yes');
+                    gemini_ajax.call("configure/Projects/Projects", "Delete", function (delResponse) {
+                        if (delResponse.Success) {
+                            gemini_admin.removeRow(item);                            
+                        }
+                       
+                        gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                });
+            },
+                null, { id: id });
+        });
+
+        $("#table-admin-projects").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function ()
+        {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'edit' });
+        });
+
+        $("#table-admin-projects").off('click', ".actions span[data-method='move']").on('click',".actions span[data-method='move']", function ()
+        {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'move', other: 0 });
+        });
+
+        $("#table-admin-projects_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Projects/Projects", "Add", {}, null);
+        });
+    });
+</script>

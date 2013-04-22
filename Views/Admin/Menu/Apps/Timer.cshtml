@@ -1,0 +1,71 @@
+﻿@model AppsTimerModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Enable and disable Gemini event based apps.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-appnav" class="basic">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th data-edit-type="checkbox">Enabled?</th>
+                <th>Schedule</th>
+                <th>Last Run Time</th>
+                <th>Last Error</th>
+                <th>Last Debug</th>
+                <th></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (var item in Model.Plugins)
+            {
+                <tr data-id="@item.GUID">
+                    <td data-edit="false">@item.Title</td>
+                    <td data-edit="false">@item.Description</td>
+                    <td>@(item.Enabled ? "Yes" : "No")</td>
+                    <td data-edit="false">@Html.Raw(item.Schedule)</td>
+                    <td data-edit="false">@item.LastRunTime</td>
+                    <td data-edit="false">@item.LastError.ToMaxMore(100) @if (item.LastError.HasValue()) { <span class="last-error fonticon-arrow-down cursor-pointer"></span> }</td>
+                    <td data-edit="false">@item.LastDebug.ToMaxMore(100) @if (item.LastDebug.HasValue()) { <span class="last-debug fonticon-arrow-down cursor-pointer"></span> }</td>
+                    <td data-edit="false" class="actions">
+                        <span class="action-button-edit cursor-pointer" data-method="edit"></span>
+                        <span class="fonticon-arrow-right valign-text-bottom cursor-pointer" title="Force cycle (run)" data-method="kick"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-appnav", false, null);
+
+        $("#table-admin-appnav").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id });
+        });
+
+        $("#table-admin-appnav").off('click', ".actions span[data-method='kick']").on('click', ".actions span[data-method='kick']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+
+            gemini_ajax.call("configure/Apps/Timer", "Editor", function () {
+                gemini_popup.toast("App has been scheduled to run");
+            }, null, { id: id, kick: 1 });
+        });
+
+        $("#table-admin-appnav").off('click', "span.last-error").on('click', "span.last-error", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, error: 1 }, null, "OK", "Close", true, false);
+        });
+
+        $("#table-admin-appnav").off('click', "span.last-debug").on('click', "span.last-debug", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, debug: 1 }, null, "OK", "Close", true, false);
+        });
+    });
+</script>

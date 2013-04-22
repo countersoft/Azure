@@ -1,0 +1,686 @@
+﻿@media only print
+{
+    /* make some assumption about it being a black and white printout */
+    body 
+    {
+        margin:0; padding:0; color: #000;
+        background:none;
+    }
+
+    table
+    {
+        border-collapse: collapse;
+    }
+
+    /* Improve colour contrast of links */
+    a:link, a:visited 
+    {
+        background: transparent; 
+        color: #781351;
+        text-decoration:none;
+    }
+    a:link[href^="http://"]:after, a[href^="http://"]:visited:after 
+    {
+        content: " (" attr(href) ") "; font-size: 0px;
+    }
+    a[href^="http://"] 
+    {
+        color:#000;
+    } 
+    
+    /* Image */
+    img, img a, .more-link a 
+    {
+        border:none;
+    }
+
+    /* deal with un-ordered list - need to reset all style parts */
+    ul 
+    {
+        list-style-image: none;
+        list-style-position: outside;
+        list-style-type: none;
+    }
+    ul li 
+    {
+        background:none;
+    }
+
+    /* Remove the various Element that we don't want to print */
+    /* don't show the playlist or seacrh boxes  on the printout */
+    #header, #playlistbox, #searccbox, #search, #account-box
+    {
+        display:none;
+    }
+    #tabledata 
+    {
+        margin-top:20px;
+    }
+    #tabledata thead td
+    {
+        border:1px solid #000;
+    }
+
+    #items-filter, #page-options-box, #pageSizeContainer, #item-grid-context-menu, .export-to-container, #cs-popup-add-zone, .datepickerContainer, #filter-view
+    {
+        display:none;
+    }
+    #cs-popup-buttons, .modalar-confirm-buttons
+    {
+        display:none;
+    }
+    #footer
+    {
+        text-align:center;
+        font-size:12px;
+    }
+    #grid-pager
+    {
+        padding-top:10px;
+    }
+    #content-header-navigation-text h2, #content-header-navigation-text div
+    {        
+        display: inline;
+        white-space:nowrap;
+        padding-right:5px;     
+    }
+    /*Items grid page*/
+    #tabledata,  #tabledata th, #tabledata td
+    {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    #items-grid #tabledata
+    {
+         width:65%;
+    }
+    #tour-joyride-items-2, #tour-joyride-home, #tour-joyride-planner, #tour-joyride-timeline, #tour-joyride-roadmap, #items-grid .drop-zone
+    {
+        display:none;
+    }
+    /*Burndown page*/
+    #statusbar thead td, #statusbar tbody div
+    {
+        font-weight:bold;
+        padding-right: 5px;
+    }
+    #burnup, #burnup div
+    {
+        padding-top: 900px;
+        display: inline;
+        white-space:nowrap;
+    }
+    .pad-top-10
+    {
+        padding-top:40px;
+    }
+    #progress table.default-style th, #progress table.default-style td
+    {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    #statusbar
+    {
+        border: 2px solid black;
+    }
+    /*Roadmap & Changelog page*/
+    #versions
+    {
+        display:none;
+    }
+    /*Calendar page*/
+    #widget-calendar .fc-content td
+    {
+        border:1px solid black;
+    }
+    #widget-calendar .event-content
+    {
+        border:2px solid black;
+        background-color:grey;
+    }
+
+    /*Documents page*/
+    #fileupload-hit, #document-folder-context-menu, #DocumentFolderRenamer, #cs-template .cs-icons
+    {
+        display:none;
+    }
+    #filelist-container td
+    {
+        border: 1px solid black;
+    }
+    /*Report page*/
+    #report-summary-items div
+    {
+        display: inline;
+        white-space:nowrap;
+    }
+    #tableSummary, #tableSummary td,  #tableSummary th
+    {
+        border:1px solid black;
+    }
+    #cs-template table.cs-properties, #cs-template table.cs-properties td
+    {
+        border: 1px solid black;
+    }
+
+    /*Timeline page*/
+    #activity-timeline .items, #activity-timeline .header
+    {
+        border:1px solid black;
+    }
+    #activity-timeline table .header, #activity-timeline .item-key
+    {
+        font-weight:bold;
+    }
+    /*Planner page*/
+    #planner-context-popup-new-card, #planner-context-menu, #planner .info-tip
+    {
+        display:none
+    }
+    #planner-box,  #planner-box div
+    {
+        display:inline;
+        white-space:nowrap;
+    }
+    #planner .plan-header
+    {
+        font-weight:bold;
+        font-size:larger;
+    }
+    #planner .axis-label-header
+    {
+        border-bottom: 2px solid black;
+    }
+    #planner .swimlane
+    {
+        display: table;
+    }
+    #planner ul li
+    {
+        border:1px solid black;
+    }
+    /*Activity page*/
+    #activity .column-head
+    {
+        font-weight:bold;
+        font-size:20px;
+    }
+    #activity .streams ul, #activity .streams div
+    {
+        display: inline;
+        white-space:nowrap;
+    }
+    #activity .stream
+    {
+        padding-bottom:20px;
+    }
+    /*Preferences page*/
+    #Timezone_chzn, #Culture_chzn, #Language_chzn, #Theme_chzn, #api-key, #regular-signin
+    {
+        display:none;
+    }
+    #regular-credentials,  #regular-credentials th, #regular-credentials td
+    {
+        border: 1px solid black;
+    }
+    /*Setting Components Page*/
+    #system-options-add, #project-admin-components_filter, #project-admin-components_paginate
+    {
+        display:none;
+    }
+    #project-admin-tree
+    {
+        border: 1px solid black;
+    }
+    #project-admin-components_info
+    {
+        padding-top:40px;
+    }
+    #project-admin-components,  #project-admin-components th, #project-admin-components td
+    {
+        border: 1px solid black;
+    }
+    /*Setting Versions page*/
+    #project-admin-versions_filter, #project-admin-versions_paginate,#project-administration .cs-pills.left
+    {
+        display:none;
+    }
+    #project-admin-versions_info
+    {
+        padding-top:40px;
+    }
+    #project-admin-versions,  #project-admin-versions th, #project-admin-versions td
+    {
+        border: 1px solid black;
+    }
+    /*All Projects page*/
+    #intro, #welcome-box
+    {
+        border:1px solid black;
+    }
+    .projects-dropdown-box
+    {
+        border:1px solid black;
+    }
+    .all-projects-box
+    {
+        font-weight:bold;
+        font-size:20px;
+    }
+    #intro
+    {
+        width:50%
+    }
+    .projects-dropdown-toggle
+    {  
+        padding-bottom:30px;
+    }
+    .projects-dropdown-toggle li
+    {
+        font-weight:bold;
+    }
+    /*Customize page - Templates*/
+    #table-admin-types_paginate, #table-admin-types_filter, #template-picker, #option-groups, .colorpicker
+    {
+        display:none;
+    }
+    #tabs-left .help, #option-apply, #option-delete, #option-required, #tabs-left, #tab-templates,#tab-projects ,#tab-people, #tab-breeze, #tab-apps, #tab-system
+    {
+        display:none;
+    }
+    #table-admin-types,  #table-admin-types th, #table-admin-types td
+    {
+        border: 1px solid black;
+    }
+    /*Template - Menus*/
+    #templates-menu-form .menu-option,#templates-menu-form .options.right, .admin-datatable-holder table.basic tbody td.actions, .admin-datatable-holder table.basic thead th.sorting_disabled:last-child
+    {
+        display:none;
+    }
+    /*Templates - Custom Fields*/
+    #table-admin-customfields_filter, #table-admin-customfields_paginate
+    {
+        display:none;
+    }
+    #table-admin-customfields
+    {
+        text-align:left;
+    }
+    #table-admin-customfields_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-customfields,  #table-admin-customfields th, #table-admin-customfields td
+    {
+        border: 1px solid black;
+    }
+    .admin-datatable-holder table.basic thead th.sorting:last-child
+    {
+        display:none;
+    }
+    /*Templates - Status*/
+    #table-admin-workflow_paginate, #table-admin-workflow_filter
+    {
+        display:none;
+    }
+    #table-admin-workflow
+    {
+        text-align:left;
+    }
+    #table-admin-workflow_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-workflow,  #table-admin-workflow th, #table-admin-workflow td
+    {
+        border: 1px solid black;
+    }
+    /*Templates - Priority*/
+    #table-admin-priority_paginate, #table-admin-priority_filter
+    {
+        display:none;
+    }
+    #table-admin-priority
+    {
+        text-align:left;
+    }
+    #table-admin-priority_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-priority,  #table-admin-priority th, #table-admin-priority td
+    {
+        border: 1px solid black;
+    }
+    /*Templates - Severity*/
+    #table-admin-severity_paginate, #table-admin-severity_filter
+    {
+        display:none;
+    }
+    #table-admin-severity
+    {
+        text-align:left;
+    }
+    #table-admin-severity_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-severity,  #table-admin-severity th, #table-admin-severity td
+    {
+        border: 1px solid black;
+    }
+    /*Templates - Resolution*/
+    #table-admin-resolution_paginate, #table-admin-resolution_filter
+    {
+        display:none;
+    }
+    #table-admin-resolution
+    {
+        text-align:left;
+    }
+    #table-admin-resolution_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-resolution,  #table-admin-resolution th, #table-admin-resolution td
+    {
+        border: 1px solid black;
+    }
+    /*Templates - Links*/
+    #table-admin-links_paginate, #table-admin-links_filter
+    {
+        display:none;
+    }
+    #table-admin-links
+    {
+        text-align:left;
+    }
+    #table-admin-links_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-links,  #table-admin-links th, #table-admin-links td
+    {
+        border: 1px solid black;
+    }
+    /*Templates - Time*/
+    #table-admin-time_paginate, #table-admin-time_filter
+    {
+        display:none;
+    }
+    #table-admin-time
+    {
+        text-align:left;
+    }
+    #table-admin-time_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-time,  #table-admin-time th, #table-admin-time td
+    {
+        border: 1px solid black;
+    }
+    /*Projects - Projects*/
+    #table-admin-projects_paginate, #table-admin-projects_filter
+    {
+        display:none;
+    }
+    #table-admin-projects
+    {
+        text-align:left;
+    }
+    #table-admin-projects_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-projects,  #table-admin-projects th, #table-admin-projects td
+    {
+        border: 1px solid black;
+    }
+    /*Projects - Labels*/
+    #table-admin-projectlabels_paginate, #table-admin-projectlabels_filter
+    {
+        display:none;
+    }
+    #table-admin-projectlabels
+    {
+        text-align:left;
+    }
+    #table-admin-projectlabels_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-projectlabels,  #table-admin-projectlabels th, #table-admin-projectlabels td
+    {
+        border: 1px solid black;
+    }
+    /*People - Users*/
+    #table-admin-users_paginate, #table-admin-users_filter
+    {
+        display:none;
+    }
+    #table-admin-users
+    {
+        text-align:left;
+    }
+    #table-admin-users_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-users,  #table-admin-users th, #table-admin-users td
+    {
+        border: 1px solid black;
+    }
+    /*People - Groups*/
+    #table-admin-groups_paginate, #table-admin-groups_filter
+    {
+        display:none;
+    }
+    #table-admin-groups
+    {
+        text-align:left;
+    }
+    #table-admin-groups_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-groups,  #table-admin-groups th, #table-admin-groups td
+    {
+        border: 1px solid black;
+    }
+    /*People - Permissions*/
+    #table-admin-permissionset_paginate, #table-admin-permissionset_filter
+    {
+        display:none;
+    }
+    #table-admin-permissionset
+    {
+        text-align:left;
+    }
+    #table-admin-permissionset_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-permissionset,  #table-admin-permissionset th, #table-admin-permissionset td
+    {
+        border: 1px solid black;
+    }
+    /*Breeze - Queues*/
+    #table-admin-queues_paginate, #table-admin-queues_filter
+    {
+        display:none;
+    }
+    #table-admin-queues
+    {
+        text-align:left;
+    }
+    #table-admin-queues_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-queues,  #table-admin-queues th, #table-admin-queues td
+    {
+        border: 1px solid black;
+    }
+    /*Breeze - Smtp Servers*/
+    #table-admin-smtpservers_paginate, #table-admin-smtpservers_filter
+    {
+        display:none;
+    }
+    #table-admin-smtpservers
+    {
+        text-align:left;
+    }
+    #table-admin-smtpservers_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-smtpservers,  #table-admin-smtpservers th, #table-admin-smtpservers td
+    {
+        border: 1px solid black;
+    }
+    /*Breeze - Mailboxes*/
+    #table-admin-mailboxes_paginate, #table-admin-mailboxes_filter
+    {
+        display:none;
+    }
+    #table-admin-mailboxes
+    {
+        text-align:left;
+    }
+    #table-admin-mailboxes_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-mailboxes,  #table-admin-mailboxes th, #table-admin-mailboxes td
+    {
+        border: 1px solid black;
+    }
+    /*Breeze - Match Expressions*/
+    #table-admin-matchexpression_paginate, #table-admin-matchexpression_filter
+    {
+        display:none;
+    }
+    #table-admin-matchexpression
+    {
+        text-align:left;
+    }
+    #table-admin-matchexpression_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-matchexpression,  #table-admin-matchexpression th, #table-admin-matchexpression td
+    {
+        border: 1px solid black;
+    }
+    /*Breeze - Reply From*/
+    #table-admin-replyaddresses_paginate, #table-admin-replyaddresses_filter
+    {
+        display:none;
+    }
+    #table-admin-replyaddresses
+    {
+        text-align:left;
+    }
+    #table-admin-replyaddresses_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-replyaddresses,  #table-admin-replyaddresses th, #table-admin-replyaddresses td
+    {
+        border: 1px solid black;
+    }
+    /*System - Alert Templates & AppNav*/
+    #table-admin-appnav_paginate, #table-admin-appnav_filter
+    {
+        display:none;
+    }
+    #table-admin-appnav
+    {
+        text-align:left;
+    }
+    #table-admin-appnav_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-appnav,  #table-admin-appnav th, #table-admin-appnav td
+    {
+        border: 1px solid black;
+    }
+    /*System - AppNav*/
+    #system-appnav-form, #configure-page-content h2
+    {
+        display:none;
+    }
+    /*System - Licensing*/
+    #table-admin-licensing_paginate, #table-admin-licensing_filter
+    {
+        display:none;
+    }
+    #table-admin-licensing
+    {
+        text-align:left;
+    }
+    #table-admin-licensing_info
+    {
+        padding-top:40px;
+    }
+    #table-admin-licensing,  #table-admin-licensing th, #table-admin-licensing td
+    {
+        border: 1px solid black;
+    }
+    /*System - Log*/
+    #table-admin-log_paginate, #table-admin-log_filter
+    {
+        display:none;
+    }
+    #table-admin-log
+    {
+        text-align:left;
+    }
+    #table-admin-log_info
+    {
+        padding-top:40px;
+    }
+    #truncate.button-primary
+    {
+        display:none;
+    }
+    #table-admin-log,  #table-admin-log th, #table-admin-log td
+    {
+        border: 1px solid black;
+    }
+
+    /* if there is a style says don't print - then don't */
+    .noprint 
+    {
+        display: none;
+    }
+    /* don't show any of the dropdown menu UL's and LI's in print view or indicator lights*/
+    .dropdown
+    {
+        display:none;
+    }
+
+    
+    /* don't display the font-icons on teh menu bars, titles, action links, buttons, footer and panel headings */
+    [class*="fonticon-"] 
+    {
+        display:none;	
+    }
+    
+    .arrow:after
+    {
+        content: "+";
+    }
+    .arrow::after
+    {
+        content: "-";
+    }    
+
+    * html 
+    {
+        background-color:white;
+        color:#000;
+    }
+}

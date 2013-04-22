@@ -1,0 +1,132 @@
+﻿@model HistoryCaseInfo
+
+<div class='section-header case clearfix'>
+    <div class="clearfix">
+        <div id='section-steps' class="left width-100">
+            @*<h3>@string.Format("{0}-{1}", GetResource(ResourceKeys.Case), Model.Case.Id)</h3>*@
+
+            <table class="width-100 grid">
+                <tr class="cs-no-hover">
+                    <td class="no-width">
+                        <span class='expander fonticon-arrow-down'></span>
+                    </td>
+                    <td class="no-width no-wrap">
+                        <h5>@string.Format("{0}-{1}", GetResource(ResourceKeys.Case), Model.Case.Id)</h5>
+                    </td>
+                    <td>@Model.Case.Title</td>
+                    <td class="no-width no-wrap">@Model.Case.Revised</td>
+                    <td class="no-width pad-right-10">
+                        @if (Model.RunSteps.Any(s => s.HasPassed.HasValue && s.HasPassed.Value == false))
+                        {
+                            <div class='failed'>@GetResource(ResourceKeys.Failed)</div>
+                        }
+                        else if (Model.RunSteps.All(s => s.HasPassed.HasValue && s.HasPassed.Value == true))
+                        {
+                            <div class='passed'>@GetResource(ResourceKeys.Passed)</div>
+                        }
+                        else
+                        {               
+                            <div class='pending'>@GetResource(ResourceKeys.Pending)</div>
+                        }
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        @*<div class='heading-row clearfix'>
+            
+            
+
+            $1$<div class='summary'>@Model.Case.Title</div>
+            <div class="date">@Model.Case.Revised</div>
+            <div class='status'>
+                @if (Model.RunSteps.Any(s => s.HasPassed.HasValue && s.HasPassed.Value == false))
+                {
+                    <div class='failed'>@GetResource(ResourceKeys.Failed)</div>
+                }
+                else if (Model.RunSteps.All(s => s.HasPassed.HasValue && s.HasPassed.Value == true))
+                {
+                    <div class='passed'>@GetResource(ResourceKeys.Passed)</div>
+                }
+                else
+                {               
+                    <div class='pending'>@GetResource(ResourceKeys.Pending)</div>
+                }
+            </div>#1#
+        </div>*@
+    </div>
+    <div class='divider'></div>
+    <div class='section-content expanded'>
+        <div class="description clearfix">
+            @Html.Raw(Model.Case.Description)
+        </div>
+
+        <table class="width-100 grid">
+            <tr>
+                <th>@GetResource(ResourceKeys.Step)</th>
+                <th>@GetResource(ResourceKeys.Steps)</th>
+                <th>@GetResource(ResourceKeys.ExpectedResults)</th>
+                <th>@GetResource(ResourceKeys.ActualResults)</th>
+                <th>@GetResource(ResourceKeys.Attachments)</th>
+                <th>@GetResource(ResourceKeys.Revised)</th>
+                <th>@GetResource(ResourceKeys.Status)</th>
+
+            </tr>
+            <tbody class="grid">
+                @foreach (var step in Model.RunSteps)
+                {
+                    <tr>
+                        <td>#@step.StepOrder</td>
+                        <td>@Html.Raw(step.Description)</td>
+                        <td>@Html.Raw(step.ExpectedResult)</td>
+                        <td>@Html.Raw(step.ActualResult)</td>
+                        <td>
+                            @Html.Partial("~/Views/Testing/_Attachments.cshtml", step.Attachments, new ViewDataDictionary { { "DeleteAttachments", false } })
+                        </td>
+                        <td class="minor">@step.Revised</td>
+                        <td class="no-wrap no-width center">
+                            <div class='@( step.HasPassed != null ? ((bool)step.HasPassed ? "passed" : "failed") : "pending")'>
+                                @(step.HasPassed.HasValue ? ((bool)step.HasPassed ? GetResource(ResourceKeys.Passed) : GetResource(ResourceKeys.Failed)) : GetResource(ResourceKeys.Pending))
+                            </div>
+                            @{
+                    var item = Model.IssuesRaised.Issues.FirstOrDefault(i => i.Entity.Id == Model.HistorySelected.SelectedIssue && step.StepId == Model.HistorySelected.SelectedStep);
+                    if (item != null)
+                    {
+                                @Html.Partial("~/views/testing/_ItemLink.cshtml", item)
+                    }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        @* @foreach (var step in Model.RunSteps)
+    {
+        <div class='heading-row step clearfix'>
+            <div class='id'>step-1</div>
+            <div class="xx clearfix">
+                <div class='expected'>@Html.Raw(step.ExpectedResult)</div>
+                <div class='actual'>@Html.Raw(step.ActualResult)</div>
+            </div>
+            <div class="date">@step.Revised</div>
+            <div class="status">
+                <div class='@( step.HasPassed != null ? ((bool)step.HasPassed ? "passed" : "failed") : "pending")'>
+                    @(step.HasPassed.HasValue ? ((bool)step.HasPassed ? GetResource(ResourceKeys.Passed) : GetResource(ResourceKeys.Failed)) : GetResource(ResourceKeys.Pending))
+                </div>
+            </div>
+            <!-- the actual attachments -->
+            
+            <div class="attachment">
+            @foreach(var file in step.Attachments.ToList())
+            {
+                <a href='#' title='@file.FileName'><span></span></a>
+            }
+            </div>
+        </div>        
+    }*@<br />
+        <hr />
+    </div>
+
+</div>

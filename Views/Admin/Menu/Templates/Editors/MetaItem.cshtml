@@ -1,0 +1,130 @@
+﻿@using System.Text
+@model TemplatesMetaEditModel
+
+<div id="TemplatesMetaItemContainer">
+    <form id="regular-form">
+    <input type="hidden" value="@Model.Id" name="Id" Id="Id" />
+    <table id="table-admin-processitem" class="admin-data-entry" cellpadding="0" cellspacing="0">
+        <tbody>
+            <tr>
+                <td>Label</td>
+                <td>
+                    <input type="text" id="Label" name="Label" 
+                               class="input-field required input-size9" value="@Model.Label"/>
+                </td>
+            </tr>
+
+            @if (Model.EnableComment)
+            {
+                        
+                <tr>
+                    <td>Comment</td>
+                    <td>
+                        <input type="text" id="Comment" name="Comment" 
+                            class="input-field input-size9" value="@Model.Comment"/>
+                    </td>
+                </tr>
+            }
+            @if (Model.EnableIcon)
+            {
+                <tr>
+                    <td>Icon</td>
+                    <td>
+                        @*<input type="text" id="Icon" name="Icon" 
+                            class="input-field required input-size9" value="@Model.Icon"/>*@
+                        @Html.DropDownList("Icon", Model.ImagesAvailable, new{@class="input-size6"})
+                    </td>
+                </tr>
+                
+            }
+            @if (Model.EnableColor)
+            {
+                <tr>
+                    <td>Color</td>
+                    <td>
+                        <input type="Hidden" name="Color" id="Color" value="@Model.Color" />
+                        <div id="colorSelector">
+                            <div style="background-color: @Model.Color"></div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @Html.Hidden("EnableFlag", Model.EnableFlag)
+            @if (Model.EnableFlag)
+            {
+                <tr>
+                    <td>@Model.FlagLabel
+                    </td>
+                    <td>
+                        <input type="checkbox" id="Flag" name="Flag" @if(Model.Flag)
+                                                                     {
+                                                                         @: checked="checked"
+                                                                     }/>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </form>
+</div>
+@{
+    var stringbuilder = new StringBuilder(256);
+
+    for (int index = 0; index < Model.ControlOrder.Count; index++)
+    {
+        var control = Model.ControlOrder[index];
+        if (control != "Flag")
+        {
+            stringbuilder.AppendFormat("tr.find('td:eq({0})').html($('#{1}').val());", index, Model.ControlOrder[index] );
+        }
+        else
+        {
+            stringbuilder.AppendFormat("tr.find('td:eq({0})').html($('#{1}').is(':checked') ? 'Yes' : 'No');", index, Model.ControlOrder[index]);
+        }
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $('option', '#Icon').each(function () {
+            $(this).html($(this).html().replace('&lt;','<').replace('&gt;','>'));
+        });
+        gemini_ui.chosen("#Icon", null, true);
+        gemini_ui.setDropdownValue("#Icon", '@(Model.Icon)');
+        
+
+        $('#colorSelector', "#TemplatesMetaItemContainer").ColorPicker({
+            onChange: function (hsb, hex, rgb) {
+                $('#colorSelector div', "#TemplatesMetaItemContainer").css('backgroundColor', '#' + hex);
+                $('#ColorCode', "#TemplatesMetaItemContainer").val('#' + hex);
+            },
+            onSubmit: function(hsb, hex, rgb, el) {
+                $(el).val(hex);
+                $(el).ColorPickerHide();
+                $('#Color', "#TemplatesMetaItemContainer").val('#'+hex);
+                $('#Color', "#TemplatesMetaItemContainer").change();
+            },
+            color: '@(Model.Color)'
+        });
+
+        $("#popup-button-yes").click(function (e)
+        {
+            if ($("#regular-form").valid())
+            {
+                gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                gemini_ajax.postCall("configure/Templates/@(Model.ObjectName)", "SaveData", function () {
+                    gemini_popup.toast("Saved");
+                    
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+    });
+</script>

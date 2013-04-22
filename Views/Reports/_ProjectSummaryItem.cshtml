@@ -1,0 +1,191 @@
+﻿@using System.Text
+@using Countersoft.Gemini.Models.Reports
+@model ReportResultModel
+
+<!--Table-->
+@{
+    var idvalue = Guid.NewGuid().ToString().Replace("-", "");
+}
+<div id="container@(idvalue)" class="report-summary-container">
+    <div class="header">
+        <div class="right">
+            <div class="control-icon chart-icon report-summary-chart-button">
+            </div>
+            <div class="control-icon table-icon report-summary-table-button">
+            </div>
+        </div>
+        <h3>@Model.Title</h3>
+    </div>
+    @*<button class="ReportSummaryTableButton" value="Table">Table</button>
+    <button class="ReportSummaryChartButton" value="Chart">Chart</button>*@
+    <div class="report-summary-table">
+        <table class="datatable">
+            @foreach (var item in Model.ResultsAsGraphItems)
+            {                                      
+               if(Model.IncludeClosed == true)
+               {
+                 <tr>
+                    <td class="Text">
+                        <a href="@string.Format("items?projects={0}&{1}={2}&includeClosed=true&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','), @item.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphKeyName</a>
+                    </td>
+                    <td class="Value"><a href="@string.Format("items?projects={0}&{1}={2}&includeClosed=true&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','), @item.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphCount.ToString("#,#0")</a>
+                    </td>
+                </tr>
+               } 
+               else
+               {                    
+                <tr>
+                   <td class="Text">
+                       <a href="@string.Format("items?projects={0}&{1}={2}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','), @item.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphKeyName</a>
+                   </td>
+                   <td class="Value"><a href="@string.Format("items?projects={0}&{1}={2}&group=false",@Model.ProjectIds.ToDelimited(",").TrimEnd(','), @item.FilterName,@item.GraphKeys.ToDelimited(",").TrimEnd(','))">@item.GraphCount.ToString("#,#0")</a>
+                   </td>
+                </tr>
+               }
+            }
+        </table>
+    </div>
+    <div class="report-summary-chart">
+        <div id="@idvalue">
+        </div>
+    </div>
+</div>
+<!--Chart -->
+
+
+    
+@{
+    //Generate graph data for script below
+    
+        IList<string> s = new List<string>();
+        var otherval = 0;
+        var i = 0;
+        foreach (var item in Model.ResultsAsGraphItems.OrderByDescending(g=>g.GraphCount))
+        {
+
+            if (Model.IncludeClosed == true)
+            {
+                s.Add(string.Format("[\"{0}\", {1}, \"items?projects={2}&{3}={4}&includeclosed=true&group=false\"]", item.GraphKeyName, item.GraphCount, Model.ProjectIds.ToDelimited(",").TrimEnd(','), item.FilterName, item.GraphKeys.ToDelimited(",").TrimEnd(',')));
+
+            }
+            else
+            {            
+                s.Add(string.Format("[\"{0}\", {1}, \"items?projects={2}&{3}={4}&group=false\"]", item.GraphKeyName, item.GraphCount, Model.ProjectIds.ToDelimited(",").TrimEnd(','), item.FilterName, item.GraphKeys.ToDelimited(",").TrimEnd(',')));
+            }
+            
+            if (i > 12)
+            {
+                otherval += item.GraphCount;
+            }
+            i++;
+        }
+        
+        var builder = new StringBuilder(256);
+        
+        for (int j = 0; j < s.Count; j++)
+        {
+            builder.Append(s[j]);
+            
+            if (j < 12 && j < s.Count)
+            {
+                builder.Append(",");
+            }
+            else
+            {
+                if (otherval > 0)
+                {
+                    builder.AppendFormat(",['{0}', {1}, \"\"]", GetResource(ResourceKeys.Other), otherval);
+                }
+                break;
+            }
+        }
+
+        if (builder.Length > 0 && builder[builder.Length - 1] == ',')
+        {
+            builder.Remove(builder.Length - 1, 1);
+        }
+}
+                    
+
+
+<script type="text/javascript">
+   $(".report-summary-table-button", "#container@(idvalue)").click(function() {
+        $(".report-summary-chart", "#container@(idvalue)").fadeOut('fast', function () {
+            $(".report-summary-table", "#container@(idvalue)").fadeIn('fast');
+        });        
+    });
+    $(".report-summary-chart-button", "#container@(idvalue)").click(function() {
+        $(".report-summary-table", "#container@(idvalue)").fadeOut('fast', function() {
+            $(".report-summary-chart", "#container@(idvalue)").fadeIn('fast');
+        });
+    });
+    
+    @{
+    if(!Model.Flag)
+    {
+       @: $(".report-summary-table", "#container@(idvalue)").fadeOut('fast');
+    }
+    else
+    {
+        @: $(".report-summary-chart", "#container@(idvalue)").fadeOut('fast');
+    }
+    }
+    
+
+    chart = new Highcharts.Chart(
+        {
+            chart: {
+                renderTo: '@idvalue', 
+                plotBackgroundColor: null, 
+                plotBorderWidth: null, 
+                plotShadow: false
+            }, title: {
+                text: ''
+            }, tooltip: {
+                formatter: function () {
+                    return '' + this.point.name + ': ' + this.percentage.toFixed(0) + ' %';
+                }
+            }, 
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer', 
+                    dataLabels: {
+                        enabled: false, color: '#000000', connectorColor: '#000000', formatter: function () { return '' + this.point.name + ': ' + this.percentage.toFixed(0) + ' %'; }
+                    },
+                    showInLegend: true,
+                    size: 200,
+                    center: ["50%", 100]
+                }
+            },
+            legend: {
+                verticalAlign: 'bottom', 
+                y: 00/*,
+                maxHeight:20*/
+            },
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series:
+                [{ 
+                    type: 'pie', 
+                    name: 'Items', 
+                    data: [
+                        @Html.Raw(builder.ToString())
+                    ],
+                    point: {
+                        events: {
+                            click: function () {
+                                location.href = this.config[2];
+                            }
+                        }
+                    }
+                }]
+            });
+
+
+    $(".report-summary-table", "#container@(idvalue)").jScrollPane({ });
+</script>

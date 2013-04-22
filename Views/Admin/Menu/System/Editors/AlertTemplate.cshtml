@@ -1,0 +1,138 @@
+﻿@model SystemAlertTemplatesEditModel
+
+<link href="@AssetsPath/scripts/code/codemirror.css" rel="stylesheet" />
+<script src="@AssetsPath/scripts/code/codemirror.js" type="text/javascript"></script>
+<script src="@AssetsPath/scripts/code/mode/xml.js" type="text/javascript"></script>
+<script src="@AssetsPath/scripts/code/mode/javascript.js" type="text/javascript"></script>
+<script src="@AssetsPath/scripts/code/mode/css.js" type="text/javascript"></script>
+<script src="@AssetsPath/scripts/code/mode/htmlmixed.js" type="text/javascript"></script>
+<script src="@AssetsPath/scripts/code/mode/htmlembedded.js" type="text/javascript"></script>
+
+<div style="width:890px; height: 580px;">
+    <form id="TemplateForm">
+        <input id="id" name="id" type="hidden" value="@Model.Template.Entity.Id" />
+        <table class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>Name</td>
+                <td><input type="text" id="Name" name="Name" class="input-size9 required" value="@Model.Template.Entity.Label"/></td>
+            </tr>
+            <tr>
+                <td>Alert Type</td>
+                <td>@Html.DropDownList("Type", Model.Types, new { @class = "input-size9" })</td>
+            </tr>
+            <tr>
+                <td class="no-wrap">Associated Projects</td>
+                <td>
+                    <p class="pad-bottom-10">(leave empty to associate this template with all projects)</p>
+                    @Html.ListBox("Project", Model.Projects, new { @class = "input-size9" })
+                     
+                </td>
+            </tr>
+            <tr>
+                <td>Content</td>
+                <td>
+                    <div class="wysiwyg-container">
+                        <textarea id="Content" name="Content" class="required wysiwyg-editor cs-wysiwyg wysiwyg-height2" style="">@Model.Template.Entity.Content</textarea>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    gemini_ui.chosen("#Project", null, true);
+    gemini_ui.chosen("#Type", null, true);
+
+    var editor;
+    
+    setTimeout(function ()
+    {
+        //gemini_ui.htmlEditorAdmin("#Content", gemini_sizing.stretchWindow);
+        
+        editor = CodeMirror.fromTextArea(document.getElementById("Content"), {
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: "xml",
+            indentUnit: 4,
+            indentWithTabs: true,
+            enterMode: "keep",
+            tabMode: "shift"
+        });
+    }, 100);
+    
+
+    
+    $("#TemplateForm").validate();
+
+    $("#popup-button-yes").unbind('click').click(function (e) {
+
+        editor.save();
+
+        if ($("#TemplateForm").valid())
+        {
+            gemini_ui.startBusy('#colorbox #popup-button-yes');
+            gemini_ajax.postCall("configure/System/AlertTemplates", "SaveData", function (response) {
+
+                if ($('#TemplateForm #id').val() == 0) gemini_admin.getPage();
+
+                gemini_popup.toast("Saved");
+
+                setTimeout(function () {
+                    var tr = $("tr[data-id=@(Model.Template.Entity.Id)]");
+                    if (tr) {
+                        tr.find("td:eq(0)").html($("#Name").val());
+                        tr.find("td:eq(1)").html($("#Type option:selected").text());
+
+                        var projectsText = $("#Project option:selected").text();
+                        if (projectsText == undefined || projectsText == null || projectsText.length == 0) {
+                            projectsText = "All Projects";
+                        }
+                        tr.find("td:eq(2)").html(projectsText);
+                    }
+                    gemini_popup.popupClose(e);
+                    $("#alert-template-preview").removeClass("hide");
+                    $("#alert-template-preview").html("<span style='font-size:15px;' class='bold'>Preview of '" + ($("#Name").val()) + "':</span>");
+                    $("#alert-template-trace").html(response.Result).fadeIn('fast');
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, 200);
+
+                
+
+            }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#TemplateForm").serialize());
+        }
+    });
+  
+    if ($('#TemplateForm #id').val() == 0)
+    {
+        $('#TemplateForm select:eq(0)').change(function () {              
+            var id = $(this).val();
+            gemini_ajax.postCall("configure/System/AlertTemplates", "getemailtemplate",
+            function (response)
+            {
+                if (response.Success)
+                {
+
+                    $('#TemplateForm .wysiwyg-container .CodeMirror').remove();
+                    $('#TemplateForm #Content').html(response.Result.Html);
+
+                    editor = CodeMirror.fromTextArea(document.getElementById("Content"), {
+                        lineNumbers: true,
+                        matchBrackets: true,
+                        mode: "xml",
+                        indentUnit: 4,
+                        indentWithTabs: true,
+                        enterMode: "keep",
+                        tabMode: "shift"
+                    });
+                }
+
+            }, function () { }, { alertType: id });
+            
+        });
+    }
+
+    $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

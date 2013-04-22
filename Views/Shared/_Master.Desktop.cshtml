@@ -1,0 +1,50 @@
+@model BaseModel
+@{
+    Layout = "_Master.Base.cshtml";
+}
+
+@section Head
+{
+    @{Html.RenderPartial("_Styles");}
+    <style>@Html.Raw(Model.Styles)</style>
+}
+
+<header id="header" class="clearfix">
+    <div class="layout">
+        @RenderSection("Playlist", false)
+        @RenderSection("Search", false)
+    </div>
+</header>
+
+<div id="page-content-zone" class="layout">
+    <section id="contents" class="clearfix">
+        @RenderSection("HeaderContent", false)
+        
+        <div class="layout">
+            @if(IsHelpDeskMode())
+            {
+                <div id="helpdesk-message-zone">
+                    <h1>@GeminiContext.Config.HelpDeskWelcomeTitle</h1>
+                    @Html.Raw(GeminiContext.Config.HelpDeskWelcomeMessage)
+                </div>
+            }
+            @RenderBody()
+        </div>
+    </section>
+</div>
+
+<footer id="footer" class="clearfix">
+    @{Html.RenderPartial("Footer");}
+</footer>
+
+@section DocumentReady
+{
+    gemini_sizing.stretchWindow();
+    @RenderSection("DocumentReady", false)
+}
+
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+

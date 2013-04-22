@@ -1,0 +1,143 @@
+﻿@model ProjectSettingsVersionModel
+
+<table class="width-100">
+    <tr>
+        <td class="valign-top pad-right-20">
+            <div id="cs-admin" class="left width-100">
+                <div id="versions-container" class="admin-datatable-holder width-100">
+                    <table id="project-admin-versions" class="basic width-100">
+                        <thead>
+                            <tr>
+                                <th data-field="Name" data-required='true'>@GetResource(ResourceKeys.Name)</th>                
+                                <th data-field="Label" data-required='true'>@GetResource(ResourceKeys.Description)</th>
+                                <th data-field="ParentId" data-required='false' data-edit-type="select">@GetResource(ResourceKeys.Parent)</th>
+                                <th data-field="StartDate" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">@GetResource(ResourceKeys.StartDate)</th>
+                                <th data-field="ReleaseDate" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">@GetResource(ResourceKeys.ReleaseDate)</th>
+                                <th data-field="Archived" data-edit-type='checkbox' class="centered">@GetResource(ResourceKeys.Archived)</th>
+                                <th data-field="Released" data-edit-type='checkbox' class="centered">@GetResource(ResourceKeys.Released)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var version in Model.Versions)
+                            {
+                                <tr data-id="@version.Entity.Id" id="@version.Entity.Id" data-message="@GetResource(ResourceKeys.Delete)">
+                                    <td>@version.Entity.Name</td>                
+                                    <td>@version.Entity.Label</td>
+                                    <td style="width: 150px;">@version.ParentVersionName</td>
+                                    <td> @{
+                                             if (version.Entity.StartDate.HasValue)
+                                             {<text>@version.Entity.StartDate.Value.ToShortDateString()</text>
+                                             }
+                                             else
+                                             {
+                                                 <text>&nbsp;</text>
+                                             }
+                                         }
+                                    </td>
+                                    <td> @{
+                                             if (version.Entity.ReleaseDate.HasValue)
+                                             {<text>@version.Entity.ReleaseDate.Value.ToShortDateString()</text>
+                                             }
+                                             else
+                                             {
+                                                 <text>&nbsp;</text>
+                                             }
+                                         }
+                                    </td>
+
+                                    <td class="centered no-width">@(version.Entity.Archived ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                                    <td class="centered no-width">@(version.Entity.Released ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                                    <td data-edit="false" class="actions">
+                                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete" data-message="@GetResource(ResourceKeys.Delete)"></span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </td>
+        <td class="valign-top pad-right-20">
+            <div id="project-admin-tree">
+                <p>@GetResource(ResourceKeys.DragDropAdminTip)</p>
+                <div id="tree">&nbsp;</div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        gemini_admin.initDatatables("#project-admin-versions", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [7] }], fnDrawCallback: function (value, y) {
+            gemini_ui.inlineEdit("#project-admin-versions td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/versions/getproperty", "project/" + @Model.ProjectId + "/settings/versions/setproperty");
+        }});
+
+        $("#project-admin-versions_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#system-options-add").click(function ()
+        {
+            gemini_popup.centerPopup("project/" + @Model.ProjectId + "/settings/versions", "Add");
+        });
+
+        $("#project-admin-versions").off('click', ".action-button-delete").on('click', ".action-button-delete", function (e)
+        {
+            var item = $(this);
+            var tr = item.closest("tr");
+            var id = tr.data("id");
+            var version = $("td:first", tr).html();
+            var message = $(this).attr("data-message");
+
+            gemini_popup.modalConfirm(message + " <span class='bold'>'" + version + "' ?</span>", null, function ()
+            {
+                gemini_ui.startBusy('#modal-confirm #modal-button-yes'); 
+                gemini_ajax.call("project/" + @Model.ProjectId + "/settings/versions", "delete", function (response)
+                {
+                    if (response.Success)
+                    {
+                        gemini_admin.removeRow(item);
+                        var dt = $("#tree").dynatree("getTree");
+                        dt.getNodeByKey(id).remove();
+                       // gemini_projects.settingsVersions(@Model.ProjectId);
+                    }
+                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); 
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+            });
+        });
+        
+        $("#tree").dynatree({
+            debugLevel: 0,
+            persist: false,
+            generateIds: true, //important for inline editing to work
+            clickFolderMode: 1,
+            fx: { height: "toggle", duration: 200 },
+            children: @Html.Raw(Model.Tree.ToJson()),
+            imagePath: csVars.Url + "/assets/images/",
+            dnd: {
+                preventVoidMoves: true,
+                onDrop: function (node, sourceNode, hitMode, ui, draggable)
+                {
+                    sourceNode.move(node, hitMode);
+
+                    var draggedId = sourceNode.data.Id;
+                    var droppedId = node.data.Id;
+                    
+                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/versions", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode });
+                },
+                onDragStart: function (node) {
+                    return true;
+                },
+                onDragEnter: function (node, sourceNode) {
+                    // Prevent dropping a parent below another parent (only sort
+                    // nodes under the same parent)
+                    if(node.parent !== sourceNode.parent){
+                        //return false;
+                    }
+                    // Don't allow dropping *over* a node (would create a child)
+                    return ["before", "after"];
+                }
+            }
+        });
+    });
+</script>

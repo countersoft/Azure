@@ -1,0 +1,20 @@
+﻿<div class="clearfix pad-bottom-5"></div>
+<article class='item-tabs-data item-content-widget' data-gemini-control-id='${ControlId}' data-gemini-app-id='${AppId}'>
+    <div class="clearfix"></div><br />
+    <a name="additional"></a>
+    <div class="section-header clearfix">
+        <div class="left">
+            <h3><span class="expander fonticon-arrow-right"></span>${Title}</h3>
+        </div>
+        <div class="toolbar actions right">
+            {{each Buttons}}
+            <a class="button fonticon-plus" href="#" data-gemini-action='{{html $value.Action}}' onclick="${$value.OnClick}"></a>
+            {{/each}}
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-content hide additional">
+        <div id='${AppId}-${ControlId}' class='contents'>
+        </div>
+    </div>
+</article>

@@ -1,0 +1,41 @@
+﻿@model BaseAdminModel
+
+<div id="AppNavAddContainer">
+    <form id="appnav-form">
+        <table id="add-appnav-card" class="admin-data-entry">
+            <tr>
+                <td>Title</td>
+                <td><input type="text" id="title" name="title" class="input-size9 required" /></td>
+            </tr>
+            <tr>
+                <td>Message</td>
+                <td><input type="text" id="message" name="message" class="input-size9 required" /></td>
+            </tr>
+            <tr>
+                <td>External Url</td>
+                <td><input type="text" id="url" name="url" class="input-size9 required" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $("#appnav-form").validate();
+
+    $("#popup-button-yes").unbind('click').click(function (e)
+    {
+        gemini_commons.stopClick(e);
+
+        if (!$("#appnav-form").valid()) return;
+        gemini_ui.startBusy('#colorbox #popup-button-yes');
+        gemini_ajax.postCall("configure/System/AppNav", "SaveData", function (response) {
+            gemini_popup.popupClose(e);
+            gemini_admin.getPage();
+            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#appnav-form").serialize() + "&mode=add");
+    });
+
+    $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

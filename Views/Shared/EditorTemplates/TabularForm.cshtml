@@ -1,0 +1,32 @@
+﻿@model FormModel
+@using Countersoft.Gemini.Infrastructure.Grid;
+@{
+    var classes = new Dictionary<string, object>();
+    classes.Add("class", "data-entry cs-no-hover");
+    
+    var required = new Dictionary<string, object>();
+    required.Add("class", "bold");
+
+    var blank = new Dictionary<string, object>();
+}
+
+<form id="inline-edit-form" enctype="multipart/form-data" action="@Model.Path" method="post">
+    @Html.HiddenFor(x=> x.Id)
+    @{
+        var fields = Model.Fields.FindAll(f => !f.Value.Hidden);
+        var hidden = Model.Fields.FindAll(f => f.Value.Hidden);
+        foreach (var hide in hidden)
+        {   
+            <input type='hidden' value="@hide.Value.Value" id="@hide.Value.Id" name="@hide.Value.Id"/>
+        }
+    }
+
+    @Html.Grid(fields).Attributes(classes).Columns( 
+        col => 
+            { 
+                col.For(x=> x.Key).Attributes( x=> x.Item.Value.Required ? required : blank);
+                col.For(x=> Html.Partial(x.Value.TemplateFile, x.Value));
+            }
+           ).RenderHeaders(false).RowAttributes(x => classes)
+</form>
+

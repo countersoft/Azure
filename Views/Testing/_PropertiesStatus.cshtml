@@ -1,0 +1,18 @@
+﻿@model TestPlanDto
+@{
+    var runs = Model.Entity.TestRuns.OrderByDescending(x => x.Revised);
+    int wibble = 0;
+
+    if (runs != null && runs.Count() > 0)
+    {
+        var run = runs.First();
+        
+        if ( run.HasPassed != null )
+        {
+            wibble = (bool)run.HasPassed ? 1 : 2;
+        }
+    }        
+}
+<div class='cs-status-icon pend left @string.Format("{0}", wibble==0 ? "glow" : string.Empty)'>@Model.Entity.PendingRuns</div>
+<div class='cs-status-icon pass left @string.Format("{0}", wibble==1 ? "glow" : string.Empty)'>@Model.Entity.PassedRuns</div>
+<div class='cs-status-icon fail left @string.Format("{0}", wibble==2 ? "glow" : string.Empty)'>@Model.Entity.FailedRuns</div>

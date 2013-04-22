@@ -1,0 +1,15 @@
+﻿@model ViewIssueModel
+
+<div class="clearfix pad-bottom-5"></div>
+<article>
+    <a id="testing"></a>
+    <div class='section-header clearfix'>
+    <div class="clearfix">
+    <div class="left" id='test-cases-section'><span class='expander fonticon-arrow-down'></span><h3>@GetResourceTemplate(ResourceKeys.Testing)&nbsp;(@Model.Issue.Cases.Count)</h3></div>
+    </div>
+    <div class='divider'></div>
+    <div class="section-content testing expanded">
+        @Html.Partial("~/views/testing/_TestCasesList.cshtml", Model.Issue.Cases)
+    </div>
+    </div>
+</article>
