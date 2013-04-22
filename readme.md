@@ -10,6 +10,8 @@ Create a custom web site within Azure.
 
 ![Create Azure Website](http://docs.countersoft.com/assets/img/azure/step1.png)
 
+Make sure you check the **"Publish from source control"** option!
+
 ## Specify Website URL
 
 Select which your URL you would like to use for your Gemini web application.
@@ -26,11 +28,9 @@ Select any database name and specify SQL credentials.
 
 NOTE: Azure will automatically update the `web.config` file with the correct SQL credentials.
 
-## Clone/Fork This Repository 
+## Source Control Integration
 
-Simply fork this repository to your own GitHub account -- feel free to create a free account here and fork the repo (costs you nothing).
-
-In Azure select your GitHub Gemini repository.
+Select GitHub as your source control provider.
 
 ![Create Azure Website](http://docs.countersoft.com/assets/img/azure/step4.png)
 
