@@ -1,22 +1,17 @@
 ﻿@model HistoryCaseInfo
 
-<div class='section-header case clearfix'>
-    <div class="clearfix">
+<div class='section-header case clearfix' style="margin-top:0px !important;">
+    <div >
         <div id='section-steps' class="left width-100">
             @*<h3>@string.Format("{0}-{1}", GetResource(ResourceKeys.Case), Model.Case.Id)</h3>*@
 
-            <table class="width-100 grid">
+            <table class="width-100 grid" style="margin-top:5px !important;">
                 <tr class="cs-no-hover">
                     <td class="no-width">
                         <span class='expander fonticon-arrow-down'></span>
                     </td>
-                    <td class="no-width no-wrap">
-                        <h5>@string.Format("{0}-{1}", GetResource(ResourceKeys.Case), Model.Case.Id)</h5>
-                    </td>
-                    <td>@Model.Case.Title</td>
-                    <td class="no-width no-wrap">@Model.Case.Revised</td>
                     <td class="no-width pad-right-10">
-                        @if (Model.RunSteps.Any(s => s.HasPassed.HasValue && s.HasPassed.Value == false))
+                         @if (Model.RunSteps.Any(s => s.HasPassed.HasValue && s.HasPassed.Value == false))
                         {
                             <div class='failed'>@GetResource(ResourceKeys.Failed)</div>
                         }
@@ -29,6 +24,12 @@
                             <div class='pending'>@GetResource(ResourceKeys.Pending)</div>
                         }
                     </td>
+                    <td class="no-width no-wrap">                     
+                        @Html.Partial("~/views/testing/_ItemLink.cshtml", Model.Case)
+                    </td>
+                    <td>@Model.Case.Title</td>
+                    <td class="no-width no-wrap">             
+                    </td>                    
                 </tr>
             </table>
 
@@ -55,47 +56,53 @@
             </div>#1#
         </div>*@
     </div>
-    <div class='divider'></div>
-    <div class='section-content expanded'>
+
+    <div class='section-content expanded' style="padding-left:67px !important;margin-top:0px !important">
+        <div class="clearfix"></div>
         <div class="description clearfix">
-            @Html.Raw(Model.Case.Description)
+            @if (Model.Case.Description != string.Empty)
+            {
+                <div style="height:5px;width:50px"></div>
+                @Html.Raw(Model.Case.Description)
+            }
         </div>
 
-        <table class="width-100 grid">
+        <table class="width-100 grid" style="margin-top:5px !important">
             <tr>
                 <th>@GetResource(ResourceKeys.Step)</th>
                 <th>@GetResource(ResourceKeys.Steps)</th>
                 <th>@GetResource(ResourceKeys.ExpectedResults)</th>
                 <th>@GetResource(ResourceKeys.ActualResults)</th>
                 <th>@GetResource(ResourceKeys.Attachments)</th>
-                <th>@GetResource(ResourceKeys.Revised)</th>
                 <th>@GetResource(ResourceKeys.Status)</th>
+                <th class="no-width no-wrap">@GetResource(ResourceKeys.Revised)</th>
 
             </tr>
             <tbody class="grid">
                 @foreach (var step in Model.RunSteps)
                 {
                     <tr>
-                        <td>#@step.StepOrder</td>
-                        <td>@Html.Raw(step.Description)</td>
-                        <td>@Html.Raw(step.ExpectedResult)</td>
-                        <td>@Html.Raw(step.ActualResult)</td>
-                        <td>
+                        <td class="valign-top">#@step.StepOrder</td>
+                        <td class="valign-top">@Html.Raw(step.Description)</td>
+                        <td class="valign-top">@Html.Raw(step.ExpectedResult)</td>
+                        <td class="valign-top">@Html.Raw(step.ActualResult)</td>
+                        <td class="valign-top">
                             @Html.Partial("~/Views/Testing/_Attachments.cshtml", step.Attachments, new ViewDataDictionary { { "DeleteAttachments", false } })
                         </td>
-                        <td class="minor">@step.Revised</td>
-                        <td class="no-wrap no-width center">
+                     
+                        <td class="no-wrap no-width center valign-top">
                             <div class='@( step.HasPassed != null ? ((bool)step.HasPassed ? "passed" : "failed") : "pending")'>
                                 @(step.HasPassed.HasValue ? ((bool)step.HasPassed ? GetResource(ResourceKeys.Passed) : GetResource(ResourceKeys.Failed)) : GetResource(ResourceKeys.Pending))
                             </div>
                             @{
-                    var item = Model.IssuesRaised.Issues.FirstOrDefault(i => i.Entity.Id == Model.HistorySelected.SelectedIssue && step.StepId == Model.HistorySelected.SelectedStep);
-                    if (item != null)
-                    {
-                                @Html.Partial("~/views/testing/_ItemLink.cshtml", item)
-                    }
+                                var item = Model.IssuesRaised.Issues.FirstOrDefault(i => i.Entity.Id == Model.HistorySelected.SelectedIssue && step.StepId == Model.HistorySelected.SelectedStep);
+                                if (item != null)
+                                {
+                                    @Html.Partial("~/views/testing/_ItemLink.cshtml", item)
+                                }
                             }
                         </td>
+                           <td class="minor no-wrap valign-top">@step.Revised</td>
                     </tr>
                 }
             </tbody>
@@ -126,7 +133,7 @@
             </div>
         </div>        
     }*@<br />
-        <hr />
+       
     </div>
 
 </div>

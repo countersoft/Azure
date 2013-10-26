@@ -1,0 +1,24 @@
+table.items-list td:first-child { min-width:80px; white-space: nowrap; font-size:14px; color: gray; }
+table.items-list td:last-child { white-space: nowrap; font-size:16px; }
+
+table.due-today td:first-child { color:#AE432E; }
+
+table.due-tomorrow td:first-child { color:#B5712E; }
+table.due-thisweek td:first-child { color:#B5712E; }
+table.due-nextweek td:first-child { color:#B5712E; }
+table.opened td:first-child {color:#B5712E;}
+
+table.closed td:first-child { color:#77AB13; }
+table.closed-recently td:first-child { color:#77AB13; }
+
+table.opened-recently td:first-child { color: yellow; }
+
+.closed-count {font-size:3.5em;margin:60px auto;text-align:center;color:#77AB13;}
+.opened-count { font-size:3.5em; margin: 60px auto; text-align:center; color:#B5712E; }
+
+table.workload-list { width: 100%; }
+table.workload-list td:first-child { min-width:100px; white-space: nowrap; font-size:17px; color: gray; }
+table.workload-list td:last-child { white-space: nowrap; font-size:19px; text-align: right; }
+
+.b-funnel-text .t-main { font-size:20px !important; }
+.b-funnel-text span:last-child { font-size:16px; }

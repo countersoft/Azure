@@ -1,0 +1,151 @@
+﻿@model BaseModel
+@{
+    var settings = GeminiContext.User.GetSettings();
+    int loop = 0;
+    int menuItems = Model.ProjectMenu.Count;
+
+    string tabName = Model.HeaderText[1].Text;
+    var helpdeskUser = GeminiContext.PermissionsManager.IsHelpdeskUser(); 
+    
+}
+<header id="header">
+    
+    <div id="zone-header-bar">
+        
+        <div id="plus-header">
+        @if (IsAuthenticated)
+        {
+            <div class="fonticon-plus" title="@GetResource(ResourceKeys.Add)"></div>
+        }
+        </div>
+
+        <span id="all-projects-menu-box" class="item dropdown">@Model.HeaderText[0].Text <span class="fonticon-dropdown" href="~/projects"></span>
+            <ul class="cs-menu-dropdown">
+                <li><input type="text" id="project-search" placeholder="Search" /></li>
+                <li class="separator"></li>
+                
+                @foreach (var project in Model.Projects)
+                {
+                    <li>
+                        <a href="@project.HomePageUrl" style="white-space: nowrap;">
+                            <div class="menu-project-code" style="display: inline-block;">@project.Entity.Code</div>
+                            <span>@project.Entity.Name</span>
+                        </a>
+                    </li> 
+                }
+                @if(!helpdeskUser)
+                {
+                    if (Model.HasMoreProjects)
+                    {
+                        <li class="separator"></li>
+                    }
+                    <li class="highlight"><a href="~/projects">@GetResource(ResourceKeys.AllProjects) &nbsp;»</a></li>
+                }
+                
+            </ul>
+        </span>
+
+        <span class="item-tab">
+            @if (GeminiContext.Project.Entity.Id > 0 || NavigationHelper.IsProjectPage(Model.PageType))
+            {
+                if (Model.ProjectMenu.Count > 0)
+                {
+                    <span id="project-menu-dropdown" class="dropdown">
+                        @tabName <span class="fonticon-dropdown"></span>
+
+                        <ul class="cs-menu-dropdown">
+
+                            @foreach (var item2 in Model.ProjectMenu)
+                            {
+                                loop++;
+
+                                if (item2.IsDivider && loop < menuItems)
+                                {
+                                    <li class="separator"></li>
+                                }
+
+                                if (!item2.IsDivider)
+                                {
+                                    <li><a href="@item2.Url">@item2.Label</a></li>
+                                }
+                            }
+
+                            @if (!helpdeskUser && (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManageComponents) ||
+                                 GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManageVersions) ||
+                                 GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanSetProjectDefaultValues)))
+                            {
+                                <li class="separator"></li>
+                                <li class="highlight"><a href="~/project/@GeminiContext.Project.Entity.Id/settings">@GetResource(ResourceKeys.Settings)</a></li>
+                            }
+                        </ul>
+                    </span>
+                }
+                else
+                {
+                    @tabName
+                }
+            }
+            else
+            {
+                @tabName
+            }
+        </span>
+
+        <span id="header-bar-current-card-title" class="item-current-card">
+            @if (Model.CardAlreadyPinned && Model.CurrentPageCard.Title != tabName && Model.CurrentPageCard.CardType != ProjectTemplatePageType.Item)
+            {
+                <a class="link" href="@GeminiContext.Url@Model.CurrentPageCard.Url?card=@Model.CurrentPageCard.Id">
+                    @Model.CurrentPageCard.Title
+                </a>
+            }
+        </span>
+
+        <span class="user-options">
+
+            @if (GeminiContext.User.IsGlobalAdmin)
+            {
+                <span class="item-small"><a href="~/configure">@GetResource(ResourceKeys.Customize)</a></span>
+                <span class="divider"></span>
+            }
+
+            @if (!IsAuthenticated)
+            {
+                <span class="item-small"><a href="~/account/login">@GetResource(ResourceKeys.Login)</a></span>
+            }
+            else
+            {   
+                <span class="item-small"><a id="help-link" href="~/help"><span class='@if (settings.LastUpdateDate < Model.LasUpdateDate)
+                                                                                      {<text>bold</text>}'>@Html.Raw(GeminiContext.User.IsGlobalAdmin ? "Updates" : "Resource Center")</span></a></span>
+                <span class="divider"></span>
+            
+                <span class="item-small"><a href="~/account/profile">@GeminiContext.User.Entity.Fullname</a></span><span id="user-menu" class="fonticon-dropdown dropdown">
+                                                                                                                       <ul class="cs-menu-dropdown">
+                                                                                                                           <li><a href="~/project/all/@Constants.AllProjectsId/items/assigned">@GetResource(ResourceKeys.Assigned)</a></li>
+                                                                                                                           <li><a href="~/project/all/@Constants.AllProjectsId/items/following">@GetResource(ResourceKeys.Following)</a></li>
+                                                                                                                           <li><a href="~/project/all/@Constants.AllProjectsId/report?Reports=53">@GetResource(ResourceKeys.Time)</a></li>
+                                                                                                                           
+                                                                                                                           @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
+                                                                                                                           { 
+                                                                                                                            <li class="separator"></li>
+                                                                                                                            <li class="highlight"><a href="~/account/logout">@GetResource(ResourceKeys.Logout)</a></li> 
+                                                                                                                           }
+                                                                                                                       </ul>
+                                                                                                                   </span>
+            }
+
+            <span>&nbsp;</span>
+
+            <span id="search-box">
+                <form id="search-form" action="~/project/all/0/items" method="GET" autocomplete="off">
+                    <input id="search" name="search" type="text" placeholder="@GetResource(ResourceKeys.Search)" />
+                </form>
+            </span>
+        </span>
+    </div>
+
+    <div id="notification-center">
+        @{ Html.RenderPartial("NotificationZone", GeminiContext.User.GetSettings()); }
+    </div>
+
+</header>
+

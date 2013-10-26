@@ -1,6 +1,4 @@
-//var gemini_ajaxXHR;    // used as a Ajax Semaphore
-
-var gemini_ajax = {
+gemini_ajax = {
 
     // make calls to a MVC Application via AJAX/JSON        - add parameter for dataType ????
     getUrl: function (controller, method) {

@@ -3,49 +3,92 @@
 <div id="statusbar" class="clearfix">
     <table cellpadding="0" cellspacing="0">
         <thead>
-            <tr>
-                <td>@GetResourceTemplate(ResourceKeys.Progress)</td>
-                <td>@GetResourceTemplate(ResourceKeys.Open)</td>
-                <td>@GetResourceTemplate(ResourceKeys.Closed)</td>
-                <td>@GetResourceTemplate(ResourceKeys.Total)</td>
-                <td>@GetResourceTemplate(ResourceKeys.TopThree)</td>
-                <td>&nbsp;</td>
+            <tr>               
+                <td style="width:100px;">@GetResourceTemplate(ResourceKeys.Open)</td>
+                <td style="width:100px;">@GetResourceTemplate(ResourceKeys.Closed)</td>
+                <td style="width:100px;">@GetResourceTemplate(ResourceKeys.Total)</td>
+                <td>@(Model.PageType != ProjectTemplatePageType.Burndown ?  GetResourceTemplate(ResourceKeys.Progress):GetResourceTemplate(ResourceKeys.EstimatedReleaseDate)) </td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="complete">
-                    <div class="center">
-                        <div class="tinyProgress"></div>
-                    </div>
-                </td>
-                <td class="open">@Model.Open</td>
-                <td class="closed">@Model.Closed</td>
-                <td class="total">@Model.Total</td>
-                <td align='center'><div id="status-breakdown" style="width:300px; height:75px;"></div></td>
-                <td class="releaseDate valign-top">
-                  <ul>
-                      @if (@Model.ReleaseStartDate.HasValue)    { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.StartDate, Resourcing.Colon)</div>&nbsp;&nbsp;<span class='releasestartdate right bold'>@Model.ReleaseStartDate.Value.ToShortDateString()</span></li> }
-                      @if (@Model.ReleaseEndDate.HasValue)      { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.ReleaseDate, Resourcing.Colon)</div>&nbsp;&nbsp;<span class='releaseenddate right bold'>@Model.ReleaseEndDate.Value.ToShortDateString()</span></li> }
-                  </ul>
-                </td>
-                <td class="delta">
-                    <div class="center">
-                        <ul>
-                            <li><span class="arrow"></span></li>
-                            <li><span class='delta-hours'></span> <span class='delta-minutes'></span></li>
-                        </ul>
-                    </div>
-                </td>
-                <td class="zones valign-top">
-                    <div class="center">
-                        <ul>
-                            @if(Model[ItemAttributeVisibility.EstimatedEffort]) { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.Estimated, Resourcing.Colon)</div>&nbsp;<span class='days-est right'></span></li> }
-                            @if(Model[ItemAttributeVisibility.CalculatedTimeLogged]) { <li><div style="display:inline;">@GetResourceTemplate(ResourceKeys.Logged, Resourcing.Colon)</div>&nbsp;<span class='days-cpt right'></span></li> }
-                        </ul>
-                    </div>                                    
+                
+                <td class="open">@Model.Open</td> <!-- Open -->
+                <td class="closed">@Model.Closed</td> <!-- Closed -->
+                <td class="total">@Model.Total</td> <!-- Total -->
+             
+                <!-- Progress/Estimated Release Date -->
+                @if (Model.PageType != ProjectTemplatePageType.Burndown) 
+                {
+                    <td><div  class="complete center">@(Model.Total > 0 ? Math.Floor((double)(Model.Closed * 100)/Model.Total) : 0)%</div></td>
+                }
+                else
+                {                
+                    <td>
+                        @if (Model.EstimatedEndDate.HasValue) 
+                        {                       
+                            <div class="split-number" title="@Model.EstimatedEndDate.Value.ClearTime().ToString()">@Model.EstimatedEndDate.Value.ToString("d MMM")</div>                         
+                        }
+                    </td>
+                }
+
+                <td class="releaseDate valign-top no-wrap" style="width:200px;padding-right:20px;"> 
+                    <table>
+
+                        @if(Model.ReleaseStartDate.HasValue) 
+                        {
+                            <tr>
+                                <td>@GetResourceTemplate(ResourceKeys.StartDate)</td>
+                                <td class="releasestartdate bold">@Model.ReleaseStartDate.Value.ToShortDateString()</td>
+                            </tr>
+                        }
+
+                        @if (Model.ReleaseEndDate.HasValue) 
+                        {
+                            <tr>
+                                <td>@GetResourceTemplate(ResourceKeys.ReleaseDate)</td>
+                                <td class="releaseenddate bold">@Model.ReleaseEndDate.Value.ToShortDateString()</td>
+                            </tr>
+                        }
+
+                     
+                    </table>
+                </td>               
+                <td class="zones valign-top no-width no-wrap" style="width:200px;">
+                    <table>
+                        @if(Model[ItemAttributeVisibility.EstimatedEffort])
+                        {
+                            <tr>
+                                <td>@GetResourceTemplate(ResourceKeys.Estimated)</td>
+                                <td class="days-est bold"></td>
+                            </tr>
+                        }
+
+                        @if (Model[ItemAttributeVisibility.CalculatedTimeLogged])
+                        {
+                            <tr>
+                                <td>@GetResourceTemplate(ResourceKeys.Logged)</td>
+                                <td class="days-cpt bold"></td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td>@GetResourceTemplate(ResourceKeys.Remaining)</td>
+                            <td class="days-remaining bold @if(Model.TimeLoggedOver == 0) {<text>green</text>}"></td>
+                        </tr>
+
+                        @if (Model[ItemAttributeVisibility.EstimatedEffort] && Model[ItemAttributeVisibility.CalculatedTimeLogged] && Model.TimeLoggedOver > 0)
+                        {
+                            <tr>
+                                <td>@GetResourceTemplate(ResourceKeys.Excess)</td>
+                                <td class="days-excess bold"></td>
+                            </tr>
+                        }                      
+
+                    </table>
+                                            
                 </td>
             </tr>
         </tbody>

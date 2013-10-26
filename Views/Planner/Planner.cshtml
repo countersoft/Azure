@@ -4,13 +4,9 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
 <div id="cs-template">
 <div id="filter" class="clearfix">
-    <form id="filter-form">@{Html.RenderPartial("Filter", Model.Filter);}</form>
+    @{Html.RenderPartial("InstantFilter", Model.Filter);}
 </div>
 
 <div id='planner-control-box'>
@@ -128,13 +124,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="option vertical-align">
-                    <div id="grid-column-picker" class="control-icon filterup" title="@GetResource(ResourceKeys.Expand)">
-                    </div>
-                          <div id="grid-column-picker" class="control-icon filterdown" title="@GetResource(ResourceKeys.Collapse)">
-                    </div>
-                </div>
 
             </div>
             
@@ -172,6 +161,5 @@
 @section DocumentReady
 {
     planner.initialize(@GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard).ToJSBool(true));
-    gemini_filter.init(@((int) ProjectTemplatePageType.Planner));
-    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "planner");
+    gemini_filter.init(@((int) ProjectTemplatePageType.Planner), @Html.Raw(Model.Filter.AvailableFields.ToJson()));
 }

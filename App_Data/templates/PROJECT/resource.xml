@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Resource>
+    <item id="VersionUnscheduled">Unscheduled</item>
+    <item id="FixedInVersion">Phase</item>
+    <item id="FixedInVersions">Phase</item>
+    <item id="AffectedVersions">Affected Phase</item>
+    <item id="Component">Module</item>
+    <item id="Components">Modules</item>
+    <item id="Item">Item</item>
+    <item id="Items">Items</item>
+    <item id="ItemsFound">Items</item>
+</Resource>

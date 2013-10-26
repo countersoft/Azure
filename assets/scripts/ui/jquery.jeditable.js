@@ -92,8 +92,8 @@
                     || $.editable.types['defaults'].reset;
         var callback = settings.callback || function() { };
         var onedit   = settings.onedit   || function() { }; 
-        var onsubmit = settings.onsubmit || function() { };
-        var onreset  = settings.onreset  || function() { };
+        var onsubmit = settings.onsubmit || function () { settings.submit = null };
+        var onreset = settings.onreset || function () { settings.submit = null };
         var onerror  = settings.onerror  || reset;
           
         /* Show tooltip. */
@@ -238,6 +238,10 @@
 
                 if(settings.validationEmail != null && settings.validationEmail(this)) {
                     input.addClass('email');
+                }
+
+                if (settings.validationProgrammaticalNames != null && settings.validationProgrammaticalNames(this)) {
+                    input.addClass('programmaticalnames');
                 }
                 // END SAAR
 
@@ -539,6 +543,8 @@
                         textarea.width(settings.width);
                     }
                     $(this).append(textarea);
+
+                    settings.submit = "<button type='submit' class='button-primary'>OK</button>";
                     return(textarea);
                 }
             },
@@ -744,7 +750,8 @@
         detectType: null,
         dateFormat: null,
         validationRequired: null,
-        validationEmail: null
+        validationEmail: null,
+        validationProgrammaticalNames: null,
     };
 
 })(jQuery);

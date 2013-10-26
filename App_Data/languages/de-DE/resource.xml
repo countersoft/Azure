@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Abhängigkeiten Gruppieren</item>
   <item id="Grouped">Gruppiert</item>
   <item id="ShowSequence">Aufeinanderfolgende Items</item>
-  <item id="FilterNoType">&lt; Alle Items &gt;</item>
+  <item id="FilterNoType">Alle Items</item>
   <item id="FilterIncludeClosed">Geschlossene Items einbeziehen</item>
   <item id="FilterOpenIssues">Öffnen</item>
   <item id="FilterClosedIssues">Geschlossen</item>
@@ -261,7 +261,7 @@
   <item id="TimeRemaining">Verbleibende Zeit</item>
   <item id="TimeExceeded">Zeitüberschreitung</item>
   <item id="TimeLogged">Zeit aufgezeichnet</item>
-  <item id="EstimatedEffort">Leistung</item>
+  <item id="EstimatedEffort">Schätzung</item>
   <item id="ItemsRemaining">Verbleibende Items</item>
   <item id="Planner">Planner</item>
   <item id="Activity">Aktivität</item>
@@ -272,7 +272,7 @@
   <item id="Roadmap">Meilensteinplan</item>
   <item id="Testing">Testen</item>
   <item id="Tests">Tests</item>
-  <item id="Burnup">Burnup</item>
+  <item id="Burnup">Burn-up</item>
   <item id="Burndown">Burndown</item>
   <item id="AdditionalInformation">Zusätzliche Informationen</item>
   <item id="Comments">Kommentare</item>
@@ -369,4 +369,16 @@
   <item id="Id">ID</item>
   <item id="ImportWizard">Import-Assistent</item>
   <item id="InvalidCredentials">Ungültige Zugangsdaten</item>
+  <item id="SchedulesReports">Zeitlich geplante Berichte</item>
+  <item id="ReportsAttached">Im Anhang finden Sie Ihre Berichte.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Abhängigkeit</item>
+
+  <item id="Show">Zeigen</item>
+  <item id="Hide">Verstecken</item>
+  <item id="EstimatedReleaseDate">Geschätztes Veröffentlichungsdatum</item>
+  <item id="Excess">Exzess</item>
 </Resource>

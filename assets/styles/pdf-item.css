@@ -29,8 +29,7 @@ img, img a
 }
 
 /* Remove the various Element that we don't want to print */
-/* don't show the playlist or search boxes on the PDF */
-#header, #playlistbox, #searchbox, #search, #account-box, #versions
+#header, #zone-side-bar, #account-box, #versions
 {
     display:none;
 }

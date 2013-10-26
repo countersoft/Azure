@@ -9,23 +9,42 @@ else
     List<int> cardIds = new List<int>();
     bool showSequencing = false;
     bool allowSequencing = false;
+
+    if (Model is ItemsGridModel)
+    {
+        var itemsModel = ((ItemsGridModel)Model);
+        showSequencing = itemsModel.ShowSequencing;
+        allowSequencing = itemsModel.AllowSequencing;
+    }
+
     if (Model.CurrentPageCard.CardData.Badges.Count > 0)
     {
         var ids = Model.CurrentPageCard.CardData.Badges;
-        foreach(var id in ids)
+        foreach (var id in ids)
         {
             cardIds.Add(id);
         }
     }
-    
     <table id="tabledata" border="0" >
     <thead>
         <tr>
+            <th class="items-first-column">
+                @if (allowSequencing && showSequencing)
+                {
+                    <span class="fonticon-drag-handle dragHandle item-drag-handle invisible"></span>
+                    <input type="checkbox" name="check-all-items" id="check-all-items" value="1" class="fancy" />
+                }
+                else
+                {
+                    <input type="checkbox" name="check-all-items" id="check-all-items" value="1" class="fancy"/>
+                }
+            </th>
+
         @foreach (var property in Model.Columns)
         {
             if (!string.IsNullOrWhiteSpace(property.field) || property.IsCustomField)
             {
-                string id = property.IsCustomField ? string.Format("cf_{0}", property.CustomFieldId) : property.Attribute.ToString();
+                string id = property.IsCustomField ? property.CustomFieldId : property.Attribute.ToString();
                 if (property.sortable)
                 {
                     if (property.sortDirection == -1)
@@ -59,38 +78,40 @@ else
         {
             bool firstCol = true;
             var sequenceData = itemsModel.SequencedData[issue.Entity.Id];
-            <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
+            var lastColumn = sequenceData.Count == 0 ? null : sequenceData[sequenceData.Count - 1];
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
+<td class='align-left no-wrap items-first-column read-only'>
+
+@if (allowSequencing)
+{
+<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+}
+<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id" />
+</td>
 @foreach (var coldata in sequenceData)
 {
 <td class='@coldata.cssClass'>
-@if (firstCol && itemsModel.ShowSequencing)
-{
-//firstCol = false;
-if(allowSequencing)
-{
-<span class='dragHandle fonticon-drag-handle item-drag-handle-selected'></span>
-}
-else
-{
-<span class=''></span>
-}
-}
 @Html.Raw(coldata.FormattedData)
 @if (firstCol)
 {
-if (itemsModel.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
-{
+    if (itemsModel.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+    {
 <span class='parent fonticon-arrow-down expander'></span>
+    }
+    firstCol = false;
 }
-firstCol = false;
+else if (lastColumn == coldata)
+{
+<div class='item-context-menu fonticon-dropdown right'></div>
 }
 </td>
 }
 </tr>
-}
+        }
         if (showSequencing || itemsModel.SequencedIssues.Count > 0)
         {
             <tr class='drop-zone'>
+            <td></td>
             @foreach (var property in Model.Columns)
             {
                 // Get the property
@@ -105,33 +126,34 @@ firstCol = false;
     
 @foreach (var issue in Model.Issues)
 {
-bool firstCol = true;
-<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds)'>
+    bool firstCol = true;
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds)'>       
 @{
-var data = Model.DisplayData[issue.Entity.Id];
+    var data = Model.DisplayData[issue.Entity.Id];
+    var lastColumn = data.Count == 0 ? null : data[data.Count - 1];
+<td class="align-left no-wrap items-first-column read-only">
+@if (allowSequencing && showSequencing)
+{
+<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+}
+<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
+</td>
 foreach (var coldata in data)
 {
 <td class='@coldata.cssClass'>
-@if (firstCol && showSequencing)
-{
-if(allowSequencing)
-{
-<span class='dragHandle item-drag-handle fonticon-drag-handle'></span>
-}
-else
-{
-<span class=''></span>
-}
-}
 
 @Html.Raw(coldata.FormattedData)
 @if (firstCol)
 {
-if (Model.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
-{
+    if (Model.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+    {
 <span class='parent fonticon-arrow-down expander'></span>
+    }
+    firstCol = false;
 }
-firstCol = false;
+else if (lastColumn == coldata)
+{
+<div class='item-context-menu fonticon-dropdown right'></div>
 }
 </td>
 }

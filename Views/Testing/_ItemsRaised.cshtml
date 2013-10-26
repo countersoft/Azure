@@ -14,33 +14,16 @@
 
 @if (Model.Issues.Any())
 {
-        
-    <div class='section-header items-created clearfix pad-left-20'>
-        <div class="clearfix">
-            <div>
-                <table class="width-100 grid">
-                    <tr class="cs-no-hover">
-                        <td class="no-width">
-                            <span class='expander fonticon-arrow-@arrow'></span>
-                        </td>
-                        <td class="no-width no-wrap">
-                            <h5>@GetResource(ResourceKeys.ItemsRaised)</h5>
-                        </td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-
-        </div>
-        <div class='divider'></div>
-        <div class='section-content @contentstate'>
-            <table class="width-100 grid">
+    <div class='items-created clearfix pad-left-20' style="margin-top: 0px !important;padding-left: 67px;margin-bottom:7px;">
+        <div class="bold">@GetResource(ResourceKeys.ItemsRaised)</div>
+        <div>
+            <table class="width-100 grid" style="margin-top:10px !important;">
                 <tr>
                     <th>@GetResource(ResourceKeys.ItemKey)</th>
                     <th>@GetResource(ResourceKeys.Title)</th>
                     <th>@GetResource(ResourceKeys.ReportedBy)</th>
-                    <th>@GetResource(ResourceKeys.Revised)</th>
                     <th>@GetResource(ResourceKeys.Status)</th>
+                    <th>@GetResource(ResourceKeys.Revised)</th>
 
                 </tr>
                 <tbody class="grid">
@@ -55,10 +38,10 @@
                             <td class="no-width no-wrap">@Html.Partial("~/views/testing/_ItemLink.cshtml", issueDto)</td>
                             <td>@Html.Raw(issueDto.Entity.Title)</td>
                             <td>@Html.Raw(issueDto.Reporter)</td>
-                            <td class="minor no-width no-wrap">@Html.Raw(issueDto.Revised)</td>
-                            <td class="no-wrap no-width">
-                                @Html.Partial("~/views/testing/_TestItemState.cshtml", new TestType() { Id = issueDto.Entity.StatusId, Type = issueDto.Status })
+                            <td class="no-wrap">
+                                @Html.Partial("~/views/testing/_TestItemState.cshtml", new TestType() { Id = issueDto.Entity.StatusId, Type = issueDto.Status, TypeImage = issueDto.StatusImage })
                             </td>
+                            <td class="minor no-width no-wrap">@Html.Raw(issueDto.Revised)</td>
                         </tr>
                     }
                 </tbody>

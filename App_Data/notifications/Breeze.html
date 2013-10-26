@@ -1,60 +1,56 @@
-﻿<table style="width: 100%; font-family: arial; font-size: 16px; font-weight: bold; border: none; background-color: #8f0929;" cellpadding="20">
-   <tbody>
-      <tr>
-         <td style="color: white;">YOUR REQUEST</td>
-      </tr>
-   </tbody>
+﻿<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   	<tbody>
+		<tr>
+			<td style="color: #808080;" align="center">--- please reply above this line ---</td>
+		</tr>
+	</tbody>
 </table>
-<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
-   <tbody>
-      <tr>
-         <td style="color: #4c4c4c;">Thanks for your email which has been received and a ticket has been opened <strong>(@(Model.TheItem.IssueKey)).</strong></td>
-      </tr>
-   </tbody>
+<table style="width: 100%; font-family: arial; font-size: 16px; font-weight: bold; border: none; background-color: #005682;" cellpadding="20">
+<tbody>
+<tr>
+	<td style="color: #FFFFFF;">Gemini Tracker</td>
+</tr>
+</tbody>
 </table>
-<table style="margin-left: 20px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="10">
-   <tbody>
-      <tr>
-         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;">@(Model.TheItem.IssueKey)</td>
-         <td style="color: #4c4c4c; border: 1px solid #f5f5f5; background-color: #f5f5f5; font-weight: bold; font-size: 13px;">@(Model.TheItem.Title)</td>
-      </tr>
-      <tr>
-         <td style="color: #4c4c4c; border: 1px solid #f5f5f5;"><strong>In response to:</strong></td>
-         <td style="color: #4c4c4c; border: 1px solid #f5f5f5;">@Html.Raw(Model.TheItem.Description)</td>
-      </tr>
-   </tbody>
+<table style="width: 100%; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+<tbody>
+<tr>
+<td style="color: #4c4c4c;">Thanks for your email which has been received and a ticket has been opened for you <strong>(@(Model.TheItem.IssueKey)).</strong></td>
+</tr>
+</tbody>
 </table>
-<table style="margin-left: 20px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="5">
-   <tbody>
-       <tr><td></td></tr>
-      <tr>
-         <td style="color: #4c4c4c;">@Html.Raw(Model.LinkViewItem)</td>
-      </tr>
-       @if(Model.NewUserAdded)
-        {
-        <tr>
-        <td style="color: #4c4c4c;">User: @Html.Raw(Model.NewUserName)</td>
-        </tr>
-        <tr>
-        <td style="color: #4c4c4c;">Password: @Html.Raw(Model.NewUserPassword)</td>
-        </tr>
-        <tr>
-	        <td></td>
-        </tr>
-        }
-   </tbody>
+<table style="margin-left: 20px; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="5">
+<tbody>
+<tr>
+<td style="color: #4c4c4c;">@Html.Raw(Model.LinkViewItem)</td>
+</tr>
+</tbody>
 </table>
-<table style="font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
-   <tbody>
-      <tr>
-         <td style="color: #4c4c4c;">Thanks.</td>
-      </tr>
-   </tbody>
+<table style="margin-left: 20px; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: whitesmoke; border-collapse: collapse;" cellpadding="10">
+<tbody>
+<tr>
+<td style="color: #4c4c4c; border-left: 3px solid #ebebeb;"><strong>@(Model.TheItem.Title)</strong></td>
+</tr>
+		
+<tr>
+<td style="color: #4c4c4c; border-left: 3px solid #ebebeb;">@Html.Raw(Model.TheItem.Description)</td>
+</tr>
+
+</tbody>
 </table>
-<table style="width: 100%; font-family: arial; font-size: 11px; font-weight: normal; border: none; background-color: #8f0929;" cellpadding="5">
-   <tbody>
-      <tr>
-         <td style="color: white;">Sent by Countersoft Gemini v@(Model.Version)</td>
-      </tr>
-   </tbody>
+
+<table style="width: 100%; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+<tbody>
+<tr>
+<td style="color: #4c4c4c;">Thanks.</td>
+</tr>
+</tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: #ffffff;" cellpadding="5">
+<tbody>
+<tr><td><br/></td></tr>
+<tr>
+	<td style="color: #005682;" align="center"><a style="text-decoration:none;" href="http://www.countersoft.com">Powered by Countersoft Gemini</a></td>
+</tr>
+</tbody>
 </table>

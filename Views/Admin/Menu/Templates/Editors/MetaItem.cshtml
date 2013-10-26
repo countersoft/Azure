@@ -56,7 +56,7 @@
                     <td>@Model.FlagLabel
                     </td>
                     <td>
-                        <input type="checkbox" id="Flag" name="Flag" @if(Model.Flag)
+                        <input type="checkbox" class="fancy" id="Flag" name="Flag" @if(Model.Flag)
                                                                      {
                                                                          @: checked="checked"
                                                                      }/>
@@ -91,7 +91,7 @@
         });
         gemini_ui.chosen("#Icon", null, true);
         gemini_ui.setDropdownValue("#Icon", '@(Model.Icon)');
-        
+        gemini_ui.fancyInputs('#TemplatesMetaItemContainer .fancy');
 
         $('#colorSelector', "#TemplatesMetaItemContainer").ColorPicker({
             onChange: function (hsb, hex, rgb) {

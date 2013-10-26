@@ -84,8 +84,8 @@
         gemini_ui.chosen("#ComponentAssignment", null, true);
         gemini_ui.chosen("#ResourceAssignment", null, true);
 
-        $("#regular-form").validate({ rules: { ProjectCode : { required: true, maxlength: 10 }  } });
-        
+        $("#regular-form").validate();
+
         $("#popup-button-yes").click(function (e)
         {
             if ($("#regular-form").valid()) {

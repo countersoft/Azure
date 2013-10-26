@@ -1,0 +1,48 @@
+﻿@model BaseModel
+
+<ul class="cards">
+    @foreach (NavigationCard card in Model.SavedCards)
+    {
+        @:<li id="card-@card.Id" data-card-id="@card.Id" class="card @ViewHelpers.CardSystem(card)" data-counter="@card.BadgeCount">
+
+        if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null)
+        {
+                @:<a href="@card.Url" target="_blank">
+            }
+        else
+        {
+                @:<a href="@GeminiContext.Url@card.Url?card=@card.Id">
+            }
+                    <div class="card-box" title="@card.CardData.Comment">
+                        <span class="img-container @ViewHelpers.CardLetters(card)" style="background-color:@(card.Color) !important;" data-color="@(card.Color)">
+                            @if (card.LastSeen == null)
+                            {
+                                @:<span class="not-seen">!!</span>
+                            }
+                            @if (card.BadgeCount > 0)
+                            {
+                                @:<span id="badge-@card.Id" class="badge" data-badge-id="@card.Id" data-counter="@card.BadgeCount">@card.BadgeCountLabel</span>
+                            }
+                            <span class="key">@(card.Key)</span>
+                        </span>
+                        <span class="info">
+                            <span class="title">@card.Title</span>
+                        </span>
+                    </div>
+                @:</a>
+        
+            if (card.CardType != ProjectTemplatePageType.Custom && card.CardType != ProjectTemplatePageType.Marketing)
+            {
+                <div class="card-actions">
+                <div class="show-card-options" title="@GetResource(ResourceKeys.Options)"><img src="@AssetsPath/images/cog.png" /></div>
+
+                    @if (card.Id != Model.CurrentPageCard.Id)
+                    {
+                        <div class="remove-card" card-id="@card.Id" title="@GetResource(ResourceKeys.Delete)">X</div>
+                    }
+                </div>
+            }        
+        
+        @:</li>
+    }
+</ul>

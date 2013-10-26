@@ -1,21 +1,7 @@
 ﻿@model ViewIssueModel
 
-<div class="clearfix pad-bottom-5 clear-description-article"></div>
-<article class="description-article">
-    <a id="description"></a>
-    <div class="section-header clearfix">
-    <div class="clearfix">
-    <div class="left" id='description-section'><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.Description)</h3></div>
-    @if (CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.Description) || CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.Title))
-    {
-    <div class="toolbar actions right">
-        <a class="cursor-pointer button fonticon-edit" href="#" title="@GetResource(ResourceKeys.Edit) @string.Concat(@GetResource(ResourceKeys.Description),"/",@GetResource(ResourceKeys.Title))"></a>
-    </div>
-    }
-    </div>
-    <div class="divider"></div>
+<div>
     <div class="description section-content cs-wysiwyg expanded">
         @Html.Raw(Model.Issue.Description)
     </div>
-    </div>
-</article>
+</div>

@@ -1,4 +1,4 @@
-var gemini_activity = {
+gemini_activity = {
     callback: [],
 
     initTimeline: function () {
@@ -75,7 +75,7 @@ var gemini_activity = {
         }
 
         var options = jQuery.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options));
-
+        gemini_ui.fancyInputs('#calendar-control-box .fancy', 'background-color-white');
         $("#widget-calendar").fullCalendar({
             editable: true,
             year: options.Year,
@@ -159,9 +159,17 @@ var gemini_activity = {
             $("#widget-calendar").fullCalendar('next');
         });
         
-        $("#calendar-control-box #IncStartDate").bind("click", function () { gemini_activity.amendSource($(this).is(':checked'), 0); });
-        $("#calendar-control-box #IncDueDate").bind("click", function () { gemini_activity.amendSource($(this).is(':checked'), 1); });
-        $("#calendar-control-box #IncGantt").bind("click", function () { gemini_activity.amendSource($(this).is(':checked'), 2); });
+        $("#calendar-control-box #IncStartDate").bind("ifClicked", function () {
+            gemini_activity.amendSource(($(this).is(':checked') ? false : true), 0);
+        });
+
+        $("#calendar-control-box #IncDueDate").bind("ifClicked", function () {
+            gemini_activity.amendSource(($(this).is(':checked') ? false : true), 1);
+        });
+        $("#calendar-control-box #IncGantt").bind("ifClicked", function () {
+            gemini_activity.amendSource(($(this).is(':checked') ? false : true), 2);
+        });
+
         $("#calendar-control-box #ColorBySelected").change(function () { $("#widget-calendar").fullCalendar('refetchEvents'); });
 
         /*if (!options.ColorMode || options.ColorMode == "undefined")
@@ -220,19 +228,26 @@ var gemini_activity = {
     amendSource: function (checked, index) {
         switch (index) {
             case 0:
-                $("#IncGantt").prop("checked", false);
-                $("#IncStartDate").prop("checked", checked);
+                //$("#IncGantt").prop("checked", false);
+                //$("#IncStartDate").prop("checked", checked);
+                $("#IncGantt").iCheck("uncheck");
+                $("#IncStartDate").iCheck("check");
                 $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[2]);
                 break;
             case 1:
-                $("#IncGantt").prop("checked", false);
-                $("#IncDueDate").prop("checked", checked);
+                //$("#IncGantt").prop("checked", false);
+                //$("#IncDueDate").prop("checked", checked);
+                $("#IncGantt").iCheck("uncheck");
+                $("#IncDueDate").iCheck("check");
                 $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[2]);
                 break;
             case 2:
-                $("#IncStartDate").prop("checked", false);
-                $("#IncDueDate").prop("checked", false);
-                $("#IncGantt").prop("checked", checked);
+                //$("#IncStartDate").prop("checked", false);
+                //$("#IncDueDate").prop("checked", false);
+                //$("#IncGantt").prop("checked", checked);
+                $("#IncStartDate").iCheck("uncheck");
+                $("#IncDueDate").iCheck("uncheck");
+                $("#IncGantt").iCheck("check");
                 $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[0]);
                 $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[1]);
                 break;

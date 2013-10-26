@@ -1,0 +1,32 @@
+﻿@model ViewIssueModel
+
+@if (@Model[ItemAttributeVisibility.PercentComplete] || Model[ItemAttributeVisibility.EstimatedEffort] || Model[ItemAttributeVisibility.CalculatedTimeLogged] ||
+    (Model[ItemAttributeVisibility.CalculatedTimeExceeded] && Model.Issue.IsExcessTime) || (Model[ItemAttributeVisibility.CalculatedTimeRemaining] && !Model.Issue.IsExcessTime))
+{
+    <div class="progress-info">
+
+        @if (Model[ItemAttributeVisibility.PercentComplete])
+        {
+            <div data-attribute-id="@ItemAttributeVisibility.PercentComplete.ToString()" class="percent">@Model.Issue.PercentComplete %</div>
+        }
+
+        @if (Model[ItemAttributeVisibility.EstimatedEffort])
+        {
+            <span data-attribute-id="@ItemAttributeVisibility.EstimatedEffort.ToString()" class='estimate caption'>@GetResource(ResourceKeys.Estimated, Resourcing.Colon)</span>
+            <span data-attribute-id="@ItemAttributeVisibility.EstimatedEffort.ToString()" class='estimate value'>@Model.Issue.EstimatedEffort</span>
+        }
+
+        @if (Model[ItemAttributeVisibility.CalculatedTimeLogged])
+        {
+            <span class='caption'>@GetResource(ResourceKeys.Logged, Resourcing.Colon)</span>
+            <span class='value'>@Model.Issue.TimeLogged</span>
+        }
+
+        @if (Model[ItemAttributeVisibility.CalculatedTimeExceeded] && Model.Issue.IsExcessTime || Model[ItemAttributeVisibility.CalculatedTimeRemaining] && !Model.Issue.IsExcessTime)
+        {
+            <span class='caption'>@GetResource(Model.Issue.IsExcessTime ? ResourceKeys.TimeExceeded : ResourceKeys.TimeRemaining, Resourcing.Colon)</span>
+            <span class='value'>@Model.Issue.ExcessTimeOrTimeLeft</span>
+        }
+
+    </div>
+}

@@ -1,13 +1,5 @@
-var gemini_documents = {
+gemini_documents = {
     init: function (temp_upload, temp_dropzone, temp_delete, readOnly) {
-
-
-
-
-        //        gemini_ajax.call(csVars.ProjectUrl + "document")
-
-
-
         $("#tree").dynatree({
             onActivate: function (n) {
 
@@ -39,35 +31,20 @@ var gemini_documents = {
                 }
                 if (node != null)
                     gemini_documents.document_FolderList(node.data.key);
-            } /*,
-            dnd: {
-                preventVoidMoves: true,
-                onDrop: function (node, sourceNode, hitMode, ui, draggable) {
-                    /** This function MUST be defined to enable dropping of items on
-                    * the tree.
-                    #1#
-                    alert("drop");
-                    
-                    //sourceNode.move(node, hitMode);
-                },
-                onDragStart: function (node) {
-                    /** This function MUST be defined to enable dragging for the tree.
-                    *  Return false to cancel dragging of node.
-                    #1#
-                    console.info("tree.onDragStart(%o)", node);
-                    return true;
-                },
-                onDragEnter: function (node, sourceNode) {
-                    console.info("node", node);
-                    console.info("source", sourceNode);
-                }
-            }*/
+            }
         });
 
         $("#folders").resizable({ handles: 'e' });
 
         $("#DocumentFolderRenamer input").blur(function () {
             $("#DocumentFolderRenamer").fadeOut();
+            $('#DocumentFolderRenamer #NewName').removeClass('error');
+
+            var node = $("#tree").dynatree("getTree").selectKey('new');
+            if (node) {
+                node.remove();
+                $('#dynatree-id-new').remove();
+            }
         });
 
         gemini_documents.document_uploader = null;
@@ -79,6 +56,11 @@ var gemini_documents = {
                             var id = $("#DocumentFolderRenamer #NodeId").val();
                             var parentId = $("#DocumentFolderRenamer #ParentNodeId").val();
                             var newName = $("#DocumentFolderRenamer #NewName").val();
+                            if (newName.length == 0)
+                            {
+                                $('#DocumentFolderRenamer #NewName').addClass('error');
+                                return;
+                            }
                             gemini_documents.document_FolderRename(id, newName, parentId);
                             $("#DocumentFolderRenamer").fadeOut();
                         },
@@ -91,15 +73,6 @@ var gemini_documents = {
                         }
                     );
 
-        /*$("#DocumentFolderRenamer input").keyup(function (event) {
-        gemini_documents.document_isRenaming = true;
-        if (event.keyCode == 13) {
-        var id = $("#DocumentFolderRenamer #NodeId").val();
-        var parentId = $("#DocumentFolderRenamer #ParentNodeId").val();
-        gemini_documents.document_FolderRename(id, $(this).val(), parentId);
-        $("#DocumentFolderRenamer").fadeOut();
-        }
-        });*/
         gemini_documents.document_uploader = new qq.FileUploader({
             element: $("#page-documents #fileupload-hit")[0],
             action: gemini_ajax.getUrl(csVars.ProjectUrl + "documents", "UploadFile"),

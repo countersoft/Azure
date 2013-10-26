@@ -18,7 +18,7 @@
                 {
                 <tr>
                     <td class="input-size3">@GetResource(ResourceKeys.Project)</td>
-                    <td><input type="text" name="projectid" id="add-customfield-project-id" class="input-size9" /></td>
+                    <td>@Html.DropDownList("projectid", Model.Projects, new { @class = "input-size9" })</td>
                 </tr>
                 }
                 else if (Model.HideProjects && Model.SelectedProject > 0)
@@ -31,7 +31,7 @@
                 }
                 <tr>
                     <td class="input-size3">@GetResource(ResourceKeys.Description)</td>
-                    <td  class="input-size9"><input type="text" name="description" id="add-customfield-property-description" class="input-size9" /></td>
+                    <td  class="input-size9"><input type="text" name="description" id="add-customfield-property-description" class="input-size9 required" /></td>
                 </tr>
 
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
@@ -74,12 +74,33 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        @if(Model.HasProjectId && !Model.HideProjects)
+        {
+            <text>gemini_ui.chosen("#projectid", null, true);
+            gemini_ui.setDropdownValue("#projectid", '@(Model.SelectedProject)');</text>
+        }
 
         $("#custom-field-lookup-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
 
         inlineEdit($("#custom-field-lookup-container table tbody td:not([data-edit='false'])"), 'configure/Templates/CustomFields/getproperty?', 'configure/Templates/CustomFields/saveproperty?');
 
+        $('#add-customfield-property-description').on('keydown', function(e) {
+            if (e.which == 13) {
+                $("#add-lut-data", "#custom-field-lookup").click();
+                gemini_commons.stopClick(e);
+                return false;
+            }
+        });
+
         $("#add-lut-data", "#custom-field-lookup").click(function () {
+
+            var newDesc = $("#add-customfield-property-description").val();
+
+            if (newDesc.length == 0)
+            {
+                $('#add-customfield-property-description').addClass('error');
+            }
+
             if ($('#add-customfield-property-id').val() != '' && $('#add-customfield-property-description').val() != '') {
                 gemini_ajax.postCall("configure/Templates/CustomFields", 'add', function(response) {
                     $('#custom-field-lookup').html(response.Result.Html);
@@ -144,5 +165,6 @@
             });
         };
         $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+        setTimeout(function() { $('#add-customfield-property-description').focus(); }, 250);
     });
 </script>

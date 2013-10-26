@@ -252,18 +252,24 @@ $.extend($.validator, {
 				this.element(element.parentNode);
 			}
 		},
-		highlight: function(element, errorClass, validClass) {
-			if (element.type === 'radio') {
+		highlight: function (element, errorClass, validClass) {
+		    if (element.type === 'radio') {
 				this.findByName(element.name).addClass(errorClass).removeClass(validClass);
-			} else {
+		    } else if (element.type === 'textarea' && $(element).hasClass('wysiwyg-editor')) {
+		        $(element).prev().addClass(errorClass).removeClass(validClass);
 				$(element).addClass(errorClass).removeClass(validClass);
-			}
+		    } else {
+				    $(element).addClass(errorClass).removeClass(validClass);
+		    }
 		},
 		unhighlight: function(element, errorClass, validClass) {
 			if (element.type === 'radio') {
 				this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+			} else if (element.type === 'textarea' && $(element).hasClass('wysiwyg-editor')) {
+			    $(element).prev().removeClass(errorClass).addClass(validClass);
+			    $(element).removeClass(errorClass).addClass(validClass);
 			} else {
-				$(element).removeClass(errorClass).addClass(validClass);
+			    $(element).removeClass(errorClass).addClass(validClass);
 			}
 		}
 	},
@@ -280,7 +286,9 @@ $.extend($.validator, {
 		email: "",
 		url: "",
 		date: "",
-        dateFormatted: "",
+		dateFormatted: "",
+		alphanumeric: "",
+	    programmaticalNames: "",
 		dateISO: "",
 		number: "",
 		digits: "",
@@ -819,7 +827,9 @@ $.extend($.validator, {
 		email: {email: true},
 		url: {url: true},
 		date: {date: true},
-        dateFormatted : {dateFormatted: true},
+		dateFormatted: { dateFormatted: true },
+		alphanumeric: { alphanumeric: true },
+		programmaticalnames: { programmaticalnames: true },
 		dateISO: {dateISO: true},
 		number: {number: true},
 		digits: {digits: true},
@@ -1115,6 +1125,11 @@ $.extend($.validator, {
 			return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
 		},
 
+		regex: function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+
         dateFormatted: function(value, element) {
             var format = $(element).data('date-format');
 
@@ -1155,7 +1170,13 @@ $.extend($.validator, {
             }
             return this.optional(element) || y !== undefined && m !== undefined && m <= 11 && m >= 0 && d !== undefined && d >= 1 && d <= 31;
         },
-
+        alphanumeric: function (value, element, params) {
+            return value.match(/^[a-zA-Z0-9]*$/);
+        },
+        programmaticalnames: function (value, element)
+        {
+            return value.match(/^[A-Za-z0-9\-\_]*$/);
+        },
 		// http://docs.jquery.com/Plugins/Validation/Methods/dateISO
 		dateISO: function(value, element) {
 			return this.optional(element) || /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);

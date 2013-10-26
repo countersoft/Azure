@@ -1,14 +1,8 @@
 ﻿@model ViewIssueModel
 
-<div class="clearfix pad-bottom-5"></div>
-<article>
-    <a id="additional"></a>
-    <div class="section-header clearfix">
-    <div class='clearfix'>
-        <div id='additional-section' class="left"><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.AdditionalInformation)</h3></div>
-    </div>
-    <div class="divider"></div>
-    <div id="additional-info-data" class="section-content expanded additional">
+        <div id='additional-section' data-contentid="additional-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.AdditionalInformation)</h3></div>
+    
+    <div id="additional-content" class="content hide additional">
         <table class="cs-properties cursor-pointer">
         @foreach (var customField in Model.ContentCustomFields)
         {
@@ -19,5 +13,3 @@
         }
         </table>
     </div>
-    </div>
-</article>

@@ -37,6 +37,7 @@ else
         date = date.AddDays(1);
         countDays++;
     }
+    <th>Total</th>
                     }
                 </tr>
             </thead>
@@ -51,6 +52,10 @@ else
                 </tr>*@
                 @{
     IEnumerable<IGrouping<int, TimeReportModel>> issues = Model.ResultsAsTimeReport.GroupBy(tr => tr.KeyId);
+    var interval = Convert.ToInt32((Model.EndDate.Value - Model.StartDate.Value).TotalDays) + 1;
+    List<int> totalPerDay = new List<int>(interval);
+    totalPerDay.AddRange(Enumerable.Repeat(0, interval));
+    
 
     foreach (var issue in issues)
     {
@@ -61,7 +66,9 @@ else
                                 @(((IssueDto)issue.First().ReportItem).IssueKey)</a> @issue.First().Display</span>
                         </td>
                         @{
-        while (date <= Model.EndDate)
+        int totalMinutes = 0;
+        int currentIndex = 0;
+        while (date <= Model.EndDate.Value)
         {
             string cls = "";
             if (ReportManager.GetWeekends().Contains(date.DayOfWeek))
@@ -80,7 +87,16 @@ else
                             </td>
             }
             date = date.AddDays(1);
+
+            if (today != null)
+            {
+                totalMinutes += today.Minutes;
+                totalPerDay[currentIndex] = totalPerDay[currentIndex] + today.Minutes;
+            }
+            currentIndex++;
+
         }
+        <td><b>@string.Format("{0}h{1: #00}m", totalMinutes / 60, totalMinutes % 60)</b></td>
                     
                         }
                     </tr>
@@ -93,7 +109,7 @@ else
                         <td class="headcol" title="@time.Display">@time.Display</td>
                         @{
             date = Model.StartDate.Value.ClearTime();
-            while (date <= Model.EndDate)
+            while (date <= Model.EndDate.Value)
             {
                 string cls = "";
                 if (ReportManager.GetWeekends().Contains(date.DayOfWeek))
@@ -115,6 +131,22 @@ else
                     </tr>
         }
     }
+                <tr class="MainItem">
+                <td class="headcol">Total</td> 
+               @{
+                    var countDays2 = 0;
+                    var date2 = Model.StartDate.Value;
+                    var totalTotal = 0;
+                    while (date2 <= Model.EndDate.Value)
+                    {
+                        <td><b>@string.Format("{0}h{1: #00}m", totalPerDay[countDays2] / 60, totalPerDay[countDays2] % 60)</b></td>
+                        totalTotal += totalPerDay[countDays2];
+                        date2 = date2.AddDays(1);
+                        countDays2++;
+                    }
+                    <td><b>@string.Format("{0}h{1: #00}m", totalTotal / 60, totalTotal % 60)</b></td>
+                    }
+                </tr>
                 }
             </tbody>
         </table>

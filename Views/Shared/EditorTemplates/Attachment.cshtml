@@ -1,3 +1,3 @@
 ﻿@model AttachmentFieldModel
 
-<input type="file" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="@Model.Classes  @(Model.Required ? "required" : "")"@if(Model.Multiple) { <text>multiple='multiple'</text> } @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>
+<input type="file" data-input-type="attachment" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="inline-editing @Model.Classes  @(Model.Required ? "required" : "")"@if(Model.Multiple) { <text>multiple='multiple'</text> } @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>

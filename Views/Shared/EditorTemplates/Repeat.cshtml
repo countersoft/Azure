@@ -1,15 +1,15 @@
 ﻿@model RepeatFieldModel
 <div id="repeat-box">
 <span>Every</span>
-                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_Interval" name="@(Model.Id)_Interval" @if(Model.Interval !=0){ <text>value="@Model.Interval"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="9999999" />
+                <input type="text" data-input-type="numeric" title="@Model.Tooltip" id="@(Model.Id)_Interval" name="@(Model.Id)_Interval" @if(Model.Interval !=0){ <text>value="@Model.Interval"</text> } class="inline-editing @Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="9999999" />
                 @Html.Partial("~/views/shared/editortemplates/combobox.cshtml", Model.IntervalType)
                 <span id="repeat-on">on</span>
-                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_OnNumber" name="@(Model.Id)_OnNumber" @if(Model.RepeatOnNumber !=0){ <text>value="@Model.RepeatOnNumber"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="31" />            
+                <input type="text" data-input-type="numeric" title="@Model.Tooltip" id="@(Model.Id)_OnNumber" name="@(Model.Id)_OnNumber" @if(Model.RepeatOnNumber !=0){ <text>value="@Model.RepeatOnNumber"</text> } class="inline-editing @Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="31" />            
                 @Html.Partial("~/views/shared/editortemplates/combobox.cshtml", Model.RepeatDays)            
                 &nbsp;<span id="repeat-maximum" >maximum</span>&nbsp;
-                <input type="text" title="@Model.Tooltip" id="@(Model.Id)_Maximum" name="@(Model.Id)_Maximum" @if(Model.Maximum !=0){ <text>value="@Model.Maximum"</text> } class="@Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="99999999" />                        
+                <input type="text" data-input-type="numeric" title="@Model.Tooltip" id="@(Model.Id)_Maximum" name="@(Model.Id)_Maximum" @if(Model.Maximum !=0){ <text>value="@Model.Maximum"</text> } class="inline-editing @Model.Classes input-size1 number @(Model.Required ? "required" : "")" min="0" max="99999999" />                        
                 &nbsp;times.
-                <div id='repeat-chkWeekdays' class="margin-top-5"><input type="checkbox" id="@(Model.Id)_WeekdaysOnly" name="@(Model.Id)_WeekdaysOnly" @if(Model.WeekdaysOnly) {<text>checked="checked"</text>}  /><label for="@(Model.Id)_WeekdaysOnly">weekdays only</label></div>
+                <div id='repeat-chkWeekdays' data-input-type="numeric" class="margin-top-5 fancy"><input type="checkbox" id="@(Model.Id)_WeekdaysOnly" name="@(Model.Id)_WeekdaysOnly" @if(Model.WeekdaysOnly) {<text>checked="checked"</text>}  /><label for="@(Model.Id)_WeekdaysOnly">weekdays only</label></div>
 </span>
 <script type="text/javascript">
 

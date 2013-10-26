@@ -1,5 +1,7 @@
 gemini_reports = {
-
+    supressTimeTypes: false,
+    supressResources: false,
+    currentListValues: null,
     init: function (opts) {
         
         gemini_reports.settings = opts;
@@ -29,12 +31,15 @@ gemini_reports = {
             gemini_reports.reportChanged(e);
         });
         $("#ProjectId").change(function (e) {
+            gemini_reports.projectChanged();
             gemini_reports.reportChanged(e);
         });
         $("#TimeTypeId").change(function (e) {
+            gemini_reports.supressTimeTypes = true;
             gemini_reports.reportChanged(e);
         });
         $("#ResourceId").change(function (e) {
+            gemini_reports.supressResources = true;
             gemini_reports.reportChanged(e);
         });
         $("#GroupBy").change(function (e) {
@@ -59,6 +64,7 @@ gemini_reports = {
         gemini_reports.setupControls();
         gemini_reports.reportChanged();
 
+        $("#Reports_chzn input[type='text']:first").focus();
         $('.control-icon', '#report-menu').click(function () {
             var _this = $(this);
             var options = _this.find('+ .options');
@@ -76,6 +82,7 @@ gemini_reports = {
 
                 options.show();
                 gemini_keyboard.bindEscape("#page-options-box .options", gemini_reports.escapeDropdowns);
+                $("input[type='text']:first", options).focus();
             }
 
             options.position({
@@ -115,8 +122,66 @@ gemini_reports = {
         }
         gemini_reports.setupControls();
         $("#report-content").html(response.Result.Html);
+
+        // Time types
+        gemini_reports.setTimeTypes(response.Result.TimeTypes);
+        gemini_reports.setResources(response.Result.Resources);
+                
         $(window).trigger("resize");
     },
+    setTimeTypes: function (data) {
+        if (gemini_reports.supressTimeTypes) {
+            gemini_reports.supressTimeTypes = false;
+            return;
+        }
+        gemini_reports.supressTimeTypes = false;
+        //get preselected list
+        var presel = "|";
+        $("#TimeTypeId").find("option:selected").each(function () {
+            presel += $(this).attr('value') + "|";
+        });
+        $("#TimeTypeId").empty();
+
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+            
+            var selected = presel.indexOf('|' + item.Value + '|') != -1 ? "selected" : "";
+            $("#TimeTypeId").append("<option " + selected + " value='" + '|' + item.Value +"'>" + item.Text + "</option>");
+        }
+
+        $('#TimeTypeId_chzn').remove();
+        $('#TimeTypeId').removeClass('chzn-done');
+        gemini_ui.chosen('#TimeTypeId');
+        /*$("#TimeTypeId").trigger("liszt:updated");
+        //call update on this.
+        $("#TimeTypeId").change();*/
+    },
+
+    setResources: function (data) {
+        if (gemini_reports.supressResources) {
+            gemini_reports.supressResources = false;
+            return;
+        }
+        gemini_reports.supressResources = false;
+        //get preselected list
+        var presel = "";
+        $("#ResourceId").find("option:selected").each(function () {
+            presel += $(this).attr('value');
+        });
+        $("#ResourceId").empty();
+
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+
+            var selected = presel.indexOf(item.Value) != -1 ? "selected" : "";
+            $("#ResourceId").append("<option " + selected + " value='" + item.Value + "'>" + item.Text + "</option>");
+        }
+
+        $('#ResourceId_chzn').remove();
+        $('#ResourceId').removeClass('chzn-done');
+        gemini_ui.chosen('#ResourceId');
+    },
+
     setupControls: function () {
         var options = gemini_reports.options;
         if (options.StartDate) {
@@ -177,7 +242,28 @@ gemini_reports = {
         //console.info("pdf url", options.PdfUrl);
         $("#pdf-action").data("pdf", options.PdfUrl);
         gemini_ui.cursorDefault();
-        
 
+        //$("#ProjectId").change(function (e) {
+        gemini_reports.currentListValues = $('#ProjectId').val();
+    },
+    projectChanged: function () {
+        var value = $('#ProjectId').val();
+        var any = $('option:first', $('#ProjectId')).val();
+        if (value != null && value != undefined && value.length > 1 && value.indexOf(any) != -1) {
+            if (gemini_reports.currentListValues != null && gemini_reports.currentListValues != undefined && gemini_reports.currentListValues.indexOf(any) != -1) {
+                var newSelected = $('#ProjectId').val();
+                newSelected.splice(0, 1);
+                $('#ProjectId').val(newSelected);
+            }
+            else {
+                $('#ProjectId').val(any);
+            }
+        }
+        else if (value == null || value == undefined) {
+            $('#ProjectId').val(any);
+        }
+
+        $('#ProjectId').trigger("liszt:updated");
+        gemini_reports.currentListValues = $('#ProjectId').val();
     }
 };

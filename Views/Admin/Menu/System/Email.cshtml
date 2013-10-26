@@ -1,10 +1,36 @@
 ﻿@model Countersoft.Gemini.Models.Admin.SystemEmailModel
 
-<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Configure your <strong>Email</strong> server that Gemini will use for outbound notification emails sent to users.</p>
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Configure your <strong>Email</strong> server that Gemini will use for outbound notification emails sent to users. Turn emails globally ON or OFF and more.</p>
 
 <div id="cs-adhoc-page">
     <form id="system-email-form" action="" method="post" autocomplete="off">
         <table class="data-entry-box">
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="AlertsEnabled" name="AlertsEnabled" @if(Model.AlertsEnabled){ <text>checked="checked"</text> } /><label for="AlertsEnabled">Send email alerts</label></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="EmailCreator" name="EmailCreator" @if(Model.EmailCreator){ <text>checked="checked"</text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="EmailResource" name="EmailResource" @if(Model.EmailResource){ <text>checked="checked"</text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
+            </tr>
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>From Email Address</td>
+                <td><input type="text" id="From" name="From" class="input-size9 required" value="@Model.From"/></td>
+            </tr>
+            <tr>
+                <td>From Display Name</td>
+                <td><input type="text" id="DisplayName" name="DisplayName" class="input-size9 required" value="@Model.DisplayName"/></td>
+            </tr>
+
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
             <tr>
                 <td>Smtp Server</td>
                 <td><input type="text" id="SmtpServer" name="SmtpServer" class="input-size9 required" value="@Model.SmtpServer"/></td>
@@ -29,13 +55,13 @@
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="PopBeforeSend" name="PopBeforeSend" @if(Model.PopBeforeSend){ <text>checked="checked"</text> } /> Call POP3 Before Sending Emails</td>
+                <td><input type="checkbox" class="fancy" id="PopBeforeSend" name="PopBeforeSend" @if(Model.PopBeforeSend){ <text>checked="checked"</text> } /><label for="PopBeforeSend">Call POP3 Before Sending Emails</label></td>
             </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
             
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="Ssl" name="Ssl" @if(Model.Ssl){ <text>checked="checked"</text> } /> Use SSL</td>
+                <td><input type="checkbox" class="fancy" id="Ssl" name="Ssl" @if(Model.Ssl){ <text>checked="checked"</text> } /><label for="Ssl">Use SSL</label></td>
             </tr>
             <tr>
                 <td>Ssl Protocol</td>
@@ -67,6 +93,15 @@
     $(document).ready(function () {
 
         $("#system-email-form").validate();
+
+        gemini_ui.triggerChecked("#AlertsEnabled",
+        "#EmailCreator, #EmailResource, #From, #DisplayName",
+        "#EmailCreator, #EmailResource, #From, #DisplayName");
+        gemini_ui.fancyInputs('#system-email-form .fancy');
+        @if(!Model.AlertsEnabled)
+        {
+            <text>$("#EmailCreator, #EmailResource, #From, #DisplayName").attr('disabled', 'disabled');</text>
+        }
 
         $("#system-email-save").click(function (e) {
             gemini_commons.stopClick(e);

@@ -1,19 +1,30 @@
-var gemini_popup = {
+gemini_popup = {
 
     buttonModalResized: false,
     init: function () {
         $(document).bind('cbox_complete', function () {
-            if (!gemini_popup.buttonModalResized) {
+            
+            //if (!gemini_popup.buttonModalResized) {
+            if(!$('#cboxLoadedContent .button-modal').hasClass('button-resized')) {
 
-                gemini_sizing.sameWidth(".button-modal", 3 + 30);
+                gemini_sizing.sameWidth("#cboxLoadedContent .button-modal", 3 + 30);
                 // ...3 for border width, 30 for extra padding
 
-                gemini_popup.buttonModalResized = true;
+                //gemini_popup.buttonModalResized = true;
+                $('#cboxLoadedContent .button-modal').addClass('button-resized')
             }
         });
 
     },
+    sameConfirmWidth: function () {
+        if (!gemini_popup.buttonModalResized2) {
 
+            gemini_sizing.sameWidth(".button-modal", 3 + 30);
+            // ...3 for border width, 30 for extra padding
+
+            gemini_popup.buttonModalResized2 = true;
+        }
+    },
     close: function (e) {
         gemini_commons.stopClick(e);
         $.colorbox.close();
@@ -78,7 +89,7 @@ var gemini_popup = {
 
     centerPendingChanges: false,
 
-    centerPopup: function (controller, method, params, extra, actionButtonText, cancelButtonText, hideActionButton, hideCancelButton) {
+    centerPopup: function (controller, method, params, extra, actionButtonText, cancelButtonText, hideActionButton, hideCancelButton, successCallback) {
 
         if (!actionButtonText) actionButtonText = "Save";
         if (!cancelButtonText) cancelButtonText = "Cancel";
@@ -97,44 +108,48 @@ var gemini_popup = {
 
         gemini_ajax.call(controller, method, function (response) {
             if (response.Success) {
+                gemini_popup.showCenterPopup(response);
                 
-                $("#cs-popup-center").css("display", "inline-block"); //get width correctly and needs to be BEFORE we insert the data
-                
-                var div = $("#cs-popup-center-content");
-                if (response.Result == undefined)
-                    div.html(response);
-                else
-                    div.html(response.Result.Html);
-                $("#cs-popup-center-buttons").css("top", "auto");
-            
-
-                var height = $("#cs-popup-center-content").height() + $("#cs-popup-center-buttons").height() + 50;
-                var width = $("#cs-popup-center-content").width() + 20;
-                $("#cs-popup-center-buttons").css("top", $("#cs-popup-center-buttons").position().top + "px");
-                $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed
-                var params = {
-                    inline: true,
-                    href: "#cs-popup-center",
-                    transition: "none",
-                    /*initialWidth: "850px",
-                    initialHeight: "530px",*/
-                    width: Math.max(width, 300) + "px",
-                    height: Math.max(height, 80) + "px",
-                    overlayClose: false,
-                    escKey: false,
-                    opacity: '0.8'/*, TODO SAAR ADD ONCOMPLETE CALLBACK!
-                        onComplete: function () { fdebugger; gemini_ui.htmlEditor('#saar'); }*/
-                };
-                $.colorbox(params);
-
-                $("#cs-popup-center-content input[type='text']:first").focus();
-                $("#cs-popup-center-content input[type='text']:first").click(); //If first item is a calender then it will pop out the calender as well
-
-                gemini_keyboard.bindEscape("#colorbox #popup-button-no");
+                if (successCallback != null && successCallback != undefined) successCallback(response);
             }
         }, null, params, extra);
         
         
+    },
+    showCenterPopup: function (response)
+    {
+        if (response.success) {
+            $("#cs-popup-center").css("display", "inline-block"); //get width correctly and needs to be BEFORE we insert the data
+
+            var div = $("#cs-popup-center-content");
+            if (response.Result == undefined)
+                div.html(response);
+            else
+                div.html(response.Result.Html);
+            $("#cs-popup-center-buttons").css("top", "auto");
+
+
+            var height = $("#cs-popup-center-content").height() + $("#cs-popup-center-buttons").height() + 50;
+            var width = $("#cs-popup-center-content").width() + 20;
+            $("#cs-popup-center-buttons").css("top", $("#cs-popup-center-buttons").position().top + "px");
+            $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed
+            var params = {
+                inline: true,
+                href: "#cs-popup-center",
+                transition: "none",
+                width: Math.max(width, 300) + "px",
+                height: Math.max(height, 80) + "px",
+                overlayClose: false,
+                escKey: false,
+                opacity: '0.8'
+            };
+            $.colorbox(params);
+
+            $("#cs-popup-center-content input[type='text']:first").focus();
+            $("#cs-popup-center-content input[type='text']:first").click(); //If first item is a calender then it will pop out the calender as well
+
+            gemini_keyboard.bindEscape("#colorbox #popup-button-no");
+        }
     },
     popupCallback: function (response, extra) {
         $("#popup-button-yes", "#cs-popup-center").click(function (e) {
@@ -187,7 +202,6 @@ var gemini_popup = {
         $("#popup-button-no", "#cs-popup-center").unbind();
         $("#cs-popup-center").css("display", "none");
     },
-    
     toast: function(text, error)
     {
         if ($(".toast").is(":visible")) return;

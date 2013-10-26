@@ -11,25 +11,32 @@
                 <th data-edit-type="checkbox">Enabled?</th>
                 <th>Schedule</th>
                 <th>Last Run Time</th>
-                <th>Last Error</th>
-                <th>Last Debug</th>
-                <th></th>
+                <th class="sorting_disabled"></th>
+                <th class="sorting_disabled"></th>
             </tr>
         </thead>        
         <tbody>
             @foreach (var item in Model.Plugins)
             {
-                <tr data-id="@item.GUID">
+                <tr data-id="@item.GUID" @if(item.LastError.HasValue()) {  <text>class="color-red"</text> }>
                     <td data-edit="false">@item.Title</td>
                     <td data-edit="false">@item.Description</td>
                     <td>@(item.Enabled ? "Yes" : "No")</td>
                     <td data-edit="false">@Html.Raw(item.Schedule)</td>
                     <td data-edit="false">@item.LastRunTime</td>
-                    <td data-edit="false">@item.LastError.ToMaxMore(100) @if (item.LastError.HasValue()) { <span class="last-error fonticon-arrow-down cursor-pointer"></span> }</td>
-                    <td data-edit="false">@item.LastDebug.ToMaxMore(100) @if (item.LastDebug.HasValue()) { <span class="last-debug fonticon-arrow-down cursor-pointer"></span> }</td>
+                    <td data-edit="false" class="actions">
+                        @if (item.LastDebug.HasValue())
+                        {
+                            <a  href="#" id="log">Log</a>
+                        }
+                        @if (item.LastError.HasValue())
+                        {
+                            <a href="#" id ="error">Error</a>
+                        }
+                    </td>
                     <td data-edit="false" class="actions">
                         <span class="action-button-edit cursor-pointer" data-method="edit"></span>
-                        <span class="fonticon-arrow-right valign-text-bottom cursor-pointer" title="Force cycle (run)" data-method="kick"></span>
+                        <span class="fonticon-arrow-right valign-text-bottom cursor-pointer margin-right-5" title="Force cycle (run)" data-method="kick"></span>
                     </td>
                 </tr>
             }
@@ -56,16 +63,16 @@
             }, null, { id: id, kick: 1 });
         });
 
-        $("#table-admin-appnav").off('click', "span.last-error").on('click', "span.last-error", function () {
+       $("#table-admin-appnav").off('click', "#error").on('click', "#error", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, error: 1 }, null, "OK", "Close", true, false);
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, error: 1 }, null, "Clear", "Close", false, false);
         });
 
-        $("#table-admin-appnav").off('click', "span.last-debug").on('click', "span.last-debug", function () {
+       $("#table-admin-appnav").off('click', "#log").on('click', "#log", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, debug: 1 }, null, "OK", "Close", true, false);
-        });
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, debug: 1 }, null, "Clear", "Close", false, false);
+       });
     });
 </script>

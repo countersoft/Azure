@@ -1,0 +1,80 @@
+﻿@model ViewIssueModel
+
+<div id="view-item" class="clearfix">
+    
+    <!-- ATTRIBUTES PANE -->    
+    <div class="left-zone">        
+        <div id='item-attributes' class="attributes-pane item-pane">
+            @{Html.RenderPartial("ItemAttributesPane");}
+        </div>
+    </div>
+
+    <!-- CONTENT PANE -->    
+    <div class="right-zone">
+        @{Html.RenderPartial("_Toolbar");}
+
+        <div id="filter-navigator-container"></div>
+        
+        <div class="left">
+            <div class="item-title" data-attribute-id="@ItemAttributeVisibility.Title.ToString()">@Model.Issue.IssueKey &nbsp;<span class="title">@Model.Issue.Title</span></div>
+
+            <div id="touch-info-container" class="margin-top-10">
+                @{Html.RenderPartial("_TouchInfo");}
+            </div>
+
+            <div class="margin-top-20">
+                @{Html.RenderPartial("_ProgressInfo");}
+                @{Html.RenderPartial("_Collapse");}
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div id="view-item-collapse">      
+
+            @{Html.RenderPartial("IssueDescription");}
+
+            @if (Model[ItemAttributeVisibility.AssociatedLinks] && Model.Issue.Links.Count > 0)
+            {
+                <div class="see-also-container margin-top-10 margin-bottom-10">
+                    @{Html.RenderPartial("_SeeAlso");}
+                </div>
+            }
+            else
+            {
+                <div class="see-also-container">@{Html.RenderPartial("_SeeAlso");}</div>
+            }
+        
+            <div class="margin-top-20 margin-left-30">          
+                @{Html.RenderPartial("IssueDependencies");}      
+            </div>
+
+            <div class="margin-top-20 margin-left-30">
+                @{Html.RenderPartial("IssueAttachments");}
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <!--- ATTRIBUTES -->
+        <div id='view-item-content-pane' class="contents-pane item-pane margin-top-10">
+
+            <div class="clearfix"></div>
+    
+            <div id='cs-template' class="margin-bottom-20">
+                <div id='cs-sections' class="tabs">
+                    @Html.Raw(Model.ContentData)   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div><br />
+
+@if(Model.RunJS) 
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Changes here needs to be replicated in Item.cshtml
+        $('#colorbox, #cs-popup,#cs-popup-add').addClass('z-index-max');
+        gemini_item.initItem('@GeminiContext.Project.Entity.Id', '@GeminiContext.Project.Entity.Code', @Model.Issue.Entity.Id, @((int)ProjectTemplatePageType.Item), @GeminiContext.PermissionsManager.CanEditItem(Model.Issue).ToJSBool(),'@GetResource(ResourceKeys.DropZoneText)', '@GetResource(ResourceKeys.Delete)');
+    });
+</script>
+}

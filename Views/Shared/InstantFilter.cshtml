@@ -1,0 +1,17 @@
+﻿@model InstantItemFilterModel
+
+<form id='filter-form' method="post" class="left">
+    @{Html.RenderPartial("~/views/shared/editortemplates/InstantFilterOptions.cshtml", Model);}
+    @{Html.RenderPartial(Model.FilterProjects.Editor, Model.FilterProjects);}
+    @{Html.RenderPartial("InstantFilterProject", Model);}
+<span id="instant-filter-fields" class="left">
+</span>
+    <input type="text" id="instant-filter-new-field" name="instant-filter-new-field" class="input-size6 left" placeholder="&larr; @GetResource(ResourceKeys.Search)"/>
+    <input type="hidden" name="Sort" id="Sort" value="@Model.Sort" />
+    <input type="hidden" name="DisplayMode" id="DisplayMode" value="@Model.DisplayMode" />
+</form>
+<div class="hide" id="instant-filter-tooltip">
+
+</div>
+<div class="clearfix margin-bottom-10">
+</div>

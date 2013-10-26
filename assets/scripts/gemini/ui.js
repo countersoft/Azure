@@ -1,4 +1,4 @@
-var gemini_ui = {
+gemini_ui = {
 
     showPopOut: function (element) {
         if ($(element).is(":visible")) {
@@ -31,7 +31,11 @@ var gemini_ui = {
     {
         $(selector).css('opacity', '1');
     },
-
+    runSpinnerSmall: function(spinnerId, selector) {
+        var spinner = gemini_ui.getSpinnerSmall(spinnerId);
+        $(selector).html(spinner.Markup);
+        eval(spinner.JS);
+    },
     getSpinner: function (id) {
         if (gemini_commons.isEmpty(id)) id = gemini_commons.guidGenerator();
 
@@ -238,7 +242,7 @@ var gemini_ui = {
                     $(elem).val(formated);
                     $(elem).DatePickerHide();
                     if (onChange)
-                        onChange(formated);
+                        onChange(formated, elem);
                 },
                 onHide: onHide
             });
@@ -263,6 +267,7 @@ var gemini_ui = {
             // toggle the icon on top of the section
             var content = $("> div.section-content", elem.parent());
             content.toggleClass("expanded").toggleClass("collapsed");
+            gemini_item.setContentHeight();
         }
         return false;
     },
@@ -278,6 +283,7 @@ var gemini_ui = {
             // toggle the icon on top of the section
             var content = $("> div.section-content", elem.parent());
             content.removeClass("collapsed").addClass("expanded");
+            gemini_item.setContentHeight();
         }
         return false;
     },
@@ -316,50 +322,74 @@ var gemini_ui = {
         }
         return false;
     },
-    htmlEditor: function (selector, onInit, onChange) {
-        //$(selector).tinymce('remove');
-        //return;
-        $(selector).tinymce({
-            // Location of TinyMCE script
-            script_url: csVars.AssetsPath + 'scripts/tiny_mce/tiny_mce.js',
-            // General options
-            theme: "advanced",
-            //skin: "cirkuit",
-            //skin: "o2k7",
-            //skin_variant : "silver",
-            plugins: "pdw,autolink,lists,pagebreak,style,layer,table,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
-            height:'325',
-            // Theme options
-            theme_advanced_buttons1: "pdw_toggle,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
-            theme_advanced_buttons2: "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,|,insertdate,inserttime,preview,|,forecolor,backcolor", // Removed: help,code
-            theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
-            theme_advanced_buttons4: "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            theme_advanced_resizing: false,
-            theme_advanced_path : false,
+    htmlEditor: function (selector, onInit, onChange, autoFocus) {
+        tinymce.init({
+            selector: selector,
+            relative_urls: false,
+            browser_spellcheck: true,
+            gecko_spellcheck: true,
+            height: 300,
+            width: 600,
             oninit: onInit,
-            onchange_callback: onChange,
-            // Example content CSS (should be your site CSS)
-            content_css: csVars.AssetsPath + "scripts/tiny_mce/themes/advanced/skins/default/content.css",
-
-            // Kitchen sink
-            pdw_toggle_on: 1,
-            pdw_toggle_toolbars: "2,3,4",
-            // Drop lists for link/image/media/template dialogs
-            template_external_list_url: "lists/template_list.js",
-            external_link_list_url: "lists/link_list.js",
-            external_image_list_url: "lists/image_list.js",
-            media_external_list_url: "lists/media_list.js"
+            theme: "modern",
+            skin : 'lightgray',
+            statusbar: false,
+            paste_data_images: true,
+            plugins: [
+               "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+               "searchreplace visualblocks visualchars code fullscreen",
+               "insertdatetime media nonbreaking save table directionality",
+               "emoticons template paste textcolor"
+            ],
+            content_css: csVars.AssetsPath + "scripts/tiny_mce/skins/lightgray/content.min.css",
+            content_style: '',
+            menu: {
+                file: { },
+                edit: { },
+                insert: { },
+                view: {  },
+                format: { },
+                table: {  },
+                tools: {  }
+            },
+            
+            toolbar_items_size: 'small',
+            toolbar1: "bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor backcolor | link image table styleselect",
+            setup: function (editor) {
+                if (autoFocus) {
+                    editor.on('init', function (e) {
+                        editor.focus();
+                    });
+                }
+                editor.on('change', function (e) {
+                    editor.save();
+                    setTimeout(function () { editor.save(); }, 250);
+                    if (onChange) onChange();
+                });
+                editor.on('blur', function (e) {
+                    editor.save();
+                    setTimeout(function () { editor.save(); }, 250);
+                    if (onChange) onChange();
+                });
+            }
         });
     },
+    htmlEditorCommand: function (command, ui, value, id) {
+        try {
+            if (id)
+                tinyMCE.get(id).execCommand(command, ui, value);
+            else
+                tinymce.execCommand(command, ui, value);
+        }
+        catch (e) { }
+    }, 
     destroyHtmlEditor: function (selector) {
         //$(selector).tinymce('remove');
         //        tinyMCE.execCommand('mceToggleEditor', '#Description'
         
         $(selector).each(function(){
-            tinyMCE.execCommand('mceRemoveControl', false, $(this).attr('id'));
+            tinymce.remove(selector);
+            //gemini_ui.htmlEditorCommand('mceRemoveControl', false, $(this).attr('id'));
         });
         /*for (var i = 0; i < tinymce.editors.length; i++)
         {
@@ -374,10 +404,41 @@ var gemini_ui = {
         return;*/
     },
 
+    fancyInputs: function (selector, addClass) {       
+        if (!addClass) addClass = '';
+       
+        $(selector).iCheck({
+            checkboxClass: 'icheckbox_minimal ' + addClass,
+            radioClass: 'iradio_minimal ' + addClass,
+            increaseArea: '20%' // optional
+        });
+    },
 
     chosen: function (selector, topmostContainer, fix_popup) {
         if (fix_popup == null || fix_popup == undefined) fix_popup = false;
         $(selector).chosen({ stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup });
+    },
+    ajaxChosen: function (selector, topmostContainer, fix_popup, projectUrl, data) {
+        if (fix_popup == null || fix_popup == undefined) fix_popup = false;
+        if (projectUrl == null || projectUrl == undefined || projectUrl.length == 0) projectUrl = 'project/ALL/{projectid}'
+        method = 'GET';
+        if (data != null) method = 'POST';
+        $(selector).each(function () {
+            $(this).ajaxChosen({
+                type: method,
+                data: data,
+                url: csVars.Url + projectUrl + '/editcfac',
+                dataType: 'json',
+                minTermLength: 1
+            }, function (data) {
+                var results = [];
+                $.each(data.Result.Data, function (i, val) {
+                    results.push({ value: val.ItemId, text: val.ItemText });
+                });
+
+                return results;
+            }, { stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup });
+        });
     },
     setDropdownValue: function (selector, val) {
         $(selector).val(val).trigger("liszt:updated");
@@ -440,25 +501,26 @@ var gemini_ui = {
     
     toggleCheckbox: function (trigger, checkbox, onCheckedCallback, onUncheckedCallback)
     {
-        $(trigger).click(function (e) {
-
+       
+        $(trigger).bind('ifChanged', function (e) {
+       
             if ($(this).is(":checked")) {
-                $(checkbox).each(function () {
-                    $(this).attr("checked", "checked");
-
+                $(checkbox).each(function () {                    
+                    //$(this).attr("checked", "checked");
+                    $(this).iCheck("check");
                     if (onCheckedCallback) onCheckedCallback(this);
                 });
             }
             else {
                 $(checkbox).each(function () {
-                    $(this).removeAttr("checked");
-
+                    //$(this).removeAttr("checked");
+                    $(this).iCheck("uncheck");
                     if (onUncheckedCallback) onUncheckedCallback(this);
                 });
             }
         });        
     },
-    inlineEdit: function (selector, getUrl, saveUrl) {
+    inlineEdit: function (selector, getUrl, saveUrl, cssclass) {
         
         $(selector).editable(csVars.Url + saveUrl, {
             placeholder: '',
@@ -495,6 +557,7 @@ var gemini_ui = {
                     property: field
                 };
             },
+            cssclass: cssclass,
             /*"callback": function (sValue, y) {
             /// Redraw the table from the new data on the server
             //oTable.fnDraw();
@@ -558,13 +621,14 @@ var gemini_ui = {
         });
         eval(spinner.JS);
     },
-stopBusy2: function (buttonSelector)
-{
-    $("#progress-indicator").addClass('hide');
-    $("#progress-indicator").css('top',-200).css('left',-200);
-    $(buttonSelector).val($(buttonSelector).attr("data-progress"));    
-    $(buttonSelector).removeAttr('disabled');
-},
+
+    stopBusy2: function (buttonSelector)
+    {
+        $("#progress-indicator").addClass('hide');
+        $("#progress-indicator").css('top',-200).css('left',-200);
+        $(buttonSelector).val($(buttonSelector).attr("data-progress"));    
+        $(buttonSelector).removeAttr('disabled');
+    },
 
     userAutocomplete: function (selector) {
         $(selector).autocomplete({
@@ -597,6 +661,11 @@ stopBusy2: function (buttonSelector)
             }
 
         });
+    },
+
+    scrollTo: function (scrollContainer, scrollToElement)
+    {
+        $(scrollContainer).scrollTo($(scrollToElement), 1000);
     }
 };
 

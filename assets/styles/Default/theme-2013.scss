@@ -1,0 +1,631 @@
+@import "../mixin", "_theme", "theme-mixin"; 
+
+#zone-header-bar
+{
+	height: 40px;
+	width: 100%;
+	background-color: $primary-color;
+	font-family: Verdana, 'Arial' sans-serif;
+	position: fixed;
+	z-index: 99999;
+
+	.item
+	{
+		color: $color-white;
+		font-family: Verdana, 'Arial' sans-serif;
+		font-size: 1.3em;
+		padding: 8px 10px 0 20px;
+		display: inline-block;
+		text-transform: uppercase;
+		cursor: pointer;
+
+		.fonticon-dropdown
+		{
+			color: $color-white;
+			font-size: 0.8em;
+			cursor: pointer;
+		}
+
+		&:hover 
+		{
+			color: $secondary-color;
+
+			.fonticon-dropdown
+			{
+				color: $secondary-color;
+			}
+		}
+	}
+
+	.item-tab
+	{
+		color: $primary-color;
+		background-color: $color-white;
+		font-family: Verdana, 'Arial' sans-serif;
+		font-size: 1.3em;
+		padding: 8px 10px 0 10px;
+		display: inline-block;
+		text-transform: uppercase;
+		height: 32px;
+		cursor: pointer;
+
+		.fonticon-dropdown
+		{
+			color: $primary-color;
+			font-size: 0.8em;
+			cursor: pointer;
+		}
+
+		&:hover 
+		{
+			color: $secondary-color;
+
+			.fonticon-dropdown
+			{
+				color: $secondary-color;
+			}
+		}
+	}
+
+	.item-current-card 
+	{
+		@extend .item;
+		font-size: 0.9em;
+		text-transform: none;
+		padding-left: 20px;
+		color: $color-grayscale4 !important;
+		display: none;
+
+		a, a:visited 
+		{
+			text-decoration: none;
+			color: $color-grayscale4 !important;
+			
+			&:hover 
+			{
+				color: $color-grayscale4 !important;
+				text-decoration: none;
+			}
+		}
+	}
+
+	.logo
+	{
+		padding-left: 25px;
+		cursor: default;
+
+		img
+		{
+			vertical-align: text-bottom;
+			height: 25px;
+		}
+	}
+
+	.divider
+	{
+		position: relative;
+		top: 5px;
+		display: inline-block;
+		border-left: 1px solid darken($primary-color, 10%);
+		border-right: 1px solid darken($secondary-color, 15%);
+		height: 14px;
+		margin: 0 5px;
+	}
+
+	.user-options
+	{
+		float: right;
+		color: white;
+		padding: 2px 0 0 5px;
+		display: inline-block;
+		vertical-align: text-bottom;
+
+		.item-small
+		{
+			color: $color-white;
+			font-size: 0.8em;
+			padding: 5px 0 0 5px;
+			display: inline-block;
+			vertical-align: text-top;
+
+			a 
+			{
+				text-decoration: none;
+				color: $color-white;
+
+				&:hover 
+				{
+					color: $secondary-color;
+
+					& > .fonticon-dropdown
+					{
+						color: $secondary-color;
+					}
+				}
+			}
+		}
+	}
+
+	.fonticon-dropdown
+	{
+		color: white;
+
+		&:hover 
+		{
+			color: $secondary-color;
+		}
+	}
+
+	#user-menu
+	{
+		position: relative;
+		top: 5px;
+		left: 2px;
+
+		&:hover 
+		{
+			color: $secondary-color;
+		}
+	}
+
+	#search-box
+    {
+		display: inline-block;
+		margin-right: 20px;
+		position: relative;
+		top: 4px;
+
+        input 
+        {
+            width:150px;
+            height:18px;
+            padding: 4px 9px;
+            font-size: 13px;
+            font-weight: normal;
+            border: 1px solid transparent;
+			background-color: $color-grayscale4;
+			color: $color-grayscale;
+
+            &:focus, &.focused 
+            {
+                outline: 0;
+                background-color: $color-white;
+            }
+			&:-moz-placeholder 
+			{
+				color: $color-grayscale1;
+			}
+			&::-webkit-input-placeholder 
+			{
+				color: $color-grayscale1; 
+			}
+			&:-ms-input-placeholder 
+			{
+				color: $color-grayscale1; 
+			}
+        }
+    }
+
+	#project-search
+	{
+        display: block;
+		margin:3px auto 5px;
+		width:80%;
+	}
+
+	&:after 
+	{
+		clear: both;
+	}
+    #plus-header
+	{
+		font-size: 1.5em;
+		height: 40px;
+		width: 51px;
+        text-align:center;
+        line-height:40px;
+		margin: 0;
+		color: $color-white;
+		font-weight: bold;
+		background-color: $secondary-color !important;
+		cursor: pointer;
+        float:left;
+
+		&:hover
+		{
+			color: $primary-color;
+			transition: color 0.2s ease-in;
+		}
+
+		.fonticon-plus 
+		{
+			cursor: pointer;
+		}
+	}
+}
+
+#zone-side-bar
+{
+	width: 50px;
+	top: 40px;
+	bottom: 0px;
+	position: fixed;
+
+	border-right: 1px solid $color-grayscale3;
+	background-color: $color-grayscale4;
+	z-index: 999;
+    outline: none;
+	
+	#card-holder-container
+	{
+		position:fixed;
+		top: 98px;
+		height: 85%;
+        outline: none;
+
+		-webkit-transition: top 0.5s ease-in;
+		-moz-transition: top 0.5s ease-in;
+		-o-transition: top 0.5s ease-in;
+		transition: top 0.5s ease-in;
+	}
+
+	#action-overlay
+	{
+		z-index:40000;
+		position: fixed;
+	}
+
+	#card-scroller
+	{
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height : 30px;
+		width: 50px;
+		font-size: 18px;
+		line-height: 32px;
+		text-align: center;
+		background-color: $color-grayscale3;
+		color: $color-grayscale2;
+		outline: none;
+        z-index: 9999;
+		@include disable-text-selection;
+
+		span 
+		{
+			cursor: pointer;
+			outline: none;
+			@include disable-text-selection;
+
+			&:hover 
+			{
+				color: $color-grayscale1;
+			}
+		}
+	}
+	
+	ul.cards
+	{
+		list-style-type: none;
+		margin: 7px 0 0 0;
+		padding: 0;
+        outline: none;
+		overflow: hidden;
+
+		.selected
+		{
+			background-color: $color-grayscale2;
+		}
+
+		.drag-placeholder
+		{
+			border: 1px dotted $color-grayscale1;
+			background-color: $color-grayscale3;
+		}
+	}
+
+	.card 
+	{
+		color: $color-grayscale2;
+		text-align: center;
+		padding: 7px 0 7px 0px;
+		position: relative;
+		transition: color 0.5s ease-in;
+		cursor: pointer;
+        width: 50px;
+        outline: none;
+
+		.img-container
+		{
+			display: inline-block;
+            width: 32px;
+            height: 32px;
+            color: $color-white;
+            text-align: center;
+            vertical-align: text-bottom;
+            overflow: hidden;
+		}
+
+        .two-letters 
+        {
+            line-height: 2.2em;
+	        font-size: 1em;
+        }
+        .three-letters 
+        {
+            line-height: 2.9em;
+            font-size: 0.7em;
+        }
+
+		a, a:visited
+		{
+			color: $color-black;
+			text-decoration: none;
+			
+			&:hover 
+			{
+				text-decoration: none;
+			}
+		}
+
+		.card-actions
+		{
+			position: absolute;
+			top: 0;
+			right: 0;
+			background-color: $color-grayscale1;
+			height: 56px;
+			width: 22px;
+			display: none;
+
+			.show-card-options, .remove-card
+			{
+				display: inline-block;
+				position: absolute;
+				background-color: $color-white;
+				color: $color-grayscale1;
+				font-weight: bold;
+				cursor: pointer;
+				width: 16px;
+				height: 16px;
+				text-align: center;
+			}
+
+			.show-card-options
+			{
+				top: 5px;
+				left: 3px;
+				font-size: 18px;
+				line-height: 15px;
+			}
+
+			.remove-card
+			{
+				bottom: 5px;
+				left: 3px;
+				font-size: 13px;
+
+				&:hover 
+				{
+					color: $color-red;
+				}
+			}
+		}
+
+		.card-box
+		{
+			height: 37px;
+			top: 0px;
+            margin-top: 5px;
+
+			.info
+			{
+				width: 180px;
+                height: 30px;
+				display: none;
+				padding: 0;
+                margin: 0;
+
+				vertical-align: text-bottom;
+				position: relative;
+
+				overflow: hidden;
+				white-space: nowrap; 
+				text-overflow: ellipsis;  
+				text-overflow: ellipsis-word;
+
+				.title 
+				{
+    				top: 7px;
+					position: absolute;
+					font-size: 0.7em;
+					display: inline-block;
+					margin: 0;
+    				padding: 0;
+				}
+			}
+		}
+
+		.badge
+		{
+			width: 15px;
+			height: 15px; 
+			background-color: $color-white;
+			color: $color-black;
+			border: 1px solid $color-black;
+			font-size: 9px;
+			font-weight: bold;
+			position: absolute;
+			top: 3px;
+			left: 32px;
+			z-index: 8888;
+			line-height: 15px;
+			font-family: $font-body;
+		}
+
+		.not-seen
+		{
+			width: 15px;
+			height: 15px; 
+			background-color: $primary-color;
+			font-size: 9px;
+			font-weight: bold;
+			color: $color-white;
+			position: absolute;
+			top: 3px;
+			left: 32px;
+			z-index: 9999;
+			line-height: 15px;
+			font-family: $font-body;
+		}
+
+		&:hover, &.hovered
+		{
+			text-align: left;
+			width: 255px;
+			background-color: $color-grayscale3;
+            color: $color-black;
+
+			.img-container
+		{
+            margin-left: -1px;
+			}
+
+            .card-actions
+            {
+				display: inline;
+            }
+
+			.info
+			{
+				display: inline-block;
+			}
+
+			a
+			{
+				padding-left: 10px;
+				display: inline-block;
+			}
+		}
+	}
+    	
+	#pin-page
+	{
+		font-size: 1.5em;
+		height: 30px;
+		width: 38px;
+		margin: 0;
+		padding: 10px 0 5px 13px;
+		font-weight: bold;
+		background-color: $color-grayscale3;
+		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35) !important;	
+		color: $primary-color;
+
+		&:hover
+		{
+			color: $secondary-color !important;
+			cursor: pointer;
+			transition: color 0.2s ease-in;
+		}
+	}
+
+	.pinned 
+	{
+		color: $color-grayscale1 !important;
+	}
+
+	#pinned-actions 
+	{
+		width: 46px;
+		background-color: $color-grayscale3;
+		padding-left: 5px;
+
+		#repin-pin, #save-pin
+		{
+			display: inline-block;
+			text-align: center;
+			width: 18px;
+			height: 20px;
+			color: $primary-color;
+
+			&:hover 
+			{
+				color: $secondary-color;
+			}
+		}
+	}
+}
+
+#notification-center
+{
+	#notification-handle
+	{
+		z-index: 99999;
+		position: fixed;
+		top: 0px;
+		left: 50%;
+		background-color: $color-white;
+		width: 35px;
+		height: 10px;
+		@include rounded-bottom(3px);
+		cursor: pointer;
+
+		.line1 
+		{
+			position: relative;
+			border-bottom: 1px solid $color-grayscale2;
+			margin: 3px 5px 0 5px;
+		}
+		.line2
+		{
+			position: relative;
+			border-bottom: 1px solid $color-grayscale2;
+			margin: 2px 5px 0 5px;
+		}
+	}
+
+	.handle-expanded
+	{
+		cursor: pointer;
+		background-color: $color-grayscale1 !important;
+	}
+
+	#notification-zone
+	{
+		z-index: 99999;
+		position: fixed;
+		top: 0px;
+		background-color: $color-grayscale1;
+		width: 300px;
+		padding: 5px 10px 5px 10px;
+		display: none;
+		@include rounded-bottom(5px);
+
+		ul
+		{
+			list-style-type: none;
+
+			li 
+			{
+				font-size: 0.7em;
+				padding: 5px;
+				overflow: hidden;
+				white-space: nowrap; 
+				text-overflow: ellipsis;  
+				text-overflow: ellipsis-word;
+
+				a, a:visited
+				{
+					text-decoration: none;
+					color: $color-white;
+
+					&:hover 
+					{
+						color: $color-white;
+						text-decoration: underline;
+					}
+				}
+			}
+		}
+	}
+}

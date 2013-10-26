@@ -3,21 +3,20 @@
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
 
 <div id="project-administration">
 
-    <div class="cs-pills left">
-        @if(Model.CanManageComponents) {<span data-tab="components" class="cs-pill cs-pill-active">@GetResource(ResourceKeys.Components)</span>}
-        @if(Model.CanManageVersions) {<span data-tab="versions" class="cs-pill cs-pill-inactive">@GetResource(ResourceKeys.Versions)</span>}
-        @if(Model.CanManageDefaults) {<span data-tab="defaults" class="cs-pill cs-pill-inactive">@GetResource(ResourceKeys.Defaults)</span>}
-        @if(Model.CanManageDefaults && Model.HasCustomFieldDataPerProject)
-        {
-            <span data-tab="cflookup" class="cs-pill cs-pill-inactive">@GetResource(ResourceKeys.CustomLookupData)</span>
-        }
+    <div class="tabs-container">
+        <div class="tabs left">
+            @if(Model.CanManageComponents){<span data-tab="components" class="tab normal">@GetResource(ResourceKeys.Components)</span>}
+            @if(Model.CanManageVersions){<span class="breaker">&nbsp;</span><span data-tab="versions" class="tab normal">@GetResource(ResourceKeys.Versions)</span>}
+            @if(Model.CanManageDefaults){<span class="breaker">&nbsp;</span><span data-tab="defaults" class="tab normal">@GetResource(ResourceKeys.Defaults)</span>}
+            @if(Model.CanManageDefaults && Model.HasCustomFieldDataPerProject)
+            {
+                <span class="breaker">&nbsp;</span>
+                <span data-tab="cflookup" class="tab normal">@GetResource(ResourceKeys.CustomLookupData)</span>
+            }
+        </div>
     </div>
 
     <div class="clearfix margin-bottom-20"></div>

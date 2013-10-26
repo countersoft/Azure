@@ -3,10 +3,6 @@
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
 
 <div id="projects-dash">
     
@@ -60,9 +56,7 @@
 
 </div>
 
-
 @section DocumentReady
 {
     gemini_projects.initAllProjects();
-    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "home");
 }

@@ -9,17 +9,12 @@
     <style>@Html.Raw(Model.Styles)</style>
 }
 
-<header id="header" class="clearfix">
-    <div class="layout">
-        @RenderSection("Playlist", false)
-        @RenderSection("Search", false)
-    </div>
-</header>
+@RenderSection("ZoneHeaderBar", false)
 
-<div id="page-content-zone" class="layout">
+@RenderSection("ZoneSideBar", false)
+
+<div id="page-content-zone">
     <section id="contents" class="clearfix">
-        @RenderSection("HeaderContent", false)
-        
         <div class="layout">
             @if(IsHelpDeskMode())
             {
@@ -47,4 +42,3 @@
 {
     @RenderSection("JavaScript", false)
 }
-

@@ -28,6 +28,8 @@
                 <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.User.Entity.Username" />
             </td>
         </tr>
+        @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
+        { 
         <tr>
             <td>@GetResource(ResourceKeys.Password)</td>
             <td>
@@ -47,6 +49,7 @@
                 <input type="password" id="confirmpassword" name="confirmpassword" class="input-field input-size9" />
             </td>
         </tr>
+        }
         <tr>
             <td>Group Membership</td>
             <td>

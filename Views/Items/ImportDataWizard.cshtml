@@ -31,25 +31,31 @@
     {
         var headerIndex = 0;
         <div class="margin-top-5">Map imported columns to Gemini data fields</div>
-        <div id="value-order-container" class="margin-top-20">
+            <div class="wizard-row header margin-top-20">
+                <div class="left row1 bold" title="Source Column">Source Column&nbsp;</div>
+                <div class="left row2 bold">Sample Data</div>
+                <div class="left row2 bold">Target Column</div>
+                <div class="left margin-left-10 bold">Ignore?</div>                           
+            </div>  
+        <div id="value-order-container">
             <div id="js-value-wrapper">
                 <form id="field-order" method="post" action="@Url.Action("getimportdatafields", "AjaxItems", new RouteValueDictionary(new {  option = "mapextra" }))">
-                    <input type="hidden" name="filename" value="@Model.Filename"/>
-                    <div class="right ignore_label">Ignore?</div>
-                    <div class="clearfix"></div>
-                    <div id="value-order-inner-container">                       
-                    @foreach (var row in Model.Rows)
-                    {
+                    <input type="hidden" name="filename" value="@Model.Filename"/>                   
+                    <div class="clearfix"></div>                      
+                    <div id="value-order-inner-container">
+                        @foreach (var row in Model.Rows)
+                        {
                       
-                        <div class="wizard-row">
-                            <div class="left row1" title="@Model.Headers[headerIndex]">@Model.Headers[headerIndex++].ToMaxMore(15)&nbsp;</div>
-                            <div class="left row2">@Html.DropDownList("value[]", row.Key, new { @class = "input-size6", @id = "colums" + number++ })</div>
-                            <div class="left row2">@Html.DropDownList("colums[]", row.Value, new { @class = "input-size6", @id = "colums" + number++ })</div>
-                            <div class="left margin-left-10 margin-top-10"><input type="checkbox" name="ignore[]" value="@(checkboxIndex++)"/></div>                           
-                        </div>
-                        <div class="clearfix"></div>                      
-                    }
+                            <div class="wizard-row">
+                                <div class="left row1" title="@Model.Headers[headerIndex]">@Model.Headers[headerIndex++].ToMaxMore(15)&nbsp;</div>
+                                <div class="left row2">@Html.DropDownList("value[]", row.Key, new { @class = "input-size6", @id = "colums" + number++ })</div>
+                                <div class="left row2">@Html.DropDownList("colums[]", row.Value, new { @class = "input-size6", @id = "colums" + number++ })</div>
+                                <div class="left margin-left-10 margin-top-10"><input type="checkbox" class="fancy" name="ignore[]" value="@(checkboxIndex++)"/></div>                           
+                            </div>
+                            <div class="clearfix"></div>                      
+                        }
                     </div>
+
                     <input id="mapValues" type="submit" name="submit" value="@GetResource(ResourceKeys.Next)"/>                
                 </form>
              </div>
@@ -367,6 +373,8 @@
         var screenUploadFile = ($("#regular-form").length > 0) ? true : false;
         var screenMapColumns = ($('#value-order-container').length > 0) ? true : false;
         var screenMapValues = (!screenUploadFile && !screenMapColumns) ? true : false;
+
+        gemini_ui.fancyInputs('#ImportDataWizardContainer .fancy');
 
         var currentStep = false;      
         $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed        

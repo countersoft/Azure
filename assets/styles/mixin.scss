@@ -272,13 +272,6 @@
 			white-space: nowrap;
 			font-weight:bold;
         }
-		tr:hover td
-        {
-            background-color: $color-grayscale3;
-			-webkit-transition: background-color 0.5s ease-out;
-			-moz-transition: background-color 0.5s ease-out;
-			transition: background-color 0.5s ease-out;
-        }
 }
 
 @mixin box-background()
@@ -330,3 +323,98 @@
 
 }
 
+@mixin button-default-disabled($maincolor: $theme-color, $gradientcolor: $theme-color-gradient, $textcolor: $color-white, $textshadow: darken($theme-color, 20%))
+{
+	-moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    border-radius:2px;
+    display:inline-block;
+    font-family:arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    border: 1px solid darken($maincolor, 15%);
+
+	color: $textcolor;
+
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, $maincolor), color-stop(1, $gradientcolor) );
+    background:-moz-linear-gradient( center top, $maincolor 5%, $gradientcolor 100% );
+	background-color:$maincolor !important;
+	
+	-moz-box-shadow:inset 0px 1px 0px 0px lighten($maincolor, 20%);
+    -webkit-box-shadow:inset 0px 1px 0px 0px lighten($maincolor, 20%);
+    box-shadow: inset 0px 1px 0px 0px lighten($maincolor, 20%);
+
+	text-shadow:1px 1px 0px $textshadow;
+
+	&:hover
+	{
+		cursor: not-allowed;
+	}
+}
+
+@mixin disable-text-selection()
+{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: moz-none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+@mixin tabs()
+{
+    .tabs
+	{
+        margin:17px 0 0 25px;
+		.base-tab
+		{
+            outline:none;
+			padding: 5px 30px 5px 30px;
+			font-size: 14px;
+			height: 20px;
+			display: inline-block;
+			text-align: center;
+			font-weight: bold;
+
+			&:hover
+			{
+				cursor: pointer;
+			}
+		}
+		.normal
+		{
+			@extend .base-tab; 
+			color: $color-grayscale1;
+			background-color: $color-grayscale4;
+			border-top: 3px solid $color-grayscale3;
+			border-bottom: 1px solid $color-grayscale2;
+            &:hover
+            {
+                color: $theme-color !important;
+            }
+		}
+		.selected
+		{
+			@extend .base-tab; 
+			color: $theme-color;
+			background-color: $color-white;
+			border-left: 1px solid $color-grayscale2;
+			border-right: 1px solid $color-grayscale2;
+			border-bottom: 1px solid $color-white;
+            border-top: 3px solid $theme-color;
+            margin-bottom:-1px !important;
+		}
+		.breaker
+		{
+			width: 20px;
+			height: 20px;
+			font-size: 14px;
+			padding: 5px 0px 5px 0px;
+			display: inline-block;
+			border-bottom: 1px solid $color-grayscale2;
+		}
+	}
+}

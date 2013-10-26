@@ -3,10 +3,6 @@
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
 
 <div id="cs-admin">
     <div id="resource-center">
@@ -48,12 +44,11 @@
     $('#external-context').spin(gemini_ui.spinnerOptions);
     $.ajax({
                 type: "GET",
-                url: 'http://update.countersoft.com',
+                url: 'https://download.countersoft.com',
                 data: { data: '@Model.Data' },
                 dataType: "jsonp",
                 success: function (data) {
                     $('#external-context').html(data.Html);
-                    $("#help-link", '#cs-admin').colorbox({ href: csVars.Url + "tour", transition: "none", initialWidth: "870px", initialHeight: "538px", width: "870px", height: "538px", close: "close", overlayClose: true, escKey: true, opacity: '0.8' });
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     

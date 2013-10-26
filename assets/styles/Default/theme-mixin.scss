@@ -58,7 +58,6 @@
 	border-bottom: 0;
 }
 
-
 @mixin divider-line
 {
 	border-bottom: 1px solid $color-white;
@@ -123,13 +122,10 @@
 	padding: 0px;
 	margin: 0px;
 	display: none;
-	display:none;
 	font-family: $font-body;
 	font-size: $font;
 
-	@include box-inset-shadow-none();
-	border: 1px solid $theme-color-border;
-	@include gradient($theme-color, $theme-color-gradient);	 
+	background-color: $color-grayscale3;
 
 	li
 	{
@@ -148,18 +144,18 @@
 		background-repeat: no-repeat;
 		outline: none;
 		padding: 3px 10px 3px 10px;
-		color: $color-white;
+		color: $color-black;
 
 		&:hover
 		{
 			color: $color-white;
-			background-color: $theme-color-secondary;
+			background-color: $primary-color;
 		}
 	}
 	li.hover a
 	{
 		color: $color-white;
-		background-color: $theme-color-secondary;
+		background-color: $primary-color;
 	}
 	li.disabled a
 	{
@@ -172,14 +168,14 @@
 	}
 	li.separator 
 	{
-		border-top: 1px solid $theme-color-border !important;
+		border-top: 1px solid $color-grayscale1 !important;
 		border-bottom: none !important;
 		margin: 0 1px 0 1px;
 	}
 	li.highlight 
 	{
 		font-weight: bold;
-		background-color: $theme-color-border !important;
+		background-color: $color-grayscale2 !important;
 	}
 	li:first-child
 	{
@@ -194,7 +190,7 @@
 @mixin theme-banner($border: 1px)
 {
 	background: $theme-color;
-	border: $border solid $theme-color-border;
-	box-shadow: 0 0 0 1px lighten($theme-color-secondary, 5) inset;
+	border: $border solid $secondary-color;
+	box-shadow: 0 0 0 1px lighten($secondary-color, 5) inset;
 	color: $color-white;
 }

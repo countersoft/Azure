@@ -39,27 +39,11 @@
         {
             background-color:$color-hover;
         }
-
-		tbody tr:hover td
-        {
-            background-color: $color-grayscale3;
-			-webkit-transition: background-color 0.5s ease-out;
-			-moz-transition: background-color 0.5s ease-out;
-			transition: background-color 0.5s ease-out;
-        }
-        
-        tbody tr.cs-no-hover:hover, tbody tr.cs-no-hover:hover td
-        {
-            background-color:transparent !important;
-        }
+        		
         tbody tr.cs-striped:nth-child(2n+1)
         {
             background-color: $color-grayscale4;
         }
-		table.cs-no-hover tbody tr:hover, table.cs-no-hover tbody tr:hover td
-		{
-			background-color:transparent !important;
-		}
     }
 
 	
@@ -206,20 +190,20 @@
 		}
 		ul
 		{
-			list-style-type:disc !important;
-			li
+			list-style-type:disc;
+            /*li
 			{
 				list-style:disc !important;
-			}
+			}*/
 		}
 		
 		ol
 		{
-			list-style-type:decimal !important;
-			li
-		{
-			list-style:decimal !important;
-		}
+			list-style-type:decimal;
+            /*li
+		    {
+			    list-style:decimal !important;
+		    }*/
 		}
 	}
     
@@ -427,7 +411,7 @@
             text-align: center;
             cursor: pointer;
             *margin-left: .3em;
-            float:left;
+            float:none;
             color: $color-grayscale;
 
             &:hover
@@ -449,15 +433,9 @@
 #cs-popup
 {
 	display:none;
-	background-color: $color-white;
 	font-size:12px;
-	width:800px;
 	padding:10px 0 0 0;
 	position: absolute;
-	box-shadow: 5px 5px 6px -3px $color-grayscale2;
-	border: 1px solid $color-grayscale2;
-	border-left-color: $color-grayscale4;
-	border-top-color: $color-grayscale3;
 	z-index: 9999;
 
 	#cs-popup-zone
@@ -474,11 +452,11 @@
 
 		#cs-popup-buttons
 		{
-			background-color: $color-grayscale4;
+			background-color: $color-grayscale3;
 			border-top: 1px solid $color-grayscale3;
 			width: 100%;
 			position:absolute;
-			bottom: 0;
+			bottom: 10px;
 			right: 0;
 
 			.buttons
@@ -518,13 +496,9 @@
 {
 	top:0px;
 	display:none;
-	background-color: $color-white;
 	font-size:12px;
-	width:800px;
-	padding:10px 0 0 0;
+	padding:0;
 	position: absolute;
-	box-shadow: -5px 5px 6px -3px $color-grayscale2;
-	border: 1px solid $color-grayscale2;
 	z-index: 9999;
 
 	#cs-popup-add-zone
@@ -536,7 +510,24 @@
 		{
 			overflow: hidden;
 			outline:none;
+            margin:10px 20px 0 20px;
 		}
+
+        #cs-popup-add-header
+        {
+            background-color:$color-grayscale4;
+            border-bottom: 1px solid $color-grayscale2;
+            height:50px;
+            
+            @include tabs;
+            .tabs
+	        {
+                .normal
+		        {
+			        background-color: $color-white !important;
+		        }
+	        }
+        }
 
 		#cs-popup-add-buttons
 		{
@@ -544,8 +535,8 @@
 			border-top: 1px solid $color-grayscale3;
 			width: 100%;
 			position:absolute;
-			bottom: 0;
-			right: 0;
+			bottom: 0px;
+			right: 0px;
 
 			.buttons
 			{
@@ -622,16 +613,6 @@
 *************************************************************/
 #project-menu-dropdown
 {
-	border: 2px solid $color-white;
-	padding: 2px 2px 2px 2px;
-	@include rounded(4px);
-	font-size: 13px;
-	width: 13px;
-	height: 12px;
-	cursor: pointer;
-	vertical-align: top;
-	margin-top: 10px;
-
 	.cs-menu-dropdown
 	{
 		@include cs-menu($color-text, 0px, 12px, 160px);
@@ -717,11 +698,8 @@
 						width: 13px;
 					}
 		}
-		div:first-child
-		{
-			margin-left: -1px !important;
-		}
 	}
+        
 
 	#tabs-left
 	{
@@ -1102,6 +1080,11 @@ table.admin-data-entry
 		-moz-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
         -webkit-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
         box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
+
+		label
+		{
+			padding: 0 0 0 5px;
+		}
 	}
 
 	.header
@@ -1135,6 +1118,12 @@ table.admin-data-entry
 		{
 			font-size: 10px;
 			color: $color-grayscale2;
+			vertical-align: top;
+		}
+		.dragHandle 
+		{
+			vertical-align: top !important;
+			display: inline-block;
 		}
 	}
 
@@ -1208,111 +1197,17 @@ table.admin-data-entry
 }
 
 
-.cs-pills
+
+#project-administration
 {
-	padding: 10px 0px 20px; 
-
-	.cs-pill
-	{
-		cursor:default;
-		//Buttons
-		/*
-		padding: 5px 20px 5px 20px;
-		margin: 0px 5px;
-		background-color: $color-white;
-		color: $color-text;
-		border: 1px solid $theme-color;
-		@include rounded(20px);
-		*/
-
-		//Button Pills
-		padding: 8px 27px;
-		margin: 0px 5px;
-		border: 1px solid $color-grayscale3;
-		background-color: $color-grayscale4;
-		
-		@include rounded(20px);
-	}
-	.cs-pill-inactive
-	{
-		//Button pills
-		-moz-box-shadow: 	0 1px 0 0 #DCDCDC, 0 5px 0 -3px white inset;
-		-webkit-box-shadow: 0 1px 0 0 #DCDCDC, 0 5px 0 -3px white inset;
-		box-shadow: 		0 1px 0 0 #DCDCDC, 0 5px 0 -3px white inset;
-		
-		//blue style buttons
-		/*display:inline-block;
-		font-family:arial;
-		font-size:15px;
-		font-weight:bold;
-		text-decoration:none;
-		border: 1px solid #dcdcdc;                          
-		-moz-box-shadow:inset 1px 1px 0px 0px $color-white;
-		-webkit-box-shadow:inset 1px 1px 0px 0px $color-white;
-		box-shadow:inset 1px 1px 0px 0px $color-white;
-		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-		background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+    background-color:$color-white;
+    @include tabs;        
     
-		background-color: $color-grayscale3;
-		color: $color-grayscale0;
-		text-shadow:1px 1px 0px $color-white;
-
-		&:hover 
-		{
-			background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-			background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-			background-color:#dfdfdf;
-		}
-
-		&:active 
-		{
-			-moz-box-shadow:inset 0px 1px 0px 0px #dcdcdc;
-			-webkit-box-shadow:inset 0px 1px 0px 0px #dcdcdc;
-			box-shadow:inset 0px 1px 0px 0px #dcdcdc;
-			background-color:#dfdfdf;
-		}
-		*/
-
-		/*&:hover{
-			background-color: $color-hover;
-			border: 1px solid $theme-color;
-			color: $color-text;
-			cursor:pointer;
-		}*/
-	}
-	.cs-pill-active
-	{
-		//background-color: $theme-color;
-		//color: $theme-color-text;
-		//border: 1px solid transparent;
-
-		//BUTTON PILL
-		color: $theme-color;
-		-moz-box-shadow: 	0 2px 2px 0 #DCDCDC inset;
-		-webkit-box-shadow: 0 2px 2px 0 #DCDCDC inset;
-		box-shadow: 		0 2px 2px 0 #DCDCDC inset;
-
-		//Blue style buttons
-		/*
-		cursor:default;
-		display:inline-block;
-		font-family:arial;
-		font-size:15px;
-		font-weight:bold;
-		text-decoration:none;
-		border: 1px solid $theme-color-border;
-		-moz-box-shadow:inset 1px 1px 0px 0px #addef3;
-		-webkit-box-shadow:inset 1px 1px 0px 0px #addef3;
-		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, $theme-color), color-stop(1, $theme-color-gradient) );
-		background:-moz-linear-gradient( center top, $theme-color 5%, $theme-color-gradient 100% );
-		background-color:$theme-color;
-		color: $theme-color-text;
-		box-shadow:inset 1px 1px 0px 0px #addef3;
-		text-shadow:1px 1px 0px $theme-color-border;
-		text-shadow:1px 1px 0px $theme-color-border;
-		*/
-	}
-	
+}
+.tabs-container
+{
+    border-bottom: 1px solid $color-grayscale2;
+	height: 50px;
 }
 
 /* For pages that do not belong to Projects, e.g. Preferences  */
@@ -1354,22 +1249,19 @@ table.admin-data-entry
 
 #page-reports
 {
-
 	.reportTable
 	{
-	thead tr th:first-child { background: $theme-background; }
+		thead tr th:first-child { background: $color-white; }
 	
-	table {margin: 0 auto;}
+		table {margin: 0 auto;}
 
-	thead tr:first-child th {text-align:center !important;}
+		thead tr:first-child th {text-align:center !important;}
 	
-	tbody td { 
-		text-align:center;
-		border-left : 1px solid $color-grayscale3;
-		border-right : 1px solid $color-grayscale3;
+		tbody td { 
+			text-align:center;
+			border-left : 1px solid $color-grayscale3;
+			border-right : 1px solid $color-grayscale3;
 	}
-	
-	
 
 	thead tr:last-child th:first-child {
 		border-bottom: 1px solid $color-grayscale3;
@@ -1413,7 +1305,7 @@ table.admin-data-entry
   		left:0; 
 		top:auto;
 		//margin-top:-3px; 
-		padding:5px 10px 5px 10px;
+		padding:5px 60px 5px 60px;
 		overflow:hidden;
 		text-overflow:ellipsis;
 		margin-left:12px;
@@ -1481,18 +1373,8 @@ table.admin-data-entry
 
 	.header
         {
-			@include box-inset-shadow();
-			border: 1px solid transparent;
-			background: $color-grayscale4;                                            
-			background: -moz-linear-gradient(top,  $color-grayscale4 0%, $color-grayscale3 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color-grayscale4), color-stop(100%, $color-grayscale3)); 
-			background: -webkit-linear-gradient(top,  $color-grayscale4 0%, $color-grayscale3 100%); 
-			background: -o-linear-gradient(top,  $color-grayscale4 0%, $color-grayscale3 100%); 
-			background: -ms-linear-gradient(top,  $color-grayscale4 0%, $color-grayscale3 100%); 
-			background: linear-gradient(top,  $color-grayscale4 0%, $color-grayscale3 100%); 
-			-moz-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
-            -webkit-box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
-            box-shadow: 0px -1px 0 0px grey inset, 0 0 0 1px $color-white inset;
+			@include border;
+			background-color: $color-grayscale4;    
 			
 			height: 34px;
 			padding: 6px 10px 0px 10px;
@@ -1511,6 +1393,7 @@ table.admin-data-entry
 				text-align: left;
 				width:200px;
 				border-right: 1px solid $color-grayscale3;
+				border-left: 1px solid $color-grayscale3;
 				
 				padding-left:10px;
 				padding-top:4px;
@@ -1520,6 +1403,25 @@ table.admin-data-entry
 				width:75px;
 				border-right: 1px solid $color-grayscale3;
 			}
+
+			tr:last-child
+			{
+				td 
+				{
+					border-bottom: 1px solid $color-grayscale3;
+				}
+			}
+
+			a 
+			{
+				text-decoration: none;
+
+				&:hover 
+				{
+					text-decoration: underline;
+				}
+			}
+
 		}
 		.MainItem td:first-child {
 			font-weight:bold;
@@ -1614,7 +1516,7 @@ table.admin-data-entry
 
 	.runner-controls{
 		input {
-			margin-right: 20px;
+			margin-right: 10px;
 		}
 
 		input.button-passed {
@@ -1744,6 +1646,27 @@ table.admin-data-entry
     background:#fff;		
     margin-bottom:2em;
 
+	.runner-controls
+	{
+		position:relative;
+	}
+
+	#attachment
+	{
+		position: absolute;
+		top: 170px;
+		left: 680px;
+
+		.qq-upload-drop-area
+		{
+			position: absolute;
+			width: 455px;
+			left: -444px;
+			top: 0px;
+			height: 25px;
+		}
+	}
+
     textarea    // allow them to scroll 
     {
         height:80px;
@@ -1823,6 +1746,20 @@ table.admin-data-entry
     {
         outline:none;
     }
+	.open-case
+	{
+		text-decoration: none;
+		color: $color-black;
+		margin-left: 130px;
+		
+	}
+	#slider-header
+	{
+		.additional-case-data
+		{
+			display: none;
+		}
+	}
 }
 
 /************************************************************
@@ -1896,7 +1833,101 @@ div.wysiwyg-container
 	}
 }
 
+#instant-filter-new-field
+{
+	margin: 5px 10px 0 0;
+}
+.instant-filter-box
+{
+	border: 1px solid $color-grayscale3;
+	background-color: $color-grayscale4;
+	font-size: 13px;
+	margin: 5px 10px 0 0;
+	padding: 0px 4px 0px 0px;
+	.instant-filter-header
+	{
+		white-space: nowrap;
+		overflow: hidden;
+		cursor: default;
+		height:22px;
+		max-width:200px;
+		text-overflow: ellipsis;  
+        text-overflow: ellipsis-word;
+		padding: 7px 0px 1px 4px;
+		
+		.instant-filter-title 
+		{
+			display: inline-block;
+			font-weight: bold;
+			margin-right: 7px;
+		}
+		
+		.instant-filter-caption
+		{
+			font-size:11px;
+		}
+	}
+	.fonticon-dropdown
+	{
+		font-size: 13px;
+		color: $color-grayscale2;
+		vertical-align: text-bottom;
+		padding-left:5px;
+		position:relative;
+		top:7px;
+	}
+	.fonticon-cross
+	{
+		font-size: 11px;
+		color: $color-grayscale2;
+		vertical-align: text-bottom;
+		position:relative;
+		top:7px;
+		padding-left:1px;
+	}
+	&:hover 
+	{
+		background-color:$color-grayscale3;
+		.fonticon-cross, .fonticon-dropdown
+		{
+			color: $color-grayscale1;
+		}
+	}
 
+	.instant-filter-dropdown
+	{
+		z-index:9999;
+		position:absolute;
+		margin-left:-1px;
+		margin-top:14px;
+		padding:10px;
+		font-size:11px;
+		@include border;
+		background-color:$color-grayscale4;
+		-webkit-box-shadow: 2px 2px 3px rgba(50, 50, 50, 0.5);
+		-moz-box-shadow:    2px 2px 3px rgba(50, 50, 50, 0.5);
+		box-shadow:         2px 2px 3px rgba(50, 50, 50, 0.5);
+	}
+	.instant-filter-dropdown[data-field-type="check"]
+	{
+		min-width:72px;
+	}
+	.instant-filter-dropdown[data-field-type="select"]
+	{
+		height:270px;
+	}
+}
+
+#instant-filter-tooltip
+{
+	padding:10px;
+	background-color:$color-black;
+	color: $color-grayscale4;
+	position:absolute;
+	display:none;
+	font-size:11px;
+	z-index:99999;
+}
 
 
 
@@ -1959,7 +1990,23 @@ div.wysiwyg-container
 	
 	.grid {
 		th {
-			@include grid-header();
+			cursor: default; 
+			height: 16px;
+			text-overflow: ellipsis;
+
+			background: $color-grayscale4;
+			background: -moz-linear-gradient(top,  rgba(245,245,245,1) 0%, rgba(229,229,229,1) 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(245,245,245,1)), color-stop(100%,rgba(229,229,229,1)));
+			background: -webkit-linear-gradient(top,  rgba(245,245,245,1) 0%,rgba(229,229,229,1) 100%);
+			background: -o-linear-gradient(top,  rgba(245,245,245,1) 0%,rgba(229,229,229,1) 100%);
+			background: -ms-linear-gradient(top,  rgba(245,245,245,1) 0%,rgba(229,229,229,1) 100%);
+			background: linear-gradient(top,  rgba(245,245,245,1) 0%,rgba(229,229,229,1) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#e5e5e5',GradientType=0 );
+
+			border:1px solid $color-grayscale3;
+			color:$color-grayscale;
+			border-right-color:$color-grayscale3;
+			text-align:left;
 		}
 
 		td.column-left{
@@ -2013,4 +2060,50 @@ div.wysiwyg-container
 	}
 }
 
+#view-item-slider
+{
+    display:none;
+    position:fixed;
+    padding:10px;
+    top:0px;
+    right:0px;
+    width:820px;
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    background-color:$color-white;
+    border-top: 1px solid $color-grayscale3;
+    border-left: 1px solid $color-grayscale3;
+    box-shadow: -4px 3px 7px -5px $color-grayscale1;
+
+    #filter-navigator
+    {
+        display:none;
+    }
+
+     @media all and (min-height:1080px) 
+    {
+        height:780px;
+    }
+    @media all and (max-height:1020px) 
+    {
+        height:780px;
+    }
+    @media all and (max-height:800px) 
+    {
+        height:560px;
+    }
+    /* iPads (portrait and landscape) ----------- */
+    @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) 
+    {
+        height:560px;
+    }
+
+    /* iPads (landscape) ----------- */
+    @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) 
+    {
+        height:460px;
+    }
+        
+}
 

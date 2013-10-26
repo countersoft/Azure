@@ -4,14 +4,9 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
     ViewBag.Title = Model.User.Fullname + " | " + @GetResource(ResourceKeys.Preferences);
 }
-
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
    
 <div id="cs-adhoc-page">
-    <form action="profile" method="post" id="regular-form" autocomplete="off">
+    <form action="profile" method="post" id="regular-form" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" id="Id" name="Id" value="@Model.User.Entity.Id" />
 
         <table id="regular-credentials" class="data-entry-box margin-zero-auto">
@@ -38,11 +33,11 @@
 
             <tr>
                 <td></td>
-                <td><input type="checkbox" id="EmailMe" name="EmailMe" @if(Model.User.Entity.EmailMe){ <text>checked="checked"</text> } />@GetResource(ResourceKeys.EmailMe)</td>
+                <td><input class="fancy" type="checkbox" id="EmailMe" name="EmailMe" @if(Model.User.Entity.EmailMe){ <text>checked="checked"</text> } /><label class="valign-top">@GetResource(ResourceKeys.EmailMe)</label></td>
             </tr>
             <tr>
                 <td></td>
-                <td><input type="checkbox" id="EmailMeMyChanges" name="EmailMeMyChanges" @if(Model.User.Entity.EmailMeMyChanges){ <text>checked="checked"</text> } />@GetResource(ResourceKeys.EmailMeMyChanges)</td>
+                <td><input class="fancy" type="checkbox" id="EmailMeMyChanges" name="EmailMeMyChanges" @if(Model.User.Entity.EmailMeMyChanges){ <text>checked="checked"</text> } /><label class="valign-top">@GetResource(ResourceKeys.EmailMeMyChanges)</label></td>
             </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>
 
@@ -72,6 +67,8 @@
                     <input type="button" id="api-key" class="button-secondary button-small" value="@GetResource(ResourceKeys.Change)" />
                 </td>
             </tr>
+            @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
+            { 
             <tr>
                 <td>@GetResource(ResourceKeys.Password)</td>
                 <td><input type="password" id="the-password" name="the-password" class="input-size6" /> 
@@ -86,12 +83,31 @@
                 <td>@GetResource(ResourceKeys.ConfirmPassword)</td>
                 <td><input type="password" id="confirm-password" name="confirm-password" class="input-size6" /> </td>
             </tr>
-
+            }
+            
             <tr><td colspan="2"><div class="divider"></div></td></tr>
+
             <tr>
                 <td valign="top">@GetResource(ResourceKeys.Picture)</td>
                 <td>
                     <img src="~/account/picture/@Model.User.Entity.Id" alt="Gravatar" width="64" height="64" />
+                </td>
+            </tr>            
+
+             <tr>
+                <td valign="top"></td>
+                <td>
+                    <input type="radio" id="option-gravatar" value="1" name="gravatar" class="avatar-option fancy" @if(Model.User.GetSettings().UseGravatar) {<text>checked="checked"</text>}/>
+                    <label for="option-gravatar">Gravatar</label>
+                    <input type="radio" id="option-upload" value="2" name="gravatar" class="margin-left-10 avatar-option fancy" @if(!Model.User.GetSettings().UseGravatar) {<text>checked="checked"</text>}/>
+                    <label for="option-upload">@GetResource(ResourceKeys.Upload, Resourcing.Dotted)</label>
+                </td>
+            </tr>
+            
+            <tr id="upload-avatar" @if(Model.User.GetSettings().UseGravatar) {<text>class="invisible"</text>} >
+                <td valign="top"></td>
+                <td>
+                    <input type="file" name="avatar" id="avatar"/>
                 </td>
             </tr>
 
@@ -100,6 +116,7 @@
                     <input id="regular-signin" type="submit" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
                 </td>
             </tr>
+           
         </table>
         @if (ViewBag.SendHome)
         {

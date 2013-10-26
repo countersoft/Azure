@@ -1,7 +1,5 @@
 ﻿@model ViewIssueModel
-
-<div class="clearfix pad-bottom-5 clear-links-article"></div>
-<article class="links-article">
+<div>
     <input type="hidden" id="links-find-item-id"/>
     <div id="links-find-item-container" class="hide">
         <form name="links-form">
@@ -12,47 +10,30 @@
             <span class="fonticon-cross left"></span>
         </form>
     </div>
-
-    <a id="link"></a>
-    <div class="section-header clearfix">
-    <div class="clearfix">
-        <div id='link-section' class="left">
-            <span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.LinkedItems)&nbsp;(@Model.Issue.Links.Count)</h3>
-        </div>
-        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedLinks))
+    
+    @if (Model.Issue.Links.Count() > 0) {
+        <table cellpadding="0" cellspacing="0">
+        <tr>
+            <th>@GetResource(ResourceKeys.LinkType)</th>
+            <th>@GetResource(ResourceKeys.Item)</th>
+            <th>@GetResource(ResourceKeys.Type)</th>
+            <th>@GetResource(ResourceKeys.Status)</th>
+            <th>@GetResource(ResourceKeys.Title)</th>
+            <th></th>
+        </tr>
+        @foreach (var link in Model.Issue.Links)
         {
-        <div class="toolbar actions right">
-            <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Link)"></a>
-        </div>
-        }
-    </div>
-    <div class="divider"></div>
-    <div class="section-content history expanded">
-        @if (Model.Issue.Links.Count() > 0) {
-            <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th>@GetResource(ResourceKeys.LinkType)</th>
-                <th>@GetResource(ResourceKeys.Item)</th>
-                <th>@GetResource(ResourceKeys.Type)</th>
-                <th>@GetResource(ResourceKeys.Status)</th>
-                <th>@GetResource(ResourceKeys.Title)</th>
-                <th></th>
+            var issue = link.Issue.Id == Model.Issue.Id ? link.OtherIssue : link.Issue;
+            <tr data-id="@issue.Id">
+                <td>@link.LinkType</td>
+                <td><a target="_blank" href='@Url.Action("Item", "Item", new RouteValueDictionary(new {  projectid = issue.Project.Id, projectcode = issue.Project.Code, issueid = issue.Id }))' >@issue.IssueKey</a></td>
+                <td>@issue.Type</td>
+                <td>@issue.Status</td>
+                <td>@issue.Title</td>
+                <td>@if(CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedLinks)) {<span class="cursor-pointer action-button-delete" alt="@link.LinkType" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Link)"></span>}</td>
             </tr>
-            @foreach (var link in Model.Issue.Links)
-            {
-                var issue = link.Issue.Id == Model.Issue.Id ? link.OtherIssue : link.Issue;
-                <tr data-id="@issue.Id">
-                    <td>@link.LinkType</td>
-                    <td><a target="_blank" href='@Url.Action("Item", "Item", new RouteValueDictionary(new {  projectid = issue.Project.Id, projectcode = issue.Project.Code, issueid = issue.Id }))' >@issue.IssueKey</a></td>
-                    <td>@issue.Type</td>
-                    <td>@issue.Status</td>
-                    <td>@issue.Title</td>
-                    <td>@if(CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedLinks)) {<span class="cursor-pointer action-button-delete" alt="@link.LinkType" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Link)"></span>}</td>
-                </tr>
-            }         
-        </table>
-        }
-    </div>
-    </div>
-</article>
+        }         
+    </table>
+    }
 
+</div>

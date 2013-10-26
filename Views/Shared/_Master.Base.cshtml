@@ -8,7 +8,6 @@
 <!--<![endif]-->
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="" />
     <meta name="author" content="" />
@@ -19,21 +18,21 @@
     }
     @RenderSection("Head")
     @{Html.RenderPartial("_Scripts");}
-
 </head>
 <body>
-    <script type="text/javascript">        window.jQuery || document.write('<script src="@Url.Content("~/assets/all.min.js?v=1")"><\/script>')</script>
+    <script type="text/javascript">window.jQuery || document.write('<script src="@Url.Content("~/assets/all.min.js?v=1")"><\/script>')</script>
     @RenderBody()
     <script type="text/javascript">
     var csVars = {
         Url: "@GeminiContext.Url",
-        ProjectUrl: "project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/",
+        ProjectUrl: "project/@GeminiContext.Project.Entity.EscapedCode/@GeminiContext.Project.Entity.Id/",
         AssetsPath: "@AssetsPath/",
         IEVersion: @Url.GetInternetExplorerVersion(),
         IsOpera: @Url.IsOpera().ToJSBool(),
+        IsSafari: @Url.IsSafari().ToJSBool(),
         FirstDayOfWeek: @((int)GeminiContext.User.CultureInfo.DateTimeFormat.FirstDayOfWeek),
         Licensed: @((GeminiApp.GeminiLicense.LicenseType == Rhino.Licensing.LicenseType.Standard && !GeminiApp.GeminiLicense.InvalidInstance).ToJSBool()),
-        TourStatus: @Html.Raw(GeminiContext.User.GetSettings().TourStatus.ToJson())
+        DontUseInlineEdit: @GeminiContext.Config.NoInlineEdit.ToJSBool()
     };
     </script>
     <script type="text/javascript">
@@ -58,11 +57,28 @@
             @if (Model.HasCurrentPageCard)
             {
                 @:gemini_appnav.pageCard = @Html.Raw(Model.CurrentPageCard.ToJson());
+                @:gemini_appnav.previousCards = @Html.Raw(Model.SavedCards.Select(x => x.Id).ToJson());
             }
 
-            gemini_master.initBase(@Model.DisplayPageActions.ToJSBool(), @Model.ModelStatus);
+            gemini_master.initBase(@Model.DisplayPageActions.ToJSBool(), @Model.ModelStatus, @Html.Raw(Model.AllProjectsLight.ToJson()));
 
             @RenderSection("DocumentReady", false)
+
+            @if(Model.CID.HasValue())
+            {
+                <text>$.ajax({
+                    type: "GET",
+                    url: 'https://download.countersoft.com',
+                    data: { data: '@Model.CID' },
+                    dataType: "jsonp",
+                    success: function (data) {
+                    
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                    
+                    }
+                });</text>
+            }
         });
 
     @RenderSection("JavaScript", false)
@@ -104,16 +120,26 @@
     </div>
     <div id="cs-popup-add" class='clearfix'>
         <div id="cs-popup-add-zone">
-            <div class="cs-pills right">
-                <span class="cs-pill cs-pill-active" data-tab-id="full-item">
-                    @GetResource(ResourceKeys.Item)
-                </span>
-                @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard))
-                {
-                    <span class="cs-pill cs-pill-inactive" data-tab-id="quick-items">
-                        @GetResource(ResourceKeys.Plan)
+            <div id="cs-popup-add-header">
+                <div class="tabs left" >
+                    <span class="tab selected" data-tab-id="full-item">
+                        @GetResource(ResourceKeys.Item)
                     </span>
-                }
+                    @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard))
+                    {
+                        <span class="breaker">&nbsp;</span>
+                        <span class="tab normal" data-tab-id="quick-items">
+                            @GetResource(ResourceKeys.Plan)
+                        </span>
+                    }
+                    @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && (GeminiContext.User.IsGlobalAdmin || GeminiContext.Config.Sandbox))
+                    {
+                        <span class="breaker">&nbsp;</span>
+                        <span class="tab normal" data-tab-id="new-project">
+                            @GetResource(ResourceKeys.Project)
+                        </span>
+                    }
+                </div>
             </div>
             <div class="clearfix">
             </div>
@@ -156,7 +182,5 @@
         <span class="fonticon-tick"></span><p class="toast-message"></p>
     </div>
     <div id="progress-indicator" class='hide' style="width:100px;max-width:100px;position:absolute;left:-200px;top:-200px;"></div>
-    
-    @{ Html.RenderPartial("Tour"); }
 </body>
 </html>

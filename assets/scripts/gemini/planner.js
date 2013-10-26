@@ -1,5 +1,4 @@
-/* @requires jQuery($), jQuery UI Sortable module */
-var planner =
+planner =
 {
     settings:
     {
@@ -13,10 +12,12 @@ var planner =
     animations: [],
     selectedContextCard: null,
     pageEffect: 'helix', // choose from => 'none', 'flip, 'flip-back', 'fly', 'fly-out', 'fly-reverse', 'helix', 'helix-out' 'slide', 'slide-right', 'fan', 'tilt', 'curl', 'zipper'
+
     escapeDropdowns: function (guid, selector) {
         $(selector).hide();
         gemini_keyboard.unbindEscape(guid);
     },
+
     initialize: function (readOnly)
     {
         planner.readOnly = readOnly;
@@ -64,6 +65,7 @@ var planner =
 
                     options.show();
                     gemini_keyboard.bindEscape("#page-options-box .options", planner.escapeDropdowns);
+                    $("input[type='text']:first", options).focus();
                 }
 
                 options.position({
@@ -159,6 +161,7 @@ var planner =
     refreshPlannerLaner: function (response, issueId)
     {
         var item = $("#" + issueId).parent();
+        
         // not processed, so it did not move between cells 
         // so the card has only moved inside the same cell 
         var thisCard = item.find(".plan-card");
@@ -170,11 +173,12 @@ var planner =
 
         processedMove = allCards.length > 1 ? true : false; // Card was let go at the same place, nothing to do.
 
-
         // Send it all back to the Controller
         planner.currentDraggedCard = $(this);
+
         // Inform the server about the moved card
         planner.postDragData({ id: cardId, oldCellId: oldId, newCellId: newId, index: dropIndex, clone: false, shift: false });
+
         setTimeout("planner.completeUpdateCall()", 50);
     },
     
@@ -182,14 +186,17 @@ var planner =
     {
         $('#planner').addClass(planner.pageEffect);
     },
+
     disableEffects: function ()
     {
         $('#planner').removeClass(planner.pageEffect);
     },
+
     waitCursor: function ()
     {
         $('#planner-box').css({ cursor: 'wait' });
     },
+
     normalCursor: function ()
     {
         $('#planner-box').css({ cursor: 'default' });
@@ -299,20 +306,26 @@ var planner =
 
     updateAllCells: function (markup)
     {
-        var values = markup.split('\t');
-
-        var count = values.length;
-        for (i = count; i--; )
-        {
-            var contents = values[i];
-            planner.updateCellMarkup(contents);
+        if (markup == 'error') {
+            planner.updateError();
         }
-        setTimeout(function () { planner.runAnimations(); }, 25);
+        else {
 
-        planner.bindAllCellMenusAndEvents();
-        planner.addArrowDownEvents();
-        planner.normalCursor();
-        gemini_ui.visualProgressFinish('#planner');
+            var values = markup.split('\t');
+
+            var count = values.length;
+            for (i = count; i--;) {
+                var contents = values[i];
+                planner.updateCellMarkup(contents);
+            }
+            setTimeout(function () { planner.runAnimations(); }, 25);
+
+            planner.bindAllCellMenusAndEvents();
+            planner.addArrowDownEvents();
+            planner.normalCursor();
+            gemini_ui.visualProgressFinish('#planner');
+            planner.showInfoTip();
+        }
     },
 
     updateCell: function (markup)
@@ -323,6 +336,7 @@ var planner =
         planner.bindAllCellMenusAndEvents();
         planner.normalCursor();
         gemini_ui.visualProgressFinish('#planner');
+        planner.showInfoTip();
     },
 
     updateCellMarkup: function (markup)
@@ -412,37 +426,33 @@ var planner =
     // New card, chnage the title from "New" or edit.
     bindCardTitleChange: function ()
     {
-        // cannot create a new record 
-        //if (!planner.readOnly)
-        {
-            var card = $("#planner-context-popup-new-card");
-            gemini_commons.inputKeyHandler("#planner-context-popup-new-card > .card-title",
-                function ()
-                {
-                    card.hide();
+        var card = $("#planner-context-popup-new-card");
+        gemini_commons.inputKeyHandler("#planner-context-popup-new-card > .card-title",
+            function ()
+            {
+                card.hide();
 
-                    // get the LI (not the div that was clicked on)
-                    var li = planner.selectedContextCard.hasClass("plan-card") ? planner.selectedContextCard.parent() : planner.selectedContextCard;
-                    var ul = li.parent();
+                // get the LI (not the div that was clicked on)
+                var li = planner.selectedContextCard.hasClass("plan-card") ? planner.selectedContextCard.parent() : planner.selectedContextCard;
+                var ul = li.parent();
 
-                    var projectId = planner.selectedContextCard.attr('data-project-id');
-                    var newTitle = $(".card-title", card).val();
-                    var cellId = parseInt(ul.attr("id").replace('cell_', ''));
+                var projectId = planner.selectedContextCard.attr('data-project-id');
+                var newTitle = $(".card-title", card).val();
+                var cellId = parseInt(ul.attr("id").replace('cell_', ''));
 
-                    // insert it into the Ul with the appropate LI !!!!
-                    var container = ul.find("li");
+                // insert it into the Ul with the appropate LI !!!!
+                var container = ul.find("li");
 
-                    // will add this below the card that was clicked on because the totals is a LI
-                    var dropIndex = parseInt(container.index(li));
+                // will add this below the card that was clicked on because the totals is a LI
+                var dropIndex = parseInt(container.index(li));
 
-                    planner.postAddCardData({ projectId:projectId, cell: cellId, title: newTitle, index: dropIndex });
-                },
-                function ()
-                {
-                    card.hide();
-                }
-            );
-        }
+                planner.postAddCardData({ projectId:projectId, cell: cellId, title: newTitle, index: dropIndex });
+            },
+            function ()
+            {
+                card.hide();
+            }
+        );
     },
 
     bindPagingEvents: function (selector)
@@ -533,7 +543,9 @@ var planner =
         var screenWidth = $(window).width();
 
         $('#planner-box').css('height', screenHeight);
-        $('#planner-box').css('width', screenWidth - 25);
+        
+        //last number was 25 HSK changed to 92 during 5.2 UX work
+        $('#planner-box').css('width', screenWidth - 92);
 
         // add a custom scrollbar on the planner-box and vertical scroll
         $('#planner-box').jScrollPane({ verticalDragMinHeight: 50, horizontalDragMinWidth: 50, skipDivWrap: false });
@@ -652,14 +664,14 @@ var planner =
         // Fix the width and height of the plan area
         var screenHeight = $(window).height();
         var header = $("header").height();
-        var menuBar = $("#content-header").height();
         var controls = $("#planner-control-box").height();
         var filter = $("#filter").height();
         var footer = $("footer").height();
 
-        var subtract = header + menuBar + controls + filter + footer;
+        var subtract = header + controls + filter + footer;
 
-        return Math.floor(screenHeight - subtract - 100);   // 80 deals with padding that exists between elements
+        // last number below was 100 but HSK changed to 80 during new 5.2 UI work
+        return Math.floor(screenHeight - subtract - 80);   // 80 deals with padding that exists between elements
     },
 
     enableCardDrag: function ()
@@ -878,7 +890,7 @@ var planner =
         $("#planner .card-options-icon span").click(function (e) {
             e.preventDefault();
             e.button = 2;
-            $(this).closest('.plan-card').trigger("mousedown", e).trigger("mouseup", [e]);;
+            $(this).closest('.plan-card').trigger("mousedown", e).trigger("mouseup", [e]);
         });
     },
     
@@ -893,7 +905,7 @@ var planner =
 
                 if (!dragging)
                 {
-                    var tip = $(this).parent().find(".info-tip");
+                    var tip = $(this).parent().find(".info-tip:eq(0)");
 
                     $(tip).fadeIn('fast');
 
@@ -915,9 +927,7 @@ var planner =
         });
     },
 
-    /*****************************************
-    *** Right click menu
-    *****************************************/
+    /* Right click menu */
     contextMenu: function (selector) {
         $(selector, '#planner').contextMenu({ menu: 'planner-context-menu' },
             function (action, el, pos) {
@@ -969,9 +979,6 @@ var planner =
                             });
                     });
                 }
-                else if (action == "share") {
-                    gemini_share.showShare("left top", "left bottom", "0 0", el, cardId, "{}");
-                }
                 else if (action == "follow") {
                     gemini_ajax.call("project/All/" + projectId + "/item", "addwatcher/" + cardId + "/0");
                 }
@@ -1009,6 +1016,7 @@ var planner =
 
     },
     
+    /* Plus sign == create item */
     addToSwimlane: function ()
     {
         if (!planner.readOnly) {

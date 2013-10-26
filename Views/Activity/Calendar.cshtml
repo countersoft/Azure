@@ -2,11 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
-@section HeaderContent
-{
-    @{Html.RenderPartial("ContentHeader");}
-    
-}
+
 @section JavaScript
 {
 }
@@ -45,20 +41,20 @@ gemini_activity.initCalendar();
                         <div class="break">&nbsp;</div>
                         <div class="break">&nbsp;</div>
                         <div class="clearfix">
-                            @Html.CheckBox("IncStartDate", false)
-                            @Html.Label("IncStartDate", GetResource(ResourceKeys.StartDate),new { @class = "checkbox" })
+                            @Html.CheckBox("IncStartDate", false, new { @class = "fancy" })
+                            @Html.Label("IncStartDate", GetResource(ResourceKeys.StartDate),new { @class = "checkbox valign-top" })
                         </div>
                         <div class="break">&nbsp;</div>
                         <div class="break">&nbsp;</div>
                         <div class="clearfix">
-                            @Html.CheckBox("IncDueDate", false)
-                            @Html.Label("IncDueDate", GetResource(ResourceKeys.DueDate), new { @class = "checkbox" })
+                            @Html.CheckBox("IncDueDate", false, new { @class = "fancy" })
+                            @Html.Label("IncDueDate", GetResource(ResourceKeys.DueDate), new { @class = "checkbox valign-top" })
                         </div>
                         <div class="break">&nbsp;</div>
                         <div class="break">&nbsp;</div>
                         <div class="clearfix">
-                            @Html.CheckBox("IncGantt", false)
-                            @Html.Label("IncGantt", GetResource(ResourceKeys.Duration), new { @class = "checkbox" })
+                            @Html.CheckBox("IncGantt", false, new { @class = "fancy" })
+                            @Html.Label("IncGantt", GetResource(ResourceKeys.Duration), new { @class = "checkbox valign-top" })
                         </div>
                         <div class="break">&nbsp;</div>
                         <div class="break">&nbsp;</div>

@@ -1,4 +1,4 @@
-﻿var testing = {
+﻿testing = {
 
     boxTag: '#items-filter',
     scopeTag: '#cs-template',

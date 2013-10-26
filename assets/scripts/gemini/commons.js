@@ -1,4 +1,4 @@
-var waitForFinalEvent = (function () {
+waitForFinalEvent = (function () {
     var timers = {};
     return function (callback, ms, uniqueId) {
         if (!uniqueId) {
@@ -11,8 +11,15 @@ var waitForFinalEvent = (function () {
     };
 })();
 
-var gemini_commons = {
+gemini_commons = {
     
+    ShiftPressed: false,
+    shiftKeyHandler: function ()
+    {
+        $(document).bind('keyup keydown', function (e) {           
+            gemini_commons.ShiftPressed = e.shiftKey
+        });
+    },
     visibleYes: function (jqueryObject) {
         jqueryObject.removeClass('visible-no').addClass('visible-yes');
     },
@@ -31,6 +38,10 @@ var gemini_commons = {
     isIe7or8: function ()
     {
         return csVars.IEVersion != -1 && (csVars.IEVersion == 7 || csVars.IEVersion == 8);
+    },
+
+    endsWith: function (str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
     },
 
     trim: function (s) {
@@ -73,7 +84,6 @@ var gemini_commons = {
     url: function() {
         return $(document).data("root");
     },
-
     inputKeyHandler : function(element, returnKeyCallback, escapeKeyCallback, otherKeyCallback)
     {
         $(element).bind("keydown.inputKeyHandler", function (e) {
@@ -183,6 +193,15 @@ var gemini_commons = {
         MyWatched: 18,
         Timeline: 19,
         Calendar: 20
+    },
+    isMobile: function () {
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 };
 

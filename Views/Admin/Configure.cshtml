@@ -3,17 +3,9 @@
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
 
 <div id="cs-admin">
     
-    <div id="support-button">
-        <a href="~/help">Support</a>    
-    </div>
-
     <div id="tabs-left" class="left">
         <span id="tabs-left-content">
         </span>
@@ -24,7 +16,7 @@
     </div>
 
     <div id="tabs-top" class="left">
-        <div id="tab-templates" data-tab="Templates" class="selected tab">Templates</div><div class="breaker">&nbsp;</div><div id="tab-projects" data-tab="Projects" class="normal tab">Projects</div><div class="breaker">&nbsp;</div><div id="tab-people" data-tab="People" class="normal tab">People</div><div class="breaker">&nbsp;</div><div id="tab-breeze" data-tab="Breeze" class="normal tab">Breeze</div><div class="breaker">&nbsp;</div>@if(Countersoft.Gemini.Infrastructure.Apps.AppManager.Instance.GetGlobalConfigApps().Count > 0){<div id="tab-apps" data-tab="Apps" class="normal tab">Apps</div><div class="breaker">&nbsp;</div>}<div id="tab-system" data-tab="System" class="normal tab">System</div>
+        <div class="breaker">&nbsp;</div><div id="tab-templates" data-tab="Templates" class="selected tab">Templates</div><div class="breaker">&nbsp;</div><div id="tab-projects" data-tab="Projects" class="normal tab">Projects</div><div class="breaker">&nbsp;</div><div id="tab-people" data-tab="People" class="normal tab">People</div><div class="breaker">&nbsp;</div><div id="tab-breeze" data-tab="Breeze" class="normal tab">Breeze</div><div class="breaker">&nbsp;</div>@if(Countersoft.Gemini.Infrastructure.Apps.AppManager.Instance.GetGlobalConfigApps().Count > 0){<div id="tab-apps" data-tab="Apps" class="normal tab">Apps</div><div class="breaker">&nbsp;</div>}<div id="tab-system" data-tab="System" class="normal tab">System</div><div class="breaker">&nbsp;</div><div class="breaker">&nbsp;</div>
         <div id="configure-page-content" class="margin-20">
         </div>
     </div>
@@ -37,7 +29,7 @@
             @Html.ListBox("attribute-options-ProjectGroup", Model.Groups, new {@class = "input-size9"})
         </div>
         <div id="option-required" class=" margin-top-10">
-            <input type="checkbox" id="field-required" name="field-required"/><label for="field-required" class="bold">Required</label>
+            <input type="checkbox" id="field-required" class="fancy" name="field-required"/><label for="field-required" class="bold">Required</label>
         </div>
     </div>
     <div class="attribute-options-picker-buttons clearfix margin-top-20">
@@ -61,5 +53,6 @@
     gemini_admin.currentSubTab = '@session.Get(SessionKey.ConfigureSubTab, "Process")';
     
     gemini_admin.initGlobal(@session.Get(SessionKey.ConfigureTemplate, @ViewBag.Template.ToString()));
+    gemini_ui.fancyInputs('#attribute-options-picker .fancy','background-color-white');
 }
 

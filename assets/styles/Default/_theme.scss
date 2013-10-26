@@ -2,22 +2,21 @@
 $theme-base-path: './'; /*RELEASE*/
 //$theme-base-path: '../../'; /*DEBUG*/
 
-/* Fonts */
+/***** Start 2013 *****/
+$primary-color: #356aa0;
+$secondary-color: lighten($primary-color, 20%);
+/***** End 2013 *****/
+
 $font-body: Verdana, Lucida Grande, Calibri, Tahoma, sans-serif;
-$font-header: "Arial Rounded MT Bold", "Segoe UI", Gill Sans Mt, 'Gill Sans', Century Gothic, Franklin Gothic Book, sans-serif;
+$font-header: "Segoe UI", Gill Sans Mt, 'Gill Sans', Century Gothic, Franklin Gothic Book, sans-serif, "Arial Rounded MT Bold";
 $font-aux: calibri, Arial, Helvetica, Univers, Corbel, sans-serif;
 
-$shade-percent: 15;
- 
-$color-shadow: #000; 
-
-$theme-color: #63b6db; 
+$theme-color: $primary-color;
+$theme-color-secondary: $secondary-color;
+$theme-color-gradient: $secondary-color;
+/*$theme-color: #63b6db; 
 $theme-color-secondary: #6dc1e7; 
-$theme-color-gradient: #309dcf;
-$theme-color-border: #2f8eb8;
-$theme-color-text: #fff;
-$theme-color-plus: #1a7fb2;
-$theme-background: #ffffff;
+$theme-color-gradient: #309dcf;*/
 
 $color-green: #41a241;
 $color-red:	  #d42f2f;
@@ -38,57 +37,16 @@ $color-grayscale5: #d6d6d6;
 
 $color-tooltip: #FFF7B7;
 $color-tooltip-border: darken($color-tooltip, 20%);
-$color-hover: #FFF8DC; //Cornsilk (can't use named values for sass functions)
+$color-hover: #FFF8DC; 
 
-$color-menu-text:  #333;
-
-$color-menu-key:   #128784;
-$color-highlight:   #fe57a1;
 $color-error:       #fff6f8;
 $color-placeholder: #eeeeee;
-$color-link-action: #790000;
-
-/* Pins, Indicators and Card colors - can be replaced */
-$color-project:  #00a79d; 
-$color-docs:     #ffde17; 
-$color-planner:  #3BB54A; 
-$color-roadmap:  #8dc63f; 
-$color-testing:  #ed1c24; 
-$color-activity: #f15a29; 
-$color-sysmsg:   #da1c5c;
-$color-ads:      #662d91;
-$color-custom:   #000000;
-$color-report:   #a97c50;
-$color-admin:    #F7941e;
-$color-items:    #27aae1;
-$color-item:     #2b3990;
-
-/* button colors */
-$color-button-standard:#fcfcfc;
-$color-button-default: #fbb450;
-$color-button-success: #62c462;
-$color-button-primary: #0088cc;
 
 /* password colors */
 $color-password-very-weak: #aa0033;
 $color-password-weak:      #f5ac00;
 $color-password-good:      #6699cc;  
 $color-password-strong:    #008000;  
-
-/* Special color */
-$color-panel-header:  #aaa;
-
-/* Heat Map colors */
-$heatmap1:hsl(15, 100%, 50%);
-$heatmap2:hsl(20, 100%, 50%);
-$heatmap3:hsl(25, 100%, 50%);
-$heatmap4:hsl(30, 100%, 50%); 
-$heatmap5:hsl(35, 100%, 50%);
-$heatmap6:hsl(40, 100%, 50%); 
-$heatmap7:hsl(45, 100%, 50%);
-$heatmap8:hsl(50, 100%, 50%);
-$heatmap9:hsl(55, 100%, 50%);
-$heatmap10:hsl(60, 100%, 50%);
 
 /* Branding */
 $color-countersoft: #562366;

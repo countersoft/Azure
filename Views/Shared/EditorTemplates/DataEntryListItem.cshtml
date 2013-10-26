@@ -3,6 +3,6 @@
 @foreach (var item in Model.Values)
 {
     <li>
-        @Html.CheckBox(string.Concat(Model.Id,'-', item.ItemId), item.IsSelected, new { @class = "", tabindex = item == Model.Values[0] ? string.Empty : "-1" })@Html.Label(string.Concat(Model.Id, '-', item.ItemId), item.ItemText/*, new {title = Model.ItemLabel, @class = headerCss}*/)
+        @Html.CheckBox(string.Concat(Model.Id,'-', item.ItemId), item.IsSelected, new { @class = "", data_input_type = "data-entry-list-item", tabindex = item == Model.Values[0] ? string.Empty : "-1" })@Html.Label(string.Concat(Model.Id, '-', item.ItemId), item.ItemText/*, new {title = Model.ItemLabel, @class = headerCss}*/)
     </li>
 }

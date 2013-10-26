@@ -28,8 +28,7 @@
     }
 
     /* Remove the various Element that we don't want to print */
-    /* don't show the playlist or seacrh boxes  on the printout */
-    #header, #playlistbox, #searchbox, #panel, #search, #account-box
+    #header, #zone-side-bar, #panel, #account-box
     {
         display:none;
     }

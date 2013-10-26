@@ -2,22 +2,21 @@
     Layout = "_Master.Desktop.cshtml";
 }
 
-@section Playlist
+@section ZoneHeaderBar
 {
-    @{ Html.RenderPartial("Playlist"); }
+    @{ Html.RenderPartial("ZoneHeaderBar"); }
 }
-@section Search
+
+@section ZoneSideBar
 {
-    @{ Html.RenderPartial("Search"); }
+    @{ Html.RenderPartial("ZoneSideBar"); }
 }
-@section HeaderContent
-{
-    @RenderSection("HeaderContent", true)
-}
+
 @section DocumentReady
 {
     @RenderSection("DocumentReady", false);
 }
+
 @section JavaScript
 {
     @RenderSection("JavaScript", false);

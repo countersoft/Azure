@@ -103,8 +103,8 @@
                 </tbody>
             </table>
             <div class="margin-top-10">
-               <input type="checkbox" name="confirmChange" id="confirmChange"><label id="confirmChange-label" for="confirmChange" style="color:red;">Yes, change project template!</label>
-               <input type="checkbox" name="confirmAgain" id="confirmAgain"><label id="confirmAgain-label" for="confirmAgain" style="color:red;">Yes I am sure!</label>
+               <input type="checkbox" class="fancy" name="confirmChange" id="confirmChange"><label id="confirmChange-label" for="confirmChange" style="color:red;">Yes, change project template!</label>
+               <input type="checkbox" class="fancy" name="confirmAgain" id="confirmAgain"><label id="confirmAgain-label" for="confirmAgain" style="color:red;">Yes I am sure!</label>
             </div>
         </form>
     </div>
@@ -119,7 +119,7 @@
     $(document).ready(function ()
     {
         $("#change-template-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
-        
+        gemini_ui.fancyInputs('#change-template-form .fancy');
         $("#popup-button-yes").unbind("click").click(function (e)
         {
             if ($('#confirmChange').is(':checked')) {

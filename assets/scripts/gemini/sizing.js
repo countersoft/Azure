@@ -1,4 +1,4 @@
-var gemini_sizing = {
+gemini_sizing = {
     padProjectsMenu: function () {
         var maxWidth = -1, elems = $('.cs-menu-dropdown .menu-project-code');
         elems.each(function () { if ($(this).width() > maxWidth) maxWidth = $(this).width(); });
@@ -31,10 +31,12 @@ var gemini_sizing = {
     },
     
     appResizer: function () {
-
+        if (csVars.IEVersion == 8) return;
+        
         $(window).resize(function () {
-            waitForFinalEvent(function () { gemini_appnav.resizer(); }, 500, "playlist-resize");
             waitForFinalEvent(function () { gemini_sizing.stretchWindow(); }, 500, "stretch-window");
+            waitForFinalEvent(function () { gemini_item.resizeWindow(); }, 500, "item-resize");
+            waitForFinalEvent(function () { gemini_appnav.resizeWindow(); }, 500, "appnav-resize");
         });
     },
 
@@ -44,7 +46,7 @@ var gemini_sizing = {
 
         $('#contents').css('min-height', '0');
         //$('#contents').css('min-height', $(window).height() - footer - header - 35);
-        $('#contents').css('min-height', $(window).height() - footer - header -10);
+        $('#contents').css('min-height', $(window).height() - footer - header - 10);
     },
     
     textWidth: function(selector) {
@@ -61,12 +63,11 @@ var gemini_sizing = {
         // Fix the width and height of the plan area
         var screenHeight = $(window).height();
         var header = $("header").height();
-        var menuBar = $("#content-header").height();
         //var controls = $("#planner-control-box").height();
         //var filter = $("#filter").height();
         var footer = $("footer").height();
 
-        var subtract = header + menuBar + /*controls + filter +*/ footer;
+        var subtract = header + footer;
 
         return Math.floor(screenHeight - subtract - 100);   // 80 deals with padding that exists between elements
     },

@@ -31,7 +31,7 @@
     $(document).ready(function () {
         if ($("#cs-popup-center .comments-wysiwyg-container").attr("data-controller") == "items") {
             setTimeout(function () {
-                gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "");
+                gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "",true);
             }, 25);
 
             gemini_ui.chosen("#cs-popup-center-content .comments-wysiwyg-container .option-row .input-size8", null, true);
@@ -46,7 +46,17 @@
                 success: function (responseText, statusText, xhr, $form) {
                     if (responseText.success) {
                         gemini_popup.popupClose();
+                        var issueId = $("#cs-popup-center-content .comments-wysiwyg-container").attr('data-id');
                         $("#cs-popup-center-content .comments-wysiwyg-container").remove();
+                        
+                        var url = csVars.ProjectUrl + 'items/' + issueId + '/refreshrow';
+                        var pageType = '@((int)Model.PageType)';
+                        gemini_ajax.call(url, pageType, function (response) {
+                            if (response.success) {
+                                gemini_items.refreshRow(response, issueId, true);
+                                $('#tr-issue-' + issueId, '#data').addClass('view-issue-highlight');                               
+                            }
+                        });
                     }
                     gemini_ui.stopBusy('#colorbox #popup-button-yes');
                 },

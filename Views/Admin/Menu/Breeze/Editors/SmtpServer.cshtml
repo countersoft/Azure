@@ -62,7 +62,7 @@
                 <td class="field-name">Use SSL
                 </td>
                 <td>
-                    <input type="checkbox" id="UseSsl" name="UseSsl" @if (Model.SmtpServer.UseSsl)
+                    <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if (Model.SmtpServer.UseSsl)
                                                                      {
                                                                          @: checked="checked"
                                                                      }/>
@@ -81,6 +81,8 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
+
+        gemini_ui.fancyInputs('#BreezeQueuesItemContainer .fancy');
 
         $('option', '#SslMode').each(function () {
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
@@ -117,7 +119,7 @@
             @: $("#ssl-modes").toggle();
         }
         
-        $("#UseSsl").click(function () {
+        $("#UseSsl").bind('ifChanged', function () {
             $("#ssl-modes").toggle();
         });
 

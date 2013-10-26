@@ -16,7 +16,7 @@
                 <td class="field-name" valign="top"><label for="UseUserFullname">&nbsp;</label>
                 </td>
                 <td valign="middle">
-                    <input type="checkbox" id="UseUserFullname" name="UseUserFullname" @if (Model.Email.UseUserFullname)
+                    <input type="checkbox" id="UseUserFullname" class="fancy" name="UseUserFullname" @if (Model.Email.UseUserFullname)
                                                                          {
                                                                              @: checked="checked" 
                                                                          }/><label for="UseUserFullname">Set 'From' display name to the user who sends the reply</label>
@@ -34,7 +34,7 @@
                 <td class="field-name" valign="top"><label for="UseUserFullname">Disabled</label>
                 </td>
                 <td valign="middle">
-                    <input type="checkbox" id="Disabled" name="Disabled" @if (!Model.Email.Active)
+                    <input type="checkbox" id="Disabled" class="fancy" name="Disabled" @if (!Model.Email.Active)
                                                                          {
                                                                              @: checked="checked" 
                                                                          }/>
@@ -46,6 +46,8 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
+        gemini_ui.fancyInputs('#BreezeReplyaddressessItemContainer .fancy');
+
         gemini_ui.chosen("#Project", null, true);
         $("#popup-button-yes").click(function (e) {
             if ($('#Email').val() == '{current-user}') {

@@ -1,4 +1,4 @@
-﻿var gemini_projects = {
+﻿gemini_projects = {
     initAllProjects: function () {
 
         $(".projects-list").disableSelection();
@@ -43,16 +43,16 @@
     },
     
     initSettings: function (projectId) {
-        $(".cs-pill", "#project-administration").unbind('click').click(function(e) {
+        $(".tab", "#project-administration").unbind('click').click(function(e) {
             gemini_commons.stopClick(e);
 
-            $(".cs-pill", "#project-administration").each(function ()
+            $(".tab", "#project-administration").each(function ()
             {
-                $(this).addClass("cs-pill-inactive");
-                $(this).removeClass("cs-pill-active");
+                $(this).addClass("normal");
+                $(this).removeClass("selected");
             });
 
-            $(this).addClass("cs-pill-active");
+            $(this).addClass("selected");
             
             if ($(this).attr("data-tab") == "components")
             {
@@ -71,7 +71,7 @@
         });
         
         //gemini_projects.settingsComponents(projectId);
-        $(".cs-pill", "#project-administration").first().click();
+        $(".tab", "#project-administration").first().click();
     },
     
     settingsComponents: function (projectId)
@@ -79,6 +79,7 @@
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "components", function (response)
         {
             $("#setting-zone", "#project-administration").html(response.Result.Html);
+            gemini_sizing.stretchWindow();
         });
     },
 
@@ -87,12 +88,15 @@
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "versions", function (response)
         {
             $("#setting-zone", "#project-administration").html(response.Result.Html);
+            gemini_sizing.stretchWindow();
         });
     },
 
     settingsDefaults: function (projectId, typeId) {
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "defaults", function (response) {
             $("#setting-zone", "#project-administration").html(response.Result.Html);
+            gemini_ui.fancyInputs('#defaults-form .fancy');
+            gemini_sizing.stretchWindow();
         }, null, { typeId: typeId });
     },
     settingsCFLookup: function (projectId, fieldId) {

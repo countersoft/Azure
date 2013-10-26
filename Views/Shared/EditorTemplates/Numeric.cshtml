@@ -1,8 +1,17 @@
 ﻿@model NumericFieldModel
 
-<input type="text" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" value="@Model.Value" class="@Model.Classes @(Model.Decimal ? "number" : "digits") @(Model.Required ? "required" : "")" min="@Model.MinValue" max="@Model.MaxValue" />
+<input type="text" title="@Model.Tooltip" data-input-type="numeric" id="@Model.Id" name="@Model.Id" value="@Model.Value" class="inline-editing @Model.Classes @(Model.Decimal ? "number" : "digits") @(Model.Required ? "required" : "")" min="@Model.MinValue" max="@Model.MaxValue" /> 
+@if (Model.Label.HasValue())
+{
+    <span class="label">@Model.Label</span>
+}
+
 @if (Model.Associated != null)
 {
     <span>@Model.AssociatedSpacer</span>
-    <input type="text" title="@Model.Associated.Tooltip" id="@Model.Associated.Id" name="@Model.Associated.Id" value="@Model.Associated.Value" class="@Model.Associated.Classes @(Model.Associated.Decimal ? "number" : "digits") @(Model.Associated.Required ? "required" : "")" min="@Model.Associated.MinValue" max="@Model.Associated.MaxValue" />
+    <input type="text" data-input-type="numeric" title="@Model.Associated.Tooltip" id="@Model.Associated.Id" name="@Model.Associated.Id" value="@Model.Associated.Value" class="inline-editing @Model.Associated.Classes @(Model.Associated.Decimal ? "number" : "digits") @(Model.Associated.Required ? "required" : "")" min="@Model.Associated.MinValue" max="@Model.Associated.MaxValue" />
+    if (Model.Associated.Label.HasValue())
+    {
+        <span class="label">@Model.Associated.Label</span>
+    }
 }

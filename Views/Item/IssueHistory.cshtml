@@ -1,16 +1,10 @@
 ﻿@model ViewIssueModel
 
-<div class="clearfix pad-bottom-5 clear-history-article"></div>
-<article class="history-article">
-    <a id="history"></a>
-    <div class="section-header clearfix">
-    <div class="clearfix">
-        <div id='history-section' class="left">
-            <span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.History)&nbsp;(@Model.Issue.History.Count)</h3>
+        <div id='history-section' data-contentid="history-content" class="left tab normal">
+            <h3>@GetResourceTemplate(ResourceKeys.History)&nbsp;(@Model.Issue.History.Count)</h3>
         </div>
-    </div>
-    <div class="divider"></div>
-    <div class="section-content history expanded">
+    
+    <div class="content history hide" id="history-content">
         <table cellpadding="0" cellspacing="0">
         <tr>
             <th>@GetResource(ResourceKeys.Date)</th>
@@ -24,7 +18,7 @@
             <tr>
                 <td class="no-wrap">@history.Entity.Created.ToString()</td>
                 <td class="no-wrap">@history.Entity.Fullname</td>
-                <td class="no-wrap">@history.Entity.AttributeChanged</td>
+                <td class="no-wrap">@history.Field</td>
                 
                 @{
                     var valueBefore = Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText(history.Entity.ValueBefore.ToMaxMore(1000), true);
@@ -37,5 +31,3 @@
         }
         </table>
     </div>
-    </div>
-</article>

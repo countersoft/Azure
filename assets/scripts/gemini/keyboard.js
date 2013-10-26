@@ -7,9 +7,9 @@
     // auto unbind?
     initKeyboard: function ()
     {
-        Mousetrap.bind('esc', function (e, ob) { gemini_keyboard.invoker(ob) });
-        Mousetrap.bind(['y','Y'], function (e, ob) { gemini_keyboard.invoker(ob) });
-        Mousetrap.bind(['n','N'], function (e, ob) { gemini_keyboard.invoker(ob) });
+        Mousetrap.bind('esc', function (e, ob) { gemini_keyboard.invoker(ob); });
+        Mousetrap.bind(['y', 'Y'], function (e, ob) { gemini_keyboard.invoker(ob); });
+        Mousetrap.bind(['n', 'N'], function (e, ob) { gemini_keyboard.invoker(ob); });
     },
 
     bindEscape: function (select, callback)
@@ -129,5 +129,58 @@
             //Only unbind it if the actual window was closed successfully (if validation is on and it would fail validation, don't unbind it as the window is still open)
             if (! $(selector).is(':visible')) gemini_keyboard.unbindYes(id, true);
         }
+    },
+    navigateTabs: function (e) {
+        var selector;
+
+        if (e.keyCode == 37) {
+            // left
+            selector = $('.tab.selected', '#view-item-content-pane').prev().prev();
+            if (!selector || selector.length == 0) selector = $('.tab:last', '#view-item-content-pane');
+        }
+        else if (e.keyCode == 39) {
+            // right
+            selector = $('.tab.selected', '#view-item-content-pane').next().next();
+            if (!selector || selector.length == 0) selector = $('.tab:first', '#view-item-content-pane');
+        }
+
+        if (selector && selector.length) selector.click();
+    },
+
+    navigateItems: function (e)
+    {
+        var selector;
+
+        if (e.keyCode == 188) {
+            // left
+            selector = $('.previous', '#filter-navigator');
+        }
+        else if (e.keyCode == 190) {
+            // right
+            selector = $('.next', '#filter-navigator');
+        }
+        if (selector && selector.length) window.location.href = selector.attr('href');
+    },
+
+    navigateGrid: function (e)
+    {
+        var selector;
+
+        if (e.keyCode == 188)
+        {
+            // left
+            selector = $('.view-issue-highlight', '#tabledata').prev();
+
+            if (selector.hasClass("drop-zone")) selector = selector.prev();
+        }
+        else if (e.keyCode == 190)
+        {
+            // right
+            selector = $('.view-issue-highlight', '#tabledata').next();
+
+            if (selector.hasClass("drop-zone")) selector = selector.next();
+        }
+
+        if (selector && selector.length) $("td.read-only a:first", selector).click();
     }
 };

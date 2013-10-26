@@ -1,4 +1,4 @@
-var gemini_admin = {
+gemini_admin = {
 
     currentTab: "",
     currentSubTab: "",
@@ -109,6 +109,8 @@ var gemini_admin = {
         
         $("#tabs-left div:not(.help)").removeClass("selected").addClass("normal");
         $('#tabs-left div:not(.help)[data-tab="' + gemini_admin.currentSubTab + '"]').removeClass("normal").addClass("selected");
+
+        $("#configure-page-content input[type='text']:first").focus();
 
         if (gemini_admin.currentTab == "Templates")
         {
@@ -260,6 +262,10 @@ var gemini_admin = {
                             var th = gemini_ui.getTableTHForTD(elm);
                             return $(th).data('email');
                         },
+                        validationProgrammaticalNames: function (elm) {
+                            var th = gemini_ui.getTableTHForTD(elm);
+                            return $(th).data('programmaticalnames');
+                        },
                         loadurl: csVars.Url + 'configure/' + gemini_admin.currentTab + "/" + gemini_admin.currentSubTab + '/getproperty',
                         loaddata: function () {
                             var th = gemini_ui.getTableTHForTD(this);
@@ -402,8 +408,13 @@ var gemini_admin = {
             // Getting ready to show
             if (showSectionRequired) {
                 var requiredValue = field.attr('data-required');
-                $("#field-required").removeAttr("checked");
-                if (requiredValue == 'true') $("#field-required").attr("checked", "checked");
+                
+                //$("#field-required").removeAttr("checked");
+                $("#field-required").iCheck("uncheck");
+                if (requiredValue == 'true') {
+                    //$("#field-required").attr("checked", "checked");
+                    $("#field-required").iCheck("check");
+                }
             }
             
             $('option', '#attribute-options-ProjectGroup').attr('selected', false);

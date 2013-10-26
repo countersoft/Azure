@@ -60,7 +60,7 @@
                     <td class="field-name">Use SSL
                     </td>
                     <td>
-                        <input type="checkbox" id="UseSsl" name="UseSsl" @if(Model.Mailbox.UseSsl)
+                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if(Model.Mailbox.UseSsl)
                                                                          {
                                                                              @: checked="checked" 
                                                                          }/>
@@ -109,7 +109,7 @@
                     <td class="field-name">Delete Messages
                     </td>
                     <td>
-                        <input type="checkbox" id="DeleteMessages" name="DeleteMessages" @if(Model.Mailbox.DeleteMessages)
+                        <input type="checkbox" class="fancy" id="DeleteMessages" name="DeleteMessages" @if(Model.Mailbox.DeleteMessages)
                                                                                          {
                                                                                              @: checked="checked" 
                                                                                          }/>
@@ -161,7 +161,7 @@
                     <td class="field-name">Strip Signature
                     </td>
                     <td>
-                        <input type="checkbox" id="StripSignature" name="StripSignature" @if(Model.Mailbox.StripSignature)
+                        <input type="checkbox" class="fancy" id="StripSignature" name="StripSignature" @if(Model.Mailbox.StripSignature)
                                                                                          {
                                                                                              @: checked="checked" 
                                                                                          }/>
@@ -171,7 +171,7 @@
                     <td class="field-name">Ignore Attachments
                     </td>
                     <td>
-                        <input type="checkbox" id="IgnoreAttachments" name="IgnoreAttachments" @if (Model.Mailbox.IgnoreAttachments)
+                        <input type="checkbox" class="fancy" id="IgnoreAttachments" name="IgnoreAttachments" @if (Model.Mailbox.IgnoreAttachments)
                                                                                                {
                                                                                                    @: checked="checked"
                                                                                                }/>
@@ -195,7 +195,7 @@
                     <td class="field-name">Use Sender as Reporter
                     </td>
                     <td>
-                        <input type="checkbox" id="UseSenderAsSubmitter" name="UseSenderAsSubmitter" @if (Model.Mailbox.UseSenderAsSubmitter)
+                        <input type="checkbox" class="fancy" id="UseSenderAsSubmitter" name="UseSenderAsSubmitter" @if (Model.Mailbox.UseSenderAsSubmitter)
                                                                                                {
                                                                                                    @: checked="checked"
                                                                                                }/>
@@ -205,7 +205,7 @@
                     <td class="field-name">Add New Users
                     </td>
                     <td>
-                        <input type="checkbox" id="AddNewUsers" name="AddNewUsers" @if (Model.Mailbox.Options.AddNewUsers)
+                        <input type="checkbox" class="fancy" id="AddNewUsers" name="AddNewUsers" @if (Model.Mailbox.Options.AddNewUsers)
                                                                                                {
                                                                                                    @: checked="checked"
                                                                                                }/>
@@ -232,6 +232,8 @@
 </div>
 <script type="text/javascript">
       $(document).ready(function () {
+
+          gemini_ui.fancyInputs('#regular-form .fancy');
 
           $("#breeze-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
 

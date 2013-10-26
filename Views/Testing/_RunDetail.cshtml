@@ -14,9 +14,9 @@
 }
 
 
-<div class='section-header run clearfix' style="padding-left: 10px;">
-    <div class="clearfix">
-        <div id='section-steps' class="left">
+<div class='section-header run clearfix' id="run-history" style="padding-left: 10px;margin-top:0px !important;">
+    <div>
+        <div id='section-steps'>
             @{
                 string state = ResourceKeys.Pending;
                 if (Model.Cases.SelectMany(c => c.RunSteps).Any(s => s.HasPassed.HasValue && s.HasPassed == false))
@@ -29,31 +29,30 @@
                 }
             }
 
-            <table class="width-100">
+            <table class="width-100" style="margin-top:0 !important;">
                 <tr class="no-hover">
                     <td class="no-width">
                         <span class='expander fonticon-arrow-@arrow'></span>    
                     </td>
                     <td class="no-wrap no-width">
-                        <h4>@string.Format("{0}-{1}", GetResource(ResourceKeys.Run), Model.Run.Entity.Id)</h4>
-                    </td>
-                    <td>@Model.Run.BindingText</td>
-                    <td class="no-width no-wrap">
-                        <span class="info-label-4">
-                            <span class="label">@GetResource(ResourceKeys.Created)</span>
-                            <span class="data">@Model.Run.CreatedBy</span>
-                            <span class="label">@GetResource(ResourceKeys.ItemsRaised)</span>
-                            <span class="data">@Model.IssuesRaised.Issues.Count()</span>
-                        </span>
-                    </td>
-                    <td class="no-width no-wrap">@Model.Run.Entity.Revised</td>
-                    <td class="no-width pad-right-10">
                         <div class='@state.ToLower()'>@GetResource(state)</div>
+                    </td>
+                    <td>@Model.Run.BindingText @if (Model.IssuesRaised.Issues.Count() > 0) { <text><span style="color:#888;">@GetResource(ResourceKeys.ItemsRaised) (@Model.IssuesRaised.Issues.Count()</span>)</text>}</td>
+                    <td class="no-width no-wrap">
+                        <div class="touch-info">
+                            <span class="box">                                                 
+                                @Model.Run.Entity.Revised.ToString("dd-MMM-yyyy HH:mm") → @Model.Run.CreatedBy
+                            </span>
+                        </div>
+                    </td>
+                    <td class="no-width no-wrap"></td>
+                    <td class="no-width pad-right-10">
+                        
                     </td>
                 </tr>
                 <tr class="no-hover">
                     <td></td>
-                    <td colspan="3">@Model.Run.Entity.Description</td>
+                    <td colspan="3"></td>
                     <td colspan="2"></td>
                 </tr>
             </table>
@@ -65,10 +64,8 @@
             <div class='status'><div class='pending'>Pending</div></div>
         </div>*@
     </div>
-    <div class='divider'></div>
     
-    
-    <div class='section-content @contentstate'>
+    <div class='section-content @contentstate' style="margin-top:0 !important;margin-bottom:16px;">
         
         @Html.Partial("~/views/testing/_ItemsRaised.cshtml", Model.IssuesRaised, new ViewDataDictionary
             {
@@ -83,6 +80,11 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_item.setContentHeight();
+    });
+</script>
 
 @if(autoOpen)
 {

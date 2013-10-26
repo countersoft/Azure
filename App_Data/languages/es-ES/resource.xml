@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Agrupo dependencias</item>
   <item id="Grouped">Agrupado</item>
   <item id="ShowSequence">Artículos secuenciados</item>
-  <item id="FilterNoType">&lt; Todas las tareas &gt;</item>
+  <item id="FilterNoType">Todas las tareas</item>
   <item id="FilterIncludeClosed">Incluir tareas cerradas</item>
   <item id="FilterOpenIssues">Abrir</item>
   <item id="FilterClosedIssues">Cerrado</item>
@@ -374,4 +374,16 @@
   <item id="Id">ID</item>
   <item id="ImportWizard">Import Wizard</item>
   <item id="InvalidCredentials">Invalid Credentials</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

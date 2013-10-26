@@ -32,7 +32,7 @@
          {<text>
              setTimeout(function () {
                  gemini_ui.htmlEditor("#DescriptionWysiwygTextarea", null, "");
-                 tinyMCE.execCommand('mceFocus', false, 'DescriptionWysiwygTextarea');
+                 gemini_ui.htmlEditorCommand('mceFocus', false, 'DescriptionWysiwygTextarea');
              }, 25);       
              </text>
          }
@@ -54,7 +54,7 @@
         {
             if ($("#regular-form").valid()) {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
-                gemini_ajax.postCall(csVars.ProjectUrl + "item", $('#id', "#EditDescriptionPopupContainer").val() + "/updatedescription", function (response) {
+                gemini_ajax.postCall(gemini_item.itemUrl + "item", $('#id', "#EditDescriptionPopupContainer").val() + "/updatedescription", function (response) {
 
                     gemini_popup.popupClose();
                     if (response.Success) {

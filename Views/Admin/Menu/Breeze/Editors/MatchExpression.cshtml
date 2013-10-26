@@ -17,7 +17,9 @@
                 </td>
                 <td>
                     <input type="text" id="Expression" name="Expression" 
-                           class="input-field required input-size9" value="@Model.Expression.Expression" />
+                           class="input-field required input-size9" value="@Model.Expression.Expression" /><br />
+                    <div style="font-size:11px;margin-top:5px;">Remember to escape reserved REGEX characters: .^$*+?()[{\|</div>
+                    <div style="font-size:11px;margin-top:5px;">e.g. Delivery Status Notification \(Failure\)</div>
                 </td>
             </tr>
             <tr>

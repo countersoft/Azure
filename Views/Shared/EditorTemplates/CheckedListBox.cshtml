@@ -4,7 +4,7 @@
     bool wasOptionGroup = false;
 }
 
-<div class='checked-select input-size6' data-original="@Model.SelectValues.ToDelimited("|")" data-trigger='@Model.TriggerValues' >
+<div class='checked-select input-size6' data-input-type="checked-list-box" data-original="@Model.SelectValues.ToDelimited("|")" data-trigger='@Model.TriggerValues' >
 <ul>
 @Html.EditorFor(m => m, "DataEntryListItem")
 </ul>

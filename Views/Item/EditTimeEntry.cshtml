@@ -72,7 +72,7 @@
         gemini_ui.datePicker('#EditTimeEntryPopupContainer #issueTimeEntryDate');
        
 
-        $("#popup-button-yes").click(function (e) {
+        $("#popup-button-yes").unbind('click').click(function (e) {
             if ($('#issueTimeEntryHours').val() == 0 && $('#issueTimeEntryMinute').val() == 0)
             {
                 $('#issueTimeEntryHours').val("");
@@ -83,7 +83,7 @@
             {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
                 e.preventDefault();
-                gemini_ajax.postCall(csVars.ProjectUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id") + "/addtimeentry",
+                gemini_ajax.postCall(gemini_item.itemUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id") + "/addtimeentry",
                         function (response) {
                             if (response.Success) {
                                 var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;

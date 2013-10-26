@@ -1,6 +1,6 @@
 ﻿@model HtmlEditorFieldModel
 <div class='wysiwyg-container'>
-<textarea title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="wysiwyg-editor cs-wysiwyg @Model.Classes @(Model.Required ? "required" : "")" style='height:325px;'>
+<textarea data-input-type="html-editor" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="inline-editing wysiwyg-editor cs-wysiwyg @Model.Classes @(Model.Required ? "required" : "")" style='height:325px;'>
 @Model.Value
 </textarea>
 </div>

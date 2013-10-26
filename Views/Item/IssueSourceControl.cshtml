@@ -1,20 +1,13 @@
 ﻿@model ViewIssueModel
 
-<div class="clearfix pad-bottom-5 clear-source-control-article"></div>
-<article class="source-control-article">
-    <a id="sourcecode"></a>
-    <div class="section-header clearfix">
-    <div class='clearfix'>
-        <div id='sourcecode-section' class="left"><span class="expander fonticon-arrow-down"></span><h3>@GetResourceTemplate(ResourceKeys.SourceControl)&nbsp;(@Model.Issue.SourceControlFiles.Count)</h3></div>
+        <div id='sourcecode-section' data-contentid="sourcecode-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.SourceControl)&nbsp;(@Model.Issue.SourceControlFiles.Count)</h3></div>
+        <div class="content source-code hide" id="sourcecode-content">
         @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedSourceControl))
         {
-            <div class="toolbar actions right">
-                <a class="button fonticon-plus" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.SourceControl)"></a>
+            <div class="toolbar actions">
+                <a class="button add" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.SourceControl)">@GetResource(ResourceKeys.Add)</a>
             </div>
         }
-    </div>
-    <div class="divider"></div>
-    <div class="section-content expanded source-code">
         @if (@Model.Issue.SourceControlFiles.Count > 0 )
         {
             <table>
@@ -36,5 +29,3 @@
             </table>
         }
     </div>
-    </div>
-</article>        

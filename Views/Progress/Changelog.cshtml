@@ -5,14 +5,9 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
-
 @{Html.RenderPartial("StatusBar");}
 
- <div class="data-inner-container">
+ <div class="data-inner-container changelog">
     @{Html.RenderPartial("VersionProgress", Model);}
 
       @Html.Partial("_ProgressGrid", Model)
@@ -28,11 +23,16 @@
     var total = @Model.Total;
     var completeness = total > 0 ? Math.floor((totalClosed * 100)/total) : 0;
 
-    gemini_progress.showCompleteness(completeness);
+    //gemini_progress.showCompleteness(completeness);
     gemini_progress.showDelta(@Model.Remain);
-    gemini_progress.showDays(@Model.Estimated,@Model.Logged);
+    gemini_progress.showDays(@Model.Estimated,@Model.Logged, @Model.TimeLoggedOver);
     gemini_progress.showGrid(@((int)ProjectTemplatePageType.Changelog),@Model.VersionId,'progress/getchangelog?id=@Model.VersionId');
 
-    gemini_progress.chart(@Html.Raw(Model.Types.Select( s=> s.First ).ToJson()),@Model.Issues.Count,@Html.Raw(Model.Types.Select(s => new { s.Second, s.Third }).ToJson()));
-  
+    //gemini_progress.chart(@Html.Raw(Model.Types.Select( s=> s.First ).ToJson()),@Model.Issues.Count,@Html.Raw(Model.Types.Select(s => new { s.Second, s.Third }).ToJson()));
+    gemini_items.initCheckAllItems();
+
+    gemini_progress.initInlineEditing();
+
+    $('#items-grid').css('overflow', 'auto');
+
 }

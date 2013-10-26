@@ -23,12 +23,13 @@
             @{
                 var fields = Model.Fields.FindAll(f => !f.Value.Hidden);
             }
-            @Html.HiddenFor(x => x.IssueIds)
+            <input id="IssueIds" type="hidden" name="IssueIds"/>
+
             @Html.Grid(fields).Attributes(classes).Columns( 
                 col => 
                     { 
                         //col.For(x=> x.Key).Attributes( x=> x.Item.Value.Required ? required : blank);
-                        col.For(x => Html.Raw(string.Format("<input type='checkbox' class='bulk-toggler' id='bulk_{0}'/><label for='bulk_{0}'>{1}</label>", x.Value.Id, x.Key))).Attributes(x => alignLeft);
+                        col.For(x => Html.Raw(string.Format("<input type='checkbox' class='fancy bulk-toggler' id='bulk_{0}'/><label for='bulk_{0}'>{1}</label>", x.Value.Id, x.Key))).Attributes(x => alignLeft);
                         col.For(x => Html.Partial(x.Value.TemplateFile, x.Value)).Attributes(x => dataTD);
                     }
                    ).RenderHeaders(false).RowAttributes(x => classes)
@@ -39,12 +40,19 @@
 <script type="text/javascript">
 
     $("#bulk-edit-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
-
+    gemini_ui.fancyInputs('#bulk-edit-container .fancy');
     gemini_ui.userAutocomplete('#bulk-edit-container .user-autocomplete');
 
     $("#popup-button-no").click(function (e) {
         gemini_popup.popupClose(e);
     });
+
+    var checked_items = '';
+    $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
+        checked_items += $(value).val() + '|';
+    });
+
+    $('#bulk-edit-container #IssueIds').val(checked_items);
 
     $("#popup-button-yes").click(function (e) {
         gemini_ui.startBusy('#colorbox #popup-button-yes');
@@ -66,9 +74,21 @@
     $('input, select', '#bulk-edit-form table tr td.td-data').prop('disabled', true);
     $('textarea', '#bulk-edit-form table tr td.td-data').prop('disabled', false);
 
-    $('.bulk-toggler', '#bulk-edit-form table tr td').click(function () {
+    $('#bulk-edit-form table tr td .bulk-toggler').bind('ifClicked', function () {
+        var checked = !$(this).is(':checked');
+      
+        $(this).parent().parent().next().find('input, select').each(function () {
+            if (checked) {
+                $(this).prop('disabled', false);
+                $(this).trigger("liszt:updated");
+            }
+            else {
+                $(this).prop('disabled', true);
+                $(this).trigger("liszt:updated");
+            }
+        });
         var control = $('#bulk-edit-container #' + $(this).attr('id').substring(5));
-        if ($(this).is(':checked')) {
+        if (checked) {
             control.prop('disabled', false);
             control.trigger("liszt:updated");
         }
@@ -78,7 +98,7 @@
         }
     });
 
-    gemini_ui.chosen('#bulk-edit-form table tr td.td-data select', null, true);
+    gemini_ui.chosen('#bulk-edit-form table tr td.td-data select', '#cs-popup-center-zone', false);
     gemini_ui.datePicker('#bulk-edit-form .datepicker');
     gemini_ui.htmlEditor('#bulk-edit-form .wysiwyg-editor');
 

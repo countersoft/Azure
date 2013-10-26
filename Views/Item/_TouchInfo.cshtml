@@ -1,0 +1,38 @@
+﻿@model ViewIssueModel
+
+@if (Model.SourceLink.HasValue())
+{
+    if (Model[ItemAttributeVisibility.Source])
+    {
+        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @GetResourceTemplate(ResourceKeys.From, Resourcing.Lower) @Html.Raw(Model.SourceLink)</div>
+    }         
+}
+else
+{
+    if (Model[ItemAttributeVisibility.DateCreated])
+    { 
+        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reporter</div>
+    }
+}
+
+@if (Model[ItemAttributeVisibility.DateRevised])
+{
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Revised)</span></span> @Model.Issue.Revised.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reviser</div>
+}
+
+@if (Model[ItemAttributeVisibility.ClosedDate])
+{
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ClosedDate)</span></span> @(Model.Issue.ClosedDate == null ? "" : Model.Issue.ClosedDate.Value.ToString("dd-MMM-yyyy HH:mm"))</div>
+}
+                                                                                                                                                                                                            
+@if (Model[ItemAttributeVisibility.ResolvedDate])
+{
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ResolvedDate)</span></span> @(Model.Issue.ResolvedDate == null ? "" : Model.Issue.ResolvedDate.Value.ToString("dd-MMM-yyyy HH:mm"))</div>
+}
+                                                                                                                                                                                                            
+@if (Model[ItemAttributeVisibility.Elapsed])
+{
+    TimeSpan span = Model.Issue.ElapsedTime;
+
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Elapsed)</span></span> @string.Format("{0}d {1}h {2}m", span.Days, span.Hours, span.Minutes)</div>
+}

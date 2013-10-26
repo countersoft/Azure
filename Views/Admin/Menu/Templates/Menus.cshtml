@@ -12,12 +12,12 @@
                 <li @if (item.Selected) { <text>class="highlight"</text> }>
                     <span class='dragHandle fonticon-drag-handle'></span>
                     
-                    <input type="checkbox" id="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)" name="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)" data-appid="@item.AppId" data-controlid="@item.ControlId" class="menu-option"
+                    <input type="checkbox" id="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)" name="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)" data-appid="@item.AppId" data-controlid="@item.ControlId" class="menu-option fancy"
                         @if (item.Selected) { <text>checked="checked"</text> } data-project-groups='@item.ProjectGroups.ToDelimited("|")' />
                         
-                    <div id="attribute-options-trigger"><span class="fonticon-person"></span><span class="fonticon-arrow-down"></span></div>
+                    <div id="attribute-options-trigger" class="valign-top"><span class="fonticon-person"></span><span class="fonticon-arrow-down"></span></div>
                     
-                    <label for="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)">
+                    <label class="valign-top" for="@string.Concat("chk",item.PageType, '_', item.AppId, '_', item.ControlId)">
                         @if(item.PageType != ProjectTemplatePageType.Custom)
                         {
                             @item.PageType
@@ -30,7 +30,7 @@
                     </label>
 
                     <div class="options right">
-                        <input type="checkbox" id="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" name="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" class="break-option"
+                        <input type="checkbox" id="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" name="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" class="break-option fancy"
                             @if (item.SeperateAfter) { <text>checked="checked"</text> }/>
                         
                         <label for="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)">Menu divider</label>
@@ -44,12 +44,13 @@
 <script type="text/javascript">
     $(document).ready(function ()
     {
-        $(".menu-option").click(function (e) {
-            $(this).parent().toggleClass("highlight");
+
+        $(".menu-option").bind('ifChanged', function (e) {
+            $(this).parent().parent().toggleClass("highlight");
             saveData();
         });
 
-        $(".break-option").click(function (e) {
+        $(".break-option").bind('ifChanged', function (e) {
             saveData();
         });
         
@@ -67,9 +68,11 @@
                 saveData();             
             }
         });
-        
+
+        gemini_ui.fancyInputs('#templates-menu-form .fancy');
+
         gemini_admin.attributeOptionsPicker('#templates-menu-form #attribute-options-trigger', function (e) {
-            return $(e).siblings("input");
+            return $(e).parent().find("input:eq(0)");
             }, 
             false,
             function () {
@@ -80,17 +83,18 @@
     function saveData()
     {
         var data = [];
-        $('input[type="checkbox"]:checked', '#templates-menu-form').each(function (e) {
+        $('input[type="checkbox"]:checked', '#templates-menu-form').each(function (e) {     
             var id = $(this).attr('id');
-            if(id.indexOf('chk') == 0) {
+
+            if (id.indexOf('chk') == 0) {
                 data.push({
                     Id: id,
-                    SeperateAfter: $('#'+id.replace('chk', 'brk')).is(':checked'),
+                    SeperateAfter: $('#' + id.replace('chk', 'brk')).is(':checked'),
                     ProjectGroups: $(this).attr('data-project-groups'),
                 });
-            }
+            }    
         });
-      
+
         if ($('#attribute-options-picker').is(':visible')) gemini_ui.startBusy('#attribute-options-picker #option-apply-button');
        
         gemini_ajax.postCall("configure/Templates/Menus", "savedata", function () { if ( $.trim($('#attribute-options-picker #option-apply-button').val()) == '') gemini_ui.stopBusy('#attribute-options-picker #option-apply-button'); }, function () { if ($.trim($('#attribute-options-picker #option-apply-button').val()) == '') gemini_ui.stopBusy('#attribute-options-picker #option-apply-button'); }, { Template: gemini_admin.currentTemplate, data: JSON.stringify(data) });

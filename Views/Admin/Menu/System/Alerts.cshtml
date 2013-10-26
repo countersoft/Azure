@@ -7,16 +7,16 @@
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AlertsEnabled" name="AlertsEnabled" @if(Model.AlertsEnabled){ <text>checked="checked"</text> } /><label for="AlertsEnabled">Send email alerts</label></td>
+                <td><input type="checkbox" class="fancy" id="AlertsEnabled" name="AlertsEnabled" @if(Model.AlertsEnabled){ <text>checked="checked"</text> } /><label for="AlertsEnabled">Send email alerts</label></td>
             </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="EmailCreator" name="EmailCreator" @if(Model.EmailCreator){ <text>checked="checked"</text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
+                <td><input type="checkbox" class="fancy" id="EmailCreator" name="EmailCreator" @if(Model.EmailCreator){ <text>checked="checked"</text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="EmailResource" name="EmailResource" @if(Model.EmailResource){ <text>checked="checked"</text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
+                <td><input type="checkbox" class="fancy" id="EmailResource" name="EmailResource" @if(Model.EmailResource){ <text>checked="checked"</text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
             </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
@@ -55,6 +55,7 @@
             <text>$("#EmailCreator, #EmailResource, #From, #DisplayName").attr('disabled','disabled');</text>
         }
 
+        gemini_ui.fancyInputs('#system-alerts-form .fancy');
 
         $("#system-alerts-save").click(function (e)
         {

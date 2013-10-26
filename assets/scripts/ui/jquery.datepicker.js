@@ -679,6 +679,11 @@
 						cal.show();
 					}
 					$(document).bind('mousedown', {cal: cal, trigger: this}, hide);
+					gemini_commons.inputKeyHandler(this, null, function (e) {
+					    cal.hide();
+					    $(document).unbind('mousedown', hide);
+					    gemini_commons.inputKeyHandlerUnbind(this);
+					}, null);
 				}
 				return false;
 			},
@@ -688,6 +693,7 @@
 						ev.data.cal.hide();
 					}
 					$(document).unbind('mousedown', hide);
+                    gemini_commons.inputKeyHandlerUnbind(this);
 				}
 			};
 		return {

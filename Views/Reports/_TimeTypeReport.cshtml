@@ -29,88 +29,107 @@
                      </th>
                      @{
                          var countTypes = 0;
-                         var types = Model.ResultsAsTimeReport.Select(i => i.TimeTypeId.GetValueOrDefault()).Distinct();
+                         var types = Model.ResultsAsTimeReport.Select(i => i.TimeTypeId).Distinct();
                          foreach (var source in types)
                          {
-                             <th class="no-wrap no-width">@Model.Dictionary[source]</th>
+                             var ids = source.SplitEntries(0);
+                             string header = string.Empty;
+                             foreach (var id in ids)
+                             {
+                                 if (Model.Dictionary.TryGetValue(id, out header))
+                                 {
+                                     break;
+                                 }
+                             }
+                             <th class="no-wrap no-width">@header</th>
                              countTypes++;
                          }
+                         <th>Total</th>
                      }
                  </tr>
              </thead>
              <tbody>
                  @{
-                     IEnumerable<IGrouping<int, TimeReportModel>> people = Model.ResultsAsTimeReport.GroupBy(tr => tr.KeyId);
+                         IEnumerable<IGrouping<int, TimeReportModel>> people = Model.ResultsAsTimeReport.GroupBy(tr => tr.KeyId);
+                         var interval = Convert.ToInt32((Model.ResultsAsTimeReport.Select(i => i.TimeTypeId).Count()));
+                         List<int> totalPerTimeType = new List<int>(interval);
+                         totalPerTimeType.AddRange(Enumerable.Repeat(0, interval));
 
-                     foreach (var person in people)
-                     {
+                         foreach (var person in people)
+                         {
 
                          <tr class="MainItem" data-key="@person.Key" data-state="hidden">
                              <td class="headcol" title="@person.First().Display">
                                  @person.First().Display
                              </td> 
                              @{
-                                 foreach (var type in types)
-                                 {
+                             int totalMinutes = 0;
+                             int currentIndex = 0;
+                             foreach (var type in types)
+                             {
 
-                                     var today = person.FirstOrDefault(r => r.KeyId == person.Key && r.TimeTypeId == type);
-                                     if (today == null)
-                                     {
+                                 var today = person.FirstOrDefault(r => r.KeyId == person.Key && r.TimeTypeId == type);
+                                 if (today == null)
+                                 {
                                          <td>-</td>
-                                     }
-                                     else
-                                     {
-                                         <td class=""><span class="no-wrap">@today.DisplayTime</span></td>
-                                     }
                                  }
+                                 else
+                                 {
+                                         <td class=""><span class="no-wrap">@today.DisplayTime</span></td>
+                                 }
+                                 totalMinutes += today.Minutes;
+                                 totalPerTimeType[currentIndex] = totalPerTimeType[currentIndex] + today.Minutes;
+                                 currentIndex++;
+                             }
+                             <td class="no-wrap no-width"><b>@string.Format("{0}h{1: #00}m", totalMinutes / 60, totalMinutes % 60)</b></td>
 
                              }
                          </tr>
 
 
-                         IEnumerable<IGrouping<int, TimeReportModel>> issuesByPerson = person.SelectMany(p => p.SubItems).GroupBy(i => i.KeyId);
-                         if (!issuesByPerson.Any())
-                         {
+                             IEnumerable<IGrouping<int, TimeReportModel>> issuesByPerson = person.SelectMany(p => p.SubItems).GroupBy(i => i.KeyId);
+                             if (!issuesByPerson.Any())
+                             {
                              <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-0" data-state="hidden">
                                  <td class="headcol">@GetResource(ResourceKeys.NoData)</td>
                                  <td colspan="@countTypes"><hr />&nbsp;</td>
                              </tr>
-                         }
-                         foreach (var issue in issuesByPerson)
-                         {
+                             }
+                             foreach (var issue in issuesByPerson)
+                             {
 
                              <tr class="SubItem1" data-main-key="@person.Key" data-key="@person.Key-@issue.Key" data-state="hidden">
                                  <td class="headcol" title="@issue.First().Display">
-                                     <span  style="margin-left: 10px;"><a href="@NavigationHelper.GetIssueUrl(GeminiContext, issue.First().ReportItem as IssueDto)"> @(((IssueDto) issue.First().ReportItem).IssueKey)</a> @issue.First().Display</span>
+                                     <span  style="margin-left: 10px;"><a href="@NavigationHelper.GetIssueUrl(GeminiContext, issue.First().ReportItem as IssueDto)"> @(((IssueDto)issue.First().ReportItem).IssueKey)</a> @issue.First().Display</span>
                                  </td>
                                  @{
 
-                                     foreach (var type in types)
+                                 foreach (var type in types)
+                                 {
+                                     var today = issue.FirstOrDefault(r => r.KeyId == issue.Key && r.TimeTypeId == type);
+                                     if (today == null)
                                      {
-                                         var today = issue.FirstOrDefault(r => r.KeyId == issue.Key && r.TimeTypeId == type);
-                                         if (today == null)
-                                         {
                                              <td>-</td>
-                                         }
-                                         else
-                                         {
-                                             <td class="">&nbsp;&nbsp;<span class="no-wrap">@today.DisplayTime</span></td>
-                                         }
                                      }
+                                     else
+                                     {
+                                             <td class="">&nbsp;&nbsp;<span class="no-wrap">@today.DisplayTime</span></td>
+                                     }
+                                 }
 
                                  }
                              </tr>
 
-                             var times = issue.SelectMany(i => i.SubItems).ToList();
-                             for (int index = 0; index < times.Count; index++)
-                             {
-                                 var source = times[index];
-
-                                 string classname = "";
-                                 if (index == times.Count - 1)
+                                 var times = issue.SelectMany(i => i.SubItems).ToList();
+                                 for (int index = 0; index < times.Count; index++)
                                  {
-                                     classname = " last-child";
-                                 }
+                                     var source = times[index];
+
+                                     string classname = "";
+                                     if (index == times.Count - 1)
+                                     {
+                                         classname = " last-child";
+                                     }
 
                                  <tr class="SubItem2 @classname" data-main-key="@person.Key" data-subitem1-key="@person.Key-@issue.Key" data-state="hidden">
                                      <td class="headcol" title="@source.Display">
@@ -118,24 +137,40 @@
                                      </td>
                                 
                                      @{
-                                         foreach (var type in types)
+                                     foreach (var type in types)
+                                     {
+                                         if (source.TimeTypeId != type)
                                          {
-                                             if (source.TimeTypeId != type)
-                                             {
                                                  <td>-</td>
-                                             }
-                                             else
-                                             {
-                                                 <td class="">&nbsp;&nbsp;&nbsp;<span class="no-wrap">@source.DisplayTime</span></td>
-                                             }
                                          }
+                                         else
+                                         {
+                                                 <td class="">&nbsp;&nbsp;&nbsp;<span class="no-wrap">@source.DisplayTime</span></td>
+                                         }
+                                     }
                                      } 
                     
                                  </tr>
+                                 }
                              }
-                         }
 
-                     }
+                         }
+                         <tr class="MainItem">
+                    <td class="headcol">Total</td>
+                    @{
+                         var countDays2 = 0;
+                         var date2 = Model.StartDate.Value;
+                         var totalTotal = 0;
+                         foreach (var source in types)
+                         {
+                            <td class="no-wrap no-width"><b>@string.Format("{0}h{1: #00}m", totalPerTimeType[countDays2] / 60, totalPerTimeType[countDays2] % 60)</b></td>
+                             totalTotal += totalPerTimeType[countDays2];
+                             countDays2++;
+                         }
+                        <td><b>@string.Format("{0}h{1: #00}m", totalTotal / 60, totalTotal % 60)</b></td>
+                    }
+
+                    </tr>
                  }
              </tbody>
          </table>

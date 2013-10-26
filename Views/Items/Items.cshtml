@@ -3,39 +3,26 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
-
+<div class="filter-container">
+	@{Html.RenderPartial("InstantFilter", Model.InstantFilter);}
+	<div class="clearfix"></div>
+</div>
 <table width="100%">
     <tr>
-        <td valign="top">
-            <div class="filter-container">
-                <form id='filter-form' method="post">
-                    @{Html.RenderPartial("Filter", Model.Filter);}
-
-                    <div class="center pad-top-10 hide">
-                        <input id='filter-view' type="button" class="button-primary" value="@GetResource(ResourceKeys.View)" />
-                    </div>
-                    <div class="clearfix"></div>
-                </form>
-            </div>
-        </td>
         <td valign="top">
             <div id='data' class="items-data-container">
                 @{Html.RenderPartial("IssuesGrid", Model);}
             </div> 
-            <div class='right margin-top-10'  id='pageSizeContainer'>
-                <input type="text" name='pageSize' id='pageSize' class='input-size2' value="@Model.Filter.PageSize"/>
-                <span>@GetResource(ResourceKeys.Items)</span>
-            </div>
         </td>
     </tr>
 </table>
 
+
+<div id="view-item-slider">
+
+</div>
+
 @section DocumentReady
 {
-    gemini_items.init(@((int)ProjectTemplatePageType.Items), '@(GetResource(ResourceKeys.Update))');
-    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "items");
+    gemini_items.init(@((int)ProjectTemplatePageType.Items), '@(GetResource(ResourceKeys.Update))', @Html.Raw(Model.InstantFilter.AvailableFields.ToJson()));
 }

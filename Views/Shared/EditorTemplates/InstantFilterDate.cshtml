@@ -1,0 +1,15 @@
+﻿@model InstantItemFilterDate
+<div id="instant-filter-@(Model.Name)" data-field-name="@Model.Name" data-field-desc="@Model.Caption" class="instant-filter-box dynamic left"><div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Caption)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>@if(Model.AllowRemove){<span class="fonticon-cross"></span>}
+<div class="instant-filter-dropdown auto-popup hide" data-field-type="text" data-hide-func="gemini_filter.checkNeedsFilter()">
+@{
+    int last = Model.Items.Count -1;
+}
+@for(int i=0;i<Model.Items.Count - 2;i++)
+{
+    <input class="fancy" data-clear="true" type="radio" name="@(Model.Name)" value="@(Model.Items[i].ItemId)" id="@(Model.Name)-@(Model.Items[i].ItemId)" @if(Model.Items[i].IsSelected) {<text>checked="checked"</text>} /><label for="@(Model.Name)-@(Model.Items[i].ItemId)">@Model.Items[i].ItemLabel</label>
+    <br />
+}
+    <input class="fancy" type="radio" name="@(Model.Name)" value="@(Model.Items[last-1].ItemId)" id="@(Model.Name)-@(Model.Items[last-1].ItemId)" @if (Model.Items[last - 1].IsSelected || Model.Items[last].IsSelected){<text>checked="checked"</text>} /><input type="text" name="@(Model.Name)-@(Model.Items[last-1].ItemId)" id="@(Model.Name)-@(Model.Items[last-1].ItemId)" value="@Model.Items[last-1].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat" />&nbsp;-&nbsp;<input type="text" name="@(Model.Name)-@(Model.Items[last].ItemId)" id="@(Model.Name)-@(Model.Items[last].ItemId)" value="@Model.Items[last].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat" />
+    <div class="margin-top-10 margin-left-10" >today, today+7, today-1, start-month, end-month<br /> start-week, end-week</div>
+</div>
+</div>

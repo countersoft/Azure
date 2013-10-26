@@ -1,4 +1,4 @@
-var gemini_pdf = {
+gemini_pdf = {
     init: function () {
         $("#pdf-action").click(function (e) {
 

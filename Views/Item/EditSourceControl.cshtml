@@ -29,7 +29,7 @@
             if ($("#EditScPopupContainer form").valid()) {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
                 e.preventDefault();
-                gemini_ajax.postCall(csVars.ProjectUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditScPopupContainer").attr("data-id")+ "/addsourcecontrol",
+                gemini_ajax.postCall(gemini_item.itemUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditScPopupContainer").attr("data-id")+ "/addsourcecontrol",
                         function AddDependencyResponse(response) {
                             if (response.Success) {
                                 gemini_item.replaceContent(response.Result.Data);

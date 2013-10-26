@@ -8,7 +8,7 @@
 <script src="@AssetsPath/scripts/code/mode/htmlmixed.js" type="text/javascript"></script>
 <script src="@AssetsPath/scripts/code/mode/htmlembedded.js" type="text/javascript"></script>
 
-<div style="width:890px; height: 580px;">
+<div style="width:890px; height: 600px;">
     <form id="TemplateForm">
         <input id="id" name="id" type="hidden" value="@Model.Template.Entity.Id" />
         <table class="admin-data-entry" cellpadding="0" cellspacing="0">
@@ -26,6 +26,13 @@
                     <p class="pad-bottom-10">(leave empty to associate this template with all projects)</p>
                     @Html.ListBox("Project", Model.Projects, new { @class = "input-size9" })
                      
+                </td>
+            </tr>
+            <tr>
+                <td class="no-wrap">Subject</td>
+                <td>
+                    <p class="pad-bottom-10">(leave empty to use the system default subject)</p>
+                    <input type="text" id="subject" name="subject" class="input-size9" value="@Model.Template.Entity.Options.Subject"/>
                 </td>
             </tr>
             <tr>

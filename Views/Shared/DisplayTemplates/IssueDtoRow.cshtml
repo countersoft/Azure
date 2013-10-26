@@ -20,35 +20,40 @@
         }
     }
     HierarchyGridModel hierarchy = Model as HierarchyGridModel;
-    foreach (var issue in Model.Issues)
-    {
-        bool firstCol = true;
-
-        string dependant = hierarchy != null && hierarchy.DependancySpacing.ContainsKey(issue.Entity.Id) ? "dependant" : string.Empty;
-        <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds) @dependant'>
-        @{
-            var data = Model.DisplayData[issue.Entity.Id];
-            foreach (var coldata in data)
-            {
-<td class='@coldata.cssClass'>
-@if (firstCol && showSequencing)
+foreach (var issue in Model.Issues)
 {
-if(hierarchy == null)
+bool firstCol = true;
+string dependant = hierarchy != null && hierarchy.DependancySpacing.ContainsKey(issue.Entity.Id) ? "dependant" : string.Empty;
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds) @dependant'>
+<td class="items-first-column">
+@if(hierarchy == null)
 {
-if(allowSequencing)
+if (allowSequencing && showSequencing)
 {
-<span class='dragHandle item-drag-handle fonticon-drag-handle'></span>
+<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
-else 
+else
 {
-    <span class=''></span>
+<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
 }
 else
 {
-<span class='invisible fonticon-drag-handle'></span>
+if (allowSequencing && showSequencing)
+{
+<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
 }
+<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
+</td>
+@{
+var data = Model.DisplayData[issue.Entity.Id];
+var lastColumn = data.Count == 0 ? null : data[data.Count - 1];
+foreach (var coldata in data)
+{
+<td class='@coldata.cssClass'>
+
                 
 @if (firstCol)
 {
@@ -69,11 +74,14 @@ if(hierarchy == null && Model.GroupDependencies && issue.Entity.IsParent && !iss
 {
 <span class='parent fonticon-arrow-down expander'></span>
 }
-                    
 firstCol = false;
 }
+else if(lastColumn == coldata)
+{
+<div class='item-context-menu fonticon-dropdown right'></div>
+}
 </td>
-            }
+}
         }
         </tr>
     }

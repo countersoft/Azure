@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Grup Bağımlılıkları</item>
   <item id="Grouped">Gruplanmış</item>
   <item id="ShowSequence">Sıralı Kayıtlar</item>
-  <item id="FilterNoType">&lt; Tüm Kayıtlar &gt;</item>
+  <item id="FilterNoType">Tüm Kayıtlar</item>
   <item id="FilterIncludeClosed">Kapalıları da Göster</item>
   <item id="FilterOpenIssues">Açıklar</item>
   <item id="FilterClosedIssues">Kapalılar</item>
@@ -369,4 +369,16 @@
   <item id="Id">ID</item>
   <item id="ImportWizard">Import Wizard</item>
   <item id="InvalidCredentials">Invalid Credentials</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

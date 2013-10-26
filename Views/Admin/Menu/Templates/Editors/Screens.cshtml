@@ -17,7 +17,7 @@
     <input type='hidden' id="type-id" value="@Model.Id"/>
     <div id="screens-container">
         <div id="create-screen" class="left" style="width:290px">
-            <div class="screen-title"><input type="checkbox" id="create-screen-select-all" />Creating</div>
+            <div class="screen-title"><input type="checkbox" class="fancy" id="create-screen-select-all" /><label for="create-screen-select-all">Creating</label></div>
             <ul id="create-list-attributes">
                 <li class="header margin-bottom-10">Attributes</li>
                 @foreach (var field in Model.Create.Attributes)
@@ -41,7 +41,7 @@
             }
         </div>
         <div id="edit-screen" class="left" style="width:290px">
-            <div class="screen-title"><input type="checkbox" id="edit-screen-select-all" />Editing</div>            
+            <div class="screen-title"><input type="checkbox" class="fancy" id="edit-screen-select-all" /><label for="edit-screen-select-all">Editing</label></div>            
             <ul id="edit-list-attributes">
                 <li class="header margin-bottom-10">Attributes</li>
                 @foreach (var field in Model.Edit.Attributes)
@@ -65,7 +65,7 @@
             }
         </div>
         <div id="view-screen" class="left" style="width:290px">
-            <div class="screen-title"><input type="checkbox" id="view-screen-select-all" />Viewing</div>            
+            <div class="screen-title"><input type="checkbox" class="fancy" id="view-screen-select-all" /><label for="view-screen-select-all">Viewing</label></div>            
             <ul id="view-list-attributes">
                 <li class="header margin-bottom-10">Attributes</li>
                 @foreach (var field in Model.View.Attributes)
@@ -91,8 +91,6 @@
 <script type="text/javascript">
     $(document).ready(function ()
     {
-        $("#screens-container").jScrollPane({ /*autoReinitialise: true, autoReinitialiseDelay: 250*/ });
-
         applySortable("#create-list-attributes");
         applySortable("#create-list-content");
         applySortable("#edit-list-attributes");
@@ -102,15 +100,15 @@
 
         gemini_ui.chosen('#attribute-options-ProjectGroup', null, true);
 
-        $('input[type="checkbox"]', '#screens-container').change(function (e)
+        $('#screens-container input[type="checkbox"]').bind('ifChanged', function (e)
         {
-            $(this).siblings("label").toggleClass("screen-field-selected");
+            $(this).parents().siblings("label").toggleClass("screen-field-selected");
         });
 
         gemini_admin.attributeOptionsPicker('#screens-container #attribute-options-trigger', function (e) {
-            return $(e).siblings("input");
+            return $(e).parent().find("input:eq(0)");
         }, true);
-       
+
         $("#popup-button-yes").unbind("click").click(function (e) {
             gemini_commons.stopClick(e);
             gemini_admin.hideAttributeOptionsPicker();
@@ -142,16 +140,6 @@
             gemini_popup.popupClose(e);
         });
 
-        gemini_ui.toggleCheckbox("#create-screen-select-all", '#create-screen input[type="checkbox"]',
-            function (e) { $(e).siblings("label").addClass("screen-field-selected"); }, 
-            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
-        gemini_ui.toggleCheckbox("#edit-screen-select-all", '#edit-screen input[type="checkbox"]',
-            function (e) { $(e).siblings("label").addClass("screen-field-selected"); },
-            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
-        gemini_ui.toggleCheckbox("#view-screen-select-all", '#view-screen input[type="checkbox"]',
-            function (e) { $(e).siblings("label").addClass("screen-field-selected"); },
-            function (e) { $(e).siblings("label").removeClass("screen-field-selected"); });
-
         $('#ReferenceId').change(function (e) {
             gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
             gemini_ajax.postCall("configure/Templates/Process", "Editor",
@@ -161,20 +149,42 @@
                 }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', ReferenceId: $('#ReferenceId').val() });
         });
         
-        processReference(); 
+        processReference();
+
+        gemini_ui.fancyInputs('#screen-popup .fancy');
+        gemini_ui.fancyInputs('#attribute-options-picker .fancy, .screen-title .fancy', 'background-color-white');
+        $("#screens-container").jScrollPane({ /*autoReinitialise: true, autoReinitialiseDelay: 250*/ });
+
+        gemini_ui.toggleCheckbox("#create-screen-select-all", '#create-screen ul input[type="checkbox"]',
+            function (e) { $(e).parent().siblings("label").addClass("screen-field-selected"); },
+            function (e) { $(e).parent().siblings("label").removeClass("screen-field-selected"); });
+        gemini_ui.toggleCheckbox("#edit-screen-select-all", '#edit-screen ul input[type="checkbox"]',
+            function (e) { $(e).parent().siblings("label").addClass("screen-field-selected"); },
+            function (e) { $(e).parent().siblings("label").removeClass("screen-field-selected"); });
+        gemini_ui.toggleCheckbox("#view-screen-select-all", '#view-screen ul input[type="checkbox"]',
+            function (e) { $(e).parent().siblings("label").addClass("screen-field-selected"); },
+            function (e) { $(e).parent().siblings("label").removeClass("screen-field-selected"); });
     });
     
     function applySortable(selector) {
+        var checked = false;
         $(selector).sortable({
             forcePlaceholderSize: true,
             placeholder: "drag-placeholder",
             containment: selector,
             delay: '250',
             start: function (event, ui) {
+                checked = $('input', $(ui.helper)).is(':checked');
                 $(ui.helper).addClass("drag-highlight");
             },
             stop: function (event, ui) {
                 $(ui.item).removeClass("drag-highlight");
+                if (checked) {
+                    setTimeout(function () { $('input', $(ui.item)).iCheck('check') }, 5);
+                }
+                else {
+                    setTimeout(function () { $('input', $(ui.item)).iCheck('uncheck') }, 5);
+                }
             }
         });
     }

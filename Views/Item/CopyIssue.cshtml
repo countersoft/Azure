@@ -5,26 +5,26 @@
         <table id="CopyIssueTable">
             <tr>
                 <td><span>@GetResourceTemplate(ResourceKeys.Project)</span></td>
-                <td data-issueid="@Model.Issue.Id">@Html.DropDownList("ProjectId", @Model.Projects, new {@class="input-size8"})</td>
+                <td data-issueid="@Model.Issue.Id">@Html.DropDownList("ProjectId", @Model.Projects, new {@class="input-size9"})</td>
             </tr>
             <tr>
                 <td><span>@GetResourceTemplate(ResourceKeys.Type)</span></td>
-                <td>@Html.DropDownList("TypeId", @Model.Types, new {@class="input-size8"})</td>
+                <td>@Html.DropDownList("TypeId", @Model.Types, new {@class="input-size9"})</td>
             </tr>
             <tr><td>&nbsp;</td><td></td></tr>
             <tr>
                 <td></td>
                 <td>
-                    <input type="checkbox" name="attachments" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Attachments)</label>
-                    <input type="checkbox" name="time" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Time)</label>
-                    <input type="checkbox" name="comments" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Comments)</label>
+                    <input type="checkbox" name="attachments" class="fancy" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Attachments)</label>
+                    <input type="checkbox" name="time" class="fancy" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Time)</label>
+                    <input type="checkbox" name="comments" class="fancy" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Comments)</label>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <input type="checkbox" name="links" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Links)</label>
-                    <input type="checkbox" name="watchers" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Followers)</label>
+                    <input type="checkbox" name="links" class="fancy" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Links)</label>
+                    <input type="checkbox" name="watchers" class="fancy" checked="checked"/> <label>@GetResourceTemplate(ResourceKeys.Followers)</label>
                     
                 </td>
             </tr>
@@ -42,8 +42,13 @@
 <script type="text/javascript">
     
     $(document).ready(function () {
-        gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #ProjectId", null, true);
-        gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #TypeId", null, true);
+   
+        if (! csVars.IsOpera) {
+            gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #ProjectId", null, true);
+            gemini_ui.chosen("#cs-popup-center-content #CopyIssueContainer #TypeId", null, true);
+        }
+
+        gemini_ui.fancyInputs('#CopyIssueTable .fancy');
 
         $("#popup-button-yes").unbind("click");
         $("#popup-button-yes").click(function (e) {

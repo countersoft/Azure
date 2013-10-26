@@ -7,19 +7,19 @@
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowRegistrations" name="AllowRegistrations" @if(Model.AllowRegistrations){ <text>checked="checked"</text> } /> <label for="AllowRegistrations">Allow users to self-register</label></td>
+                <td><input type="checkbox" id="AllowRegistrations" class="fancy" name="AllowRegistrations" @if(Model.AllowRegistrations){ <text>checked="checked"</text> } /> <label for="AllowRegistrations">Allow users to self-register</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowAnonymousAccess" name="AllowAnonymousAccess" @if(Model.AllowAnonymousAccess){ <text>checked="checked"</text> } /> <label for="AllowAnonymousAccess">Allow users to browse Gemini without logging in first</label></td>
+                <td><input type="checkbox" id="AllowAnonymousAccess" class="fancy" name="AllowAnonymousAccess" @if(Model.AllowAnonymousAccess){ <text>checked="checked"</text> } /> <label for="AllowAnonymousAccess">Allow users to browse Gemini without logging in first</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowOpenId" name="AllowOpenId" @if(Model.AllowOpenId){ <text>checked="checked"</text> } /> <label for="AllowOpenId">Allow users to authenticate with Gemini using Open Id </label></td>
+                <td><input type="checkbox" id="AllowOpenId" class="fancy" name="AllowOpenId" @if(Model.AllowOpenId){ <text>checked="checked"</text> } /> <label for="AllowOpenId">Allow users to authenticate with Gemini using Open Id </label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="EnableFacebookIntegration" name="EnableFacebookIntegration" onclick="$('#FacebookAppId').toggleClass('required').removeClass('error');" @if(Model.EnableFacebookIntegration){ <text>checked="checked"</text> } /> 
+                <td><input type="checkbox" id="EnableFacebookIntegration" class="fancy" name="EnableFacebookIntegration" @if(Model.EnableFacebookIntegration){ <text>checked="checked"</text> } /> 
                     <label for="EnableFacebookIntegration">Allow users to authenticate with Gemini using Facebook</label></td>
             </tr>
             <tr>
@@ -49,15 +49,15 @@
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
-                <td>Portal User Group</td>
+                <td>Customer Portal User Group</td>
                 <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })</td>
             </tr>
             <tr>
-                <td>Portal Welcome Title</td>
+                <td>Customer Portal Welcome Title</td>
                 <td><input type="text" id="PortalWelcomeTitle" name="PortalWelcomeTitle" class="input-size9 required" value="@Model.PortalWelcomeTitle"/></td>
             </tr>
             <tr>
-                <td valign="top">Portal Welcome Message</td>
+                <td valign="top">Customer Portal Welcome Message</td>
                 <td>
                     <div class="wysiwyg-container wysiwyg-height1">
                         <textarea id="PortalWelcomeMessage" name="PortalWelcomeMessage" class="input-size9 required wysiwyg-editor cs-wysiwyg">@Model.PortalWelcomeMessage</textarea>
@@ -79,6 +79,11 @@
 <script type="text/javascript">
     $(document).ready(function () {
         gemini_ui.htmlEditor("#PortalWelcomeMessage", gemini_sizing.stretchWindow);
+        gemini_ui.fancyInputs('#people-options-form .fancy');
+
+        $('#EnableFacebookIntegration').bind('ifChanged', function () {
+            $('#FacebookAppId').toggleClass('required').removeClass('error');
+        });
 
         $("#people-options-form").validate();
 

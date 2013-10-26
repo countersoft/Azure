@@ -17,7 +17,14 @@
             {
                 <tr data-id="@item.Entity.Id">
                     <td data-edit="false">@item.Entity.Label</td>
-                    <td data-edit="false">@if (item.Entity.AlertType == AlertTemplateType.Breeze) { <text>Acknowledge Email (Breeze)</text> } else if(item.Entity.AlertType == AlertTemplateType.BreezeReply) { <text>Email Reply (Breeze)</text> } else { @item.Entity.AlertType }</td>
+                    <td data-edit="false">@if (item.Entity.AlertType == AlertTemplateType.Breeze) { <text>Acknowledge Email (Breeze)</text> } else if(item.Entity.AlertType == AlertTemplateType.BreezeReply) { <text>Email Reply (Breeze)</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.Created) { <text>When Created</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.Resourced) { <text>When Resourced</text> }                                                                                                                                             
+                                          else if (item.Entity.AlertType == AlertTemplateType.Watchers) { <text>Follower Notification</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.AppNavAlerts){ <text>AppNav Card Alerts</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.Updated) { <text>When Updated</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.Generic) { <text>Generic</text> }
+                                          else { @item.Entity.AlertType }</td>
                     <td data-edit="false" >@item.AssociatedProjects</td>
                     <td data-edit="false" class="centered actions">
                         <span title="@GetResource(ResourceKeys.Edit)" class="cursor-pointer action-button-edit"></span>

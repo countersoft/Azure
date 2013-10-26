@@ -1,5 +1,23 @@
 ﻿@model ItemsGridModel
 <div id="items-grid-control-box">
+    <div id="split-view-grid">
+        <div class="grid-button split-view-selected">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div id="split-view-item">
+        <div class="grid-button">
+            <div class="details">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="box"></div>
+        </div>
+    </div>
     <div id="grid-pager" class="left pad-top-20">
         @Model.Pager.TotalItems @GetResource(ResourceKeys.ItemsFound, Resourcing.Lower) @if(Model.Pager.TotalItems > 0) {
         <text>(@GetResource(ResourceKeys.Page) @Model.Pager.CurrentPage @GetResource(ResourceKeys.Of, Resourcing.Lower)
@@ -9,8 +27,8 @@
         <div class="box-right size-0">
             <div>
                 <div class="option vertical-align">
-                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="@GetResource(ResourceKeys.Prev)" data-page="@Model.Pager.CurrentPage" />
-                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value="@GetResource(ResourceKeys.Next)" data-page="@Model.Pager.CurrentPage" />
+                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="<<" data-page="@Model.Pager.CurrentPage" />
+                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value=">>" data-page="@Model.Pager.CurrentPage" />
                 </div>
                 @if(GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations))
                 {
@@ -18,11 +36,12 @@
                 </div>
                 <div class="option vertical-align">
                     <input class="button-secondary button-small" id='bulk-update' type="button" title="@GetResource(ResourceKeys.Update)" value="@GetResource(ResourceKeys.Update)" />
+                    <input class="button-secondary button-small" id='bulk-delete' type="button" title="@GetResource(ResourceKeys.Delete)" value="@GetResource(ResourceKeys.Delete)" />
                 </div>
                 }
                 <div class="divider">
                 </div>
-                @if (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations) && GeminiContext.Project.Entity.Id != Constants.AllProjectsId) 
+                @if (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations) && GeminiContext.Project.Entity.Id != Constants.AllProjectsId && !GeminiContext.PermissionsManager.IsHelpdeskUser()) 
                 {
                     <div class="option vertical-align pos-relative">
                         <div id="grid-import-data" class="control-icon import" title="@GetResource(ResourceKeys.ImportWizard)"></div>
@@ -35,13 +54,14 @@
                     <div id="grid-column-picker" class="control-icon gear" title="@GetResource(ResourceKeys.Columns)">
                     </div>
                 </div>
-                <div class="option vertical-align">
-                    <div id="filter-up" class="control-icon filterup" title="@GetResource(ResourceKeys.Expand)">
-                    </div>
-                          <div id="filter-down" class="control-icon filterdown" title="@GetResource(ResourceKeys.Collapse)">
+                <div class="divider">
+                </div>
+                <div class="option" style="margin-top:5px;">
+                    <div id='pageSizeContainer'>
+                        <input type="text" name='pageSize' id='pageSize' class='input-size2' value="@Model.InstantFilter.PageSize"/>
+                        <span style="display:inline-block;margin-top:3px;">@GetResource(ResourceKeys.Items)</span>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

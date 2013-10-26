@@ -41,21 +41,21 @@
                     <td>Can Multi-Select
                     </td>
                     <td>
-                        <input type="checkbox" name="MultiSelect" id ="MultiSelect" @{if (Model.CustomField.CanMultiSelect)
+                        <input type="checkbox" class="fancy" name="MultiSelect" id ="MultiSelect" @{if (Model.CustomField.CanMultiSelect)
                                                                                       {    
                                                                                       @: checked='checked' 
                                                                                 }} />
-                        Yes
+                        <label for="MultiSelect">Yes</label>
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="All">
                     <td>Can Filter</td>
                     <td>
-                        <input type="checkbox" name="CanFilter" id ="CanFilter" @{if (Model.CustomField.CanFilter)
+                        <input type="checkbox" class="fancy" name="CanFilter" id ="CanFilter" @{if (Model.CustomField.CanFilter)
                                                                                   {    
                                                                                       @: checked='checked' 
                                                                                 }} />
-                        Yes
+                        <label for="CanFilter">Yes</label>
                     </td>
                 </tr>
 
@@ -83,19 +83,27 @@
                            class="input-field required input-size9" value="@(Model.CustomField.MaxLen == 0 ? "" : Model.CustomField.MaxLen.ToString())"/>
                     </td>
                 </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_TEXT">
+                    <td>Regular Expression
+                    </td>
+                    <td>
+                        <input type="text" id="RegularExpression" name="RegularExpression" 
+                           class="input-field input-size9" value="@(Model.CustomField.RegularExpression)"/>
+                    </td>
+                </tr>
                 <tr id="SQLStaticRow" data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST">
                     <td>Select Lookup Type
                     </td>
                     <td>
 
-                        <input type="radio" name="LookupType" id="LookupTypeSQL" value ="SQL" @if (!Model.CustomField.UseStaticData)
+                        <input type="radio" class="fancy" name="LookupType" id="LookupTypeSQL" value ="SQL" @if (!Model.CustomField.UseStaticData)
                                                                                               {
                                                                                                   @: checked ="checked" 
-                                                                                              }/>SQL Driven
-                        <input type="radio" name="LookupType" id="LookupTypeStatic" value ="Static" @if (Model.CustomField.UseStaticData)
+                                                                                              }/><label for="LookupTypeSQL">SQL Driven</label>
+                        <input type="radio" class="fancy" name="LookupType" id="LookupTypeStatic" value ="Static" @if (Model.CustomField.UseStaticData)
                                                                                                     {
                                                                                                         @: checked ="checked" 
-                                                                                                    }/>Static
+                                                                                                    }/><label for="LookupTypeStatic">Static</label>
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
@@ -154,14 +162,36 @@
                             class="input-field required input-size9 ignorefield">@Model.CustomField.LookupData.Aggregate("", (s, data) => s += data.Value + "\n")</textarea>
                     </td>
                 </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_TYPE_COMPONENT|@Constants.CUSTOM_FIELD_TYPE_USER|@Constants.CUSTOM_FIELD_TYPE_VERSION">
+                    <td>Add Blank Entry
+                    </td>
+                    <td>
+                        <input type="checkbox" class="fancy" name="AllowNoSelection" id ="AllowNoSelection" @{if (Model.CustomField.AllowNoSelection)
+                                                                                                {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        <label for="AllowNoSelection">Yes</label>
+                    </td>
+                </tr>
+                <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_TYPE_COMPONENT|@Constants.CUSTOM_FIELD_TYPE_USER|@Constants.CUSTOM_FIELD_TYPE_VERSION">
+                    <td>Auto-complete
+                    </td>
+                    <td>
+                        <input type="checkbox" class="fancy" name="AutoComplete" id ="AutoComplete" @{if (Model.CustomField.AutoComplete)
+                                                                                                {    
+                                                                                      @: checked='checked' 
+                                                                                }} />
+                        <label for="AutoComplete">Yes</label>
+                    </td>
+                </tr>
                 @if (Model.CustomField.Id == 0)
                 {
                     <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_COMBO|@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_LOOKUP_SQL">
                         <td>Create Table in SQL
                         </td>
                         <td>
-                            <input type="checkbox" name="CreateTable" id="CreateTable" />
-                            Yes
+                            <input type="checkbox" class="fancy" name="CreateTable" id="CreateTable" />
+                            <label for="CreateTable">Yes</label>
                         </td>
                     </tr>    
                 }
@@ -184,11 +214,11 @@
                     <td>Filter by Project
                     </td>
                     <td>
-                        <input type="checkbox" name="FilterByProject" id ="FilterByProject" @{if (Model.CustomField.ProjectIdFilter)
+                        <input type="checkbox" class="fancy" name="FilterByProject" id="FilterByProject" @{if (Model.CustomField.ProjectIdFilter)
                                                                                               {    
                                                                                       @: checked='checked' 
                                                                                 }} />
-                        Yes
+                        <label for="FilterByProject">Yes</label>
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_USER" style="display: none">
@@ -202,14 +232,13 @@
                     <td>Show with Attributes
                     </td>
                     <td>
-                        <input type="checkbox" name="ShowInAttributes" id ="ShowInAttributes" @{if (Model.CustomField.ShowInAttributes)
+                        <input type="checkbox" class="fancy" name="ShowInAttributes" id ="ShowInAttributes" @{if (Model.CustomField.ShowInAttributes)
                                                                                                 {    
                                                                                       @: checked='checked' 
                                                                                 }} />
-                        Yes
+                        <label for="ShowInAttributes">Yes</label>
                     </td>
                 </tr>
-
             </tbody>
         </table>
     </form>
@@ -225,9 +254,9 @@
         gemini_ui.chosen("#GroupRestriction", null, true);
         gemini_ui.chosen("#CascadingField", null, true);
 
+        gemini_ui.fancyInputs('#table-admin-customfield .fancy');
 
-        $("input[name='LookupType']").click(function () {
-
+        $("input[name='LookupType']").bind('ifChanged', function (e) {
             if ($("#LookupTypeSQL").is(":checked")) {
                 $("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL]").show();
                 $("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC]").hide();
@@ -278,14 +307,19 @@
                 @{
                     if (Model.CustomField.UseStaticData)
                     {
-                     <text>$("#LookupTypeStatic").attr('checked', 'checked');</text>
-                     <text>$("#LookupTypeStatic").click();</text>
+                     <text>$("#LookupTypeStatic").iCheck('check');</text>
+                    <text>$("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL]").hide();</text>
+                    <text>$("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC]").show();</text>
+                    <text>$("tr[data-shown*=@Constants.CUSTOM_FIELD_LOOKUP_SQL] input").addClass("ignorefield");</text>
+                    <text>$("tr[data-shown=@Constants.CUSTOM_FIELD_LOOKUP_STATIC] textarea").removeClass("ignorefield");</text>
                   
                     }
-                    if(Model.CustomField.CascadingParentField!= null && Model.CustomField.CascadingParentField > 0)
+                    if (Model.CustomField.CascadingParentField != null && Model.CustomField.CascadingParentField > 0)
                     {
                         @:setupCascading(true);
-                    }else{
+                    }
+                    else
+                    {
                         @:setupCascading(false);
                     }
                     

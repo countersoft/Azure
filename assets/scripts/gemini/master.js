@@ -1,31 +1,18 @@
-var gemini_master = {
+gemini_master = {
 
     resizedProjectMenu: false,
 
-    initBase: function (displayPageActions, status) 
+    initBase: function (displayPageActions, status, projects) 
     {
-        $(document).on('click', '#playlist .card', function () {
-            var whereTo = $(this).attr("href");
-            window.location.href = whereTo;
-        });
-
         $("#pin-page").click(function () {
             gemini_appnav.pinPage();
         });
 
-        $("#reset-help").click(function () {
-            gemini_ajax.postCall("account/tour", "reset", function () {
-                gemini_commons.refreshPage();
-            });
-        });
-
-        gemini_appnav.manager(displayPageActions);
+        gemini_appnav.init();
 
         gemini_sizing.appResizer();
 
         gemini_pdf.init();
-
-        gemini_share.init();
 
         gemini_popup.init();
 
@@ -35,17 +22,51 @@ var gemini_master = {
             ignore: '.ignore'
         });
 
-        //$("#help-link").colorbox({ href: csVars.Url + "tour", transition: "none", initialWidth: "870px", initialHeight: "538px", width: "870px", height: "538px", close: "close", overlayClose: true, escKey: true, opacity: '0.8' });
+        // Project search
+        var searchBox = $('#project-search');
+        if (searchBox.length > 0) {
+            searchBox.autocomplete({
+                select: function (event, ui) {
+                    window.location.href = ui.item.Url;
+                    return false;
+                },
+                focus: function (event, ui) {
+                    return false;
+                },
+                source: function (request, response) {
+                    var matches = $.map(projects, function (code) {
+                        if (code.label.toUpperCase().indexOf(request.term.toUpperCase()) != -1) {
+                            return code;
+                        }
+                    });
+                    response(matches);
+                }
+            });
 
-        //gemini_signalr.init();
+            searchBox.autocomplete("widget").css('position', 'fixed');
+        }
+        // End Project search
 
-        $(".dropdown").click(function (e) {
-            if ($(".cs-menu-dropdown", $(this)).is(':visible')) {
-                $(".cs-menu-dropdown", $(this)).hide();
+        $("body").on('click', '.dropdown', (function (e) {
+            if ($(".cs-menu-dropdown", $(this)).is(':visible') && $(e.target).closest('#project-search').length == 0) {
+                //Fixes bug in IE8 where body and this click events are executed before the qq file uploader event which causes problem.                  
+                if ((csVars.IEVersion == 8 || csVars.IsSafari) && $(e.target).closest('#attachmentupload-hit').length > 0) {
+                    if (!csVars.IsSafari) {
+                        var currentObject = $(this);
+                        setTimeout(function () { $(".cs-menu-dropdown", currentObject).hide(); }, 500)
+                    }
+                }
+                else {
+                    $(".cs-menu-dropdown", $(this)).hide();
+                }
             }
-            else {               
-                $(".cs-menu-dropdown").hide();
-                $(".cs-menu-dropdown", $(this)).slideDown(100);
+            else {
+                if ($(this).attr('id') != 'all-projects-menu-box' || ($(this).attr('id') == 'all-projects-menu-box' && $(e.target).closest('#project-search').length == 0))
+                {
+                    $(".cs-menu-dropdown").hide();
+                    $(".cs-menu-dropdown", $(this)).slideDown(100);
+                }             
+
                 gemini_keyboard.bindEscape(".cs-menu-dropdown", function () {
                     gemini_keyboard.unbindEscape(".cs-menu-dropdown");
                     $(".cs-menu-dropdown").hide();
@@ -56,22 +77,42 @@ var gemini_master = {
                     gemini_master.resizedProjectMenu = true;
                 }
 
-                if ($(this).attr('id') == 'user-menu') {
+                if ($(this).attr('id') == 'all-projects-menu-box') {
+                    $(".cs-menu-dropdown", $(this)).position({
+                        "of": $(this),
+                        "my": "left top",
+                        "at": "left bottom",
+                        "offset": "19 7",
+                        "collision": "none"
+                    });
+                    $("#project-search", $(this)).focus();
+                }
+                else if ($(this).attr('id') == 'user-menu') {
                     $(".cs-menu-dropdown", $(this)).position({
                         "of": $(this),
                         "my": "right top",
                         "at": "right top",
-                        "offset": "0 " + ($(this).height() + 4),
+                        "offset": "0 " + ($(this).height() + 14),
                         "collision": "none"
                     });
                 }
                 else if ($(this).attr('id') == 'project-menu-dropdown') {
-                    var height = $(this).height() + 8;
+                    var height = $(this).height() + 7;
                     $(".cs-menu-dropdown", $(this)).position({
                         "of": $(this),
                         "my": "left top",
                         "at": "left top",
-                        "offset": "0 " + height,
+                        "offset": "-10 " + height,
+                        "collision": "none"
+                    });
+                }
+                else if ($(this).attr('id') == 'item-menu-dropdown')
+                {
+                    $(".cs-menu-dropdown", $(this)).position({
+                        "of": $(this),
+                        "my": "right top",
+                        "at": "right top",
+                        "offset": "4 " + ($(this).height() + -2),
                         "collision": "none"
                     });
                 }
@@ -84,13 +125,8 @@ var gemini_master = {
                         "collision": "none"
                     });
                 }
-
-                if (csVars.IsOpera) {
-                    $(".cs-menu-dropdown", $(this)).css('left', 'auto');
-                    $(".cs-menu-dropdown", $(this)).css('top', 'auto');
-                }
             }
-        });
+        }));
 
         window.onbeforeunload = null;
 
@@ -127,118 +163,50 @@ var gemini_master = {
             $("body").css("background-color", "red");
         }
 
+        gemini_master.initNotificationCenter();
         gemini_master.handleClickAway();
-    },
-    
-    tour: function (licensed, tourStatus, area)
-    {
-        // Home page
-        if (area == "home") {
-            if (!_.contains(tourStatus, "home")) {
-                $("#tour-joyride-home").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "home");
-                    }
-                });
-            }
-        }
-
-        // Planner page
-        else if (area == "planner") {
-            if (!_.contains(tourStatus, "planner")) {
-                $("#tour-joyride-planner").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "planner");
-                    }
-                });
-            }
-        }
-
-        // Timeline page
-        else if (area == "timeline") {
-            if (!_.contains(tourStatus, "timeline")) {
-                $("#tour-joyride-timeline").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "timeline");
-                    }
-                });
-            }
-        }
-
-        // Roadmap page
-        else if (area == "roadmap") {
-            if (!_.contains(tourStatus, "roadmap")) {
-                $("#tour-joyride-roadmap").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "roadmap");
-                    }
-                });
-            }
-        }
-
-        // Items page
-        else if (area == "items") {
-            if (!_.contains(tourStatus, "items-1")) {
-                $("#tour-joyride-items-1").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "items-1");
-                    }
-                });
-            }
-
-            if (_.contains(tourStatus, "items-1") && !_.contains(tourStatus, "items-2")) {
-                $("#tour-joyride-items-2").joyride({
-                    postRideCallback: function () {
-                        gemini_ajax.postCall("account/tour/update", "items-2");
-                    }
-                });
-            }
-        }
     },
     
     handleClickAway: function ()
     {
-        $("#card-data").click(function (e) {    
-            $(".cs-menu-dropdown").hide();
-            $('#card-context-menu').hide();
-            if ($(e.target).attr('id') != 'card-data-clear') e.stopPropagation();
-        });
         $(".export-to-container").click(function (e) {
             if ($(e.target).is('a')) $(this).fadeOut('fast');
             e.stopPropagation();
         });
 
         $("#page-options-box .options").click(function (e) { e.stopPropagation(); });
-        $("#subscribe-dialog").click(function (e) {
-            $(".cs-menu-dropdown").hide();
-            $('#card-context-menu').hide();
-            e.stopPropagation();
-        });
-        $("#share-dialog").click(function (e) {
-            $(".cs-menu-dropdown").hide();
-            $('#card-context-menu').hide();
-            e.stopPropagation();
-        });
-        $(".cs-menu-dropdown").click(function (e) { $('#card-context-menu').hide(); e.stopPropagation(); });
+        
+        //$(".cs-menu-dropdown").click(function (e) { $('#card-context-menu').hide(); e.stopPropagation(); });
 
         $("body").click(function (e) {
+            
             if ($("#card-data").is(":visible")) $("#card-data").fadeOut("fast");
             if ($(".export-to-container").is(":visible")) $(".export-to-container").fadeOut("fast");
             if ($("#column-picker").is(":visible") && $(e.target).closest('#column-picker').length == 0) $("#column-picker").fadeOut("fast");
             if ($("#subscribe-dialog").is(":visible")) $("#subscribe-dialog").fadeOut("fast");
             if ($("#share-dialog").is(":visible")) $("#share-dialog").fadeOut("fast");
 
-            if ($("#items-grid #comments").is(":visible")) $("#items-grid #comments").fadeOut("fast");
+            if ($("#items-grid #comments").is(":visible")) {
+                $("#items-grid #comments").fadeOut("fast");
+                $("#items-grid #comments").empty();
+            }
   
             if ($("#planner-context-popup-new-card").is(":visible") && $(e.target).closest('.add-to-swimlane').length == 0 && $(e.target).closest('#planner-context-popup-new-card').length == 0) $("#planner-context-popup-new-card").fadeOut("fast");
 
             if ($(".cs-menu-dropdown").is(":visible")
                 && $(e.target).closest('#user-menu').length == 0
                 && $(e.target).closest('#all-projects-menu-box').length == 0
-                && $(e.target).closest('#project-menu-dropdown').length == 0) {
-                $(".cs-menu-dropdown").fadeOut("fast");
+                && $(e.target).closest('#project-menu-dropdown').length == 0
+                && $(e.target).closest('#item-menu-dropdown').length == 0)
+            {
+                if ((csVars.IEVersion == 8 || csVars.IsSafari) && $(e.target).closest('#attachmentupload-hit').length > 0) {
+                    setTimeout(function () { $(".cs-menu-dropdown").fadeOut("fast"); }, 500)
+                }
+                else {
+                    $(".cs-menu-dropdown").fadeOut("fast");
+                }
+               
             }
-
 
             //Need to check for this, because this event happens always after the dropdown is shown
             if (!$(e.target).hasClass('control-icon') && !$(e.target).hasClass('ordering')) {
@@ -249,7 +217,112 @@ var gemini_master = {
             if ($(e.target).parent().attr('id') != 'attribute-options-trigger' && $(e.target).closest('#attribute-options-picker').length == 0 && $(e.target).attr('class') != 'search-choice-close') {
                 if ($("#attribute-options-picker").is(":visible")) $("#attribute-options-picker").fadeOut("fast");
             }
+
+             if ($(e.target).attr('class') != 'search-choice-close') {
+                $('.auto-popup:visible').each(function () {
+                    if ($(e.target).hasClass('auto-popup-keep') || $(e.target).closest('.auto-popup-keep').length > 0 || $(e.target).closest('.auto-popup').length > 0) {
+                        return true;
+                    }
+
+                    // Check if we have a special hide function
+                    var func = $(this).attr('data-hide-func');
+                    if (func != null && func != undefined && func.length > 0) {
+                        eval(func);
+                        return true;
+                    }
+
+                    // Check effect;
+                    var effect = $(this).attr('data-effect');
+                    var hideEffect = {};
+                    if (effect != null && effect != undefined && effect.length > 0) {
+                        hideEffect = JSON.parse(effect);
+                    }
+                    $(this).hide(hideEffect);
+                });
+            }
+
         });
+    },
+    
+    initNotificationCenter: function ()
+    {
+        $("#notification-handle").unbind('click').bind('click', function ()
+        {
+           gemini_master.showHideNotificationCenter();
+
+        });
+    },
+    showHideNotificationCenter: function ()
+    {
+        $("#notification-handle").toggleClass("handle-expanded");
+
+        if ($("#notification-zone").is(":visible")) {
+            $("#notification-handle .line").hide();
+            $("#notification-handle").css("top", "0px");
+            $("#notification-handle .line").show();
+
+            $("#notification-zone").slideUp('fast', function () {
+
+
+            });
+        }
+        else {
+            $("#notification-center #notification-zone").css("left", "");
+            $("#notification-center #notification-zone").css("top", "");
+            var top = $(document).scrollTop();
+            $("#notification-zone").position({
+                "my": "middle top-" + top,
+                "at": "middle bottom",
+                "of": $("#notification-handle"),
+                "offset": "0 -10",
+                "collision": "none"
+            });
+
+            $("#notification-zone").slideDown('fast', function () {
+                $("#notification-handle").position({
+                    "my": "middle top",
+                    "at": "middle bottom",
+                    "of": $("#notification-zone"),
+                    "offset": "0 0",
+                    "collision": "none"
+                });
+            });
+        }
+    },
+    showNotificationCenter: function () {
+        setTimeout(function() {
+
+            // limit to only latest item
+            $("#notification-items li").each(function (n) {
+                if (n > 0) $(this).addClass("hide");
+            });
+            
+            // show it
+            if (!$("#notification-zone").is(":visible")) {
+                //$("#notification-handle").click();
+                gemini_master.showHideNotificationCenter();
+
+
+                // auto hide it
+                setTimeout(function () {
+                    //$("#notification-handle").click();
+                    if ($("#notification-zone").is(":visible")) {
+                        gemini_master.showHideNotificationCenter();
+                    }
+                    // bring back other items
+                    $("#notification-items li").each(function (n) {
+                        if (n > 0) $(this).removeClass("hide");
+                    });
+
+                }, 3000);
+            }
+            else {
+                $("#notification-items li").each(function (n) {
+                    if (n > 0) $(this).removeClass("hide");
+                });
+            }
+
+        }, 1500);
     }
 };
 

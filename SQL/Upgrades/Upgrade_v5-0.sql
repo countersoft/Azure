@@ -144,9 +144,9 @@ CREATE INDEX ind_gemini_navigationcards_originatorid ON gemini_navigationcard(or
 GO
 
 INSERT INTO gemini_navigationcard (generated, cardtype, cardkey, cardtitle, cardurl, color, visibletoanonuser, visibletoauthuser, badgecount, lastseen)
-	VALUES (1, 0, 'WHY GEMINI?', 'See Killer Features', 'http://www.geminiplatform.com', '#562366', 1, 0, 0, GETUTCDATE())
+	VALUES (1, 0, 'WHY GEMINI?', 'See Killer Features', 'http://www.countersoft.com', '#562366', 1, 0, 0, GETUTCDATE())
 INSERT INTO gemini_navigationcard (generated, cardtype, cardkey, cardtitle, cardurl, color, visibletoanonuser, visibletoauthuser, badgecount, lastseen)
-	VALUES (1, 0, 'HELP', 'Docs & Videos', 'http://community.geminiplatform.com', '#562366', 0, 1, 0, GETUTCDATE())
+	VALUES (1, 0, 'HELP', 'Docs & Videos', 'http://docs.countersoft.com', '#562366', 0, 1, 0, GETUTCDATE())
 INSERT INTO gemini_navigationcard (generated, cardtype, cardkey, cardtitle, cardurl, color, visibletoanonuser, visibletoauthuser, badgecount, lastseen)
 	VALUES (1, 0, '', '', 'projects', '#562366', 0, 0, 0, GETUTCDATE())
 GO

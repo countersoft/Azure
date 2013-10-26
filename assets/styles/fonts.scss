@@ -1,6 +1,7 @@
 ﻿$base-path: './'; /*RELEASE*/
 //$base-path: '../'; /*DEBUG*/
 
+/* Application general icons */
 @font-face {
     font-family: 'countersoftfontRegular';
     src: url($base-path + 'fonts/countersoft-iconfont.eot');
@@ -39,5 +40,5 @@
          url($base-path + 'fonts/countersoft-iconfont.ttf') format('truetype'),
          url($base-path + 'fonts/countersoft-iconfont.svg#countersoftfontRegular') format('svg');
     font-weight: bold;
-    font-style: italic;
+    font-style: italic; 
 }

@@ -34,7 +34,7 @@
                 <td class="field-name">Active
                 </td>
                 <td>
-                    <input type="checkbox" id="Active" name="Active" @if(Model.Queue.Active)
+                    <input type="checkbox" class="fancy" id="Active" name="Active" @if(Model.Queue.Enabled)
                                                                      {
                                                                          @: checked="checked" 
                                                                      }/>
@@ -60,6 +60,7 @@
         gemini_ui.chosen("#Project", null, true);
         gemini_ui.setDropdownValue("#Project", '@(Model.Queue.ProjectId)');
 
+        gemini_ui.fancyInputs('#table-admin-breezequeue .fancy');
 
         $('#colorSelector', "#BreezeQueuesItemContainer").ColorPicker({
             onChange: function (hsb, hex, rgb) {

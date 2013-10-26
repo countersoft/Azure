@@ -1,0 +1,40 @@
+﻿@model ProjectWizardModel
+
+<div id="new-project-wizard">
+    <div class="templates left"> 
+        <ul>
+        @foreach (var template in Model.Templates)
+        {
+            <li data-id="@template.Id" data-title="@template.Name" data-description="@template.Description" data-component="@template.Component" data-item="@template.Item" data-version="@template.Version" data-status="@template.Status" data-type="@template.Type" data-resource="@template.Resource">@template.TemplateKey</li>    
+        }
+        </ul>
+    </div>
+    <div class="left">
+        <div>
+            <div id="template-details">
+                <div class="title"></div>
+                <div class="description"></div>
+            </div>
+            <ul id="template-cloud" class="clearfix">
+                <li id="cloud-component"></li>
+                <li id="cloud-item"></li>
+                <li id="cloud-version"></li>
+                <li id="cloud-resource"></li>
+                <li id="cloud-status"></li>
+                <li id="cloud-type"></li>
+            </ul>
+        </div>
+        <form id="new-project-form" method="post" action="@(GeminiContext.Url)projects/wizard" class="margin-top-20">
+            <input type="hidden" name="id" id="id" value="" />
+            <input type="hidden" name="projectid" id="projectid" value="@GeminiContext.Project.Entity.Id" />
+            <input type="text" class="input-size11 required margin-bottom-20" name="code" id="code" value="" maxlength="10" placeholder="@GetResource(ResourceKeys.ProjectCode)"/><br />
+            <input type="text" class="input-size11 required margin-bottom-20" name="name" id="name" value="" placeholder="@GetResource(ResourceKeys.Name)"/><br />
+            <textarea id="description" name="description" rows="15"  class="input-size11" style="" placeholder="@GetResource(ResourceKeys.Description)"></textarea>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        gemini_add.initNewProjectWizard();
+    });
+</script>

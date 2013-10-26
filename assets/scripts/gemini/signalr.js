@@ -1,4 +1,4 @@
-var gemini_signalr = {
+gemini_signalr = {
 
     init: function () {
 

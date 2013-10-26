@@ -1,9 +1,9 @@
-﻿@model List<Countersoft.Gemini.Infrastructure.TimerJobs.MessageData>
+﻿@model TimerMessageModel
 <div id="TimerAppsContainer" style="width:800px;text-align:center;height: 600px">
     <div id="cs-template" class="timer-apps-messages" style="overflow: hidden; width: 800px; height: 100%; outline: none;">
         <table id="table-admin-timeredit" class="admin-data-entry" style="text-align:left;">
             <tbody>
-                @foreach(var data in Model)
+                @foreach(var data in Model.Messages)
                 {
                     <tr>
                         <td>
@@ -21,6 +21,23 @@
 <script type="text/javascript">
     $(document).ready(function () {        
         $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+        $("#popup-button-yes").click(function (e) {
+            gemini_ui.startBusy('#popup-button-yes');
+            gemini_ajax.call("configure/Apps/Timer", "Delete", function (response) {
+                if (response.Success) {
+                    $('#TimerAppsContainer').empty();
+                    gemini_popup.popupClose(e);
+                    gemini_ui.stopBusy('#popup-button-yes');
+                    gemini_admin.getPage();
+                }
+            }, null, {
+                id: 0,
+                appid: '@(Model.AppId)',
+                errors: @Model.Errors.ToJSBool()
+            })
+        });
+
         $(".timer-apps-messages").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
     });
 </script>

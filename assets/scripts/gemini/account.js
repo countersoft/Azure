@@ -1,5 +1,4 @@
-var gemini_account = {
-    
+gemini_account = {
     initLogin: function () {
         $("#regular-form").validate({});
         $("#openid-form").validate({});
@@ -31,6 +30,10 @@ var gemini_account = {
             $('.help-popup').css('top', pos.top);
             $('.help-popup').slideDown();
         });
+       
+        $('#login-page #email').keydown(function () {
+            $('#forgot-password').removeClass('button-secondary').addClass('button-primary');
+        });
 
         $('body').click(function (e) {
             if ($(e.target).attr("id") != "email") {
@@ -39,6 +42,7 @@ var gemini_account = {
             }
         });
 
+        if (gemini_commons.isMobile()) $('.right-box').removeClass('right-box');
         /*$("#forgot-password").unbind('click').click(function () {
             if ($("#email").val() != '') {
                 gemini_ajax.postCall("account", "forgot-password", null, null, $("#forgot-password-form").serialize());
@@ -61,12 +65,13 @@ var gemini_account = {
     initRegister: function () {
         $("#regular-form").validate({ rules: { confirmpassword: { required: true, equalTo: "#regular-password"}} });
         $('#Username').focus();
+        if (gemini_commons.isMobile()) $('.right-box').removeClass('right-box');
     },
 
     initProfile: function (saved)
     {
         $("#regular-form").validate({ rules: { confirmpassword: { equalTo: "#regular-password"}} });
-
+        gemini_ui.fancyInputs('#regular-form .fancy');
         $('#Firstname').focus();
 
         $("#api-key").click(function(e) {
@@ -74,7 +79,18 @@ var gemini_account = {
                 $("#ApiKey").val(response.Result.Data);
             });
         });
-        
+
+        $('.avatar-option').unbind('ifClicked').bind('ifClicked', function (e) {
+            if ($(this).attr('id') == 'option-upload') {
+                $('#upload-avatar').removeClass('invisible');
+               
+                if (csVars.IEVersion == -1) $('#upload-avatar #avatar').click();
+            }
+            else {
+                $('#upload-avatar').addClass('invisible');
+            }
+        });
+
         if (saved) {
             gemini_popup.toast(saved);
         }

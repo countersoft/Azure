@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Dependências do Grupo</item>
   <item id="Grouped">Agrupado</item>
   <item id="ShowSequence">Sequêcia de Itens</item>
-  <item id="FilterNoType">&lt; Todos os Itens &gt;</item>
+  <item id="FilterNoType">Todos os Itens</item>
   <item id="FilterIncludeClosed">Incluir Itens Fechados</item>
   <item id="FilterOpenIssues">Abrir</item>
   <item id="FilterClosedIssues">Fechado</item>
@@ -272,7 +272,7 @@
   <item id="Roadmap">Roadmap</item>
   <item id="Testing">Testando</item>
   <item id="Tests">Testes</item>
-  <item id="Burnup">Burnup</item>
+  <item id="Burnup">Burn-up</item>
   <item id="Burndown">Burndown</item>
   <item id="AdditionalInformation">Informação Adicional</item>
   <item id="Comments">Comentários</item>
@@ -370,4 +370,16 @@
   <item id="CustomLookupData">Dados de pesquisa personalizados</item>
   <item id="ImportWizard">Import Wizard</item>
   <item id="InvalidCredentials">Invalid Credentials</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

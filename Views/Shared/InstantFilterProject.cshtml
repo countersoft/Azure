@@ -1,0 +1,6 @@
+﻿@model InstantItemFilterModel
+
+@foreach (var filterOption in Model.Fields)
+{
+    Html.RenderPartial(filterOption.Editor, filterOption);
+}

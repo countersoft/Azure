@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Seskupit závislosti</item>
   <item id="Grouped">Seskupené</item>
   <item id="ShowSequence">Oddělené položky</item>
-  <item id="FilterNoType">&lt; Všechny položky &gt;</item>
+  <item id="FilterNoType">Všechny položky</item>
   <item id="FilterIncludeClosed">Včetně zavřených</item>
   <item id="FilterOpenIssues">Otevřené</item>
   <item id="FilterClosedIssues">Zavřené</item>
@@ -272,7 +272,7 @@
   <item id="Roadmap">Plán vývoje</item>
   <item id="Testing">Testování</item>
   <item id="Tests">Testy</item>
-  <item id="Burnup">Burnup</item> <!-- ??? -->
+  <item id="Burnup">Burn-up</item> <!-- ??? -->
   <item id="Burndown">Burndown</item> <!-- ??? -->
   <item id="AdditionalInformation">Další informace</item>
   <item id="Comments">Komentáře</item>
@@ -369,4 +369,16 @@
   <item id="Id">ID</item>
   <item id="CustomLookupData">Uživatelská data pro vyhledávání</item>  
   <item id="ImportWizard">Průvodce importem</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+  
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

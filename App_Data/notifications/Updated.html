@@ -1,0 +1,53 @@
+﻿<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+   	<tbody>
+		<tr>
+			<td style="color: #808080;" align="center">--- please reply above this line ---</td>
+		</tr>
+	</tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 16px; font-weight: bold; border: none; background-color: #005682;" cellpadding="20">
+<tbody>
+<tr>
+	<td style="color: #FFFFFF;">Gemini Tracker</td>
+</tr>
+</tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+<tbody>
+<tr>
+	<td style="color: #4c4c4c;">Just to let you know the following <strong>@Model.TheItem.Type</strong> has been updated.</td>
+</tr>
+</tbody>
+</table>
+<table style="margin-left: 20px; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: whitesmoke; border-collapse: collapse;" cellpadding="10">
+<tbody>
+<tr>
+<td style="color: #4c4c4c; border-left: 3px solid #ebebeb;"><a href="@Html.Raw(Model.ItemUrl(Model.TheItem))">@Model.TheItem.IssueKey - @Model.TheItem.Title</a></td>
+</tr>
+</tbody>
+</table>
+<table style="margin-left: 40px; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: white; border-collapse: collapse;" cellpadding="5">
+<tbody>
+	@foreach(var change in Model.TheItem.ChangeLog)
+	{
+<tr>
+	<td><strong>@change.Field</strong> @change.Change</td>
+</tr>
+	}
+</tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
+<tbody>
+<tr>
+<td style="color: #4c4c4c;">Thanks.</td>
+</tr>
+</tbody>
+</table>
+<table style="width: 100%; font-family: arial; font-size: 13px; font-weight: normal; border: none; background-color: #ffffff;" cellpadding="5">
+<tbody>
+<tr><td><br/></td></tr>
+<tr>
+	<td style="color: #005682;" align="center"><a style="text-decoration:none;" href="http://www.countersoft.com">Powered by Countersoft Gemini</a></td>
+</tr>
+</tbody>
+</table>

@@ -4,11 +4,6 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
-
 @section JavaScript
 {
 }
@@ -16,7 +11,6 @@
 @section DocumentReady
 {
     gemini_activity.initTimeline();
-    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "timeline");
 }
 
 @Html.Raw(Model.Styles)

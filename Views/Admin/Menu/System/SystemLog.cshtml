@@ -6,6 +6,8 @@
 <div class="admin-datatable-holder">
     <div class="margin-bottom-20"><input type="button" class="button-primary" value="Delete" id="truncate" /> </div>
 
+    <div class="margin-bottom-20"><input type="checkbox" class="fancy" id="DebugMode" name="DebugMode" @if(Model.DebugMode){ <text>checked="checked"</text> } /> <label style="font-size:14px;line-height:12px;" for="DebugMode">Enable diagnostic output</label></div>
+    
     <table id="table-admin-log" class="basic">
         <thead>
             <tr>
@@ -30,7 +32,16 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        gemini_admin.initDatatables("#table-admin-log", {"aaSorting": []});
+        gemini_admin.initDatatables("#table-admin-log", { "aaSorting": [] });
+
+        gemini_ui.fancyInputs('#configure-page-content .fancy');
+
+        $("#DebugMode").on('ifChanged', function (e) {
+            gemini_ajax.postCall("configure/System/SystemLog", "savedata", function ()
+            {
+                gemini_popup.toast("Saved");
+            }, null , { DebugMode:  $('input:checked', $('#configure-page-content')).length > 0 });
+        });
 
         // Delete
         $("#truncate").unbind('click').click(function (e)

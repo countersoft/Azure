@@ -4,14 +4,9 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-@section HeaderContent
-{
-     @{Html.RenderPartial("ContentHeader");}
-}
-
 <div id='data'>
 @{Html.RenderPartial("StatusBar");}
- <div class="data-inner-container">
+ <div class="data-inner-container roadmap">
         @{Html.RenderPartial("VersionProgress", Model);}
 
         @Html.Partial("_ProgressGrid", Model)
@@ -26,13 +21,17 @@
     var totalClosed = @Model.Closed;
     var totalOpen = @Model.Open;
     var total = @Model.Total;
-    var completeness = total > 0 ? Math.floor((totalClosed * 100)/total) : 0;
+    //var completeness = total > 0 ? Math.floor((totalClosed * 100)/total) : 0;
 
-    gemini_progress.showCompleteness(completeness);
+    //gemini_progress.showCompleteness(completeness);
     gemini_progress.showDelta(@Model.Remain);
-    gemini_progress.showDays(@Model.Estimated,@Model.Logged);
+    gemini_progress.showDays(@Model.Estimated,@Model.Logged, @Model.TimeLoggedOver);
     gemini_progress.showGrid(@((int)ProjectTemplatePageType.Roadmap),@Model.VersionId,'progress/getroadmap?id=@Model.VersionId');
     
-    gemini_progress.chart(@Html.Raw(Model.Statuses.Select( s=> s.First ).ToJson()),@Model.Issues.Count,@Html.Raw(Model.Statuses.Select(s => new { s.Second, s.Third }).ToJson()));
-    gemini_master.tour(csVars.Licensed, csVars.TourStatus, "roadmap");
+    //gemini_progress.chart(@Html.Raw(Model.Statuses.Select( s=> s.First ).ToJson()),@Model.Issues.Count,@Html.Raw(Model.Statuses.Select(s => new { s.Second, s.Third }).ToJson()));
+    gemini_items.initCheckAllItems();
+    $('#tabledata tr td:last-child').addClass('cell-border-right');
+    gemini_progress.initInlineEditing();
+
+    $('#items-grid').css('overflow', 'auto');
 }

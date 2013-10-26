@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Gruppberoenden</item>
   <item id="Grouped">Grupperad</item>
   <item id="ShowSequence">Lista ärenden</item>
-  <item id="FilterNoType">&lt; Alla ärenden &gt;</item>
+  <item id="FilterNoType">Alla ärenden</item>
   <item id="FilterIncludeClosed">Visa stängda ärenden</item>
   <item id="FilterOpenIssues">Öppna</item>
   <item id="FilterClosedIssues">Stängda</item>
@@ -261,7 +261,7 @@
   <item id="Roadmap">Roadmap</item>
   <item id="Testing">Testar</item>
   <item id="Tests">Test</item>
-  <item id="Burnup">Burnup</item>
+  <item id="Burnup">Burn-up</item>
   <item id="Burndown">Burndown</item>
   <item id="AdditionalInformation">Ytterligare information</item>
   <item id="Comments">Kommentarer</item>
@@ -349,4 +349,16 @@
   <item id="Id">Id</item>
   <item id="ImportWizard">Import Wizard</item>
   <item id="InvalidCredentials">Invalid Credentials</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

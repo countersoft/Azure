@@ -2,7 +2,7 @@
 
 <form id='column-picker-form'>
     <ul id="column-picker-list">
-            @Html.EditorFor(x => Model.Columns, new { CssClass = "columns-picker-item margin-right-5" })
+            @Html.EditorFor(x => Model.Columns, new { CssClass = "fancy columns-picker-item margin-right-5" })
     </ul> 
     <input class="button-primary button-small" type="button" id='colmun-picker-submit' value='@GetResource(ResourceKeys.Apply)' />
 </form>

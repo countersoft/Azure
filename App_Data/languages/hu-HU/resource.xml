@@ -68,7 +68,7 @@
   <item id="GroupDependencies">Group Dependencies</item>
   <item id="Grouped">Grouped</item>
   <item id="ShowSequence">Sequenced Items</item>
-  <item id="FilterNoType">&lt; All Items &gt;</item>
+  <item id="FilterNoType">All Items</item>
   <item id="FilterIncludeClosed">Lezárt elemek is</item>
   <item id="FilterOpenIssues">Open</item>
   <item id="FilterClosedIssues">Closed</item>
@@ -272,7 +272,7 @@
   <item id="Roadmap">Ütemterv</item>
   <item id="Testing">Testing</item>
   <item id="Tests">Tests</item>
-  <item id="Burnup">Burnup</item>
+  <item id="Burnup">Burn-up</item>
   <item id="Burndown">Burndown</item>
   <item id="AdditionalInformation">További részletek</item>
   <item id="Comments">Kommentek</item>
@@ -370,4 +370,16 @@
   <item id="CustomLookupData">Custom Lookup Data</item>
   <item id="ImportWizard">Import Wizard</item>
   <item id="InvalidCredentials">Invalid Credentials</item>
+  <item id="SchedulesReports">Scheduled Reports</item>
+  <item id="ReportsAttached">Attached are your reports.</item>
+
+  <item id="Empty">Empty</item>
+  <item id="Populated">Populated</item>
+  <item id="Display">Display</item>
+  <item id="Dependency">Dependency</item>
+
+  <item id="Show">Show</item>
+  <item id="Hide">Hide</item>
+  <item id="EstimatedReleaseDate">Estimated Release Date</item>
+  <item id="Excess">Excess</item>
 </Resource>

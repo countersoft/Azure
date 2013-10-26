@@ -1,0 +1,31 @@
+﻿@model InstantItemFilterPicklist
+<div id="instant-filter-@(Model.Name)" data-field-name="@Model.Name" data-field-desc="@Model.Caption" class="instant-filter-box @if(Model.AllowRemove){<text>dynamic</text>} left"><div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Caption)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>@if(Model.AllowRemove){<span class="fonticon-cross"></span>}
+<div class="instant-filter-dropdown auto-popup hide" data-field-type="select">
+<select id="@Model.Name" name="@Model.Name" class="no-chosen @if(Model.AutoComplete) { <text>auto-complete-chosen</text> }" multiple="multiple">
+    @{
+        bool wasOptGroup = false;
+    }
+@foreach(var item in Model.Items)
+{
+    if (item.IsOptionGroup)
+    {
+        if(wasOptGroup) 
+        {
+            @Html.Raw("</optgroup>");
+        }
+        wasOptGroup = true;
+        <text><optgroup label="@item.ItemText"></text>
+    }
+    else
+    {
+    <option @if(item.IsSelected) { <text>selected="selected"</text> } title="@item.ItemLabel" value="@item.ItemId">@item.ItemText</option>
+    }
+     
+}
+@if(wasOptGroup)
+{
+    @Html.Raw("</optgroup>");
+}
+</select>
+</div>
+</div>

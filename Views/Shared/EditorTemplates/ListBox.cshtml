@@ -4,8 +4,8 @@
     bool wasOptionGroup = false;
 }
 <input type="hidden" name="@Model.Id" value="0" />
-<select title="@Model.Tooltip" id="@Model.Id" size="@Model.Rows" name="@Model.Id" data-original="@Model.SelectValues.ToDelimited("|")" 
-   data-customfield-trigger='@Model.CustomFieldTriggerValues' data-trigger='@Model.TriggerValues' class="input-size6  @Model.Classes @(Model.Required ? "required" : "")" @if(Model.Multiselect) { <text>multiple="multiple"</text> } >
+<select title="@Model.Tooltip" data-input-type="list-box" id="@Model.Id" data-project-id="@Model.ProjectId" size="@Model.Rows" name="@Model.Id" data-original="@Model.SelectValues.ToDelimited("|")" 
+   data-customfield-trigger='@Model.CustomFieldTriggerValues' data-trigger='@Model.TriggerValues' class="inline-editing input-size6  @Model.Classes @(Model.Required ? "required" : "")" @if(Model.Multiselect) { <text>multiple="multiple"</text> } >
     @foreach (var item in Model.Values)
     {
         if (item.IsOptionGroup)

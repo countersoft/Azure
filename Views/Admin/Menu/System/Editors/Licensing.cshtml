@@ -14,8 +14,7 @@
 <script type="text/javascript">
 
     $("#license-form").validate();
-    $("#licensekey").focus();
-
+    
     $("#popup-button-yes").unbind('click').click(function (e)
     {
         gemini_commons.stopClick(e);
@@ -30,5 +29,6 @@
     });
 
     $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+    setTimeout(function () { $("#license-form textarea:first").focus(); }, 250);
 
 </script>

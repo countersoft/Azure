@@ -13,5 +13,5 @@
     }
 }
 <li>
-@Html.CheckBoxFor(m => m.IsSelected, new { @class = cssClass })@Html.HiddenFor(m => m.ItemId)@Html.LabelFor(m => m.IsSelected, Model.ItemText, new { title= Model.ItemLabel, @class = headerCss })
+@Html.CheckBoxFor(m => m.IsSelected, new { @class = cssClass })@Html.HiddenFor(m => m.ItemId)@Html.LabelFor(m => m.IsSelected, Model.ItemText, new { title= Model.ItemLabel, data_input_type = "numeric", @class = headerCss })
 </li>

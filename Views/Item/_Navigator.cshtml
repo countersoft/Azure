@@ -1,0 +1,31 @@
+﻿@model ViewIssueModel
+
+<div id="filter-navigator">
+    @if(Model.PreviousIssue != null)
+    {
+        <a href="~/project/@Model.PreviousIssue.Tag1/@Model.PreviousIssue.ProjectId/item/@Model.PreviousIssue.Id" class="previous">
+           <span class="fonticon-arrow-left"></span>
+        </a>
+    }
+    else
+    {
+        <a href="#" class="previous">
+            <span class="fonticon-arrow-left disabled"></span>
+        </a>
+    }
+
+    <a class="position" href="~/project/@Model.FilterProjectCode/@Model.FilterProjectId.GetValueOrDefault()/items">@Model.CurrentIssueLocation / @Model.TotalIssues</a>
+
+    @if(Model.NextIssue != null)
+    {
+        <a href="~/project/@Model.NextIssue.Tag1/@Model.NextIssue.ProjectId/item/@Model.NextIssue.Id" class="next">
+             <span class="fonticon-arrow-right"></span>
+        </a>
+    }
+    else
+    {
+        <a href="#" class="next">
+            <span class="fonticon-arrow-right disabled"></span>
+        </a>
+    }
+</div>
