@@ -42,7 +42,7 @@ UPDATE gemini_navigationcard SET cardoptions = '{"Timeline":"' + cardoptions +'"
 UPDATE gemini_navigationcard SET cardoptions = '{"1B9CB627-A2F2-4CC5-BE5B-D0FABB489F87":"' + REPLACE(cardoptions,'"','\"') + '"}' WHERE cardtype=0
 GO
 
--- DocStore Permissions --
+/*-- DocStore Permissions --
 DECLARE @result1 TABLE (projects NVARCHAR(MAX), viewGroups NVARCHAR(MAX), manageGroups NVARCHAR(MAX))
 
 INSERT INTO @result1
@@ -56,7 +56,7 @@ WHERE appid = '1B9CB627-A2F2-4CC5-BE5B-D0FABB489F87'
 IF EXISTS(SELECT * FROM @result1)
 BEGIN
 	INSERT INTO gemini_apppermissions (appguid, apppermissions) VALUES ('1B9CB627-A2F2-4CC5-BE5B-D0FABB489F87','{"Projects":[' + (SELECT TOP 1 projects FROM @result1) + '],"ViewGroups":['+ (SELECT TOP 1 viewGroups FROM @result1) +'],"CreateGroups":[],"EditGroups":[' + (SELECT TOP 1 manageGroups FROM @result1) +'],"DeleteGroups":[]}');
-END
+END*/
 
 DELETE FROM gemini_globalconfigurationwidgetdata WHERE appid = '1B9CB627-A2F2-4CC5-BE5B-D0FABB489F87'
 GO
