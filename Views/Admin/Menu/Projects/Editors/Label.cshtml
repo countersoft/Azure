@@ -27,6 +27,15 @@
         
         gemini_ui.chosen("#ProjectsList", null, true);
         $("#ProjectLabelContainer").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+        $('#LabelName').keypress(function (e) {
+            if (e.which == 13) {
+                jQuery(this).blur();
+                jQuery("#popup-button-yes").click();
+                return false;
+            }
+        });
+
         $("#popup-button-yes").click(function (e) {
 
 
@@ -42,7 +51,7 @@
                     gemini_popup.popupClose(e);
                     gemini_admin.getPage();
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize());
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize(), null, true);
 
             }
             else {

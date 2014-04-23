@@ -289,7 +289,7 @@
                     custom_periods += "<option value='" + cv[key] + "'>" + key + "</option>\n";
                 }
             }
-            block["period"] = $("<span class='cron-period'>"
+            block["period"] = $("<span class='cron-period  pos-relative'>"
                     + "Every <select name='CronPeriod'>" + custom_periods 
                     + str_opt_period + "</select> </span>")
                 .appendTo(this)                               
@@ -299,7 +299,7 @@
                     .gentleSelect(eo)
                     .end();
             
-            block["dom"] = $("<span class='cron-block cron-block-dom'>"
+            block["dom"] = $("<span class='cron-block cron-block-dom pos-relative'>"
                     + " on the <select name='CronDayOfMonth'>" + str_opt_dom 
                     + "</select> </span>")
                 .appendTo(this)
@@ -309,7 +309,7 @@
                     .data("root", this)
                     .end();
 
-            block["month"] = $("<span class='cron-block cron-block-month'>"
+            block["month"] = $("<span class='cron-block cron-block-month pos-relative'>"
                     + " of <select name='CronMonth'>" + str_opt_month 
                     + "</select> </span>")
                 .appendTo(this)
@@ -319,7 +319,7 @@
                     .data("root", this)
                     .end();
 
-            block["mins"] = $("<span class='cron-block cron-block-mins'>"
+            block["mins"] = $("<span class='cron-block cron-block-mins pos-relative'>"
                     + " at <select name='CronMinutes'>" + str_opt_mih 
                     + "</select> minutes past the hour </span>")
                 .appendTo(this)
@@ -329,7 +329,7 @@
                     .data("root", this)
                     .end();
 
-            block["dow"] = $("<span class='cron-block cron-block-dow'>"
+            block["dow"] = $("<span class='cron-block cron-block-dow pos-relative'>"
                     + " on <select name='CronDayOfWeek'>" + str_opt_dow
                     + "</select> </span>")
                 .appendTo(this)
@@ -339,7 +339,7 @@
                     .data("root", this)
                     .end();
 
-            block["time"] = $("<span class='cron-block cron-block-time'>"
+            block["time"] = $("<span class='cron-block cron-block-time pos-relative'>"
                     + " at <select name='CronTimeHour' class='cron-time-hour'>" + str_opt_hid
                     + "</select>:<select name='CronTimeMin' class='cron-time-min'>" + str_opt_mih
                     + " </span>")

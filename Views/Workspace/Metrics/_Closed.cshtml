@@ -1,0 +1,9 @@
+﻿@model ProgressModel
+@if (Model.Title == null)
+{
+    Model.Title = GetResource(ResourceKeys.Closed);
+}
+<div class="metric-large">
+    <div class="label">@Model.Title</div>
+    <div class="data" style="color:#58b051;">@Model.Closed</div>
+</div>

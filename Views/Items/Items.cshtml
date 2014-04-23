@@ -4,14 +4,27 @@
 }
 
 <div class="filter-container">
-	@{Html.RenderPartial("InstantFilter", Model.InstantFilter);}
+	@{Html.RenderPartial("InstantFilter", Model.Filter);}
 	<div class="clearfix"></div>
 </div>
+
 <table width="100%">
     <tr>
         <td valign="top">
             <div id='data' class="items-data-container">
-                @{Html.RenderPartial("IssuesGrid", Model);}
+            @if (Model.Issues.Count > 0 || Model.SequencedIssues.Count > 0)
+            {
+
+                { Html.RenderPartial("IssuesGrid", Model); }
+            }
+            else if (GeminiContext.User.Entity.HasExperienced(Countersoft.Gemini.Commons.Entity.User.UserExperience.AddItem))
+            {
+                Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "no-issues.png"); // Already created an item
+            }
+            else
+            {
+                Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "issue.png"); // Never created an item
+            }
             </div> 
         </td>
     </tr>
@@ -24,5 +37,5 @@
 
 @section DocumentReady
 {
-    gemini_items.init(@((int)ProjectTemplatePageType.Items), '@(GetResource(ResourceKeys.Update))', @Html.Raw(Model.InstantFilter.AvailableFields.ToJson()));
+    gemini_items.init(@((int)ProjectTemplatePageType.Items), '@(GetResource(ResourceKeys.Update))', @Html.Raw(Model.Filter.AvailableFields.ToJson()));
 }

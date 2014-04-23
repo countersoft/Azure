@@ -36,26 +36,75 @@
                 <td valign="top">Reset Password Email Text</td>
                 <td><textarea id="ResetPasswordEmailMessage" name="ResetPasswordEmailMessage" rows="5" class="input-size9 required">@Model.ResetPasswordEmailMessage</textarea></td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
                 <td>Force New User Password Reset</td>
                 <td>@Html.DropDownList("NewUserPasswordOption", Model.NewUserPasswordOptions, new { @class = "input-size9" })</td>
             </tr>
+
             <tr>
                 <td>New User Default Groups</td>
                 <td>@Html.ListBox("DefaultUserGroup", Model.DefaultUserGroups, new { @class = "input-size9" })</td>
             </tr>
+            
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}"><td colspan="2"><div class="divider"></div></td></tr>         
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td>Force New Password Every</td>
+                <td><input type="text" id="force-password-in-days" name="ForceNewPasswordInDays" class="input-size2 digits" value="@Model.ForceNewPasswordInDays"/>&nbsp;days&nbsp;&nbsp;(0 will disable this feature)</td>
+            </tr>
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td><label for="PreventPasswordReuse">Do Not Allow Password Reuse</label></td>
+                <td><input type="checkbox" name="PreventPasswordReuse" id="PreventPasswordReuse" class="fancy" @if (Model.PreventPasswordReuse) { <text>checked="checked"</text> }/></td>
+            </tr>
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td>Maximum Login Attempts</td>
+                <td><input type="text" id="account--lockout-threshold" name="AccountLockoutThreshold" class="input-size2 digits" value="@Model.AccountLockoutThreshold"/>&nbsp;&nbsp;(0 will disable this feature)</td>
+            </tr>
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td><label for="enforce-password-policy">Enforce Password Format</label></td>
+                <td>
+                    <input type="checkbox" id="enforce-password-policy" class="fancy margin-bottom-5" name="EnforcePasswordPolicy" @if (Model.EnforcePasswordPolicy) { <text>checked="checked"</text> }/>                   
+                </td>
+            </tr>
+
+            <tr class="hide" id="PasswordPolicyOptions">
+                <td></td>
+                <td>
+                    <div class="valign-top margin-bottom-10">Minimum password length <input type="text" id="minimum-letter" name="MinimumLetters" class="input-size2 margin-right-5" value="@Model.MinimumLetters"/><label>characters</label></div>
+                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="lowercase-required" name="LowercaseRequired" class="input-size1 fancy" @if (Model.LowercaseRequired)                                                                                                                                               { <text>checked="checked"</text> }/><label for="lowercase-required">Lowercase required</label></div>                    
+                    <div class="valign-top margin-bottom-5 left  margin-left-5"><input type="checkbox" id="uppercase-required" name="UppercaseRequired" class="input-size1 fancy" @if (Model.UppercaseRequired)                                                                                                                                                                { <text>checked="checked"</text> }/><label for="uppercase-required">Uppercase required</label></div>
+                    <div class="clearfix"></div>
+                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="number-required" name="NumberRequired" class="input-size1 fancy" @if (Model.NumberRequired)                                                                                                                                      { <text>checked="checked"</text> }/><label for="number-required">Number required</label></div>
+                    <div class="valign-top left" style="margin-left:23px;"><input type="checkbox" id="symbol-required" name="SymbolRequired" class="input-size1 fancy" @if (Model.SymbolRequired)                                                                                                                                                  { <text>checked="checked"</text> }/><label for="symbol-required">Non-alphanumeric character required (~!@@#$%^&.,-_)</label></div>
+                </td>
+            </tr>
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td valign="top">Browser Session Timeout</td>
+                <td>
+                    <div class="wysiwyg-container wysiwyg-height1">
+                        <input type="text" id="session-timeout" name="SessionTimeOut" class="input-size2 digits" value="@Model.SessionTimeOut"/>
+                        <label for="session-timeout">minutes&nbsp;&nbsp;(0 will disable this feature)</label>
+                    </div>
+                </td>
+            </tr>
+
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
                 <td>Customer Portal User Group</td>
                 <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })</td>
             </tr>
+
             <tr>
                 <td>Customer Portal Welcome Title</td>
                 <td><input type="text" id="PortalWelcomeTitle" name="PortalWelcomeTitle" class="input-size9 required" value="@Model.PortalWelcomeTitle"/></td>
             </tr>
+
             <tr>
                 <td valign="top">Customer Portal Welcome Message</td>
                 <td>
@@ -64,8 +113,9 @@
                     </div>
                 </td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
+            <tr><td colspan="2"><div class="divider"></div></td></tr> 
+             
             <tr>
                 <td colspan="2" align="right">
                     <input id="people-options-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
@@ -85,6 +135,19 @@
             $('#FacebookAppId').toggleClass('required').removeClass('error');
         });
 
+        if ($('#enforce-password-policy').is(':checked')) {
+            $('#PasswordPolicyOptions').show();
+        }
+
+        $('#enforce-password-policy').bind("ifChanged", function () {
+            if ($(this).is(':checked')) {
+                $('#PasswordPolicyOptions').show(500);
+            }
+            else {               
+                $('#PasswordPolicyOptions').hide(250);
+            }
+        });
+
         $("#people-options-form").validate();
 
         $("#people-options-save").click(function (e)
@@ -100,7 +163,8 @@
             {
                 gemini_popup.toast("Saved");
                 gemini_ui.stopBusy('#people-options-form #people-options-save');
-            }, function () { gemini_ui.stopBusy('#people-options-form #people-options-save'); }, formData);
+                gemini_session.init($('#session-timeout').val());
+            }, function () { gemini_ui.stopBusy('#people-options-form #people-options-save'); }, formData, null, true);
         });
     });
 </script>

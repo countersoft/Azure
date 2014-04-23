@@ -291,7 +291,6 @@ gemini_documents = {
                 function (action, el, pos) {
                     if (action == "view") {
                         // nothing here for now
-                        //console.log(elem);
                     }
                     else if (action == "new") {
                         gemini_documents.document_menuCreateFolder(el);

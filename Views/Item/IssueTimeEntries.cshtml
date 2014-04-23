@@ -2,8 +2,8 @@
 
 
         <div id='timelog-section' data-contentid="timelog-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.Time)&nbsp;(@Model.Issue.TimeEntries.Count)</h3></div>
-    <div class="content timelogs hide" id="timelog-content">
-        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedTime))
+    <div class="tab-content timelogs hide" id="timelog-content">
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedTime) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
         {
         <div class="toolbar actions">
                 <a class="button add" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Time)">@GetResource(ResourceKeys.Add)</a>
@@ -35,7 +35,7 @@
                     <td>@time.Entity.Hours<span>h</span></td>
                     <td>@time.Entity.Minutes<span>m</span></td>
                     <td>@time.Entity.Comment</td>
-                    <td>@if(CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.AssociatedTime)){<div class="cursor-pointer action-button-edit" title="@GetResource(ResourceKeys.Edit) @GetResource(ResourceKeys.Time)"></div><div class="cursor-pointer action-button-delete" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Time)"></div>}</td>
+                    <td>@if (CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.AssociatedTime) && !GeminiContext.PermissionsManager.IsHelpdeskUser())  {<div class="cursor-pointer action-button-edit" title="@GetResource(ResourceKeys.Edit) @GetResource(ResourceKeys.Time)"></div><div class="cursor-pointer action-button-delete" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Time)"></div>}</td>
                 </tr>
             }
             </table>
@@ -43,6 +43,10 @@
              int hour = @total / 60;
              int minute = @total % 60;
              <span class="time-entry-total">@GetResourceTemplate(ResourceKeys.Total) @string.Concat(@GetResourceTemplate(ResourceKeys.Time),": ")  @hour @GetResourceTemplate(ResourceKeys.Hours) @minute @GetResourceTemplate(ResourceKeys.Minutes)</span>
-       
+
+        }
+        else if (Model.ShowTimeWatermark)
+        {
+            <a target="_blank" href='http://docs.countersoft.com/recording-time/'>@{ Html.RenderPartial("~/Views/Shared/EmptyState/_ViewItemImage.cshtml", "no-time.png"); }</a>
         }
     </div>

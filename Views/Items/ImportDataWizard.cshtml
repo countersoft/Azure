@@ -1,4 +1,4 @@
-﻿@model ImportDataModel 
+@model ImportDataModel 
 
 <div id="ImportDataWizardContainer">
     <h2 class="wizardTitle">Import Wizard</h2>
@@ -15,8 +15,9 @@
         </div>
         
         <div id="file-upload-container" class="margin-top-20">
-            <div class="bold">Select a file to upload - supported formats: Microsoft Excel and CSV (text files delimited by PIPE, COMMA or TAB).</div><br />
-            <form id="regular-form" method="post" enctype="multipart/form-data"  action="@Url.Action("getimportdatafields", "AjaxItems", new RouteValueDictionary(new { option = "mapvalues" }))">
+            <div class="bold margin-bottom-20">Select a project and a file to upload - supported formats: Microsoft Excel and CSV (text files delimited by PIPE, COMMA or TAB).</div><br />
+            <form id="regular-form" method="post" enctype="multipart/form-data"  data-url="@(GeminiContext.Url)project/" action="@(GeminiContext.Url)project/@(Model.projectId)/items/getimportdatafields?option=mapvalues">
+                <div class="margin-bottom-20"><div class="left bold" style="padding:8px 5px 0 0;">Project:</div>@Html.DropDownList("projects", Model.AvailableProjects, new { @class = "input-size6" })</div>
                 <input type="file" name="file" id="file" />
                 <input id='uploadFile' type="submit" name="uploadFile" value="" class="hide"/>
             </form>
@@ -39,8 +40,9 @@
             </div>  
         <div id="value-order-container">
             <div id="js-value-wrapper">
-                <form id="field-order" method="post" action="@Url.Action("getimportdatafields", "AjaxItems", new RouteValueDictionary(new {  option = "mapextra" }))">
-                    <input type="hidden" name="filename" value="@Model.Filename"/>                   
+                <form id="field-order" method="post" action="@(GeminiContext.Url)project/@(Model.projectId)/items/getimportdatafields?option=mapextra">
+                    <input type="hidden" name="filename" value="@Model.Filename"/>                  
+                    <input type="hidden" name="projects" value="@Model.projectId"/>
                     <div class="clearfix"></div>                      
                     <div id="value-order-inner-container">
                         @foreach (var row in Model.Rows)
@@ -51,8 +53,7 @@
                                 <div class="left row2">@Html.DropDownList("value[]", row.Key, new { @class = "input-size6", @id = "colums" + number++ })</div>
                                 <div class="left row2">@Html.DropDownList("colums[]", row.Value, new { @class = "input-size6", @id = "colums" + number++ })</div>
                                 <div class="left margin-left-10 margin-top-10"><input type="checkbox" class="fancy" name="ignore[]" value="@(checkboxIndex++)"/></div>                           
-                            </div>
-                            <div class="clearfix"></div>                      
+                            </div>                    
                         }
                     </div>
 
@@ -65,7 +66,7 @@
     <div id="map-values-message" class="margin-top-5 hide">Map incoming column values to Gemini field values</div>
     <div id="ImportData-container" class="margin-top-20">
         <div id="js-extra-wrapper">
-            <form id="ImportData" method="post" class="hide" action="@Url.Action("importdata", "AjaxItems", new RouteValueDictionary(new { }))">
+            <form id="ImportData" method="post" class="hide" action="@(GeminiContext.Url)project/@(Model.projectId)/items/importdata">
                 <input type="hidden" name="filename" value="@Model.Filename"/>
                 <div id="ImportData-inner-container">
                 @if (@Model.Types != null && @Model.Types.Count() > 0)
@@ -356,8 +357,8 @@
                         $('#cs-popup-center-buttons #popup-button-yes').show().val('Upload').addClass('upload');
                     }
                     selectStep(i + 1);
-                    $("#step" + (i + 1)).css('height', '300px').css('overflow', 'auto').css('width', '100%');
-                    $("#step" + (i + 1)).jScrollPane({ autoReinitialiseDelay: 250 });
+                    $("#step" + (i + 1)).css('height', '335px').css('overflow', 'auto').css('width', '100%');
+                    //$("#step" + (i + 1)).jScrollPane({ autoReinitialiseDelay: 250 });
                 });
 
             }
@@ -370,10 +371,11 @@
     })(jQuery);
 
     $(document).ready(function () {
+
         var screenUploadFile = ($("#regular-form").length > 0) ? true : false;
         var screenMapColumns = ($('#value-order-container').length > 0) ? true : false;
         var screenMapValues = (!screenUploadFile && !screenMapColumns) ? true : false;
-
+        gemini_ui.chosen('#ImportDataWizardContainer #projects', "", true);
         gemini_ui.fancyInputs('#ImportDataWizardContainer .fancy');
 
         var currentStep = false;      
@@ -381,6 +383,10 @@
 
         if (screenUploadFile)
         {
+            $('#file-upload-container #projects').change(function () {
+                $('#file-upload-container #regular-form').attr('action', $('#file-upload-container #regular-form').attr('data-url') + $(this).val() + '/items/getimportdatafields?option=mapvalues')
+            });
+
             $('#file').change(function () {
                 $('#uploadFile').click();
             });
@@ -390,7 +396,7 @@
                 success: function (responseText, statusText, xhr, $form) {                   
                     if (responseText.success) {
                         $('#ImportDataWizardContainer').replaceWith(responseText.Data);
-                        gemini_ui.chosen('#ImportDataWizardContainer select', "", true);
+                        gemini_ui.chosen('#ImportDataWizardContainer select', null, true);
                     }
                     else {
                         var message = (responseText.message != 'undefined') ? responseText.message : '';
@@ -410,7 +416,7 @@
 
         if (screenMapColumns)
         {
-            $("#js-value-wrapper").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });         
+            //$("#js-value-wrapper").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });         
            
             var options2 = {
                 dataType: "json",
@@ -418,7 +424,7 @@
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
                     if (responseText.success) {
                         $('#ImportDataWizardContainer').replaceWith(responseText.Data);
-                        gemini_ui.chosen('#ImportDataWizardContainer select', "", true);
+                        gemini_ui.chosen('#ImportDataWizardContainer select', null, true);
                         $('#ImportData').removeClass('hide');
                         if ($('#ImportDataWizardContainer fieldset').length == 0) $('#import-data').click();                        
                     }
@@ -439,7 +445,7 @@
         {
             $("#ImportData").formToWizard({ submitButton: "import-data" });
            
-            $("#js-extra-wrapper").jScrollPane({ autoReinitialise: true })
+            //$("#js-extra-wrapper").jScrollPane({ autoReinitialise: true })
 
             var options3 = {
                 dataType: "json",
@@ -447,6 +453,12 @@
                     if (responseText.success) {                        
                         var currentPage = $('#pager-next').attr('data-page');
                         if (currentPage != 0) currentPage -= 1;
+
+                        if (isNaN(currentPage))
+                        {
+                            currentPage = 0;
+                        }
+
                         gemini_filter.getFilteredItemsPage(currentPage);
                     }
                     
@@ -470,7 +482,7 @@
                     }
 
                     $('#ImportData-container').css('height','325px').css('overflow','auto').css('width','100%');
-                    $("#ImportData-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+                    //$("#ImportData-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
                     $('#cs-popup-center-buttons #popup-button-yes').hide();
                     $('#cs-popup-center-buttons #popup-button-no').val('Finish');

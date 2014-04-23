@@ -28,7 +28,7 @@
         gemini_ajax.postCall("configure/People/ProjectGroups", "SaveData", function (response) {
             summary.html(anchor + response.Result + '</a>');
             summary.attr('data-summary', response.Result);
-        }, null, $("#PGPICKER-FORM").serialize());
+        }, null, $("#PGPICKER-FORM").serialize(), null, true);
         currentParent = null;
         
     });

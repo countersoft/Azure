@@ -50,6 +50,10 @@ define("tinymce/ui/Container", [
 			self._fixed = settings.fixed;
 			self._items = new Collection();
 
+			if (self.isRtl()) {
+				self.addClass('rtl');
+			}
+
 			self.addClass('container');
 			self.addClass('container-body', 'body');
 
@@ -339,13 +343,13 @@ define("tinymce/ui/Container", [
 		 * @return {String} HTML representing the control.
 		 */
 		renderHtml: function() {
-			var self = this, layout = self._layout;
+			var self = this, layout = self._layout, role = this.settings.role;
 
 			self.preRender();
 			layout.preRender(self);
 
 			return (
-				'<div id="' + self._id + '" class="' + self.classes() + '" role="' + this.settings.role + '">' +
+				'<div id="' + self._id + '" class="' + self.classes() + '"' + (role ? ' role="' + this.settings.role + '"' : '') + '>' +
 					'<div id="' + self._id + '-body" class="' + self.classes('body') + '">'+
 						(self.settings.html || '') + layout.renderHtml(self) +
 					'</div>' +

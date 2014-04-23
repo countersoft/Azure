@@ -1,7 +1,7 @@
 ﻿@model ViewIssueModel
 
 <div id="CopyIssueContainer">
-    <form id="CopyIssueForm" action="@Url.Action("CopyIssue", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id }))" method="post">
+    <form id="CopyIssueForm" action="@Url.Action("CopyIssue", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id }))" method="post">
         <table id="CopyIssueTable">
             <tr>
                 <td><span>@GetResourceTemplate(ResourceKeys.Project)</span></td>
@@ -79,7 +79,7 @@
                 gemini_edit.triggerXHR.abort();
             }
 
-            gemini_edit.triggerXHR = gemini_ajax.call(csVars.ProjectUrl + "item/" + $(this).parent().attr('data-issueid') + "/copyissue", "popup/" + $(this).val(),
+            gemini_edit.triggerXHR = gemini_ajax.call("item/copy", "popup?issueid=" + $(this).parent().attr('data-issueid') + "&newprojectid=" + $(this).val(),
                 function (response) {
                     $("#cs-popup-center-content").html(response.Result.Html);
             });

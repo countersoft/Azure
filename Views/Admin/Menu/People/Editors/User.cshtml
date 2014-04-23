@@ -25,7 +25,7 @@
         <tr>
             <td class="field-name">Username</td>
             <td>
-                <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.User.Entity.Username" />
+                <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.User.Entity.Username" autocomplete="off" />
             </td>
         </tr>
         @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
@@ -85,7 +85,7 @@
                 gemini_popup.popupClose(e);
                 gemini_admin.getSubTab("Users");
                 gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
-            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize());
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize(), null, true);
 
         }
         else {

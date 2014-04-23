@@ -1,0 +1,154 @@
+﻿@model PersonalDashboardModel
+@{
+    Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
+}
+
+<div id="personal-dashboard">
+
+    <div id="summary">
+        
+        <div class="person-box">
+            <div class="gravatar" title="@(GeminiContext.User.Fullname)">
+                @if(Model.UseGravatar)
+                {
+                <img src="@(GeminiContext.Url)account/picture/@(GeminiContext.User.Entity.Id)" />
+                }
+                else
+                {
+                    <div class="gravatar-empty"></div>
+                }
+
+            </div>
+            <div class="name">@(GeminiContext.User.Fullname)</div>            
+            <div class="email">@(GeminiContext.User.Entity.Email)</div>            
+        </div>
+        
+        <div class="stats-box">
+            <ul>
+                <li>
+                    <div class="value">@(Model.Assigned.Count)</div>
+                    <div class="label">@(GetResource(ResourceKeys.Assigned))</div>
+                </li>
+                <li>
+                    <div class="value">@(Model.Created.Count)</div>
+                    <div class="label">@(GetResource(ResourceKeys.Created))</div>
+                </li>
+                <li>
+                    <div class="value">@(Model.AllProjects.Count)</div>
+                    <div class="label">@(GetResource(ResourceKeys.Projects))</div>
+                </li>
+                <li>
+                    <div class="value">@(Model.SavedCards.Count)</div>
+                    <div class="label">@(GetResource(ResourceKeys.Workspaces))</div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    @if(Model.EmptyState)
+    {
+        if (GeminiContext.User.IsGlobalAdmin && !GeminiContext.User.Entity.HasExperienced(Countersoft.Gemini.Commons.Entity.User.UserExperience.AddProject))
+        {
+            Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "project.png");
+        }
+        else
+        {
+            Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "no-projects.png");
+        }
+    }
+    else
+    { 
+        <div id="workload">
+        <div class="left-zone">
+
+            @if(Model.Assigned.Count > 0)
+            {
+                <div class="table-header"><a href="~/workspace/0/items?resources=@GeminiContext.User.Entity.Id">@(GetResource(ResourceKeys.Assigned))</a></div>
+                <div class="table-scroll margin-bottom-30">
+                    <table>
+                        <tbody>
+                            @foreach(var assigned in Model.Assigned)
+                            {
+                                <tr>
+                                    <td valign="top" class="key"><a href="@(NavigationHelper.GetIssueUrl(GeminiContext, assigned))">@(assigned.IssueKey)</a></td>
+                                    <td valign="top" class="title">@(assigned.Title)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if(Model.Following.Count > 0)
+            {
+                <div class="table-header"><a href="~/workspace/0/items?followedby=@GeminiContext.User.Entity.Id">@(GetResource(ResourceKeys.Following))</a></div>
+                <div class="table-scroll margin-bottom-30">
+                    <table>
+                        <tbody>
+                            @foreach(var following in Model.Following)
+                            {
+                                <tr>
+                                    <td valign="top" class="key"><a href="@(NavigationHelper.GetIssueUrl(GeminiContext, following))">@(following.IssueKey)</a></td>
+                                    <td valign="top" class="title">@(following.Title)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if(Model.Created.Count > 0)
+            {            
+                <div class="table-header"><a href="~/workspace/0/items?reportedby=@GeminiContext.User.Entity.Id">@(GetResource(ResourceKeys.Created))</a></div>
+                <div class="table-scroll margin-bottom-30">
+                    <table>
+                        <tbody>
+                            @foreach(var created in Model.Created)
+                            {
+                                <tr>
+                                    <td valign="top" class="key"><a href="@(NavigationHelper.GetIssueUrl(GeminiContext, created))">@(created.IssueKey)</a></td>
+                                    <td valign="top" class="title">@(created.Title)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        
+        @if (Model.AllProjects.Count > 0)
+        {
+            <div class="right-zone">
+
+                <div class="table-header">
+                    <a class="valign-top margin-right-20" href="~/workspace/0/items?projects=0">@(GetResource(ResourceKeys.Projects))</a>
+            
+                    @if (Model.AllLabels.Count() > 2)
+                    {
+                        <span id="projectDropdown">@Html.DropDownList("Labels", Model.AllLabels, new { @class = "input-size6 float-right" })</span>
+                    }
+                </div>
+
+                @{Html.RenderPartial("~/Views/Account/Dashboard/_Projects.cshtml", Model);}
+
+                @if (ShowAddCoworkers())
+                {
+                    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "coworkers.png");
+                }
+            </div>
+        }
+    </div>
+
+        <div class="clearfix"></div>
+    }
+</div>
+
+@section DocumentReady
+{
+    gemini_account.personalDashboard();
+    @if(Model.ManageAlerts)
+    {
+    <text>gemini_account.profileTab='alerts';
+    $('.user-options .open-profile:first', '#zone-header-bar').click();</text>
+    }
+}

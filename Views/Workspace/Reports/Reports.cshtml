@@ -1,0 +1,14 @@
+﻿@model WorkspaceReportsModel
+
+<div id="workspace-reports-zone">
+        
+    <div class="content">
+        @foreach (var report in Model.Reports)
+        {
+            <div class="report">
+                <a href="~/workspace/@Model.CurrentPageCard.Id/Items/prepareexportxlsx?template=@(report.Template)">@(report.Name)</a>
+            </div>
+        }
+    </div>
+
+</div>

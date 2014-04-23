@@ -3,7 +3,9 @@ gemini_items = {
     subscribed: false,
     currentViewXHR: null,
     pageType: 0,
+    gridDeleteIssueRowCallback: null,
     init: function (pageType, bulkUpdateText, filterFields) {
+        gemini_master.currentRefreshFunction = gemini_items.resizeMainItemsGrid;
         gemini_items.pageType = pageType;
         gemini_filter.init(pageType, filterFields);
         gemini_edit.initEdit(0, pageType, '#cs-popup', '#cs-popup-content', '#data', gemini_items.refreshRow);
@@ -14,7 +16,7 @@ gemini_items = {
             if ($('.checked-items:checked', $('#items-grid')).length > 0) {
                 $("#cs-popup-center-content").css("width", "800px");
                 $("#cs-popup-center-content").css("height", "600px");
-                gemini_popup.centerPopup(csVars.ProjectUrl + "bulk", "", {}, null, bulkUpdateText);
+                gemini_popup.centerPopup("bulk", "", {}, null, bulkUpdateText);
             }
         });
        
@@ -65,14 +67,14 @@ gemini_items = {
         }
 
         $('#tabledata tr td:last-child').addClass('cell-border-right');
-
-        gemini_items.initHoverContextMenu();
-      
+                
         /// View item
         $('#data').on('click', '#split-view-item', function () {
             gemini_items.splitView(this);
+            gemini_items.setCardDisplayMode(1);
         });
         $('#data').on('click', '#split-view-grid', function () {
+            $('#items-grid tr').removeClass('view-issue-highlight');
             $('#DisplayMode', '#filter-form').val('Table');
             $(this).find('.grid-button').addClass('split-view-selected');
             $('#split-view-item').find('.grid-button').removeClass('split-view-selected');
@@ -87,6 +89,7 @@ gemini_items = {
             $.unsubscribe('issue-delete.items');
             gemini_items.subscribed = false;
             gemini_filter.refreshFilterCard();
+            gemini_items.setCardDisplayMode(0);
         });
 
 
@@ -107,6 +110,14 @@ gemini_items = {
         $.subscribe('items-grid-filter-executed.gridsplitview', function () {
             if ($('#DisplayMode', '#filter-form').val() == 'SplitViewItem') gemini_items.splitView('#split-view-item');
         });
+    },
+
+    setCardDisplayMode: function(mode)
+    {
+        if (gemini_appnav.pageCard.IsExisting)
+        {
+            gemini_ajax.postCall('items', 'splitviewchange', null, null, { displayMode: mode});
+        }
     },
 
     splitView: function(elem) {
@@ -144,8 +155,8 @@ gemini_items = {
                 $.subscribe('issue-update.items', function (_, issueId, fromPageType) {
                     if (fromPageType != gemini_commons.PAGE_TYPE.Item) return;
                     // Ok, we have to update a row!
-                    var url = csVars.ProjectUrl + 'items/' + issueId + '/refreshrow';
-                    gemini_ajax.call(url, gemini_items.pageType, function (response) {
+                    var url = 'items';
+                    gemini_ajax.call(url, 'refreshrow?issueid=' + issueId +'&viewtype=' + gemini_items.pageType, function (response) {
                         if (response.success) {
                             gemini_items.refreshRow(response, issueId, true);
                             $("tr[id^='tr-issue-'] td", '#tabledata').destroyContextMenu();
@@ -177,23 +188,26 @@ gemini_items = {
         if (gemini_items.currentViewXHR != null) {
             gemini_items.currentViewXHR.abort();
         }
-        gemini_items.currentViewXHR = gemini_ajax.call('project/all/' + project + '/item/' + gemini_items.currentViewedIssueId, 'grid', function (response) {
+        gemini_items.currentViewXHR = gemini_ajax.call('item', 'grid?issueid=' + gemini_items.currentViewedIssueId, function (response) {
             gemini_items.currentViewXHR = null;
             $('#view-item-slider').html(response);
             var width = $('#items-grid').width() * 0.7;
             //if (width < 820) width = 820;
             var top = $('#items-grid').offset().top;
             $('#view-item-slider').css('top', top + 'px');
+            $('#view-item-slider').attr('data-top', top);
             $('#view-item-slider').css('width', width + 'px');
             var height = $(window).height();
-            height = height - top - 24 - 3;
+            height = height - top - 24 - 3 - 24 - 20; // footer take away six
             $('#view-item-slider').css('height', height + 'px');
             $('#view-item-slider').show(/*'slide', { direction: 'right' }, 250*/);
             $("tr[id^='tr-issue-'] td", '#tabledata').destroyContextMenu();
             gemini_items.disableInlineEdit();
             gemini_ui.chosen('#view-item-slider select:not(.no-chosen)', null);
-            gemini_item.switchTab(null, '.tab:first', '#view-item-content-pane');
+            gemini_item.switchTab(null, $('.tab:first', '#view-item-content-pane'));
+            gemini_items.adjustViewPane();
         });
+        $(window).scroll(gemini_items.adjustViewPane);
     },
 
     initInlineEdit: function () {
@@ -242,14 +256,6 @@ gemini_items = {
         });
     },
     
-    initHoverContextMenu: function () {
-        $('#data').on('click', '#tabledata tr .item-context-menu', function (e) {
-            gemini_commons.stopClick(e);
-            e.button = 2;
-            $(this).parent().trigger("mousedown", e).trigger("mouseup", [e]);
-        });
-    },
-    
     initCheckAllItems: function () {
         $('#check-all-items').unbind('ifChanged').bind('ifChanged', function (e) {
             e.stopPropagation();
@@ -268,65 +274,72 @@ gemini_items = {
     
     initComments: function () {
         $('#comments').unbind('click').click(function (e) { $(this).hide(); $(this).empty(); });
-        $('.comments','#tabledata').unbind('click').click(function (e) {
-            if (!$(e.target).hasClass('item-context-menu')) {
-                gemini_commons.stopClick(e);
-                var parent = $(this).parent();
-                var that = this;
-                var pos = $(this).position();
-                if ($('#comments').is(':visible')) {
-                    $('#comments').hide();
-                    $('#comments').empty();
-                    return;
-                }
-                gemini_keyboard.bindEscape("#items-grid #comments", function (guid, selector) {
-                    $(selector).hide();
-                    gemini_keyboard.unbindEscape("#items-grid #comments");
-
-                });
-                $.ajax({
-                    type: "GET",
-                    url: csVars.Url + 'project/' + parent.data('project-code') + '/' + parent.data('project-id') + '/item/' + parent.data('issue-id') + '/comments',
-                    success: function (response) {
-                        if (!response.success) return;
-                        if (pos.left < 400) {
-                            $('#comments').html(response.Result.Data).show();
-                            $("#comments").position({
-                                "of": that,
-                                "my": "left top",
-                                "at": "center bottom",
-                                "offset": "0 0",
-                                "collision": "none"
-                            });
-                        }
-                        else {
-                            $('#comments').html(response.Result.Data).show();
-                            $("#comments").position({
-                                "of": that,
-                                "my": "right top",
-                                "at": "center bottom",
-                                "offset": "0 0",
-                                "collision": "none"
-                            });
-                        }
-                        $("#comments #comments-content").removeClass('hide');
-                    }
-                });
+        $('.comments', '#tabledata').unbind('click').click(function (e)
+        {
+            gemini_commons.stopClick(e);
+            var parent = $(this).parent();
+            var that = this;
+            var pos = $(this).position();
+            if ($('#comments').is(':visible')) {
+                $('#comments').hide();
+                $('#comments').empty();
+                return;
             }
+            gemini_keyboard.bindEscape("#items-grid #comments", function (guid, selector) {
+                $(selector).hide();
+                gemini_keyboard.unbindEscape("#items-grid #comments");
+
+            });
+            gemini_ajax.call('item', "comments?issueid=" + parent.data('issue-id'),
+                function (response) {
+                    if (!response.success) return;
+                    if (pos.left < 400) {
+                        $('#comments').html(response.Result.Data).show();
+                        $("#comments").position({
+                            "of": that,
+                            "my": "left top",
+                            "at": "left bottom",
+                            "offset": "0 -1",
+                            "collision": "none"
+                        });
+                    }
+                    else {
+                        $('#comments').html(response.Result.Data).show();
+                        $("#comments").position({
+                            "of": that,
+                            "my": "right top",
+                            "at": "right bottom",
+                            "offset": "0 -1",
+                            "collision": "none"
+                        });
+                    }
+                    $("#comments #comments-content").removeClass('hide');
+                });
         });
     },
     
     resizeMainItemsGrid: function () {
-    
-            var totalWidth = $('#page-content-zone .layout').width();
-            /*var filterWidth = 0;
+        var totalWidth = $('#page-content-zone .layout').width();
+        /*var filterWidth = 0;
 
-            if ($('#page-content-zone .filter-container').is(':visible'))
-                filterWidth = $('#page-content-zone .filter-container').width() + 10;
+        if ($('#page-content-zone .filter-container').is(':visible'))
+            filterWidth = $('#page-content-zone .filter-container').width() + 10;
 
-            var contentWidth = totalWidth - filterWidth;*/
-            var contentWidth = totalWidth;
-            $('#page-content-zone .layout .items-data-container').css('width', contentWidth + 'px');
+        var contentWidth = totalWidth - filterWidth;*/
+        var contentWidth = totalWidth;
+        $('#page-content-zone .layout .items-data-container').css('width', contentWidth + 'px');
+
+        if ($('#tabledata', '#data').length != 0)
+        {
+            if ($('#tabledata', '#data').position().left + $('#tabledata', '#data').width() >= $('#side-pane').position().left)
+            {
+                $('#tabledata', '#data').css('padding-right', ($('#side-pane').width() + 20) + 'px');
+            }
+            else
+            {
+                $('#tabledata', '#data').css('padding-right', '');
+            }
+        }
         
     },
     
@@ -355,29 +368,13 @@ gemini_items = {
           
         }      
     },
-    
-   pageCard: "",
-    
-    pinItem: function (issueId, pinning)
-    {
-        var url = csVars.Url + "cards/issue";
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: { mode: pinning, issueId: issueId },
-            dataType: "json",
-            success: function (response) {
-                gemini_appnav.refresh();
-            }
-        });
-    },
+        
     bulkDeleteItems: function (items)
     {
         if (items && items.length > 0) {
             gemini_ui.startBusy('#modal-confirm #modal-button-yes');
 
-            gemini_ajax.postCall(csVars.ProjectUrl + "bulk", "delete",
+            gemini_ajax.postCall("bulk", "delete",
                             function () {
                                 gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                                 $.subscribe('items-grid-page-loaded.itemsgriddelete', function (e) {
@@ -391,25 +388,25 @@ gemini_items = {
                             }, { items: items });
         }
     },
-    postDelete: function (issueId) {
-        gemini_ui.startBusy('#modal-confirm #modal-button-yes');
-        gemini_ajax.postCall(csVars.ProjectUrl + "item", "deleteissue/" + issueId.issueId, gemini_items.PostDeleteResponse, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); });
-    },
     postDeleteProj: function (issueId, projectId) {
         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
-        gemini_ajax.postCall(csVars.ProjectUrl + "item", "deleteissue/" + issueId + '/' + projectId, gemini_items.PostDeleteResponse, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); });
+        gemini_ajax.postCall("item", "deleteissue?issueid=" + issueId + '&issueprojectid=' + projectId, gemini_items.PostDeleteResponse, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); });
     },
     PostDeleteResponse: function (response)
     {
-        if (response.Success)
-        {
-            var currentPage = $('#pager-next').data('page') - 1;
-            $("#card-holder").html(response.Result.Data.navdata);
-            gemini_filter.getFilteredItemsPage(currentPage);
-            
+        if (gemini_items.gridDeleteIssueRowCallback) {
+            gemini_items.gridDeleteIssueRowCallback(response);
         }
-        gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-        gemini_appnav.initCardActions();
+        else {
+            if (response.Success) {
+                var currentPage = $('#pager-next').data('page') - 1;
+                $("#card-holder").html(response.Result.Data.navdata);
+                gemini_filter.getFilteredItemsPage(currentPage);
+
+            }
+            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+            gemini_appnav.initCardActions();
+        }
     },
 
 
@@ -435,26 +432,22 @@ gemini_items = {
                     else if (action == "comment" && !$('#item-grid-context-menu a[href="#comment"]').parent().hasClass('disabled')) {
                         $("#cs-popup-center-content").css("width", "600px");
                         $("#cs-popup-center-content").css("height", "475px");
-                        gemini_popup.centerPopup("project/All/" + projectId + "/item/" + issueId + "/editcommenteditor", "popup");
+                        gemini_popup.centerPopup("item/editcommenteditor", "popup?issueid=" + issueId);
              
                     }
                     else if (action == "follow") {
-                        gemini_ajax.call("project/All/" + projectId + "/item", "addwatcher/" + issueId + "/0");
-                    }
-                    else if (action == "pin") {
-                        gemini_items.pinItem(issueId, false);
+                        gemini_ajax.call("item", "addwatcher/" + issueId + "/0");
                     }
                     else if (action == "delete" && !$('#item-grid-context-menu a[href="#delete"]').parent().hasClass('disabled')) {
                         gemini_popup.modalConfirm("Delete Item "+ projectCode + "-" + issueId + "?", null,
                             function () {
-                               // gemini_items.postDelete({ issueId: cardId });
                                 gemini_items.postDeleteProj(issueId, projectId);
                             });
                     }
                 },
                 function (before) {
                     
-                    gemini_ajax.call(csVars.ProjectUrl + 'projects', "getprojectpermissions/" + $(before).parent().data("issue-id"), function (response) {
+                    gemini_ajax.call('', "projectpermissions?issueid=" + $(before).parent().data("issue-id"), function (response) {
                         if (response.success)
                         {
                             if (response.Result.Data.canview)
@@ -482,5 +475,34 @@ gemini_items = {
 
                 }
             );
+    },
+
+    getCurrentItem: function()
+    {
+        if (gemini_items.currentViewedIssueId == 0)
+        {
+            gemini_items.currentViewedIssueId = $('#data #items-grid td a:first').parents('tr:eq(0)').attr('data-issue-id');
+        }
+        return { issueid: gemini_items.currentViewedIssueId };
+    },
+
+    adjustViewPane: function()
+    {
+        var top = $('#view-item-slider').attr('data-top');
+        var height = $(window).height();
+
+        if ($(window).scrollTop() + $('#zone-header-bar').height() > top)
+        {
+            top = $('#zone-header-bar').height();    
+            height = height - top - 24 - 3 - 24 - 20; // footer take away six
+            $('#view-item-slider').css({ 'position': 'fixed', top: top + 'px', height: height + 'px' });
+            
+        }
+        else
+        {
+            height = height - top - 24 - 3 - 24 - 20 + $(window).scrollTop(); // footer take away six
+            $('#view-item-slider').css('height', height + 'px');
+            $('#view-item-slider').css({ 'position': 'absolute', top: top + 'px' });
+        }
     }
 };

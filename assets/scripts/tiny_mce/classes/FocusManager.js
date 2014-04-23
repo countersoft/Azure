@@ -38,37 +38,78 @@ define("tinymce/FocusManager", [
 			}
 		}
 
-		function registerEvents(e) {
-			var editor = e.editor, lastRng, selectionChangeHandler;
-
-			function isUIElement(elm) {
-				return !!DOMUtils.DOM.getParent(elm, FocusManager.isEditorUIElement);
+		// We can't store a real range on IE 11 since it gets mutated so we need to use a bookmark object
+		// TODO: Move this to a separate range utils class since it's it's logic is present in Selection as well.
+		function createBookmark(rng) {
+			if (rng && rng.startContainer) {
+				return {
+					startContainer: rng.startContainer,
+					startOffset: rng.startOffset,
+					endContainer: rng.endContainer,
+					endOffset: rng.endOffset
+				};
 			}
+
+			return rng;
+		}
+
+		function bookmarkToRng(editor, bookmark) {
+			var rng;
+
+			if (bookmark.startContainer) {
+				rng = editor.getDoc().createRange();
+				rng.setStart(bookmark.startContainer, bookmark.startOffset);
+				rng.setEnd(bookmark.endContainer, bookmark.endOffset);
+			} else {
+				rng = bookmark;
+			}
+
+			return rng;
+		}
+
+		function isUIElement(elm) {
+			return !!DOMUtils.DOM.getParent(elm, FocusManager.isEditorUIElement);
+		}
+
+		function isNodeInBodyOfEditor(node, editor) {
+			var body = editor.getBody();
+
+			while (node) {
+				if (node == body) {
+					return true;
+				}
+
+				node = node.parentNode;
+			}
+		}
+
+		function registerEvents(e) {
+			var editor = e.editor, selectionChangeHandler;
 
 			editor.on('init', function() {
 				// On IE take selection snapshot onbeforedeactivate
-				if ("onbeforedeactivate" in document) {
+				if ("onbeforedeactivate" in document && Env.ie < 11) {
 					editor.dom.bind(editor.getBody(), 'beforedeactivate', function() {
-						var ieSelection = editor.getDoc().selection;
-						lastRng = ieSelection && ieSelection.createRange ? ieSelection.createRange() : editor.selection.getRng();
-					});
-				} else if (editor.inline) {
-					// On other browsers take snapshot on nodechange in inline mode since they have Ghost selections for iframes
-					editor.on('nodechange', function() {
-						var isInBody, node = document.activeElement;
-
-						// Check if selection is within editor body
-						while (node) {
-							if (node == editor.getBody()) {
-								isInBody = true;
-								break;
-							}
-
-							node = node.parentNode;
+						try {
+							editor.lastRng = editor.selection.getRng();
+						} catch (ex) {
+							// IE throws "Unexcpected call to method or property access" some times so lets ignore it
 						}
 
-						if (isInBody) {
-							lastRng = editor.selection.getRng();
+						editor.selection.lastFocusBookmark = createBookmark(editor.lastRng);
+					});
+				} else if (editor.inline || Env.ie > 10) {
+					// On other browsers take snapshot on nodechange in inline mode since they have Ghost selections for iframes
+					editor.on('nodechange keyup', function() {
+						var node = document.activeElement;
+
+						// IE 11 reports active element as iframe not body of iframe
+						if (node && node.id == editor.id + '_ifr') {
+							node = editor.getBody();
+						}
+
+						if (isNodeInBodyOfEditor(node, editor)) {
+							editor.lastRng = editor.selection.getRng();
 						}
 					});
 
@@ -82,7 +123,7 @@ define("tinymce/FocusManager", [
 
 							// Store when it's non collapsed
 							if (!rng.collapsed) {
-								lastRng = rng;
+								editor.lastRng = rng;
 							}
 						};
 
@@ -96,12 +137,21 @@ define("tinymce/FocusManager", [
 				}
 			});
 
+			editor.on('setcontent', function() {
+				editor.lastRng = null;
+			});
+
+			// Remove last selection bookmark on mousedown see #6305
+			editor.on('mousedown', function() {
+				editor.selection.lastFocusBookmark = null;
+			});
+
 			editor.on('focusin', function() {
 				var focusedEditor = editorManager.focusedEditor;
 
-				if (editor.selection.restoreRng) {
-					editor.selection.setRng(editor.selection.restoreRng);
-					editor.selection.restoreRng = null;
+				if (editor.selection.lastFocusBookmark) {
+					editor.selection.setRng(bookmarkToRng(editor, editor.selection.lastFocusBookmark));
+					editor.selection.lastFocusBookmark = null;
 				}
 
 				if (focusedEditor != editor) {
@@ -109,32 +159,52 @@ define("tinymce/FocusManager", [
 						focusedEditor.fire('blur', {focusedEditor: editor});
 					}
 
+					editorManager.activeEditor = editor;
+					editorManager.focusedEditor = editor;
 					editor.fire('focus', {blurredEditor: focusedEditor});
 					editor.focus(false);
-					editorManager.focusedEditor = editor;
 				}
+
+				editor.lastRng = null;
 			});
 
 			editor.on('focusout', function() {
-				editor.selection.restoreRng = lastRng;
-
 				window.setTimeout(function() {
 					var focusedEditor = editorManager.focusedEditor;
 
-					// Focus from editorA into editorB then don't restore selection
-					if (focusedEditor != editor) {
-						editor.selection.restoreRng = null;
-					}
-
-					// Still the same editor the the blur was outside any editor
+					// Still the same editor the the blur was outside any editor UI
 					if (!isUIElement(getActiveElement()) && focusedEditor == editor) {
 						editor.fire('blur', {focusedEditor: null});
 						editorManager.focusedEditor = null;
-						editor.selection.restoreRng = null;
+
+						// Make sure selection is valid could be invalid if the editor is blured and removed before the timeout occurs
+						if (editor.selection) {
+							editor.selection.lastFocusBookmark = null;
+						}
 					}
 				}, 0);
 			});
 		}
+
+		// Check if focus is moved to an element outside the active editor by checking if the target node
+		// isn't within the body of the activeEditor nor a UI element such as a dialog child control
+		DOMUtils.DOM.bind(document, 'focusin', function(e) {
+			var activeEditor = editorManager.activeEditor;
+
+			if (activeEditor && e.target.ownerDocument == document) {
+
+				// Check to make sure we have a valid selection
+				if (activeEditor.selection) {
+					activeEditor.selection.lastFocusBookmark = createBookmark(activeEditor.lastRng);
+				}
+
+				// Fire a blur event if the element isn't a UI element
+				if (!isUIElement(e.target) && editorManager.focusedEditor == activeEditor) {
+					activeEditor.fire('blur', {focusedEditor: null});
+					editorManager.focusedEditor = null;
+				}
+			}
+		});
 
 		editorManager.on('AddEditor', registerEvents);
 	}

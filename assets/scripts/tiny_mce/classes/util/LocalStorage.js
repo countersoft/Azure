@@ -28,16 +28,24 @@
  * var value = tinymce.util.LocalStorage.getItem('key');
  */
 define("tinymce/util/LocalStorage", [], function() {
-	var LocalStorage, storageElm, items, keys, userDataKey;
+	var LocalStorage, storageElm, items, keys, userDataKey, hasOldIEDataSupport;
 
 	// Check for native support
-	if (window.localStorage) {
-		return localStorage;
+	try {
+		if (window.localStorage) {
+			return localStorage;
+		}
+	} catch (ex) {
+		// Ignore
 	}
 
 	userDataKey = "tinymce";
 	storageElm = document.documentElement;
-	storageElm.addBehavior('#default#userData');
+	hasOldIEDataSupport = !!storageElm.addBehavior;
+
+	if (hasOldIEDataSupport) {
+		storageElm.addBehavior('#default#userData');
+	}
 
 	/**
 	 * Gets the keys names and updates LocalStorage.length property. Since IE7 doesn't have any getters/setters.
@@ -60,6 +68,11 @@ define("tinymce/util/LocalStorage", [], function() {
 
 		items = {};
 
+		// localStorage can be disabled on WebKit/Gecko so make a dummy storage
+		if (!hasOldIEDataSupport) {
+			return;
+		}
+
 		function next(end) {
 			var value, nextPos;
 
@@ -78,10 +91,23 @@ define("tinymce/util/LocalStorage", [], function() {
 		data = storageElm.getAttribute(userDataKey) || '';
 
 		do {
-			key = next(parseInt(next(), 32) || 0);
+			var offset = next();
+			if (offset === null) {
+				break;
+			}
+
+			key = next(parseInt(offset, 32) || 0);
 			if (key !== null) {
-				value = next(parseInt(next(), 32) || 0);
-				items[key] = value;
+				offset = next();
+				if (offset === null) {
+					break;
+				}
+
+				value = next(parseInt(offset, 32) || 0);
+
+				if (key) {
+					items[key] = value;
+				}
 			}
 		} while (key !== null);
 
@@ -94,13 +120,24 @@ define("tinymce/util/LocalStorage", [], function() {
 	function save() {
 		var value, data = '';
 
+		// localStorage can be disabled on WebKit/Gecko so make a dummy storage
+		if (!hasOldIEDataSupport) {
+			return;
+		}
+
 		for (var key in items) {
 			value = items[key];
 			data += (data ? ',' : '') + key.length.toString(32) + ',' + key + ',' + value.length.toString(32) + ',' + value;
 		}
 
 		storageElm.setAttribute(userDataKey, data);
-		storageElm.save(userDataKey);
+
+		try {
+			storageElm.save(userDataKey);
+		} catch (ex) {
+			// Ignore disk full
+		}
+
 		updateKeys();
 	}
 

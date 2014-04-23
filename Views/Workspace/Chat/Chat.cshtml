@@ -1,0 +1,31 @@
+﻿@model WorkspaceChatModel
+
+<div id="workspace-chat-zone">
+
+    <div class="content">
+        <div class="chat-box-placeholder hide" data-id="0"></div>
+        @if (Model.TeamChat.Count == 0 && !Model.CanGoBack)
+        {
+            if(Model.CurrentPageCard.CardData.IsShared || Model.CurrentPageCard.Locked)
+            { 
+                <img class="empty-state-chat" src="@GeminiContext.AssetsUrl/images/empty-state/sidebar-chat.png" />
+            }
+            else
+            {
+                <img class="empty-state-chat" src="@GeminiContext.AssetsUrl/images/empty-state/sidebar-chat-private.png" />
+            }
+        }
+        else
+        { 
+            foreach (var message in Model.TeamChat)
+            {
+                @Html.Partial("~/views/workspace/chat/_Chat.cshtml", message)
+            }
+        }
+    </div>
+
+    <div class="footer">
+        <textarea id="workspace-chat-zone-input" class="no-outline @if(!Model.CurrentPageCard.CardData.IsShared && !Model.CurrentPageCard.Locked){<text>hide</text>}" placeholder="@GetResource(ResourceKeys.Chat, Resourcing.Dotted)"></textarea>
+    </div>
+
+</div>

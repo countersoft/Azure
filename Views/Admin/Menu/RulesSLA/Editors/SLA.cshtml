@@ -1,0 +1,102 @@
+﻿@model Countersoft.Gemini.Commons.Entity.SLA.SLAData
+<div id="SLAItemContainer" style="height: 316px;">
+<div id="sla-form-container">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.Id" name="Id" Id="Id" />
+        <table id="table-admin-breezemailbox" class="admin-data-entry">
+            <tbody>
+                <tr>
+                    <td class="field-name">Name
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name" 
+                               class="input-field required input-size9" value="@Model.Name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Description
+                    </td>
+                    <td>
+                        <textarea id="Description" name="Description" class="input-field required input-size9" rows="4">@Model.Description</textarea>
+                    </td>
+                </tr>
+                <tr id="exchange-version">
+                    <td class="field-name"><label for='Is24x7'>Applies 24x7</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="fancy" id="Is24x7" name="Is24x7" @if (Model.Is24x7) { <text> checked="checked" </text>  } />
+                    </td>
+                </tr>
+                <tr>
+                    <td id="server" class="field-name">Response Time
+                    </td>
+                    <td>
+                        <input type="text" id="Time" name="Time" class="input-field required input-size9 mask" value="@Model.FormattedTime"/>
+                    </td>
+                </tr>
+                <tr id="server-port">
+                    <td class="field-name">Day starts
+                    </td>
+                    <td>
+                        <input type="text" id="StartOfDay" name="StartOfDay" class="input-field required input-size9 mask n247" value="@Model.StartOfDay" />
+                    </td>
+                </tr>
+                <tr id="server-port">
+                    <td class="field-name">Day ends
+                    </td>
+                    <td>
+                        <input type="text" id="EndOfDay" name="EndOfDay" class="input-field required input-size9 mask n247" value="@Model.EndOfDay" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function check24x7()
+    {
+        if($('#Is24x7').prop('checked'))
+        {
+            $('.mask.n247', '#sla-form-container').prop('disabled', 'disabled');
+        }
+        else
+        {
+            $('.mask.n247', '#sla-form-container').prop('disabled', '');
+        }
+    }
+
+      $(document).ready(function () {
+
+          gemini_ui.fancyInputs('#regular-form .fancy');
+
+          $("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+          $('.mask').mask('99:99');
+
+          $('#sla-form-container').on('ifChanged', '#Is24x7', function (e)
+          {
+              check24x7();
+          });
+
+          check24x7();
+
+          $("#popup-button-yes").click(function (e) {
+              if ($("#regular-form").valid()) {  
+                  gemini_ui.startBusy('#colorbox #popup-button-yes');
+                  gemini_ajax.postCall("configure/RulesSLA/SLA", "SaveData", 
+                      function (response)
+                      {
+                          gemini_popup.popupClose(e);
+                          gemini_admin.getPage();
+                                                    
+                          gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                      }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
+              } else {
+                  $('.error:not(label)', '#cs-popup-content').first().focus();
+              }
+          });
+
+          $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+      });
+</script>

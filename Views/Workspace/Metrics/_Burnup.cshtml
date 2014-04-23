@@ -1,0 +1,20 @@
+﻿@model RoadmapModel
+<div class="metric-chart">
+    <div class="label">@(GetResource(ResourceKeys.Burnup))</div>
+    <div id='burnupMetric' style="width:250px; height: 150px;display:inline-block;"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var burnupTrendLine = @Html.Raw(Model.BurnupTrendline.ToJson());
+
+        var burnupCategory = @Html.Raw(Model.Burnup.Select(b => b.Category).ToJson());
+        var burnupTotalData = @Html.Raw(Model.Burnup.Select(b => b.TotalCount).ToJson());        
+        var burnupClosedData = @(Model.Burnup.Any(a => a.CountType == CountTypes.Issues || a.CountType == CountTypes.Points) ? Html.Raw(Model.Burnup.Select(b => b.ClosedCount).ToJson()) : Html.Raw(Model.Burnup.Select(b => (b.StartInterval <= System.DateTime.Today ? b.TotalLoggedHours : null)).ToJson()));
+       
+        var translation = {Items: '@((Model.ItemHours == CountTypes.Issues || Model.ItemHours == CountTypes.Points) ? (Model.ItemHours == CountTypes.Points ? GetResource(ResourceKeys.Points) : GetResource(ResourceKeys.Items)) : GetResource(ResourceKeys.Hours))', Total: '@GetResource(ResourceKeys.Total)', Created: '@GetResource(ResourceKeys.Created)', Open: '@GetResource(ResourceKeys.Open)', Closed: '@GetResource(ResourceKeys.Closed)' };
+
+        gemini_progress.burnupChartDashboard(translation,burnupCategory,burnupTotalData,burnupClosedData, burnupTrendLine);   
+    });
+</script>

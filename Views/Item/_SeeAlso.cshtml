@@ -8,8 +8,23 @@
         {
             var issue = link.Issue.Id == Model.Issue.Id ? link.OtherIssue : link.Issue;
             <div class="see-also-value">
-                <a class='@ViewHelpers.IssueStriked(issue)' href='@Url.Action("Item", "Item", new RouteValueDictionary(new { projectid = issue.Project.Id, projectcode = issue.Project.Code, issueid = issue.Id }))' title='@(link.LinkType):&nbsp;@issue.Title'>@issue.IssueKey</a>
-                <span data-id="@issue.Id" class="delete-link fonticon-cross"></span>
+                <a class='@ViewHelpers.IssueStriked(issue)' href='@Url.Action("Item", "Item", new RouteValueDictionary(new { id = GeminiContext.Card.Id, issueid = issue.Id }))' title='@(link.LinkType):&nbsp;@issue.Title'>@issue.IssueKey</a> 
+                
+                @{
+                    var status = link.LinkType;
+
+                if (GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Status, issue.Project, issue))
+                {
+                   status = string.Concat(status, ", ", issue.Status);
+                }
+                
+                <span class="link-status">(@status)</span>
+
+                if (CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedLinks) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+                { 
+                    <span data-id="@issue.Id" class="delete-link fonticon-cross"></span>
+                }
+                }
             </div>
         }
     </div>
@@ -18,14 +33,3 @@ else
 {
     
 }
-
-<div id="links-find-item-container" class="hide">
-    <input type="hidden" id="links-find-item-id"/>
-    <form name="links-form">
-        <span class="left">@GetResourceTemplate(ResourceKeys.Link)</span>
-        <input class="left input-size6 required" id="links-find-item" name="linksFindItem" type="text"/>        
-        @Html.DropDownList("linktypes", Model.IssueLinkTypes, new {@class="input-size5 left"})
-        <span class="fonticon-tick left"></span>
-        <span class="fonticon-cross left"></span>
-    </form>
-</div>

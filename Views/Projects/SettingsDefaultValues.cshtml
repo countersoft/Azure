@@ -28,10 +28,6 @@
                 @Html.DropDownList("defaulttype", Model.Types, new { @class="input-size10" })
             </div>
 
-            <div class="margin-bottom-20">
-                <input type="button" class="defaults-save button-primary" value="@GetResource(ResourceKeys.Save)" />
-            </div>
-
             <div style="margin: 0 auto;">
             @Html.Grid(fields).Attributes(classes).Columns( 
                 col => 
@@ -53,14 +49,14 @@
 
     $(".defaults-save").click(function (e) {
         gemini_ui.startBusy('#defaults-container .defaults-save');
-        gemini_ajax.postCall("project/@(GeminiContext.Project.Entity.Id)/settings/defaults", 'save', function () {
+        gemini_ajax.postCall("project/@(Model.ProjectId)/settings/defaults", 'save', function () {
             gemini_popup.toast('@(GetResource(ResourceKeys.Saved))');
             gemini_ui.stopBusy('#defaults-container .defaults-save');
-        }, function () { gemini_ui.stopBusy('#defaults-container .defaults-save'); }, $('#defaults-form').serialize());
+        }, function () { gemini_ui.stopBusy('#defaults-container .defaults-save'); }, $('#defaults-form').serialize(), null, true);
     });
     
     $('#defaulttype', '#defaults-form').change(function () {
-        gemini_projects.settingsDefaults(@(GeminiContext.Project.Entity.Id), $(this).val());
+        gemini_projects.settingsDefaults(@(Model.ProjectId), $(this).val());
     });
     gemini_ui.chosen('#defaults-form select', null, false);
     gemini_ui.datePicker('#defaults-form .datepicker');

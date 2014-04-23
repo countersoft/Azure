@@ -81,9 +81,10 @@
 
             if ($("#EditTimeEntryPopupContainer form").valid()) 
             {
+                $('#server-validation-error', '#cs-popup-center').hide();
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
                 e.preventDefault();
-                gemini_ajax.postCall(gemini_item.itemUrl + "item", $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id") + "/addtimeentry",
+                gemini_ajax.postCall("item", "addtimeentry?issueid=" + $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id"),
                         function (response) {
                             if (response.Success) {
                                 var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;
@@ -92,6 +93,17 @@
                                 gemini_popup.popupClose(e);
 
                                 if (isCollapsed) gemini_ui.expandCollapse($('.expander', '.dependencies-article').first().parent());
+                            }
+                            else
+                            {
+                                if (response.Message && response.Message.length)
+                                {
+                                    $('#server-validation-error', '#cs-popup-center').html(response.Message).show();
+                                }
+                                else
+                                {
+                                    $('#server-validation-error', '#cs-popup-center').html("Couln't add time entry").show();
+                                }
                             }
                             gemini_ui.stopBusy('#colorbox #popup-button-yes');
                         },
@@ -103,6 +115,10 @@
         });
 
 
-        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+        $("#popup-button-no").click(function (e)
+        {
+            $('#server-validation-error', '#cs-popup-center').hide();
+            gemini_popup.popupClose(e);
+        });
     });
 </script>

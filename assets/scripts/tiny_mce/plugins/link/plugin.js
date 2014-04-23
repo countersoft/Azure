@@ -30,7 +30,17 @@ tinymce.PluginManager.add('link', function(editor) {
 
 	function showDialog(linkList) {
 		var data = {}, selection = editor.selection, dom = editor.dom, selectedElm, anchorElm, initialText;
-		var win, linkListCtrl, relListCtrl, targetListCtrl;
+		var win, textListCtrl, linkListCtrl, relListCtrl, targetListCtrl;
+
+		function linkListChangeHandler(e) {
+			var textCtrl = win.find('#text');
+
+			if (!textCtrl.value() || (e.lastControl && textCtrl.value() == e.lastControl.text())) {
+				textCtrl.value(e.control.text());
+			}
+
+			win.find('#href').value(e.control.value());
+		}
 
 		function buildLinkList() {
 			var linkListItems = [{text: 'None', value: ''}];
@@ -38,7 +48,7 @@ tinymce.PluginManager.add('link', function(editor) {
 			tinymce.each(linkList, function(link) {
 				linkListItems.push({
 					text: link.text || link.title,
-					value: link.value || link.url,
+					value: editor.convertURL(link.value || link.url, 'href'),
 					menu: link.menu
 				});
 			});
@@ -61,9 +71,10 @@ tinymce.PluginManager.add('link', function(editor) {
 		}
 
 		function buildTargetList(targetValue) {
-			var targetListItems = [{text: 'None', value: ''}];
+			var targetListItems = [];
 
 			if (!editor.settings.target_list) {
+				targetListItems.push({text: 'None', value: ''});
 				targetListItems.push({text: 'New window', value: '_blank'});
 			}
 
@@ -78,28 +89,79 @@ tinymce.PluginManager.add('link', function(editor) {
 			return targetListItems;
 		}
 
-		function updateText() {
-			if (!initialText && data.text.length === 0) {
+		function buildAnchorListControl(url) {
+			var anchorList = [];
+
+			tinymce.each(editor.dom.select('a:not([href])'), function(anchor) {
+				var id = anchor.name || anchor.id;
+
+				if (id) {
+					anchorList.push({
+						text: id,
+						value: '#' + id,
+						selected: url.indexOf('#' + id) != -1
+					});
+				}
+			});
+
+			if (anchorList.length) {
+				anchorList.unshift({text: 'None', value: ''});
+
+				return {
+					name: 'anchor',
+					type: 'listbox',
+					label: 'Anchors',
+					values: anchorList,
+					onselect: linkListChangeHandler
+				};
+			}
+		}
+
+		function urlChange() {
+			if (linkListCtrl) {
+				linkListCtrl.value(editor.convertURL(this.value(), 'href'));
+			}
+
+			if (!initialText && data.text.length === 0 && onlyText) {
 				this.parent().parent().find('#text')[0].value(this.value());
 			}
 		}
 
-		// Focus the editor since selection is lost on WebKit in inline mode
-		editor.focus();
-
 		selectedElm = selection.getNode();
 		anchorElm = dom.getParent(selectedElm, 'a[href]');
-		if (anchorElm) {
-			selection.select(anchorElm);
+
+		var onlyText = true;
+		if (/</.test(selection.getContent())) {
+			onlyText = false;
+		} else if (anchorElm) {
+			var nodes = anchorElm.childNodes, i;
+			if (nodes.length === 0) {
+				onlyText = false;
+			} else {
+				for (i = nodes.length - 1; i >= 0; i--) {
+					if (nodes[i].nodeType != 3) {
+						onlyText = false;
+						break;
+					}
+				}
+			}
 		}
 
-		data.text = initialText = selection.getContent({format: 'text'});
+		data.text = initialText = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({format: 'text'});
 		data.href = anchorElm ? dom.getAttrib(anchorElm, 'href') : '';
-		data.target = anchorElm ? dom.getAttrib(anchorElm, 'target') : '';
+		data.target = anchorElm ? dom.getAttrib(anchorElm, 'target') : (editor.settings.default_link_target || '');
 		data.rel = anchorElm ? dom.getAttrib(anchorElm, 'rel') : '';
 
-		if (selectedElm.nodeName == "IMG") {
-			data.text = initialText = " ";
+		if (onlyText) {
+			textListCtrl = {
+				name: 'text',
+				type: 'textbox',
+				size: 40,
+				label: 'Text to display',
+				onchange: function() {
+					data.text = this.value();
+				}
+			};
 		}
 
 		if (linkList) {
@@ -107,14 +169,10 @@ tinymce.PluginManager.add('link', function(editor) {
 				type: 'listbox',
 				label: 'Link list',
 				values: buildLinkList(),
-				onselect: function(e) {
-					var textCtrl = win.find('#text');
-
-					if (!textCtrl.value() || (e.lastControl && textCtrl.value() == e.lastControl.text())) {
-						textCtrl.value(e.control.text());
-					}
-
-					win.find('#href').value(e.control.value());
+				onselect: linkListChangeHandler,
+				value: editor.convertURL(data.href, 'href'),
+				onPostRender: function() {
+					linkListCtrl = this;
 				}
 			};
 		}
@@ -148,12 +206,11 @@ tinymce.PluginManager.add('link', function(editor) {
 					size: 40,
 					autofocus: true,
 					label: 'Url',
-					onchange: updateText,
-					onkeyup: updateText
+					onchange: urlChange,
+					onkeyup: urlChange
 				},
-				{name: 'text', type: 'textbox', size: 40, label: 'Text to display', onchange: function() {
-					data.text = this.value();
-				}},
+				textListCtrl,
+				buildAnchorListControl(data.href),
 				linkListCtrl,
 				relListCtrl,
 				targetListCtrl
@@ -163,37 +220,46 @@ tinymce.PluginManager.add('link', function(editor) {
 
 				// Delay confirm since onSubmit will move focus
 				function delayedConfirm(message, callback) {
+					var rng = editor.selection.getRng();
+
 					window.setTimeout(function() {
-						editor.windowManager.confirm(message, callback);
+						editor.windowManager.confirm(message, function(state) {
+							editor.selection.setRng(rng);
+							callback(state);
+						});
 					}, 0);
 				}
 
 				function insertLink() {
-					if (data.text != initialText) {
-						if (anchorElm) {
-							editor.focus();
-							anchorElm.innerHTML = data.text;
+					if (anchorElm) {
+						editor.focus();
 
-							dom.setAttribs(anchorElm, {
-								href: href,
-								target: data.target ? data.target : null,
-								rel: data.rel ? data.rel : null
-							});
+						if (onlyText && data.text != initialText) {
+							anchorElm.innerText = data.text;
+						}
 
-							selection.select(anchorElm);
-						} else {
+						dom.setAttribs(anchorElm, {
+							href: href,
+							target: data.target ? data.target : null,
+							rel: data.rel ? data.rel : null
+						});
+
+						selection.select(anchorElm);
+						editor.undoManager.add();
+					} else {
+						if (onlyText) {
 							editor.insertContent(dom.createHTML('a', {
 								href: href,
 								target: data.target ? data.target : null,
 								rel: data.rel ? data.rel : null
-							}, data.text));
+							}, dom.encode(data.text)));
+						} else {
+							editor.execCommand('mceInsertLink', false, {
+								href: href,
+								target: data.target,
+								rel: data.rel ? data.rel : null
+							});
 						}
-					} else {
-						editor.execCommand('mceInsertLink', false, {
-							href: href,
-							target: data.target,
-							rel: data.rel ? data.rel : null
-						});
 					}
 				}
 
@@ -254,7 +320,7 @@ tinymce.PluginManager.add('link', function(editor) {
 		stateSelector: 'a[href]'
 	});
 
-	editor.addShortcut('Ctrl+K', '', showDialog);
+	editor.addShortcut('Ctrl+K', '', createLinkList(showDialog));
 
 	this.showDialog = showDialog;
 

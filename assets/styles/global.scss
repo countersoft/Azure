@@ -229,6 +229,17 @@ a img
 {
     margin-left:10px;
 }
+.no-outline
+{
+	outline:none !important;
+	border:none !important;
+	box-shadow:none !important;
+	&:focus, &:active
+	{
+		border:none !important;
+		box-shadow:none !important;
+	}
+}
 .no-select
 {
     -webkit-touch-callout: none;
@@ -246,6 +257,11 @@ a img
 .inline
 {
 	display:inline;
+}
+
+.inline-block
+{
+	display:inline-block;
 }
 
 /******************************
@@ -408,6 +424,14 @@ a img
 .margin-bottom-25
 {
 	margin-bottom: 25px;
+}
+.margin-bottom-30
+{
+	margin-bottom: 30px;
+}
+.margin-bottom-60
+{
+	margin-bottom: 60px;
 }
 .margin-right-5
 {
@@ -1248,11 +1272,300 @@ a img
 
 .z-index-max {z-index:2147483620 !important;}
 .mceListBoxMenu,#mce_fullscreen_container,.clearlooks2,.mceSplitButtonMenu,.mce_forecolor,.mce_backcolor, ul.ui-autocomplete, .mce-window, .mce-menu, .mce-popover {z-index:2147483620 !important;}
+ul.z-index-low, .z-index-low {z-index:1 !important;} 
+ul.z-index-medium, .z-index-medium {z-index:10 !important;}
 
 .hardBreak { 
   word-wrap: break-word; /* Internet Explorer 5.5+, 6, 7, 8 compability-mode */
   -ms-word-break: break-all; /* Internet Explorer 8 */
   word-break:break-all;
+}
+
+.gravatar-empty
+{
+	background: url($global-base-path + 'images/gravatars.png') no-repeat 0 0;
+	width:40px;
+	height:40px;
+}
+
+.gravatar-unassigned
+{
+	background: url($global-base-path + 'images/gravatars.png') no-repeat -40px 0;
+	width:40px;
+	height:40px;
+}
+
+.word-wrap
+{
+	white-space: pre-wrap;      /* CSS3 */   
+	white-space: -moz-pre-wrap; /* Firefox */    
+	white-space: -pre-wrap;     /* Opera <7 */   
+	white-space: -o-pre-wrap;   /* Opera 7 */    
+	word-wrap: break-word;      /* IE */
+	-ms-break-word: break-all;	/* IE */
+}
+
+.toolbar-icons
+{
+    .wrapper
+    {
+		display: inline-block;
+        height:30px;
+        width:30px;
+            
+        &:hover
+        {
+            cursor: pointer;
+                    
+            .action
+            {
+                opacity: 0.5 !important;
+            }
+        }
+    }
+
+    .action
+    {
+        width:20px;
+        height:16px;
+        margin:7px 0 0 0;
+        background: url('images/toolbar.png') no-repeat 0 0;
+        display: inline-block;
+		cursor: pointer;
+    }
+
+	.save
+    {
+        background-position: 0 0;
+    }
+	.save.black
+	{
+		background-position: 0 -16px;
+	}
+
+    .copy
+    {
+        background-position: -20px 0;
+    }
+	.copy.black
+	{
+		background-position: -20px -16px;
+	}
+            
+    .delete
+    {
+        background-position: -40px 0;
+    }
+	.delete.black
+	{
+		background-position: -40px -16px;
+	}
+            
+    .configure
+    {
+        background-position: -500px 0;
+    }
+	.configure.black
+	{
+		background-position: -500px -16px;
+	}
+            
+    .reports
+    {
+        background-position: -80px 0;
+    }
+	.reports.black
+	{
+		background-position: -80px -16px;
+	}
+
+    .notification
+    {
+        background-position: -100px 0;
+    }
+	.notification.black
+	{
+		background-position: -100px -16px;
+	}
+
+    .locked
+    {
+        background-position: -120px 0;
+    }
+	.locked.black
+	{
+		background-position: -120px -16px;
+	}
+
+    .chat
+    {
+        background-position: -140px 0;
+    }
+	.chat.black
+	{
+		background-position: -140px -16px;
+	}
+
+    .people
+    {
+        background-position: -160px 0;
+    }
+	.people.black
+	{
+		background-position: -160px -16px;
+	}
+
+    .pin
+    {
+        background-position: -180px 0;
+    }
+	.pin.black
+	{
+		background-position: -180px -16px;
+	}
+            
+    .edit
+    {
+        background-position: -200px 0;
+    }
+	.edit.black
+	{
+		background-position: -200px -16px;
+	}
+            
+    .move
+    {
+        background-position: -220px 0;
+    }
+	.move.black
+	{
+		background-position: -220px -16px;
+	}
+            
+    .copy-2
+    {
+        background-position: -240px 0;
+    }
+	.copy-2.black
+	{
+		background-position: -240px -16px;
+	}
+            
+    .bookmark
+    {
+        background-position: -260px 0;
+    }
+	.bookmark.black
+	{
+		background-position: -260px -16px;
+	}
+            
+    .dependency-find
+    {
+        background-position: -280px 0;
+    }
+	.dependency-find.black
+	{
+		background-position: -280px -16px;
+	}
+            
+    .linked
+    {
+        background-position: -300px 0;
+    }
+	.linked.black
+	{
+		background-position: -300px -16px;
+	}
+            
+    .vote
+    {
+        background-position: -320px 0;
+    }
+	.vote.black
+	{
+		background-position: -320px -16px;
+	}
+            
+    .attachment
+    {
+        background-position: -340px 0;
+    }
+	.attachment.black
+	{
+		background-position: -340px -16px;
+	}
+            
+    .folder
+    {
+        background-position: -360px 0;
+    }
+	.folder.black
+	{
+		background-position: -360px -16px;
+	}
+            
+    .dashboard
+    {
+        background-position: -380px 0;
+    }
+	.dashboard.black
+	{
+		background-position: -380px -16px;
+	}
+            
+    .dependency-new
+    {
+        background-position: -400px 0;
+    }
+	.dependency-new.black
+	{
+		background-position: -400px -16px;
+	}
+            
+    .edit-2
+    {
+        background-position: -420px 0;
+    }
+	.edit-2.black
+	{
+		background-position: -420px -16px;
+	}
+            
+    .bookmark-delete
+    {
+        background-position: -440px 0;
+    }
+	.bookmark.black
+	{
+		background-position: -440px -16px;
+	}
+            
+    .help
+    {
+        background-position: -460px 0;
+    }
+
+	.help.black
+	{
+		background-position: -460px -16px;
+	}
+	.save-small
+    {
+        background-position: -580px 0;
+    }
+	.save-small.black
+	{
+		background-position: -580px -16px;
+	}
+	.megaphone
+    {
+        background-position: -600px 0;
+    }
+	.megaphone.black
+	{
+		background-position: -600px -16px;
+	}
 }
 
 /************************************
@@ -1261,9 +1574,14 @@ a img
 
 @media screen and (max-width: 950px)
 {
-	#notification-center, #zone-header-bar > .user-options 
+	#appnav-toolbar-notifications, #zone-header-bar .user-options .item-small, #zone-header-bar #user-menu, #zone-header-bar .add-dropdown
 	{
 		display: none !important;
+	}
+
+	#zone-header-bar #search-bar
+	{
+		right:7px !important;
 	}
 }
 

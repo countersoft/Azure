@@ -117,7 +117,7 @@
                     gemini_admin.saveFinished("#system-email-save");
                      $("#system-email-trace").html(response.Result).fadeIn('fast');
                     gemini_ui.stopBusy('#cs-adhoc-page #system-email-save');
-                }, function () { gemini_ui.stopBusy('#cs-adhoc-page #system-email-save'); }, formData);
+                }, function () { gemini_ui.stopBusy('#cs-adhoc-page #system-email-save'); }, formData, null, true);
             } 
             catch (e) {
             }

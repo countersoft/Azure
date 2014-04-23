@@ -2,73 +2,58 @@
 
 @if (@IsAuthenticated)
 {
-    <div id="item-toolbar">
-        <span id="item-menu-dropdown" class="dropdown"><span class="fonticon-dropdown"></span>
-            <ul class="cs-menu-dropdown item-menu">
-                @if (@Model.CanEditIssue)
-                {
-                    <li><a id="action-edit" href="#">@GetResource(ResourceKeys.Edit)</a></li>
-                }
-                @if (@Model.CanMoveIssue)
-                {
-                    <li><a id="action-move" href="#">@GetResource(ResourceKeys.Move)</a></li>
-                    <li><a id="action-copy" href="#">@GetResource(ResourceKeys.Copy)</a></li>
-                }
-                @if (Model.CanEditIssue || Model.CanMoveIssue)
-                {
-                    <li class="separator"></li>
-                }
-                
-                @if (@Model.HasUserVoted == null && @Model.CanUserVote)
-                {
-                    <li><a id="action-vote" href="#">@GetResource(ResourceKeys.Vote)</a></li> 
-                }
+    <div id="item-toolbar" class="no-select toolbar-icons">
 
-                @if (@Model.Issue.Watchers.Find(w => w.Entity.UserId == GeminiContext.User.Entity.Id) == null)
-                {
-                    <li><a id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Unfollow)" href="#">@GetResource(ResourceKeys.Follow)</a></li> 
-                }
-                else
-                {
-                    <li><a id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Follow)" href="#">@GetResource(ResourceKeys.Unfollow)</a></li> 
-                }
+        @if (@Model.CanEditIssue)
+        {
+            <div id="action-edit" class="wrapper" title="@GetResource(ResourceKeys.Edit)"><div class="action edit"></div></div>
+        }
 
-                <li class="separator"></li>
+        @if (CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.Description))
+        {
+            <div data-attribute-id="@ItemAttributeVisibility.Description.ToString()" id="add-description" class="wrapper" title="@GetResource(ResourceKeys.Description)"><div class="action edit-2"></div></div>
+        }
 
-                @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedLinks))
-                {
-                    <li><a id="add-link" href="#">@GetResource(ResourceKeys.Link)</a></li>                     
-                }
+        @if (@Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        {
+            <div id="action-move" class="wrapper" title="@GetResource(ResourceKeys.Move)"><div class="action move"></div></div>
+            <div id="action-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)"><div class="action copy-2"></div></div>
+        }
 
-                @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy))
-                {
-                    <li><a id="add-dependency" href="#">@GetResource(ResourceKeys.Dependency)<span id="add-new-dependency">&nbsp&nbsp[+]</span></a></li>
-                }
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedLinks) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        {
+            <div id="add-link" class="wrapper" title="@GetResource(ResourceKeys.Link)"><div class="action linked"></div></div>
+        }
 
-                @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedAttachments))
-                {
-                    <li><span id="attachmentupload-hit">@GetResource(ResourceKeys.Attachments)</span></li>
-                }
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        {
+            <div id="add-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependencies)"><div class="action dependency-find"></div></div>
+            <div id="add-new-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependency)"><div class="action dependency-new"></div></div>
+        }
 
-                @if (CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.Description))
-                {
-                    
-                    if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedLinks)
-                        || CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy)
-                        || CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedAttachments))
-                    {
-                        <li class="separator"></li>
-                    }
-                    
-                    <li><a data-attribute-id="@ItemAttributeVisibility.Description.ToString()" id="add-description" href="#">@GetResource(ResourceKeys.Description)</a></li>                     
-                }
+        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedAttachments))
+        {
+            <div class="wrapper" title="@GetResource(ResourceKeys.Attachments)"><div class="action attachment"><span id="attachmentupload-hit"></span></div></div>
+        }
+        
+        @if (@Model.HasUserVoted == null && @Model.CanUserVote)
+        {
+            <div id="action-vote" class="wrapper" title="@GetResource(ResourceKeys.Vote)"><div class="action vote"></div></div>
+        }
 
-                @if (@Model.CanDeleteIssue)
-                {
-                    <li class="separator"></li>
-                    <li class="highlight"><a id="action-delete"href="#">@GetResource(ResourceKeys.Delete)</a></li>
-                }
-            </ul>
-        </span>
+        @if (@Model.Issue.Watchers.Find(w => w.Entity.UserId == GeminiContext.User.Entity.Id) == null)
+        {
+            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Unfollow)" data-alt-class="bookmark" class="wrapper" title="@GetResource(ResourceKeys.Follow)"><div class="action bookmark"></div></div>
+        }
+        else
+        {
+            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Follow)"  data-alt-class="bookmark-delete" class="wrapper" title="@GetResource(ResourceKeys.Unfollow)"><div class="action bookmark-delete"></div></div>
+        }
+
+        @if (@Model.CanDeleteIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        {
+            <div id="action-delete" class="wrapper" title="@GetResource(ResourceKeys.Delete)"><div class="action delete"></div></div>
+        }
+
     </div>
 }

@@ -34,32 +34,31 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-priority", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 4] }] });
+    $(document).ready(function ()
+    {
+        gemini_admin.initDatatablesWithEdit("#table-admin-priority", true, null, { bPaginate: false, "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 4] }] });
         gemini_admin.initTableDnD("#table-admin-priority");
+
         //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
-        $("#table-admin-priority").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function (e) {
-
+        $("#table-admin-priority").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e)
+        {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Priority", "DeleteForm", { id: id }, null, "Delete");
-
+            gemini_popup.centerPopup("configure/Templates/Priority", "DeleteForm", { id: id }, null, "Delete", null, null, null, null, true);
         });
 
-        $("#table-admin-priority").off('click',".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
-
+        $("#table-admin-priority").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function ()
+        {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Priority", "Editor", { id: id });
-
+            gemini_popup.centerPopup("configure/Templates/Priority", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
-
 
         $("#table-admin-priority_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
-        $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/Templates/Priority", "Add");
+        $("#system-options-add").click(function ()
+        {
+            gemini_popup.centerPopup("configure/Templates/Priority", "Add", null, null, null, null, null, null, null, true);
         });
-
     });
 </script>

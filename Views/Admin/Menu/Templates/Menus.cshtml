@@ -33,7 +33,7 @@
                         <input type="checkbox" id="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" name="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)" class="break-option fancy"
                             @if (item.SeperateAfter) { <text>checked="checked"</text> }/>
                         
-                        <label for="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)">Menu divider</label>
+                        <label for="@string.Concat("brk",item.PageType, '_', item.AppId, '_', item.ControlId)">Start of menu</label>
                     </div>
                 </li>
             }
@@ -51,6 +51,13 @@
         });
 
         $(".break-option").bind('ifChanged', function (e) {
+            var _this = this;
+            $(".break-option").each(function () {
+                if (_this != this) {
+                    $(this).prop("checked", false);
+                    $(this).iCheck('update');
+                }
+            });
             saveData();
         });
         

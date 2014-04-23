@@ -21,7 +21,7 @@
                                           else if (item.Entity.AlertType == AlertTemplateType.Created) { <text>When Created</text> }
                                           else if (item.Entity.AlertType == AlertTemplateType.Resourced) { <text>When Resourced</text> }                                                                                                                                             
                                           else if (item.Entity.AlertType == AlertTemplateType.Watchers) { <text>Follower Notification</text> }
-                                          else if (item.Entity.AlertType == AlertTemplateType.AppNavAlerts){ <text>AppNav Card Alerts</text> }
+                                          else if (item.Entity.AlertType == AlertTemplateType.AppNavAlerts){ <text>Workspace Alerts</text> }
                                           else if (item.Entity.AlertType == AlertTemplateType.Updated) { <text>When Updated</text> }
                                           else if (item.Entity.AlertType == AlertTemplateType.Generic) { <text>Generic</text> }
                                           else { @item.Entity.AlertType }</td>
@@ -49,7 +49,7 @@
         {
             gemini_commons.stopClick(e);
 
-            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", { id: 0 });
+            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", { id: 0 }, null, null, null, null, null, null, true);
 
         });
 
@@ -71,7 +71,7 @@
                         gemini_admin.removeRow(item);
                         gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                     }
-                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
             });
         });
 
@@ -82,7 +82,7 @@
             var tr = item.closest("tr");
             var id = tr.data("id");
 
-            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", {id : id} );
+            gemini_popup.centerPopup("configure/System/AlertTemplates", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
     });
 </script>

@@ -27,8 +27,9 @@ define("tinymce/dom/DOMUtils", [
 	"tinymce/dom/Range",
 	"tinymce/html/Entities",
 	"tinymce/Env",
-	"tinymce/util/Tools"
-], function(Sizzle, Styles, EventUtils, TreeWalker, Range, Entities, Env, Tools) {
+	"tinymce/util/Tools",
+	"tinymce/dom/StyleSheetLoader"
+], function(Sizzle, Styles, EventUtils, TreeWalker, Range, Entities, Env, Tools, StyleSheetLoader) {
 	// Shorten names
 	var each = Tools.each, is = Tools.is, grep = Tools.grep, trim = Tools.trim, extend = Tools.extend;
 	var isWebKit = Env.webkit, isIE = Env.ie;
@@ -54,6 +55,8 @@ define("tinymce/dom/DOMUtils", [
 		self.stdMode = !isIE || doc.documentMode >= 8;
 		self.boxModel = !isIE || doc.compatMode == "CSS1Compat" || self.stdMode;
 		self.hasOuterHTML = "outerHTML" in doc.createElement("a");
+		self.styleSheetLoader = new StyleSheetLoader(doc);
+		this.boundEvents = [];
 
 		self.settings = settings = extend({
 			keep_values: false,
@@ -685,7 +688,7 @@ define("tinymce/dom/DOMUtils", [
 			}
 
 			// IE & Opera
-			if (name.currentStyle && computed) {
+			if (elm.currentStyle && computed) {
 				return elm.currentStyle[name];
 			}
 
@@ -982,8 +985,8 @@ define("tinymce/dom/DOMUtils", [
 		 * Returns the absolute x, y position of a node. The position will be returned in an object with x, y fields.
 		 *
 		 * @method getPos
-		 * @param {Element/String} n HTML element or element id to get x, y position from.
-		 * @param {Element} ro Optional root element to stop calculations at.
+		 * @param {Element/String} elm HTML element or element id to get x, y position from.
+		 * @param {Element} rootElm Optional root element to stop calculations at.
 		 * @return {object} Absolute position of the specified element object with x, y fields.
 		 */
 		getPos: function(elm, rootElm) {
@@ -1000,8 +1003,8 @@ define("tinymce/dom/DOMUtils", [
 
 					// Add scroll offsets from documentElement or body since IE with the wrong box model will use d.body and so do WebKit
 					// Also remove the body/documentelement clientTop/clientLeft on IE 6, 7 since they offset the position
-					x = pos.left + (doc.documentElement.scrollLeft || doc.body.scrollLeft) - rootElm.clientTop;
-					y = pos.top + (doc.documentElement.scrollTop || doc.body.scrollTop) - rootElm.clientLeft;
+					x = pos.left + (doc.documentElement.scrollLeft || doc.body.scrollLeft) - rootElm.clientLeft;
+					y = pos.top + (doc.documentElement.scrollTop || doc.body.scrollTop) - rootElm.clientTop;
 
 					return {x: x, y: y};
 				}
@@ -1599,78 +1602,6 @@ define("tinymce/dom/DOMUtils", [
 		},
 
 		/**
-		 * Returns an array of all single CSS classes in the document. A single CSS class is a simple
-		 * rule like ".class" - complex ones like "div td.class" will not be added to output.
-		 *
-		 * @method getClasses
-		 * @return {Array} Array with class objects - each object has a class field - might be other fields in the future.
-		 */
-		getClasses: function() {
-			var self = this, classList = [], lookup = {}, filter = self.settings.class_filter, oldVal;
-
-			if (self.classes) {
-				return self.classes;
-			}
-
-			function addClasses(stylesheet) {
-				// IE style imports
-				each(stylesheet.imports, function(r) {
-					addClasses(r);
-				});
-
-				each(stylesheet.cssRules || stylesheet.rules, function(rule) {
-					// Real type or fake it on IE
-					switch (rule.type || 1) {
-						// Rule
-						case 1:
-							if (rule.selectorText) {
-								each(rule.selectorText.split(','), function(value) {
-									value = value.replace(/^\s*|\s*$|^\s\./g, "");
-
-									// Is internal or it doesn't contain a class
-									if (/\.mce/.test(value) || !/\.[\w\-]+$/.test(value)) {
-										return;
-									}
-
-									// Remove everything but class name
-									oldVal = value;
-									value = value.replace(/.*\.([a-z0-9_\-]+).*/i, '$1');
-
-									// Filter classes
-									if (filter && !(value = filter(value, oldVal))) {
-										return;
-									}
-
-									if (!lookup[value]) {
-										classList.push({'class': value});
-										lookup[value] = 1;
-									}
-								});
-							}
-							break;
-
-						// Import
-						case 3:
-							addClasses(rule.styleSheet);
-							break;
-					}
-				});
-			}
-
-			try {
-				each(self.doc.styleSheets, addClasses);
-			} catch (ex) {
-				// Ignore
-			}
-
-			if (classList.length > 0) {
-				self.classes = classList;
-			}
-
-			return classList;
-		},
-
-		/**
 		 * Executes the specified function on the element by id or dom element node or array of elements/id.
 		 *
 		 * @method run
@@ -1966,28 +1897,70 @@ define("tinymce/dom/DOMUtils", [
 		 * Adds an event handler to the specified object.
 		 *
 		 * @method bind
-		 * @param {Element/Document/Window/Array/String} o Object or element id string to add event
+		 * @param {Element/Document/Window/Array} target Target element to bind events to.
 		 * handler to or an array of elements/ids/documents.
-		 * @param {String} n Name of event handler to add, for example: click.
-		 * @param {function} f Function to execute when the event occurs.
-		 * @param {Object} s Optional scope to execute the function in.
+		 * @param {String} name Name of event handler to add, for example: click.
+		 * @param {function} func Function to execute when the event occurs.
+		 * @param {Object} scope Optional scope to execute the function in.
 		 * @return {function} Function callback handler the same as the one passed in.
 		 */
 		bind: function(target, name, func, scope) {
-			return this.events.bind(target, name, func, scope || this);
+			var self = this;
+
+			if (Tools.isArray(target)) {
+				var i = target.length;
+
+				while (i--) {
+					target[i] = self.bind(target[i], name, func, scope);
+				}
+
+				return target;
+			}
+
+			// Collect all window/document events bound by editor instance
+			if (self.settings.collect && (target === self.doc || target === self.win)) {
+				self.boundEvents.push([target, name, func, scope]);
+			}
+
+			return self.events.bind(target, name, func, scope || self);
 		},
 
 		/**
 		 * Removes the specified event handler by name and function from an element or collection of elements.
 		 *
 		 * @method unbind
-		 * @param {String/Element/Array} o Element ID string or HTML element or an array of elements or ids to remove handler from.
-		 * @param {String} n Event handler name, for example: "click"
-		 * @param {function} f Function to remove.
+		 * @param {Element/Document/Window/Array} target Target element to unbind events on.
+		 * @param {String} name Event handler name, for example: "click"
+		 * @param {function} func Function to remove.
 		 * @return {bool/Array} Bool state of true if the handler was removed, or an array of states if multiple input elements
 		 * were passed in.
 		 */
 		unbind: function(target, name, func) {
+			var self = this, i;
+
+			if (Tools.isArray(target)) {
+				i = target.length;
+
+				while (i--) {
+					target[i] = self.unbind(target[i], name, func);
+				}
+
+				return target;
+			}
+
+			// Remove any bound events matching the input
+			if (self.boundEvents && (target === self.doc || target === self.win)) {
+				i = self.boundEvents.length;
+
+				while (i--) {
+					var item = self.boundEvents[i];
+
+					if (target == item[0] && (!name || name == item[1]) && (!func || func == item[2])) {
+						this.events.unbind(item[0], item[1], item[2]);
+					}
+				}
+			}
+
 			return this.events.unbind(target, name, func);
 		},
 
@@ -2030,6 +2003,24 @@ define("tinymce/dom/DOMUtils", [
 		 */
 		destroy: function() {
 			var self = this;
+
+			// Unbind all events bound to window/document by editor instance
+			if (self.boundEvents) {
+				var i = self.boundEvents.length;
+
+				while (i--) {
+					var item = self.boundEvents[i];
+					this.events.unbind(item[0], item[1], item[2]);
+				}
+
+				self.boundEvents = null;
+			}
+
+			// Restore sizzle document to window.document
+			// Since the current document might be removed producing "Permission denied" on IE see #6325
+			if (Sizzle.setDocument) {
+				Sizzle.setDocument();
+			}
 
 			self.win = self.doc = self.root = self.events = self.frag = null;
 		},

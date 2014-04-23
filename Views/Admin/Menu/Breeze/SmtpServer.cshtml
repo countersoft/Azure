@@ -53,20 +53,20 @@
                             gemini_admin.removeRow(item);                            
                         }
                         gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
                 });
             },
-            null, { id: id });
+            null, { id: id }, null, true);
         });
 
             $("#table-admin-smtpservers").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Breeze/SmtpServer", "Editor", { id: id });
+            gemini_popup.centerPopup("configure/Breeze/SmtpServer", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
 
         $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/Breeze/SmtpServer", "Add");
+            gemini_popup.centerPopup("configure/Breeze/SmtpServer", "Add", null, null, null, null, null, null, null, true);
         });
     });
 </script>

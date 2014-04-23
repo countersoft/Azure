@@ -260,6 +260,22 @@ define("tinymce/ui/Collection", [
 			});
 
 			return self;
+		},
+
+		/**
+		 * Remove all items from collection and DOM.
+		 *
+		 * @method remove
+		 * @return {tinymce.ui.Collection} Current collection.
+		 */
+		remove: function() {
+			var i = this.length;
+
+			while (i--) {
+				this[i].remove();
+			}
+
+			return this;
 		}
 
 		/**

@@ -13,15 +13,32 @@
 tinymce.PluginManager.add('template', function(editor) {
 	var each = tinymce.each;
 
-	function showDialog() {
+	function createTemplateList(callback) {
+		return function() {
+			var templateList = editor.settings.templates;
+
+			if (typeof(templateList) == "string") {
+				tinymce.util.XHR.send({
+					url: templateList,
+					success: function(text) {
+						callback(tinymce.util.JSON.parse(text));
+					}
+				});
+			} else {
+				callback(templateList);
+			}
+		};
+	}
+
+	function showDialog(templateList) {
 		var win, values = [], templateHtml;
 
-		if (!editor.settings.templates) {
+		if (!templateList || templateList.length === 0) {
 			editor.windowManager.alert('No templates defined');
 			return;
 		}
 
-		tinymce.each(editor.settings.templates, function(template) {
+		tinymce.each(templateList, function(template) {
 			values.push({
 				selected: !values.length,
 				text: template.title,
@@ -36,17 +53,46 @@ tinymce.PluginManager.add('template', function(editor) {
 		function onSelectTemplate(e) {
 			var value = e.control.value();
 
+			function insertIframeHtml(html) {
+				if (html.indexOf('<html>') == -1) {
+					var contentCssLinks = '';
+
+					tinymce.each(editor.contentCSS, function(url) {
+						contentCssLinks += '<link type="text/css" rel="stylesheet" href="' + editor.documentBaseURI.toAbsolute(url) + '">';
+					});
+
+					html = (
+						'<!DOCTYPE html>' +
+						'<html>' +
+							'<head>' +
+								contentCssLinks +
+							'</head>' +
+							'<body>' +
+								html +
+							'</body>' +
+						'</html>'
+					);
+				}
+
+				html = replaceTemplateValues(html, 'template_preview_replace_values');
+
+				var doc = win.find('iframe')[0].getEl().contentWindow.document;
+				doc.open();
+				doc.write(html);
+				doc.close();
+			}
+
 			if (value.url) {
 				tinymce.util.XHR.send({
 					url: value.url,
 					success: function(html) {
 						templateHtml = html;
-						win.find('iframe')[0].html(html);
+						insertIframeHtml(templateHtml);
 					}
 				});
 			} else {
 				templateHtml = value.content;
-				win.find('iframe')[0].html(value.content);
+				insertIframeHtml(templateHtml);
 			}
 
 			win.find('#description')[0].text(e.control.value().description);
@@ -54,16 +100,28 @@ tinymce.PluginManager.add('template', function(editor) {
 
 		win = editor.windowManager.open({
 			title: 'Insert template',
+			layout: 'flex',
+			direction: 'column',
+			align: 'stretch',
+			padding: 15,
+			spacing: 10,
 
-			body: [
-				{type: 'listbox', name: 'template', flex: 0, label: 'Templates', values: values, onselect: onSelectTemplate},
+			items: [
+				{type: 'form', flex: 0, padding: 0, items: [
+					{type: 'container', label: 'Templates', items: {
+						type: 'listbox', label: 'Templates', name: 'template', values: values, onselect: onSelectTemplate
+					}}
+				]},
 				{type: 'label', name: 'description', label: 'Description', text: '\u00a0'},
-				{type: 'iframe', minWidth: 600, minHeight: 400, border: 1}
+				{type: 'iframe', flex: 1, border: 1}
 			],
 
 			onsubmit: function() {
 				insertTemplate(false, templateHtml);
-			}
+			},
+
+			width: editor.getParam('template_popup_width', 600),
+			height: editor.getParam('template_popup_height', 500)
 		});
 
 		win.find('listbox')[0].fire('select');
@@ -123,15 +181,20 @@ tinymce.PluginManager.add('template', function(editor) {
 		});
 	}
 
-	function insertTemplate(ui, html) {
-		var el, n, dom = editor.dom, sel = editor.selection.getContent();
-
-		each(editor.getParam('template_replace_values'), function(v, k) {
+	function replaceTemplateValues(html, templateValuesOptionName) {
+		each(editor.getParam(templateValuesOptionName), function(v, k) {
 			if (typeof(v) != 'function') {
 				html = html.replace(new RegExp('\\{\\$' + k + '\\}', 'g'), v);
 			}
 		});
 
+		return html;
+	}
+
+	function insertTemplate(ui, html) {
+		var el, n, dom = editor.dom, sel = editor.selection.getContent();
+
+		html = replaceTemplateValues(html, 'template_replace_values');
 		el = dom.create('div', null, html);
 
 		// Find template element within div
@@ -172,12 +235,12 @@ tinymce.PluginManager.add('template', function(editor) {
 
 	editor.addButton('template', {
 		title: 'Insert template',
-		onclick: showDialog
+		onclick: createTemplateList(showDialog)
 	});
 
 	editor.addMenuItem('template', {
 		text: 'Insert template',
-		onclick: showDialog,
+		onclick: createTemplateList(showDialog),
 		context: 'insert'
 	});
 

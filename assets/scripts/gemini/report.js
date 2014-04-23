@@ -19,7 +19,7 @@ gemini_reports = {
             gemini_reports.reportChanged(e);
         });
 
-        var options = jQuery.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options));
+        var options = jQuery.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Reports']));
 
         gemini_ui.setDropdownValue("#Reports", options.SelectedReport);
         //$("#Reports").val(options.SelectedReport); This seems to work?
@@ -64,7 +64,7 @@ gemini_reports = {
         gemini_reports.setupControls();
         gemini_reports.reportChanged();
 
-        $("#Reports_chzn input[type='text']:first").focus();
+        $("#Reports_chosen input[type='text']:first").focus();
         $('.control-icon', '#report-menu').click(function () {
             var _this = $(this);
             var options = _this.find('+ .options');
@@ -117,7 +117,7 @@ gemini_reports = {
             return;
         }
         if (response.Result.SavedCard != null) {
-            gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
+            gemini_appnav.pageCard.Options['Reports'] = response.Result.SavedCard.Options;
             gemini_reports.options = jQuery.parseJSON(response.Result.SavedCard.Options);
         }
         gemini_reports.setupControls();
@@ -149,10 +149,10 @@ gemini_reports = {
             $("#TimeTypeId").append("<option " + selected + " value='" + '|' + item.Value +"'>" + item.Text + "</option>");
         }
 
-        $('#TimeTypeId_chzn').remove();
-        $('#TimeTypeId').removeClass('chzn-done');
+        $('#TimeTypeId_chosen').remove();
+        $('#TimeTypeId').removeClass('chosen-done');
         gemini_ui.chosen('#TimeTypeId');
-        /*$("#TimeTypeId").trigger("liszt:updated");
+        /*$("#TimeTypeId").trigger("chosen:updated");
         //call update on this.
         $("#TimeTypeId").change();*/
     },
@@ -177,8 +177,8 @@ gemini_reports = {
             $("#ResourceId").append("<option " + selected + " value='" + item.Value + "'>" + item.Text + "</option>");
         }
 
-        $('#ResourceId_chzn').remove();
-        $('#ResourceId').removeClass('chzn-done');
+        $('#ResourceId_chosen').remove();
+        $('#ResourceId').removeClass('chosen-done');
         gemini_ui.chosen('#ResourceId');
     },
 
@@ -263,7 +263,7 @@ gemini_reports = {
             $('#ProjectId').val(any);
         }
 
-        $('#ProjectId').trigger("liszt:updated");
+        gemini_ui.chosenUpdate($('#ProjectId'));
         gemini_reports.currentListValues = $('#ProjectId').val();
     }
 };

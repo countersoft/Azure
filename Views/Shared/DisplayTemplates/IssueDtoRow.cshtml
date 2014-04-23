@@ -6,12 +6,14 @@
     List<int> cardIds = new List<int>();
     bool showSequencing = false;
     bool allowSequencing = false;
+    bool showSLA = false;
     if (Model is ItemsGridModel)
      {
          showSequencing = ((ItemsGridModel) Model).ShowSequencing;
          allowSequencing = ((ItemsGridModel)Model).AllowSequencing;
+         showSLA = ((ItemsGridModel)Model).ShowSLA;
      }
-    if (Model.CurrentPageCard.CardData.Badges.Count > 0)
+    if (Model.CurrentPageCard.CardData.HighlightChanges && Model.CurrentPageCard.CardData.Badges.Count > 0)
     {
         var ids = Model.CurrentPageCard.CardData.Badges;
         foreach(var id in ids)
@@ -35,6 +37,12 @@ if (allowSequencing && showSequencing)
 }
 else
 {
+if(showSLA)
+{ 
+<div @if(issue.IsInSLA && issue.Entity.SLAStatus.HasValue) {<text>class="sla-@issue.Entity.SLAStatus.Value"</text>} else if(issue.IsInSLA) {<text>class="sla-3"</text>} title="@issue.SLATimeLeftFull">
+<span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
+</div>
+}
 <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
 }
@@ -49,7 +57,6 @@ if (allowSequencing && showSequencing)
 </td>
 @{
 var data = Model.DisplayData[issue.Entity.Id];
-var lastColumn = data.Count == 0 ? null : data[data.Count - 1];
 foreach (var coldata in data)
 {
 <td class='@coldata.cssClass'>
@@ -75,10 +82,6 @@ if(hierarchy == null && Model.GroupDependencies && issue.Entity.IsParent && !iss
 <span class='parent fonticon-arrow-down expander'></span>
 }
 firstCol = false;
-}
-else if(lastColumn == coldata)
-{
-<div class='item-context-menu fonticon-dropdown right'></div>
 }
 </td>
 }

@@ -64,7 +64,7 @@
                 gemini_popup.toast("Saved");
                 gemini_popup.popupClose(e);
                 gemini_admin.getPage();
-            }, null, $("#GroupForm").serialize());
+            }, null, $("#GroupForm").serialize(), null, true);
 
         }
         else {
@@ -74,6 +74,5 @@
     });
 
     $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
-    //$("#Members", "#GlobalGroupForm").multiselect({sortable:false});
 
 </script>

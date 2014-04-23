@@ -1,1 +1,35 @@
-﻿<div style="padding-top:8px;" id="footer-messaging">&copy; 2003-@DateTime.Now.Year <a href="http://www.countersoft.com?footer" target="_blank">Countersoft Gemini</a> <span class="version">v@(GeminiVersion.Version)</span> @if (DeviceContext.IsDesktop){ <text>· <a href="@GeminiApp.GeminiLicense.FooterMessageHyperlink">@GeminiApp.GeminiLicense.FooterMessage</a></text>} </div>
+﻿@model BaseModel
+
+<div id="appnav-toolbar">
+    <div class="code"></div>
+    <div class="title"></div>
+
+    @if (Model.CurrentPageCard.CardData.ShowBadgeCounts)
+    {
+        <div id="appnav-toolbar-badge-changes" @if(Model.CurrentPageCard.BadgeCount == 0){<text>class="hide"</text>}><span>@Model.CurrentPageCard.BadgeCountLabel</span></div>
+    }
+
+    <div class="toolbar-icons actions no-select">
+    @if (Model.PageType != ProjectTemplatePageType.Item)
+{
+    if (!Model.CurrentPageCard.Locked)
+    {
+        <div class="pos-relative">
+            <input class="button-secondary button-small" id="appnav-toolbar-save" type="button" title="@(GetResource(ResourceKeys.Save))" value="@(GetResource(ResourceKeys.Save))" />
+            <div class="save-small action"></div>
+        </div>
+    }
+        else
+        {
+            <div id="appnav-toolbar-locked" class="wrapper" title="@GetResource(ResourceKeys.Locked)"><div class="action locked"></div></div>
+        }
+    }
+    </div>
+</div>
+
+<div id="footer-messaging">
+
+    <a href="http://www.countersoft.com?footer" target="_blank">&copy; 2003-@DateTime.Now.Year Countersoft Gemini <span class="version">(@(GeminiVersion.Version))</span></a>
+
+    @if (DeviceContext.IsDesktop){ <text><div class="registered">@Html.Raw(GeminiApp.GeminiLicense.FooterMessage)</div></text>} 
+ </div>

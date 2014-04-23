@@ -35,7 +35,7 @@
                 id: 0,
                 appid: '@(Model.AppId)',
                 errors: @Model.Errors.ToJSBool()
-            })
+            }, null, true)
         });
 
         $(".timer-apps-messages").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });

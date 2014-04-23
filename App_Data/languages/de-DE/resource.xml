@@ -63,11 +63,17 @@
   <item id="Keywords">Schlüsselwörter</item>
   <item id="ItemId">Item-ID</item>
   <item id="ItemKey">Item-Schlüssel</item>
+  <item id="RevisedTime">Änderungszeit</item>
+  <item id="CreatedTime">Erstellungszeit</item>
+  <item id="RevisedTimestamp">Änderungszeitmarke</item>
+  <item id="CreatedTimestamp">Erstellungszeitmarke</item>
   <item id="ReportedBy">Erstellt von</item>
   <item id="FollowedBy">Beobachtet von</item>
   <item id="GroupDependencies">Abhängigkeiten Gruppieren</item>
   <item id="Grouped">Gruppiert</item>
   <item id="ShowSequence">Aufeinanderfolgende Items</item>
+  <item id="NoZone">Bereiche verstecken</item>
+  <item id="ShowSLA">SLA-Bereich zeigen</item>
   <item id="FilterNoType">Alle Items</item>
   <item id="FilterIncludeClosed">Geschlossene Items einbeziehen</item>
   <item id="FilterOpenIssues">Öffnen</item>
@@ -229,14 +235,14 @@
   <item id="Priority">Priorität</item>
   <item id="Severity">Schwierigkeitsgrad</item>
   <item id="Status">Status</item>
-  <item id="Resolution">Resolution</item>
+  <item id="Resolution">Auflösung</item>
   <item id="Resources">Ressourcen</item>
   <item id="Resource">Ressource</item>
   <item id="Component">Komponente</item>
   <item id="Components">Komponenten</item>
   <item id="FixedInVersionNone">Keine</item>
-  <item id="FixedInVersion">Behoben In Version</item>
-  <item id="FixedInVersions">Behoben In Versionen</item>
+  <item id="FixedInVersion">Behoben in Version</item>
+  <item id="FixedInVersions">Behoben in Versionen</item>
   <item id="Versions">Versionen</item>
   <item id="Version">Version</item>
   <item id="AffectedVersions">Beeinträchtigte Versionen</item>
@@ -263,7 +269,7 @@
   <item id="TimeLogged">Zeit aufgezeichnet</item>
   <item id="EstimatedEffort">Schätzung</item>
   <item id="ItemsRemaining">Verbleibende Items</item>
-  <item id="Planner">Planner</item>
+  <item id="Planner">Planer</item>
   <item id="Activity">Aktivität</item>
   <item id="Changelog">Änderungshistorie</item>
   <item id="Documents">Dokumente</item>
@@ -278,7 +284,7 @@
   <item id="Comments">Kommentare</item>
   <item id="Attachments">Anhänge</item>
   <item id="Dependencies">Abhängigkeiten</item>
-  <item id="Timeline">Timeline</item>
+  <item id="Timeline">Zeitleiste</item>
   <item id="Calendar">Kalender</item>
 
   <item id="Untitled">Unbetitelt</item>
@@ -381,4 +387,90 @@
   <item id="Hide">Verstecken</item>
   <item id="EstimatedReleaseDate">Geschätztes Veröffentlichungsdatum</item>
   <item id="Excess">Exzess</item>
+
+  <item id="Dashboard">Übersicht</item>
+  <item id="Chat">Chat</item>
+  <item id="Workspace">Arbeitsbereich</item>
+  <item id="TeamWorkspace">Team Arbeitsbereich</item>
+  <item id="CreateWorkspace">Neuer Arbeitsbereich</item>
+  <item id="LockSync">Sichern und Änderung synchronisieren</item>
+  <item id="EnableTeamChat">Team Chat aktivieren</item>
+  <item id="HighlightChanges">Änderungen markieren</item>
+  <item id="ShowBadgeCounts">Badge-Nummer anzeigen </item>
+  <item id="SelectCharts">Wählen Sie die Charts und Nummern zum anzeigen aus</item>
+  <item id="CurrentPassword">Aktuelles Passwort</item>
+  <item id="NewPassword">Neues Passwort</item>
+  <item id="ConfirmNewPassword">Neues Passwort bestätigen</item>
+
+  <item id="Notifications">Benachrichtigungen</item>
+  <item id="Unknown">Unbekannt</item>
+  <item id="FilterAssignedToMeIssues">Mir zugewiesen</item>
+  <item id="TimeLogger">Zeit-Logger</item>
+  <item id="FilterTimeLoggedByMeIssues">Von mir eingetragene Zeit</item>
+  <item id="FilterFollowedByMeIssues">Von mir beobachtet</item>
+  <item id="TeamChat">Team Chat</item>
+  <item id="Workspaces">Arbeitsbereiche</item>
+  <item id="Metrics">Metriken</item>
+  <item id="CreateWorkspaceCaption">Arbeitsbereiche ermöglichen die Zusammenarbeit mit Arbeitskollegen über verschiedene Projekte. Nutzen Sie die Metriken, Team-Chat, Email, Benachrichtigungen und Berichterstattung um Ihre Arbeit zu verwalten.</item>
+
+  <item id="Send">Senden</item>
+
+  <item id="NewProject">Neues Projekt</item>
+  <item id="NewProjectCaption">Projekte beinhalten Arbeitselemente mit verschiedenen Typen und die dazugehöhrenden Workflows, spezifische Felder und Datenerfassungsbildschirme für Ihr Business. Wählen Sie Ihre Projektvorlage aus.</item>
+
+  <item id="NewCoWorkers">Arbeitskollegen einladen</item>
+  <item id="CreateCoWorkersCaption">Laden Sie Ihre Arbeitskollegen ein, um Gemini auszuprobieren. Jeder von Ihnen wird eine E-mail mit Login-Daten und einen Link zu Gemini erhalten.</item>
+  
+  <item id="WorkSpaceAlerts">Arbeitsbereich-Benachrichtigung</item>
+
+  <item id="People">Leute</item>
+  <item id="NewLogo">Neues Logo</item>
+  <item id="NewLogoCaption">Hier können Sie Ihr eigenes Logo (max. 160px x 40px) hochladen, das Gemini Logo benutzen oder löschen.</item>
+
+  <item id="TotalPoints">Gesamtpunktzahl</item>
+  <item id="OpenedToday">Heute geöffnet</item>
+  <item id="ClosedToday">Heute geschlossen</item>
+  <item id="OpenSummary">Geöffnet Überblick</item>
+  <item id="ClosedSummary">Geschlossen Überblick</item>
+  <item id="TotalSummary">Gesamtüberblick</item>
+  <item id="ProgressPercentage">Fortschritt Prozent</item>
+  <item id="EndDate">Enddatum</item>
+  <item id="MetricEstimatedEffort">Geschätzte Leistung</item>
+  <item id="MetricTimeRemaining">Verbleibende Zeit</item>
+  <item id="CompletionDate">Abschlussdatum</item>
+  <item id="EstCompletionDate">Geschätztes Abschlussdatum</item>
+  <item id="Velocity">Geschwindigkeit</item>
+  <item id="TypeChart">Typ Diagramm</item>
+  <item id="SeverityChart">Schwierigkeitsgrad Diagramm</item>
+  <item id="PriorityChart">Priorität Diagramm</item>
+  <item id="StatusChart">Status Diagramm</item>
+  <item id="ResolutionChart">Auflösung Diagramm</item>
+  <item id="ResourceChart">Ressource Diagramm</item>
+  <item id="VersionChart">Version Diagramm</item>
+  <item id="ComponentChart">Komponente Diagramm</item>
+  <item id="BurndownItems">Burndown in Items</item>
+  <item id="BurndownHours">Burndown in Stunden</item>
+  <item id="BurndownPoints">Burndown in Punkten</item>
+  <item id="BurnupItems">Burn-up in Items</item>
+  <item id="BurnupHours">Burn-up in Stunden</item>
+  <item id="BurnupPoints">Burn-up in Punkten</item>
+  <item id="VelocityItems">Geschwindigkeit in Items</item>
+  <item id="VelocityHours">Geschwindigkeit in Stunden</item>
+  <item id="VelocityPoints">Geschwindigkeit in Punkten</item>
+
+  <item id="DeleteTeamChatsAndScheduledReports">Alle assoziierten Team-Chats und geplante Berichte werden gelöscht.</item>
+  <item id="OrTransferWorkspace">Oder übertragen Sie den Arbeitsbereich an jemand anderes</item>
+
+  <item id="SLA">SLA</item>
+  <item id="Breached">Verletzt</item>
+  <item id="Paused">Pausiert</item>
+  <item id="Finished">Beendet</item>
+
+  <item id="ReceiveIndividualEmailAlerts">Individuelle Email-Benachrichtigung per item erhalten</item>
+  <item id="SubscribeOthers">Andere abonnieren</item>
+  <item id="Users">Benutzer</item>
+  <item id="Groups">Gruppen</item>
+  <item id="Subject">Betreff</item>
+  <item id="Message">Nachricht</item>
+
 </Resource>

@@ -247,8 +247,8 @@ define("tinymce/tableplugin/Quirks", [
 						editor.dom.add(
 							editor.getBody(),
 							editor.settings.forced_root_block,
-							null,
-							Env.ie ? '&nbsp;' : '<br data-mce-bogus="1" />'
+							editor.settings.forced_root_block_attrs,
+							Env.ie && Env.ie < 11 ? '&nbsp;' : '<br data-mce-bogus="1" />'
 						);
 					} else {
 						editor.dom.add(editor.getBody(), 'br', {'data-mce-bogus': '1'});
@@ -327,12 +327,42 @@ define("tinymce/tableplugin/Quirks", [
 			});
 		}
 
+		/**
+		 * Delete table if all cells are selected.
+		 */
+		function deleteTable() {
+			editor.on('keydown', function(e) {
+				if ((e.keyCode == VK.DELETE || e.keyCode == VK.BACKSPACE) && !e.isDefaultPrevented()) {
+					var table = editor.dom.getParent(editor.selection.getStart(), 'table');
+
+					if (table) {
+						var cells = editor.dom.select('td,th', table), i = cells.length;
+						while (i--) {
+							if (!editor.dom.hasClass(cells[i], 'mce-item-selected')) {
+								return;
+							}
+						}
+
+						e.preventDefault();
+						editor.execCommand('mceTableDelete');
+					}
+				}
+			});
+		}
+
+		deleteTable();
+
 		if (Env.webkit) {
 			moveWebKitSelection();
 			fixTableCellSelection();
 		}
 
 		if (Env.gecko) {
+			fixBeforeTableCaretBug();
+			fixTableCaretPos();
+		}
+
+		if (Env.ie > 10) {
 			fixBeforeTableCaretBug();
 			fixTableCaretPos();
 		}

@@ -1,0 +1,7 @@
+﻿@model WorkspaceChatModel
+
+    <div class="range no-select">
+        <div class="go-back" @if(!Model.CanGoBack){<text>style="display:none;"</text>}><span class="fonticon-angle-left"></span></div>
+        <div class="go-label" data-date="@Model.FromDate.ToShortDateString()">@Model.DateRangeLabel</div>
+        <div class="go-forward" @if(Model.FromDate == DateTime.Today) {<text>style="display:none;"</text>} ><span class="fonticon-angle-right"></span></div>
+    </div>

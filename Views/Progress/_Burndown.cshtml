@@ -18,7 +18,11 @@
                             {
                         
                             <div class="option">
-                            
+
+                            <div class="option vertical-align margin-right-10">                   
+                                <div id="status-picker-control" class="control-icon gear auto-popup-keep" title="@GetResource(ResourceKeys.Status)"> </div>                           
+                            </div>
+                              
                             <select id="days" name="days" class="input-size3">
                             <option value="1" @if (Model.Days == 1)
                                               {<text>selected="selected"</text>}>1 @GetResource(ResourceKeys.Day)</option>
@@ -45,7 +49,11 @@
                             <label for="itempoints">@GetResource(ResourceKeys.Points)</label>
 
                             </div>
-
+                            <div id="status-picker-container" data-hide-func="($('#status-picker-container').addClass('hide'))" class="auto-popup hide">
+                                <label>Treat as completed</label>
+                                @Html.ListBox("TreatStatusesAsClosed", Model.StatusAsClosed, new { @class = "input-size5" })
+                                <input type="button" value="Apply" class="button-primary valign-top" id="add-open-statuses" />    
+                            </div>   
                             @*<div class="divider"></div>
                             <div class="option radio-check">
                             <input id="stones" type="checkbox" name="stones" />
@@ -110,10 +118,36 @@
         </td>
     </tr>
 </table>
-   
 <script type="text/javascript">
     $(document).ready(function () {
-      
+        gemini_ui.chosen($('#TreatStatusesAsClosed', '#status-picker-container'));
+
+        $('#progress-container #status-picker-control').unbind().bind('click',function (e) {
+            if ($('#status-picker-container').is(':visible'))
+            {
+                $('#status-picker-container').addClass('hide');
+            }
+            else
+            {
+                $('#status-picker-container').removeClass('hide');
+                var position = $("#status-picker-control").position();             
+           
+                $("#status-picker-container").position({
+                    "my": "right top",
+                    "at": "right bottom",
+                    "of": $("#status-picker-control"),
+                    "offset": "0 5",
+                    "collision": "none"
+                });
+                $('input[type="text"]:first','#status-picker-container').focus();
+            }
+        });
+
+        $('#progress-container #add-open-statuses').unbind().bind('click',function () {
+            gemini_ui.startBusy('#add-open-statuses');
+            gemini_progress.executeFilter("($('#progress-indicator').addClass('hide'))");
+        });
+
         //gemini_progress.init("@Model.VersionId","@Model.VersionLabel",csVars.Url + csVars.ProjectUrl);
         var totalClosed = @Model.Closed;
         var totalOpen = @Model.Open;
@@ -140,8 +174,8 @@
 
         var translation = {Items: '@((Model.ItemHours == CountTypes.Issues || Model.ItemHours == CountTypes.Points) ? (Model.ItemHours == CountTypes.Points ? GetResource(ResourceKeys.Points) : GetResource(ResourceKeys.Items)) : GetResource(ResourceKeys.Hours))', Total: '@GetResource(ResourceKeys.Total)', Created: '@GetResource(ResourceKeys.Created)', Open: '@GetResource(ResourceKeys.Open)', Closed: '@GetResource(ResourceKeys.Closed)' };
    
-        gemini_progress.burddownChart(translation,burndownCategory,burndownOpenData,burndownCreatedData,burndownIdealLine,burndownTrendLine);
-        gemini_progress.burdupChart(translation,burnupCategory,burnupTotalData,burnupClosedData, burnupTrendLine);
+        gemini_progress.burndownChart(translation,burndownCategory,burndownOpenData,burndownCreatedData,burndownIdealLine,burndownTrendLine);
+        gemini_progress.burnupChart(translation,burnupCategory,burnupTotalData,burnupClosedData, burnupTrendLine);
         //gemini_progress.showCompleteness(completeness);
         gemini_progress.showDelta(@Model.Remain);
         gemini_progress.showDays(@Model.Estimated,@Model.Logged, @Model.TimeLoggedOver);

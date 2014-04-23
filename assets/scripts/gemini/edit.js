@@ -11,6 +11,7 @@ gemini_edit = {
     refreshFunction: null,
     clickedElement: null,
     includeProjectsField: false,
+    editItemRenderedCallback:null,
     initEditing: function (elm, inlineEditing) {
         if (!gemini_edit.editingMode) {
 
@@ -52,13 +53,26 @@ gemini_edit = {
                         property = $(elm).attr('data-attribute-id');
                     }
 
-                    var params = $.extend({},
-                    {
-                        id: gemini_edit.issueId,
-                        property: property
-                    }, paramsString);
+                    if (property != "Repeat") {
 
-                    gemini_ajax.postCall(url + "inlineedit/getproperty", gemini_edit.pageType, gemini_edit.showEditingField, null, params, elm);
+                        var params = $.extend({},
+                        {
+                            id: gemini_edit.issueId,
+                            property: property
+                        }, paramsString);
+
+                        gemini_ajax.postCall("inline", 'get?viewtype=' + gemini_edit.pageType, gemini_edit.showEditingField, null, params, elm);
+                    }
+                    else {
+
+                        var params = $.extend({},
+                        {
+                            id: gemini_edit.issueId
+                        },
+                        paramsString);
+
+                        gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, setTimeout(function () { $("#Repeat_Interval").focus(); }, 200));
+                    }
                 }
                 else {
                     var params = $.extend({},
@@ -67,7 +81,7 @@ gemini_edit = {
                     },
                     paramsString);
 
-                    gemini_ajax.postCall(url + "edit", gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
+                    gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
                 }
             }
             else {
@@ -78,7 +92,7 @@ gemini_edit = {
                     paramsString);
 
                 gemini_edit.pendingChanges = false;
-                gemini_ajax.postCall(csVars.ProjectUrl + "edit", gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
+                gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
             }
         }
         else {
@@ -92,6 +106,7 @@ gemini_edit = {
     },
 
     saveEditing: function () {
+        $('#server-validation-error','#cs-popup').hide();
         if ($("#inline-edit-form", gemini_edit.formContainer).valid()) {
             gemini_ui.startBusy('#cs-popup #cs-popup-save');
             $('#inline-edit-form', gemini_edit.formContainer).submit();
@@ -140,6 +155,7 @@ gemini_edit = {
                 else if (this.Key == 'DateCreated') {
                     $('#touch-info-container', '#view-item').html(this.Value);
                     gemini_sizing.sameWidth(".touch-info .box", 10);
+                    gemini_item.initSLA();
                 }
             });
         }
@@ -157,7 +173,12 @@ gemini_edit = {
         if (response.success) {
             var oldvalue = elm.text();
 
-            var parsedHtml = $(response.Result.Html);
+            var resHtml = response.Result.Html;
+            while (resHtml.charAt(0) == '\r')
+            {
+                resHtml = resHtml.replace("\r\n", "");
+            }
+            var parsedHtml = $(resHtml);
 
             //Removing unecessary classes, which determine the height and width as we need to set it manually
             parsedHtml.each(function (index, value) {
@@ -174,7 +195,7 @@ gemini_edit = {
                 url = gemini_item.itemUrl;
             }
 
-            var formText = '<form style="display:inline-block;" method="post" action="' + csVars.Url + url + "inlineedit/saveproperty/" + gemini_edit.pageType + '"></form>';
+            var formText = '<form style="display:inline-block;" method="post" action="' + gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) + '"></form>';
 
             elm.html(formText);
             $('form', elm).append(parsedHtml);
@@ -211,7 +232,7 @@ gemini_edit = {
                 url = gemini_item.itemUrl;
             }
 
-            gemini_ajax.postCall(url + "inlineedit/saveproperty", gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, null, tempData, elm);
+            gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, null, tempData, elm);
         }
     },
     hideInlineEditField: function ()
@@ -230,7 +251,11 @@ gemini_edit = {
         if (response.Success)
         {
             //Setting up new elements size and classes
-            var parsedHtml = $(response.Result.Html);
+            var resHtml = response.Result.Html;
+            while (resHtml.charAt(0) == '\r') {
+                resHtml = resHtml.replace("\r\n", "");
+            }
+            var parsedHtml = $(resHtml);
             
             var firstInlineElement = false;        
             
@@ -261,13 +286,13 @@ gemini_edit = {
                     url = gemini_item.itemUrl;
                 }
 
-                var formText = '<form method="post" action="' + csVars.Url + url + "inlineedit/saveproperty/" + gemini_edit.pageType + '"><div class="left"></div></form>';
+                var formText = '<form method="post" action="' + gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) + '" enctype="multipart/form-data"><div class="left"></div></form>';
            
                 //Create overlay for elements
                 if (firstInlineElement.is('textarea')) {
-                    $("#cs-popup-center-content").css("width", "600px");
-                    $("#cs-popup-center-content").css("height", "400px");
-                    var newContent = '<form action="' + csVars.Url + url + "inlineedit/saveproperty/" + gemini_edit.pageType + '">' + '<h2 class="margin-bottom-10">' + response.Result.IssueKey + ' ' + response.Result.Property + '</h2>';
+                    $("#cs-popup-center-content").css("width", "800px");
+                    $("#cs-popup-center-content").css("height", "600px");
+                    var newContent = '<form action="' + gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) + '">' + '<h2 class="margin-bottom-10">' + response.Result.IssueKey + ' ' + response.Result.Property + '</h2>';
                     newContent += response.Result.Html + '</form>';
                     response.Result.Html = newContent;
                  
@@ -289,7 +314,7 @@ gemini_edit = {
                     });
 
                     setTimeout(function () {
-                        gemini_ui.htmlEditor("#colorbox .inline-editing", null, "", true);
+                        gemini_ui.htmlEditor("#colorbox .inline-editing", null, "", true, 530, 800);
                         //tinyMCE.execCommand('mceFocus', false, 'DescriptionWysiwygTextarea');
                     }, 50);
 
@@ -407,11 +432,12 @@ gemini_edit = {
                     else if (this.Key == 'DateCreated') {
                         $('#touch-info-container', '#view-item').html(this.Value);
                         gemini_sizing.sameWidth(".touch-info .box", 10);
+                        gemini_item.initSLA();
                     }
                         
                     });
                 }
-                if ($('#item-attributes .attribute-header.edit-mode').length > 0 && ! reloading) {
+                if (response.Result.Html && response.Result.Html.length > 0 && !reloading) {
                     $('#item-attributes').html(response.Result.Html);
                 }
               
@@ -422,14 +448,25 @@ gemini_edit = {
             gemini_edit.hideEditingField(true);
             $.publish('issue-update', [response.Result.ItemId, gemini_edit.pageType]);
         }
+        else
+        {
+            if (response.Message && response.Message.length)
+            {
+                gemini_popup.toast(response.Message, true);
+            }
+            else
+            {
+                gemini_popup.toast("Couldn't save changes", true);
+            }
+        }
     },
     saveEditingFieldSelect: function (elem) {
-        if (elem.parent().find('.chzn-drop').position().left < 0) {
+        if (elem.parent().find('.chosen-drop').position().left < 0) {
             gemini_edit.saveEditingField();
         }
     },
     cancelInlineEditFieldSelect: function (elem) {
-        if (elem.parent().find('.chzn-drop').position().left < 0) {
+        if (elem.parent().find('.chosen-drop').position().left < 0) {
             gemini_edit.hideEditingField();
         }
     },
@@ -440,7 +477,7 @@ gemini_edit = {
         var elementIssueId = (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) ? $('#tabledata tbody td.edit-mode').parent().attr('data-issue-id') : gemini_edit.issueId;
 
         //Fixes IE8 bug where form.valid() thinks chosen search field is required
-        form.validate({ ignore: ".chzn-search input, .search-field input" });
+        form.validate({ ignore: ".chosen-search input, .search-field input" });
    
         if (form.valid()) {
             var data = form.serialize();
@@ -488,7 +525,7 @@ gemini_edit = {
                         var tempData = data;
                         tempData += '&id=' + elm.attr('name') + '&itemid=' + items[i] + '&property=' + elm.attr('name');
 
-                        gemini_ajax.postCall(url + "inlineedit/saveproperty", gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, null, tempData, elm);
+                        gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, null, tempData, elm);
 
                     }
                 }
@@ -517,8 +554,8 @@ gemini_edit = {
             chosenInput.addClass('left');
             
             $(elm.next()).focus().mousedown();
-            gemini_commons.inputKeyHandler($('.chzn-choices', elm.parent()), function () { gemini_edit.saveEditingFieldSelect(elm); }, function () { gemini_edit.cancelInlineEditFieldSelect(elm); });
-            gemini_commons.inputKeyHandler($('.chzn-container', elm.parent()), function () { gemini_edit.saveEditingFieldSelect(elm); }, function () { gemini_edit.cancelInlineEditFieldSelect(elm); });
+            gemini_commons.inputKeyHandler($('.chosen-choices', elm.parent()), function () { gemini_edit.saveEditingFieldSelect(elm); }, function () { gemini_edit.cancelInlineEditFieldSelect(elm); });
+            gemini_commons.inputKeyHandler($('.chosen-container', elm.parent()), function () { gemini_edit.saveEditingFieldSelect(elm); }, function () { gemini_edit.cancelInlineEditFieldSelect(elm); });
         }
         else if (elm.is('input') && data_type == 'checkbox')
         {
@@ -595,9 +632,16 @@ gemini_edit = {
         var options = {
             dataType: "json",
             success: function (responseText, statusText, xhr, $form) {
-                if (responseText.success) gemini_edit.refresh(responseText, gemini_edit.issueId);
+                if (responseText.success)
+                {
+                    gemini_edit.refresh(responseText, gemini_edit.issueId);
+                    $.publish('issue-update', [responseText.Result.Item.Id, gemini_edit.pageType]);
+                }
+                else
+                {
+                    $('#server-validation-error', '#cs-popup').html(responseText.Message).show();
+                }
                 gemini_ui.stopBusy('#cs-popup #cs-popup-save');
-                $.publish('issue-update', [responseText.Result.Item.Id, gemini_edit.pageType]);
             },
             error: function (e, data) {
                 gemini_ui.stopBusy('#cs-popup #cs-popup-save');
@@ -693,7 +737,7 @@ gemini_edit = {
                     }
                 }
                 else {
-                    api.scrollToY($("#" + attribId + '_chzn', '#cs-popup-content').position().top);
+                    api.scrollToY($("#" + attribId + '_chosen', '#cs-popup-content').position().top);
                     $('*[name="' + attribId + '"] + div', '#cs-popup-content').focus().mousedown();
                 }
 
@@ -752,10 +796,15 @@ gemini_edit = {
         });
 
 
-        $('.chzn-results','#cs-popup-content').jScrollPane({});
+       // $('.chosen-results','#cs-popup-content').jScrollPane({});
 
         gemini_keyboard.bindEscape("#cs-popup #cs-popup-close");
         gemini_ui.fancyInputs('#inline-edit-form .fancy');
+        if(gemini_edit.editItemRenderedCallback)
+        {
+            gemini_edit.editItemRenderedCallback();
+            gemini_edit.editItemRenderedCallback = null;
+        }
     },
     
     triggerChange: function (elem) {
@@ -778,7 +827,7 @@ gemini_edit = {
         }
 
         gemini_ui.destroyHtmlEditor('.wysiwyg-editor');
-        gemini_edit.triggerXHR = gemini_ajax.postCall(csVars.ProjectUrl + "edit", gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), '#attributes');
+        gemini_edit.triggerXHR = gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent());
     },
     triggerCustomfieldChange: function (elem) {
 
@@ -795,7 +844,7 @@ gemini_edit = {
         if (selectedval.length > 0)
             selectedval = selectedval.slice(0, -1); //remove trailing |
 
-        gemini_ajax.postCall("project", "cascadeddata", gemini_edit.cascadeUpdate, null,
+        gemini_ajax.postCall("", "cascade", gemini_edit.cascadeUpdate, null,
             {
                 fieldid: id, value: selectedval,
                 projectid: null,
@@ -825,7 +874,8 @@ gemini_edit = {
             if (item.Value.length == 0) {
                 $("#" + item.Key, "#cs-popup").append("<option  value='0'>-- none --</option>");
             }
-            $("#" + item.Key, "#cs-popup").trigger("liszt:updated");
+
+            gemini_ui.chosenUpdate($("#" + item.Key, "#cs-popup"));
             //call update on this.
             $("#" + item.Key, "#cs-popup").change();
         }
@@ -837,12 +887,13 @@ gemini_edit = {
     },
 
     hideEditingPopup: function () {
+        $('#server-validation-error', '#cs-popup').hide();
         gemini_edit.includeProjectsField = false;
         // wants to move away from editing?
         if (gemini_edit.pendingChanges) {
             // warn of lost changes
-            $(gemini_edit.popupContainer).hide();
-            gemini_popup.sameConfirmWidth();
+            //$(gemini_edit.popupContainer).hide();
+            //gemini_popup.sameConfirmWidth();
             gemini_popup.modalConfirm("Save changes?", null,
             function () {
                 gemini_edit.saveEditing();
@@ -862,6 +913,8 @@ gemini_edit = {
             $('#cs-popup-content', gemini_edit.popupContainer).data("jsp", "");
 
             gemini_keyboard.unbindEscape("#cs-popup #cs-popup-close");
+            gemini_ui.stopBusy('#cs-popup #cs-popup-save');
+            gemini_edit.resetButtons();
             $.colorbox.close();
         }
     },
@@ -879,5 +932,13 @@ gemini_edit = {
     setProjectFieldDisplay: function (includeProjectField)
     {
         gemini_edit.includeProjectsField = includeProjectField;
+    },
+    resetButtons: function()
+    {
+        var orig = $('#cs-popup-save', '#cs-popup').attr('data-orig-val');
+        if (orig && orig.length) {
+            $('#cs-popup-save', '#cs-popup').val(orig);
+            $('#cs-popup-save', '#cs-popup').attr('data-orig-val', '');
+        }
     }
 };

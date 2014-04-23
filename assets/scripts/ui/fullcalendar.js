@@ -314,7 +314,7 @@
         // TODO: improve view switching (still weird transition in IE, and FF has whiteout problem)
 
         function changeView(newViewName) {
-            if (!currentView || newViewName != currentView.name) {
+            if (!currentView || newViewName != currentView.name || true) { // SAAR - Always redraw
                 ignoreWindowResize++; // because setMinHeight might change the height before render (and subsequently setSize) is reached
 
                 unselect();
@@ -332,7 +332,7 @@
                 content.css('overflow', 'hidden');
 
                 currentView = viewInstances[newViewName];
-                if (currentView) {
+                if (currentView && false) { // SAAR - Always redraw
                     currentView.element.show();
                 } else {
                     currentView = viewInstances[newViewName] = new fcViews[newViewName](

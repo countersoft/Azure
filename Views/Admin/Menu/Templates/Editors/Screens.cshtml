@@ -132,7 +132,7 @@
                 function (response) {
                     gemini_popup.popupClose(e);
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() });
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() }, null, true);
         });
 
         $("#popup-button-no").unbind("click").click(function (e) {
@@ -146,7 +146,7 @@
                 function (response) {
                     $("#screen-popup").replaceWith(response.Result.Html);
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', ReferenceId: $('#ReferenceId').val() });
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'screens', ReferenceId: $('#ReferenceId').val() }, null, true);
         });
         
         processReference();

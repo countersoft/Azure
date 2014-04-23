@@ -1,0 +1,65 @@
+﻿@model WorkspacePeopleModel
+
+<div id="workspace-people-zone">
+        
+    <div class="the-people">
+        @if(Model.People.Count == 0)
+        {
+            <img src="@GeminiContext.AssetsUrl/images/empty-state/sidebar-people.png" />
+        }
+        else
+        { 
+            <div class="footer" data-id="@(Model.UserId)">
+
+                <div class="gravatar"><div class="gravatar-unassigned" /></div>
+                <div class="fullname">@(Model.Fullname)</div>
+
+                <div class="tasks">
+                    <div class="number">@(Model.TotalTasks)</div>
+                    <div class="label">@GetResource(ResourceKeys.Items)</div>
+                </div>
+
+                @if (Model.TotalPoints > 0)
+                {
+                    <div class="points">
+                        <div class="number">@(Model.TotalPoints)</div>
+                        <div class="label">@GetResource(ResourceKeys.Points)</div>
+                    </div>
+                }
+
+                <div class="first-date">First task @(Model.FirstDate)</div>
+                <div class="last-date">Last task @(Model.LastDate)</div>
+                <div class="estimated">@GetResource(ResourceKeys.Estimated) @(Model.EstimatedEffort)</div>
+
+            </div>
+            foreach (var person in Model.People)
+            {                       
+                <div id="workspace-people-zone-id-@(person.UserId)" data-id="@(person.UserId)" class="person">
+                    <div class="gravatar">@if(person.Gravatar.HasValue()) {<img src="@person.Gravatar"/>} else {<div class="gravatar-empty" />}</div>
+                    <div class="available">@if(person.AvailableFrom.HasValue()) { <text>Available @(person.AvailableFrom)</text>}</div>
+                    <div class="fullname">@(person.Fullname)</div>
+
+                    <div class="estimated-label">@if(person.EstimatedEffort.HasValue()){ @GetResource(ResourceKeys.Estimated) }<div class="estimated">@(person.EstimatedEffort)</div></div>
+
+                    <div class="logged-label">@if(person.LoggedTime.HasValue()) { @GetResource(ResourceKeys.Logged) }<div class="logged">@(person.LoggedTime)</div></div>
+
+                    <div class="tasks">
+                        <div class="number">@(person.TotalTasks)</div>
+                        <div class="label">@GetResource(ResourceKeys.Items)</div>
+                    </div>
+
+                    @if(person.TotalPoints > 0)
+                    {
+                        <div class="points">
+                            <div class="number">@(person.TotalPoints)</div>
+                            <div class="label">@GetResource(ResourceKeys.Points)</div>
+                        </div>
+                    }
+                    
+                    <div class="remaining @if(person.Exceeded){<text>color-red</text>}">@(person.RemainingTime)</div>
+                </div>
+            }
+        }
+    </div>
+
+</div>

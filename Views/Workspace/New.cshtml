@@ -1,0 +1,70 @@
+﻿@model WorkspaceAddModel
+
+<div id="edit-appnav-card">
+    <div class="popup-header">
+        <form id="regular-form" action="#" method="post" enctype="multipart/form-data">
+            <div class="header">
+                <div class="title">@(GetResource(ResourceKeys.CreateWorkspace))</div>
+                <div class="text">@(GetResource(ResourceKeys.CreateWorkspaceCaption))</div>
+            </div>
+
+            <div class="content">
+
+                <div id="appnav-description">
+                    <input type="text" name="Key" id="Key" placeholder="Key" value="" class="required input-size3 margin-bottom-10" maxlength="4" />
+
+                    <input type="hidden" name="Color" id="Color" value="#6CBB3C" />
+                    <div class="swatch margin-bottom-10 clearfix">
+                        <span class="swatch-color" style="background-color: #000000;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #4863A0;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #0000A0;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #306754;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #437C17;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #6CBB3C;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #C9BE62;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #E8A317;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #6F4E37;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #C35817;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #F87431;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #E78A61;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #FF0000;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #DC381F;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #C34A2C;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #8C001A;">&nbsp;</span>
+                        <span class="swatch-color" style="background-color: #C12283;">&nbsp;</span>
+                    </div>
+
+                    <input type="text" name="Title" id="Title" placeholder="@GetResource(ResourceKeys.Name)" value="" class="required input-size12 margin-top-10" />
+
+                    <div class="margin-top-20 margin-bottom-10">Choose your terminology:</div>
+                    <div class="margin-top-10 margin-left-20">
+                        @Html.DropDownList("Taxonomy", Model.Taxonomy, new { @class = "input-size9" })
+                    </div>
+                    @if(!GeminiContext.PermissionsManager.IsHelpdeskUser())
+                    {
+                    <div class="margin-top-20 margin-bottom-10">Choose your views:</div>
+                    <div class="margin-top-10 margin-left-20">
+                        <input type="checkbox" id="workspace-menu-grid" class="fancy" name="workspace-menu-grid" checked="checked" /><label for="workspace-menu-grid" class="margin-right-20">@GetResource(ResourceKeys.Items)</label>
+                        <input type="checkbox" id="workspace-menu-board" class="fancy" name="workspace-menu-board" checked="checked" /><label for="workspace-menu-board" class="margin-right-20">@GetResource(ResourceKeys.Planner)</label>
+                        <input type="checkbox" id="workspace-menu-calendar" class="fancy" name="workspace-menu-calendar" checked="checked" /><label for="workspace-menu-calendar" class="margin-right-20">@GetResource(ResourceKeys.Calendar)</label>
+                        <input type="checkbox" id="workspace-menu-timeline" class="fancy" name="workspace-menu-timeline" checked="checked" /><label for="workspace-menu-timeline" class="margin-right-20">@GetResource(ResourceKeys.Timeline)</label>
+                        <input type="checkbox" id="workspace-menu-progress" class="fancy" name="workspace-menu-progress" /><label for="workspace-menu-progress">@GetResource(ResourceKeys.Progress)</label>
+                        @if (Model.PageApps.Count > 0)
+                        {
+                            <br />
+                            foreach (var app in Model.PageApps)
+                            {
+                                <input type="checkbox" id="workspace-menu-@(app.AppId)-@(app.ControlId)" data-appid="@app.AppId" data-controlid="@app.ControlId" class="fancy custom-app" name="workspace-menu-@(app.AppId)-@(app.ControlId)" @if (app.Selected) { <text> checked="checked" </text>   } /><label for="workspace-menu-@(app.AppId)-@(app.ControlId)" class="margin-right-20">@app.Caption</label>
+                            }
+                        }
+                        
+                    </div>
+                }
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+</div>

@@ -591,11 +591,54 @@
 		}
 	}
 }
+.cs-popup-tab-container
+{
+	font-size: 12px;
+	padding: 0;
+	position: absolute;
+	top: -10px;
+	left: 0;
+	z-index: 9999;
+	width: 100%;
 
+	.cs-popup-tabbed-zone
+	{
+		position: relative;
+		height: 100%;
+
+		.cs-popup-tab-content
+		{
+			overflow: hidden;
+			outline:none;
+            margin:10px 20px 0 20px;
+			display: none;
+		}
+		.cs-popup-tab-content.selected
+		{
+			display: block;
+		}
+
+        .cs-popup-tab-header
+        {
+            background-color:$color-grayscale4;
+            border-bottom: 1px solid $color-grayscale2;
+            height:50px;
+            
+            @include tabs;
+            .tabs
+	        {
+                .normal
+		        {
+			        background-color: $color-white !important;
+		        }
+	        }
+        }
+	}
+}
 
 .cs-menu-context
 {
-	@include cs-menu($theme-color, 4px);
+	@include cs-menu(12px);
 }
 
 .dropdown
@@ -605,7 +648,7 @@
 
 .cs-menu-dropdown
 {
-	@include cs-menu($color-text, 0px, 11px);
+	@include cs-menu(12px);
 }
 
 /************************************************************
@@ -613,9 +656,10 @@
 *************************************************************/
 #project-menu-dropdown
 {
+	position:absolute;
 	.cs-menu-dropdown
 	{
-		@include cs-menu($color-text, 0px, 12px, 160px);
+		@include cs-menu(12px, 160px);
 	}
 }
 #cs-admin
@@ -647,7 +691,7 @@
 		.base-tab
 		{
 			//margin: 0 10px 0 10px;
-			padding: 5px 30px 5px 30px;
+			padding: 5px 10px 5px 10px;
 			font-size: 14px;
 			height: 20px;
 			display: inline-block;
@@ -965,6 +1009,25 @@ table.admin-data-entry
 	outline: none;
 }
 
+#rules-form-container
+{
+	width: 800px; 
+	height: 100%; 
+	overflow: auto;
+	outline: none;
+    .chosen-container
+    {
+        position:static !important;
+    }
+}
+
+#sla-form-container
+{
+	height: 100%; 
+	overflow: hidden;
+	outline: none;
+}
+
 #workflow-container
 {
 	width: 900px; 
@@ -1178,10 +1241,10 @@ table.admin-data-entry
 	width: 400px;
 	display: none;
 	position: absolute;
-	z-index: 99999;
+	z-index: 9999999;
 	padding: 5px;
 	font-size: 11px;
-
+    
 	-webkit-border-bottom-right-radius: 4px;
 	-moz-border-radius-bottomright: 4px;
 	border-bottom-right-radius: 4px;
@@ -1792,45 +1855,32 @@ div.wysiwyg-container
 /************************************************************
 *  Toast
 *************************************************************/
-.toast
+#toast-popup
 {
-	position: absolute;
+	position: fixed;
 	display: none;
-	z-index: 15;
-	min-width: 100px;
-	padding: 20px 20px 20px 20px;
-
+	height: 40px;
 	top: 50px;		// gets changed by JS code to position relative to top of viewport
-	right: 50px;	// gets changed by JS code to position relative to top of viewport  
+	right: 0;	// gets changed by JS code to position relative to top of viewport  
+	z-index: 9999999;
 
-	@include rounded(3px);
-	@include theme-banner(1px);
-
-	[class*="fonticon-"]
-	{
-		font-size: 18px;
-	}
+	background-color: $color-black;
 	
 	.toast-message
 	{
+		min-width: 200px;
 		color: $color-white;
-		font-size: 16px;
-		font-weight: bold;
-		display: inline-block;
-		vertical-align: top;
-		margin: 2px 0 0 10px;
+		font-size: 13px;
+		padding: 12px 20px 0 20px;
 	}
 }
-
-.toast.error 
+.toast-good
 {
-	@extend .toast; 
-	background: $color-error !important;
-	color: $color-text !important;
-	.toast-message
-	{
-		color: $color-text !important;
-	}
+	border-bottom: 4px solid $color-green;
+}
+.toast-bad
+{
+	border-bottom: 4px solid $color-red;
 }
 
 #instant-filter-new-field
@@ -1916,8 +1966,31 @@ div.wysiwyg-container
 	{
 		height:270px;
 	}
+	.color-grayscale2
+	{
+		color: $color-grayscale2;
+	}
 }
+#instant-filter-options
+{
+    background-color:$color-white;
+}
+#instant-filter-ProjectCode
+{
+    background-color:$primary-color;
+    border: 1px solid $primary-color;
+        
+    .fonticon-dropdown
+    {
+        color:$color-white;
+    }
 
+    .instant-filter-header
+    {
+        max-width:300px;
+        color:$color-white;
+    }
+}
 #instant-filter-tooltip
 {
 	padding:10px;
@@ -2060,22 +2133,91 @@ div.wysiwyg-container
 	}
 }
 
+#side-pane
+{
+	#filter-navigator
+    {
+        display:none;
+    }
+
+	#view-item
+	{
+		background-color: $color-white;
+		#item-toolbar
+		{
+			display:none;
+		}
+	}
+
+	.side-pane-toolbar #item-toolbar .wrapper
+	{
+		float:left;
+		.action
+		{
+			margin:0 0 0 10px;
+			background-position-y:-16px;
+		}
+	}
+
+	#attachmentupload-hit
+    {
+        text-decoration:none;            
+        display: block;
+        height: 20px;
+        outline: 0 none;
+        padding: 3px 10px;
+                
+        a
+        {
+            visibility: hidden;
+			float: left;
+			width: 25px;
+        }
+
+        .qq-upload-button {
+			margin-left: -10px;
+            display: inline-block;
+			margin-top: -5px;
+        }
+
+        .qq-upload-list {
+            display: none;
+            padding: 0;
+            margin-left: 10px;
+        }
+        
+        .qq-upload-list li span, .qq-upload-list li a
+        {
+            font-size:9px !important;
+            color: $color-grayscale2 !important; 
+        }  
+
+        .qq-upload-drop-area, .qq-upload-success
+		{
+			display:none;
+			border:none;
+			background:none;
+			width:0;
+			height:0;
+		}
+    }
+}
+
 #view-item-slider
 {
     display:none;
     position:fixed;
-    padding:10px;
+    padding:20px;
     top:0px;
-    right:0px;
+    right:77px;
     width:820px;
     overflow-y:auto;
     overflow-x:hidden;
-
-    background-color:$color-white;
-    border-top: 1px solid $color-grayscale3;
-    border-left: 1px solid $color-grayscale3;
-    box-shadow: -4px 3px 7px -5px $color-grayscale1;
-
+	background-color:$color-white;
+    border-top: 4px solid $color-grayscale3;
+    border-left: 4px solid $color-grayscale3;
+	border-right: 1px solid $color-grayscale3;
+    
     #filter-navigator
     {
         display:none;

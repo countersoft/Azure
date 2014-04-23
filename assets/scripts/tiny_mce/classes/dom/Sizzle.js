@@ -607,7 +607,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join("|") );
 
 	// Element contains another
-	// Purposefully does not implement inclusive descendent
+	// Purposefully does not implement inclusive descendant
 	// As in, an element does not contain itself
 	contains = isNative(docElem.contains) || docElem.compareDocumentPosition ?
 		function( a, b ) {
@@ -1913,12 +1913,14 @@ setDocument();
 [0, 0].sort( sortOrder );
 support.detectDuplicates = hasDuplicate;
 
+/*
 // EXPOSE
 if ( typeof define === "function" && define.amd ) {
 	define(function() { return Sizzle; });
 } else {
 	window.Sizzle = Sizzle;
 }
+*/
 
 // EXPOSE
 return Sizzle;

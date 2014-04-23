@@ -48,14 +48,31 @@ define("tinymce/ui/TextBox", [
 						self.parents().reverse().each(function(ctrl) {
 							e.preventDefault();
 
-							if (ctrl.submit) {
-								ctrl.submit();
+							if (ctrl.hasEventListeners('submit') && ctrl.toJSON) {
+								ctrl.fire('submit', {data: ctrl.toJSON()});
 								return false;
 							}
 						});
 					}
 				});
 			}
+		},
+
+		/**
+		 * Getter/setter function for the disabled state.
+		 *
+		 * @method value
+		 * @param {Boolean} [state] State to be set.
+		 * @return {Boolean|tinymce.ui.ComboBox} True/false or self if it's a set operation.
+		 */
+		disabled: function(state) {
+			var self = this;
+
+			if (self._rendered && typeof(state) != 'undefined') {
+				self.getEl().disabled = state;
+			}
+
+			return self._super(state);
 		},
 
 		/**
@@ -158,6 +175,10 @@ define("tinymce/ui/TextBox", [
 				extraAttrs += ' type="' + settings.subtype + '"';
 			}
 
+			if (self.disabled()) {
+				extraAttrs += ' disabled="disabled"';
+			}
+
 			if (settings.multiline) {
 				return (
 					'<textarea id="' + id + '" class="' + self.classes() + '" ' +
@@ -183,6 +204,11 @@ define("tinymce/ui/TextBox", [
 			});
 
 			return self._super();
+		},
+
+		remove: function() {
+			DomUtils.off(this.getEl());
+			this._super();
 		}
 	});
 });

@@ -9,17 +9,12 @@
             {
                 if (Model.CardAlreadyPinned)
                 {
-                    @:<div id="pin-page" data-card-id="@Model.CurrentPageCard.Id" class="fonticon-pin pinned" title="@GetResource(ResourceKeys.Pin)"></div>
+                    @:<div id="pin-page" data-card-id="@Model.CurrentPageCard.Id" title="@GetResource(ResourceKeys.CreateWorkspace)"></div>
                 }
                 else
                 {
-                    @:<div id="pin-page" data-card-id="0" class="fonticon-pin " title="@GetResource(ResourceKeys.Pin)"></div>
+                    @:<div id="pin-page" data-card-id="0" title="@GetResource(ResourceKeys.CreateWorkspace)"></div>
                 }
-
-                <div id="pinned-actions">
-                    <div id="save-pin" class="fonticon-tick hide" title="@GetResource(ResourceKeys.Save)"></div>
-                    <div id="repin-pin" class="fonticon-documents hide" title="@GetResource(ResourceKeys.Copy)"></div>
-                </div>
             }
         }
    </div>

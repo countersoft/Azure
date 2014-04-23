@@ -14,13 +14,11 @@ $font-aux: calibri, Arial, Helvetica, Univers, Corbel, sans-serif;
 $theme-color: $primary-color;
 $theme-color-secondary: $secondary-color;
 $theme-color-gradient: $secondary-color;
-/*$theme-color: #63b6db; 
-$theme-color-secondary: #6dc1e7; 
-$theme-color-gradient: #309dcf;*/
 
 $color-green: #41a241;
 $color-red:	  #d42f2f;
 $color-black: #4c4c4c; 
+$color-trueblack: #000000; 
 $color-white: #ffffff; 
 $color-yellow: #ffff00;
 $color-gold: #FFD700;
@@ -50,3 +48,18 @@ $color-password-strong:    #008000;
 
 /* Branding */
 $color-countersoft: #562366;
+
+/* Workspace */
+$color-workspace-dashboard: #363636;
+$color-workspace-reports: #9790be;
+$color-workspace-people: #47a956;
+$color-workspace-chat: #2f88b9;
+$color-add-button: #5cb85c;
+$color-add-dropdown: #47a447;
+$color-workspace-cards-background: #29303b;
+
+/* Side Pane */
+$color-side-pane-background: #e4e9f4;
+$color-side-pane-border: #d4d4d4;
+$color-side-pane-collapsed-buttons: #b1b1b1;
+$color-badge-hover: #fa3c45;

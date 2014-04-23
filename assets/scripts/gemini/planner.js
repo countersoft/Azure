@@ -12,7 +12,7 @@ planner =
     animations: [],
     selectedContextCard: null,
     pageEffect: 'helix', // choose from => 'none', 'flip, 'flip-back', 'fly', 'fly-out', 'fly-reverse', 'helix', 'helix-out' 'slide', 'slide-right', 'fan', 'tilt', 'curl', 'zipper'
-
+    jscrollPaneApi: null,
     escapeDropdowns: function (guid, selector) {
         $(selector).hide();
         gemini_keyboard.unbindEscape(guid);
@@ -23,7 +23,31 @@ planner =
         planner.readOnly = readOnly;
         gemini_edit.initEdit(0, 1, '#cs-popup', '#cs-popup-content', '#data', planner.refreshPlannerLaner);
         
-        if (!readOnly)
+        planner.initOptions();
+
+        $(window).resize(function ()
+        {
+            planner.adjustScrollBars();
+            return false;
+        });
+
+        // Initialise the sort direction arrows
+        planner.addSortDirections();
+                
+        planner.showInfoTip();
+        planner.bindCardTitleChange();
+        planner.addArrowDownEvents();
+        // make the first call
+        planner.saveData();
+
+        gemini_master.currentRefreshFunction = planner.saveData;
+
+        return false;
+    },
+
+    initOptions: function()
+    {
+        if (!planner.readOnly)
         {
             $('#AxisFlipped').click(function ()
             {
@@ -35,8 +59,8 @@ planner =
                 $('#Axis2Selected', '#planner-control-box').val(axis1Selected);
 
                 // Chosens need updating too !!!
-                $("#Axis1Selected").trigger("liszt:updated");
-                $("#Axis2Selected").trigger("liszt:updated");
+                gemini_ui.chosenUpdate($("#Axis1Selected"));
+                gemini_ui.chosenUpdate($("#Axis2Selected"));
 
                 planner.saveData();
                 return false;
@@ -97,6 +121,10 @@ planner =
 
             if (level == undefined) level = 2;
             if (level < 0) level = 0;
+
+            // No level 0
+            level++;
+
             if (level > 4) level = 4;
 
             var _this = $(this);
@@ -106,10 +134,10 @@ planner =
             return false;
         });
 
-        if (!readOnly)
+        if (!planner.readOnly)
         {
             // Bind only one listener for all div.sort clicks
-            $('#planner-control-box').on('click', 'div.sort', function ()
+            $('#planner-control-box div.sort').click(function ()
             {
                 var _this = $(this);
                 var ascending = _this.hasClass('asc');
@@ -135,27 +163,6 @@ planner =
                 return false;
             });
         }
-
-        $(window).resize(function ()
-        {
-            planner.adjustScrollBars();
-            return false;
-        });
-
-        // Initialise the sort direction arrows
-        planner.addSortDirections();
-
-        // Tooltip for placement later when dragging
-        var tip = "<div id='dropTip' class='tooltip'><div id='dropTipText'></div></div>";
-        $("body").prepend(tip);
-
-        planner.showInfoTip();
-        planner.bindCardTitleChange();
-        planner.addArrowDownEvents();
-        // make the first call
-        planner.saveData();
-
-        return false;
     },
     
     refreshPlannerLaner: function (response, issueId)
@@ -209,10 +216,12 @@ planner =
         if (method != 'pagecell') gemini_ui.visualProgressStart('#planner');
 
         var controller;
-        if (args.projectId != 'undefined' && args.projectId > 0)
-            controller = "project/All/" + args.projectId + '/planner';
-        else 
-            controller = csVars.ProjectUrl + 'planner';
+        /*if (args.projectId != 'undefined' && args.projectId > 0) {
+            controller = "project/" + args.projectId + '/board';
+        }
+        else {*/
+            controller = 'board';
+        //}
         
         var screenHeight = planner.availableHeight();
         var screenWidth = $(window).width();
@@ -221,7 +230,7 @@ planner =
         args = $.extend(args, { height: screenHeight, width: screenWidth, viewId: parseInt(selectedView) });
         var badcall = planner.updateError;
 
-        gemini_ajax.postCall(controller, method, callback, badcall, args);
+        gemini_ajax.postCall(controller, method, callback, badcall, args/*, null, args.projectId != 'undefined' && args.projectId > 0*/);
 
         return false;
     },
@@ -369,7 +378,7 @@ planner =
         planner.addArrowDownEvents();
 
         // Only when NOT read-Only
-        if (!planner.readOnly) planner.enableCardDrag();
+        /*if (!planner.readOnly)*/ planner.enableCardDrag();
 
         planner.allowEffects();
         planner.normalCursor();
@@ -414,13 +423,13 @@ planner =
         }
 
         // Only when NOT read-Only
-        if (!planner.readOnly)
-        {
+        /*if (!planner.readOnly)
+        {*/
             planner.enableCardDrag();
 
             //re-attach the context menu to just the header cell
             planner.addToSwimlane();
-        }
+        //}
     },
 
     // New card, chnage the title from "New" or edit.
@@ -540,15 +549,18 @@ planner =
     adjustScrollBars: function ()
     {
         var screenHeight = planner.availableHeight();
-        var screenWidth = $(window).width();
+        var screenWidth = $('#page-content-zone .layout').width(); //$(window).width();
 
         $('#planner-box').css('height', screenHeight);
         
         //last number was 25 HSK changed to 92 during 5.2 UX work
-        $('#planner-box').css('width', screenWidth - 92);
+        $('#planner-box').css('width', screenWidth - 2 /*- 92 - 400 + 10*/);
 
         // add a custom scrollbar on the planner-box and vertical scroll
         $('#planner-box').jScrollPane({ verticalDragMinHeight: 50, horizontalDragMinWidth: 50, skipDivWrap: false });
+
+        planner.jscrollPaneApi = $('#planner-box').data('jsp');
+
         return false;
     },
 
@@ -592,17 +604,17 @@ planner =
         if (axis1Selected == axis2Selected)
         {
             // If same value thing is selected Axis12 -> reset this to the 'Nothing' option
-            $('#Axis2Selected option:first-child', '#planner-control-box').attr("selected", "selected");
+            $('#Axis2Selected option:first-child', '#planner-control-box').prop("selected", "selected");
             axis2Selected = '';
 
-            $("#Axis2Selected").trigger("liszt:updated");    // Chosen needs updating too !!!
+            gemini_ui.chosenUpdate($("#Axis2Selected")); // Chosen needs updating too !!!
         }
 
         // Hide the axis option in dropdown list two that has already been selected in list one
         // Before chosen $("#Axis2Selected option[value='" + axis1Selected + "']").hide();
         var index = $("#Axis1Selected option[value=" + axis1Selected + "]").index();  
-        $("li[id^=Axis2Selected_chzn_o_]", ".chzn-results").show();
-        $("li[id^=Axis2Selected_chzn_o_"+(index+1)+"]", ".chzn-results").hide();  // need to allow for 'Nothing' entry too !!!
+        $("li[id^=Axis2Selected_chzn_o_]", ".chosen-results").show();
+        $("li[id^=Axis2Selected_chzn_o_"+(index+1)+"]", ".chosen-results").hide();  // need to allow for 'Nothing' entry too !!!
 
         //'DateRangeSelected' - Disable by default and only enable for dates.
         $('#DateRangeSelected', '#planner-control-box').attr("disabled", "disabled");
@@ -621,23 +633,23 @@ planner =
 
         // You can only have Thenby if OrderBy has beeen selected
         $('#OrderBySelected', '#planner-control-box').TriggerContol({ target: '#ThenBySelected', label: '#lblThenBySelected', value: '', enable: false });
-        $("#ThenBySelected").trigger("liszt:updated");    // Chosen needs updating too !!!
-
+ 
+        gemini_ui.chosenUpdate($("#ThenBySelected")); // Chosen needs updating too !!!
         $("#ThenBySelected option").show();
         if (orderBySelected == thenBySelected)
         {
             // If same value thing is selected Axis12 -> reset this to the 'Not Ordered' option
-            $('#ThenBySelected option:first-child', '#planner-control-box').attr("selected", "selected");
+            $('#ThenBySelected option:first-child', '#planner-control-box').prop("selected", "selected");
             thenBySelected = '';
 
-            $("#ThenBySelected").trigger("liszt:updated");   // Chosen needs updating too !!!
+            gemini_ui.chosenUpdate($("#ThenBySelected")); // Chosen needs updating too !!!
         }
 
         // otherwise hide the axis option in dropdown list two that has already been selected in list one
         //$("#ThenBySelected option[value='" + orderBySelected + "']").hide();
         index = $("#OrderBySelected option[value=" + orderBySelected + "]").index();
-        $("li[id^=ThenBySelected_chzn_o_]", ".chzn-results").show();
-        $("li[id^=ThenBySelected_chzn_o_" + index + "]", ".chzn-results").hide();  // no need to allow for 'Not Ordered' as both have this entry 
+        $("li[id^=ThenBySelected_chzn_o_]", ".chosen-results").show();
+        $("li[id^=ThenBySelected_chzn_o_" + index + "]", ".chosen-results").hide();  // no need to allow for 'Not Ordered' as both have this entry 
         
         // Enable or disable the sorting options of the various 'ThenBy's based on dropdown values
         $('#Axis2Selected', '#planner-control-box').TriggerContol({ target: '#Axis2Sort', value: '', enable: false });
@@ -698,7 +710,7 @@ planner =
             opacity: 0.7,
             cancel: ".fixed",         // prevent drag of paging controls LI
             containment: '#planner',
-
+            scroll: true,
             change: function (e, ui)
             {
                 // When i start to drag this fires!
@@ -740,6 +752,22 @@ planner =
             // card has been picked up
             start: function (e, ui)
             {
+                var plannerWidth = $('#planner-box').width();
+                var plannerHeight = $('#planner-box').height();
+                var cardWidth = $('#planner .plan-card:eq(0)').width();
+                var cardHeight = $('#planner .plan-card:eq(0)').height();
+                var plannerPos = $('#planner-box').position();
+
+                $('#planner').bind('mousemove', function(event) {
+                    if ((event.pageX - cardWidth) < 0)  planner.jscrollPaneApi.scrollByX(-300, true) 
+
+                    if ((event.pageX + cardWidth) >= plannerWidth)  planner.jscrollPaneApi.scrollByX(300, true) 
+
+                    if ((event.pageY - cardHeight) < plannerPos.top)  planner.jscrollPaneApi.scrollByY(-300, true) 
+
+                    if (event.pageY >= plannerHeight)  planner.jscrollPaneApi.scrollByY(300, true) 
+                });
+
                 // remove the effects as soon as dragging starts
                 planner.disableEffects();
                 $('body').addClass('dragging');         // used by hover Intent
@@ -751,6 +779,8 @@ planner =
             // card has finished moving completely, will fire after any card pickup and drop (once)
             stop: function (e, ui)
             {
+                $('#planner').unbind('mousemove');
+
                 var item = ui.item;
 
                 $('body').removeClass('dragging');      // used by hover Intent
@@ -813,7 +843,7 @@ planner =
         $(tip).position({
             "of": elem,
             "my": "top",
-            "at": "bottom",
+            "at": "top",
             "offset": "8px 0",
             "collision": "none"
         });
@@ -821,16 +851,28 @@ planner =
         return false;
     },
 
-    // Scrape option from the control box and json it to the server.
-    saveData: function ()
+    filterChanged: function() 
+    {
+        gemini_ajax.postCall('board', 'options', function (response)
+        {
+            $('#page-options-box').html(response);
+            gemini_ui.chosen('#page-options-box select:not(.no-chosen)', null);
+            planner.initOptions();
+            $("#page-options-box .options").click(function (e) { e.stopPropagation(); });
+            planner.addSortDirections();
+            planner.saveData();
+        }, null, { changes: planner.scrapeData() });
+        
+    },
+
+    scrapeData: function()
     {
         var i, controls, count, items = 0, terms = [];
 
         controls = $('select', '#planner-control-box');
         count = controls.length;
 
-        for (i = count; i--; )
-        {
+        for (i = count; i--;) {
             _this = controls[i];
             terms[items++] = _this.id + ':\'' + _this.value + '\'';
         }
@@ -838,19 +880,16 @@ planner =
         controls = $('input', '#planner-control-box');
         count = controls.length;
 
-        for (i = count; i--; )
-        {
+        for (i = count; i--;) {
             _this = controls[i];
-            if (_this.id != "dummy" && _this.id.length != 0)
-            {
+            if (_this.id != "dummy" && _this.id.length != 0) {
                 terms[items++] = _this.id + ':\'' + _this.value + '\'';
             }
         }
 
         var zoom = $('#PlannerLevel', '#planner-control-box').attr('class');
         var pos = zoom.indexOf('level-');
-        if (pos != -1)
-        {
+        if (pos != -1) {
             var digits = zoom.substring(pos + 6, pos + 7);
             var level = parseInt(digits);
 
@@ -863,9 +902,15 @@ planner =
         terms[items++] = 'OrderBySort:' + (planner.isDescending('#OrderBySort') ? '\'desc\'' : '\'asc\'');
         terms[items++] = 'ThenbySort:' + (planner.isDescending('#ThenbySort') ? '\'desc\'' : '\'asc\'');
 
-        var jsonStr = '{' + terms.join(',') + '}';
+        return '{' + terms.join(',') + '}';
+    },
 
-        planner.postData(jsonStr);
+    // Scrape option from the control box and json it to the server.
+    saveData: function ()
+    {
+        
+
+        planner.postData(planner.scrapeData());
         return false;
     },
     
@@ -941,7 +986,8 @@ planner =
                 }
 
                 if (action == "new") {
-                    var newCard = $("#planner-context-popup-new-card");
+                    planner.addNewItem(planner.selectedContextCard);
+                    /*var newCard = $("#planner-context-popup-new-card");
                     newCard.width(200);
                     newCard.height(110);
                     newCard.show();
@@ -960,7 +1006,7 @@ planner =
                         "offset": "0 10",
                         "collision": "none"
                     });
-                    gemini_keyboard.bindEscape('#planner-context-popup-new-card', planner.escapeDropdowns);
+                    gemini_keyboard.bindEscape('#planner-context-popup-new-card', planner.escapeDropdowns);*/
                 }
                 else if (action == "edit" && !$('#planner-context-menu a[href="#edit"]').parent().hasClass('disabled')) {
                     $(el).parent().data("issue-id", cardId);
@@ -969,7 +1015,7 @@ planner =
                 else if (action == "comment" && !$('#planner-context-menu a[href="#comment"]').parent().hasClass('disabled')) {
                     $("#cs-popup-center-content").css("width", "725px");
                     $("#cs-popup-center-content").css("height", "475px");
-                    gemini_popup.centerPopup("project/All/" + projectId + "/item/" + cardId + "/editcommenteditor", "popup");
+                    gemini_popup.centerPopup("item/editcommenteditor", "popup?issueid=" + cardId);
                 }
                 else if (action == "delete" && !$('#planner-context-menu a[href="#delete"]').parent().hasClass('disabled')) {
                     gemini_commons.translateMessage("[[Delete]] " + elem.find(".title").text() + "?", ['Delete'], function (message) {
@@ -980,14 +1026,14 @@ planner =
                     });
                 }
                 else if (action == "follow") {
-                    gemini_ajax.call("project/All/" + projectId + "/item", "addwatcher/" + cardId + "/0");
+                    gemini_ajax.call("item", "addwatcher?issueid=" + cardId + "&userid=0");
                 }
                 else if (action == "pin") {
                     gemini_items.pinItem(cardId, false);
                 }
             },
             function (before) {
-                gemini_ajax.call(csVars.ProjectUrl + 'projects', "getprojectpermissions/" + before.attr('id'), function (response) {
+                gemini_ajax.call('', "projectpermissions?issueid=" + before.attr('id'), function (response) {
                     if (response.success) {
                         if (response.Result.Data.canview)
                             $('#planner-context-menu').enableContextMenuItems('#view');
@@ -1019,9 +1065,12 @@ planner =
     /* Plus sign == create item */
     addToSwimlane: function ()
     {
-        if (!planner.readOnly) {
-            $(".add-to-swimlane", ".axis-label-header").click(function (e) {
-                planner.selectedContextCard = $(this).parent();
+        /*if (!planner.readOnly)
+        {*/
+            $(".add-to-swimlane", ".axis-label-header").click(function (e)
+            {
+                planner.addNewItem(this);
+                /*planner.selectedContextCard = $(this).parent();
 
                 var newCard = $("#planner-context-popup-new-card");
                 newCard.width(200);
@@ -1041,11 +1090,40 @@ planner =
                     "of": $(this).closest(".axis-label-header"),
                     "offset": "0 10",
                     "collision": "none"
-                });
+                });*/
             });
-        }
-        else {
+        /*}
+        else
+        {
             $(".add-to-swimlane", ".axis-label-header").css('visibility', 'hidden');
-        }
+        }*/
+    },
+
+    addNewItem: function(_that)
+    {
+        gemini_add.hidePlan = true;
+        gemini_add.hideProject = true;
+        var li = $(_that).parent();
+        var ul = li.parent();
+        var cellId = parseInt(ul.attr("id").replace('cell_', ''));
+        var container = ul.find("li");
+        var dropIndex = parseInt(container.index(li));
+        gemini_ajax.postCall('board', 'celldetails', function (response) {
+            gemini_add.newItemRenderedCallback = function () {
+                var scroll = $(window).scrollTop();
+                var popup = $("#cs-popup-add");
+                if (scroll > popup.position().top) {
+                    popup.css("top", scroll);
+                }
+            };
+            gemini_add.newItemCreatedCallback = function (id) {
+                planner.postAddCardData({ projectId: 0, cell: cellId, issueid: id, index: dropIndex });
+                //planner.post('refresh', planner.updateCell, { changes: planner.scrapeData(), cell: cellId });
+            };
+
+            gemini_add.postData = $.parseJSON(response);
+
+            gemini_commons.showAddItem();
+        }, null, { changes: planner.scrapeData(), cellId: cellId, filter: $('#filter-form').serialize() });
     }
 };

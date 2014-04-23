@@ -1,0 +1,17 @@
+﻿@model WorkspaceDeleteModel
+
+<div id="delete-workspace">
+
+    <div class="title">@GetResource(ResourceKeys.Delete) '@(Model.Card.Title)'?</div>
+    
+    <div class="margin-top-20">@GetResource(ResourceKeys.DeleteTeamChatsAndScheduledReports)</div>
+
+    @if (Model.Card.Locked || Model.Card.CardData.Lock && Model.Card.CardData.IsShared)
+    {
+        <div class="margin-top-20">@GetResource(ResourceKeys.OrTransferWorkspace)</div>
+        <div class="margin-top-10 margin-left-20">
+            @Html.DropDownList("Owner", Model.Owner, new { @class = "input-size7" })
+        </div>
+    }
+
+</div>

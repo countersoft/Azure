@@ -29,6 +29,9 @@ gemini_filter = {
     needFiltering: false,
     currentSelectedField: false,
     suspendICheck: false,
+    fields: [],
+    gridColumnRefreshCallback: null,
+    gridReorderCallback: null,
     filterTooltip: function() {
         $("#filter-form .instant-filter-box").hoverIntent({
             interval: 250,
@@ -59,7 +62,7 @@ gemini_filter = {
         $('option:selected', parent).each(function () {
             data += $(this).text() + ', ';
         });
-        data = data.replace(new RegExp(String.fromCharCode(183), 'g'), '');
+        data = data.replace(new RegExp(String.fromCharCode(160), 'g'), '');
         data = data.replace(new RegExp(', $', 'g'), '');
         $('.instant-filter-caption', parent).html(data);
     },
@@ -72,7 +75,7 @@ gemini_filter = {
         $('option:selected', parent).each(function () {
             data += $(this).text() + ', ';
         });
-        data = data.replace(new RegExp(String.fromCharCode(183), 'g'), '');
+        data = data.replace(new RegExp(String.fromCharCode(160), 'g'), '');
         data = data.replace(new RegExp(', $', 'g'), '');
         $('.instant-filter-caption', parent).html(data);
     },
@@ -97,7 +100,7 @@ gemini_filter = {
         checked.each(function () {
             data += $(this).parent().next().html() + ', ';
         });
-        data = data.replace(new RegExp(String.fromCharCode(183), 'g'), '');
+        data = data.replace(new RegExp(String.fromCharCode(160), 'g'), '');
         data = data.replace(new RegExp(', $', 'g'), '');
         $('.instant-filter-caption', parent.parent()).html(data);
     },
@@ -132,19 +135,18 @@ gemini_filter = {
             else if (value == null || value == undefined) {
                 $(this).val(any);
             }
-
-            $(this).trigger("liszt:updated");
+            gemini_ui.chosenUpdate($(this));
             gemini_filter.currentListValues = $(this).val();
             gemini_filter.populateCaptionFromSelect($(this).parent().parent());
-            gemini_ajax.postCall(csVars.ProjectUrl + 'items', 'filteredprojectchanged', function (response) {
+            gemini_ajax.postCall('items', 'filteredprojectchanged', function (response) {
                 $('.dynamic', '#filter-form').remove();
                 $('#instant-filter-fields').before(response.Result.Html);
                 gemini_filter.filterTooltip();
                 gemini_ui.datePicker('#filter-form .datepicker', gemini_filter.dateChanged);
                 gemini_ui.fancyInputs('#filter-form .fancy');
-                fields = [];
+                gemini_filter.fields = [];
                 $(response.Result.Fields).each(function () {
-                    fields.push({ value: this.Key, label: this.Value });
+                    gemini_filter.fields.push({ value: this.Key, label: this.Value });
                 });
                 gemini_filter.executeFilter();
             }, null, { filter: $('#filter-form').serialize() });
@@ -166,7 +168,7 @@ gemini_filter = {
             else if(value == null || value == undefined) {
                 $(this).val(any);
             }
-            $(this).trigger("liszt:updated");
+            gemini_ui.chosenUpdate($(this));
             gemini_filter.currentListValues = $(this).val();
             if ($(this).parent().attr('data-field-type')=='custom') {
                 gemini_filter.populateCaptionFromCustom($(this).parent().parent());
@@ -191,20 +193,20 @@ gemini_filter = {
                 $('.instant-filter-dropdown', '#filter-form').hide();
                 $('.instant-filter-dropdown', _this).show();
                 var addJSCrollpane = false;
-                if ($('.chzn-container', _this).length == 0) {
+                if ($('.chosen-container', _this).length == 0) {
                     if ($('.auto-complete-chosen', _this).length == 0) {
                         gemini_ui.chosen($('select', _this), null);
                     }
                     else {
                         var selId = $('select', _this);
-                        gemini_ui.ajaxChosen($('select', _this), null, null, 'project/filter', { filter: function () { return $('#filter-form').serialize(); }, selected: function () { return selId.val(); } });
+                        gemini_ui.ajaxChosen($('select', _this), null, null, 'project/filter/get/customfield', { filter: function () { return $('#filter-form').serialize(); }, selected: function () { return selId.val(); } });
                     }
                     addJSCrollpane = true;
                 }
                 gemini_filter.currentListValues = $('select', _this).val();
                 var custom = $('.instant-filter-dropdown[data-field-type="custom"]', _this).length > 0;
                 if ($('select', _this).length > 0 && !custom) {
-                    $('.chzn-container', _this).focus().mousedown();
+                    $('.chosen-container', _this).focus().mousedown();
                 }
                 else if (!custom) {
                     var checkboxes = $('.instant-filter-dropdown[data-field-type="check"]', _this).length > 0;
@@ -219,7 +221,7 @@ gemini_filter = {
 
                 if (addJSCrollpane) {
                     // add jscrollpane after chosen is opened!
-                    $('.chzn-results', _this).jScrollPane({});
+                    $('.chosen-results', _this).jScrollPane({});
                 }
             }
         });
@@ -237,7 +239,7 @@ gemini_filter = {
             }
         });
 
-        $('#filter-form').on('ifChanged', '.instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="checkbox"]', function (e) {
+        $('#filter-form').on('ifChanged', '.instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="checkbox"], .instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="radio"]', function (e) {
             gemini_filter.populateCaptionFromCustom($(this).parent().parent().parent());
             gemini_filter.executeFilter();
         });
@@ -330,27 +332,28 @@ gemini_filter = {
             gemini_commons.stopClick(e);
             var _this = $(this);
             var parent = _this.parent();
-            fields.push({ value: $(parent).attr('data-field-name'), label: $(parent).attr('data-field-desc') });
-            fields.sort(function (a, b) {
+            gemini_filter.fields.push({ value: $(parent).attr('data-field-name'), label: $(parent).attr('data-field-desc') });
+            gemini_filter.fields.sort(function (a, b) {
                 return a.label > b.label;
             });
             $(parent).remove();
+            $('#instant-filter-tooltip').hide();
             gemini_filter.executeFilter();
             $('#instant-filter-new-field').focus().click();
         });
 
         // User looking for new field!
-        var fields = [];
+        gemini_filter.fields = [];
 
         $(filterFields).each(function () {
-            fields.push({ value: this.Key, label: this.Value });
+            gemini_filter.fields.push({ value: this.Key, label: this.Value });
         });
 
         $("#instant-filter-new-field").bind("keydown", function (event) {
             if (event.keyCode === $.ui.keyCode.ENTER) {
                 if(!gemini_filter.currentSelectedField) {
                     $('#instant-filter-Keywords').remove();
-                    gemini_ajax.postCall(csVars.ProjectUrl + 'items', 'newfilterbox', function (response) {
+                    gemini_ajax.postCall('items', 'newfilterbox', function (response) {
                         $('#instant-filter-fields').before(response.Result.Html);
                         gemini_ui.fancyInputs('#instant-filter-Keywords .fancy');
                         gemini_filter.filterTooltip();
@@ -358,9 +361,9 @@ gemini_filter = {
                     }, null, { field: $(this).val(), filter: $('#filter-form').serialize() });
                     $(this).val('');
                 
-                    for (var i = fields.length - 1; i >= 0; i--) {
-                        if (fields[i].value === 'Keywords') {
-                            fields.splice(i, 1);
+                    for (var i = gemini_filter.fields.length - 1; i >= 0; i--) {
+                        if (gemini_filter.fields[i].value === 'Keywords') {
+                            gemini_filter.fields.splice(i, 1);
                             break;
                         }
                     }
@@ -387,7 +390,7 @@ gemini_filter = {
         
         $('#instant-filter-new-field').autocomplete({
             select: function (event, ui) {
-                gemini_ajax.postCall(csVars.ProjectUrl + 'items', 'newfilterbox', function (response) {
+                gemini_ajax.postCall('items', 'newfilterbox', function (response) {
                     $('#instant-filter-fields').before(response.Result.Html);
                     gemini_filter.filterTooltip();
                     gemini_ui.datePicker('#instant-filter-' + response.Result.Field + ' .datepicker', gemini_filter.dateChanged);
@@ -396,7 +399,7 @@ gemini_filter = {
                     //$('.instant-filter-title', '#instant-filter-' + response.Result.Field).click();
                 }, null, { field: ui.item.value, filter: $('#filter-form').serialize() });
                 $(this).val('');
-                fields.splice(fields.indexOf(ui.item), 1);
+                gemini_filter.fields.splice(gemini_filter.fields.indexOf(ui.item), 1);
                 return false;
             },
             focus: function (event, ui) {
@@ -407,7 +410,7 @@ gemini_filter = {
             minLength: 0,
             autoFocus: true,
             source: function (request, response) {
-                var matches = $.map(fields, function (tag) {
+                var matches = $.map(gemini_filter.fields, function (tag) {
                     if (tag.label.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
                         return tag;
                     }
@@ -416,7 +419,7 @@ gemini_filter = {
                 response(matches);
             }
         });
-        $("#instant-filter-new-field").autocomplete("widget").css('position', 'fixed');
+        $("#instant-filter-new-field").autocomplete("widget").css('position', 'absolute').addClass('z-index-medium');
         // Auto popup auto complete for fields when we focus!
         $("#instant-filter-new-field").bind('focus', function () {
             $("#instant-filter-new-field").autocomplete("search");
@@ -430,11 +433,11 @@ gemini_filter = {
         
         $("#filter-form .instant-filter-title, #filter-form .instant-filter-caption").disableSelection();
 
-        $(document).on('click', "#grid-import-data", function (e) {
+        $('#contents').on('click', "#grid-import-data", function (e) {
             $("#cs-popup-center-content").css("width", "800px");
-            $("#cs-popup-center-content").css("height", "380px");
+            $("#cs-popup-center-content").css("height", "400px");
             
-            gemini_popup.centerPopup(csVars.ProjectUrl + "items/importdatap", "popup");
+            gemini_popup.centerPopup("items", "importdatap/popup");
         });
         
         
@@ -453,11 +456,122 @@ gemini_filter = {
             if(currentPage >= 0) gemini_filter.getFilteredItemsPage(currentPage);
         });
        
-        if (gemini_filter.pageType != 2 && gemini_filter.pageType != gemini_commons.PAGE_TYPE.Burndown) {
+        if (gemini_filter.pageType != gemini_commons.PAGE_TYPE.Planner && gemini_filter.pageType != gemini_commons.PAGE_TYPE.Burndown && gemini_filter.pageType != gemini_commons.PAGE_TYPE.Calendar) {
             gemini_filter.initDataTable();
         }
-        gemini_filter.bindExportToShowHide();
 
+        if (gemini_appnav.pageCard.Id == 0 || gemini_appnav.pageCard.Locked)
+        {
+            if (gemini_appnav.pageCard.Id == 0) $('#filter-form #ShowSequenced').iCheck('uncheck');
+            $('#filter-form #ShowSequenced').attr('disabled', 'disabled');
+            $('#filter-form .instant-filter-dropdown label[for="ShowSequenced"]').addClass('color-grayscale2');
+        }
+
+        if (gemini_appnav.pageCard.Filter && gemini_appnav.pageCard.Filter.ShowSLA)
+        {
+            gemini_filter.startSLATimer();
+        }
+        
+        $('#filter-form').on('ifChanged', '#ShowSLA', function ()
+        {
+            if($('#ShowSLA', '#filter-form').prop('checked'))
+            {
+                gemini_filter.startSLATimer();
+            }
+            else 
+            {
+                gemini_filter.stopSLATimer();
+            }
+        });
+        
+    },
+
+    slaTimerHandle: null,
+    stopSLATimer: function()
+    {
+        if (gemini_filter.slaTimerHandle)
+        {
+            clearInterval(gemini_filter.slaTimerHandle)
+            gemini_filter.slaTimerHandle = null;
+        }
+    },
+
+    startSLATimer: function()
+    {
+        gemini_filter.stopSLATimer();
+        gemini_filter.slaTimerHandle = setInterval(gemini_filter.recalcSLA, 60 * 1000);
+    },
+
+    recalcSLA: function()
+    {
+        var ids = [];
+        $('#tabledata .sla-timer', '#items-grid').each(function()
+        {
+            ids.push($(this).closest('tr').attr('data-issue-id'));
+            /*var totalMins = $(this).attr('data-sla-minutes');
+            var state = $(this).attr('data-sla-state');
+            if (state < 10)
+            {
+                totalMins -= 1;
+                var sign = totalMins >= 0 ? 1 : -1;
+                var hours = Math.floor(Math.abs(totalMins) / 60);
+                var minutes = totalMins % 60;
+                var days = Math.floor(hours / 24);
+                if (days != 0)
+                {
+                    $(this).html((days * sign) + 'd');
+                }
+                else if (hours != 0)
+                {
+                    $(this).html((hours * sign) + 'h');
+                }
+                else
+                {
+                    $(this).html(minutes + 'm');
+                }
+
+                $(this).attr('data-sla-minutes', totalMins)
+                $(this).attr('title', days+ 'd ' + hours + 'h ' + minutes + 'm');
+            }*/
+        });
+
+        if (ids.length)
+        {
+            gemini_ajax.postCall('items', 'slatime', function (response)
+            {
+                if (response.Success)
+                {
+                    $(response.Result.Data).each(function ()
+                    {
+                        var span = $('span.sla-timer', '#tr-issue-' + this.Id + ' td.items-first-column');
+                        span.html(this.SLATime).attr('data-sla-minutes', this.SLATimeMinutes).attr('title', this.SLATimeFull);
+                        span.parent().removeAttr('class').addClass('sla-' + this.SLAStatus);
+                    });
+                }
+            }, null, { ids: ids });
+        }
+
+    },
+
+    addFilterBox: function(id, callback) 
+    {
+        gemini_ajax.postCall('items', 'newfilterbox', function (response)
+        {
+            $('#instant-filter-fields').before(response.Result.Html);
+            gemini_filter.filterTooltip();
+            gemini_ui.datePicker('#instant-filter-' + response.Result.Field + ' .datepicker', gemini_filter.dateChanged);
+            gemini_ui.fancyInputs('#instant-filter-' + response.Result.Field + ' .fancy');
+            for (var i = gemini_filter.fields.length - 1; i >= 0; i--)
+            {
+                if (gemini_filter.fields[i].value === id)
+                {
+                    gemini_filter.fields.splice(i, 1);
+                    break;
+                }
+            }
+
+            callback(response);
+        }, null, { field: id, filter: $('#filter-form').serialize() });
     },
     
     EscapeDropdowns: function (guid, selector) {
@@ -469,39 +583,15 @@ gemini_filter = {
         }
         gemini_keyboard.unbindEscape(selector);
     },
-    
-    bindExportToShowHide: function () {
-
-        $(document).on('click', ".export-to-container a", function (e) {
-            $(".export-to-container").hide();
-            gemini_keyboard.unbindEscape(".export-to-container");
-        });
         
-        $(document).on('click', "#grid-export-excel", function (e) {
-
-            if ($(".export-to-container").is(":visible")) {
-                //$(".export-to-container").hide();
-                $(".export-to-container").fadeOut('fast');
-                gemini_keyboard.unbindEscape(".export-to-container");
-
-            } else {
-                //$(".export-to-container").show();
-                $(".export-to-container").slideDown('fast');
-                $(".export-to-container").position({
-                    "my": "right top",
-                    "my": "right top",
-                    "at": "right bottom",
-                    "of": $("#grid-export-excel"),
-                    "offset": "0 6",
-                    "collision": "none"
-                });
-                gemini_keyboard.bindEscape(".export-to-container", gemini_filter.EscapeDropdowns);
-
-            }
-        });
-    },
-    
     initDataTable: function () {
+        if ($('#tabledata').length == 0) return;
+
+        var nonSort = { "bSortable": false, "aTargets": [0] };
+        if ($('#ShowSLA', '#filter-form').prop('checked'))
+        {
+            nonSort = { "bSortable": true, "aTargets": [0] };
+        }
         var x = $('#tabledata').dataTable(
         {
             bFilter: false,
@@ -512,38 +602,41 @@ gemini_filter = {
             sDom: 'Rlfrtip',
             "bAutoWidth": false,
             "aoColumnDefs": [ 
-            { "bSortable": false, "aTargets": [ 0 ] }
+            nonSort
             ],
             "oColReorder": {
                 //"iFixedColumns": $('#tabledata').find('thead').find('tr')[0].cells.length,
                 "fnColReorderCallback": function (x, y) {
                     if (x == y) return;
+
                     var xProperty = $($('#tabledata').find('thead').find('tr')[0].cells[x]).data('id');
                     var yProperty = $($('#tabledata').find('thead').find('tr')[0].cells[y]).data('id');
-                    $.ajax({
-                        type: "POST",
-                        url: csVars.Url + csVars.ProjectUrl + 'items/reordercolumns/' + gemini_filter.pageType + '?card=' + gemini_appnav.pageCard.Id,
-                        data: {
-                            from: xProperty,
-                            to: yProperty
-                        },
-                        success: function (response) {
-                            if (response.Success) {
-                                if (gemini_filter.refreshTable != null) {
-                                    gemini_filter.executeFilter();
-                                } else {
-                                    var currentPage = $('#pager-next').data('page');
-                                    gemini_filter.getFilteredItemsPage(currentPage - 1);
-                                    var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options));
-                                    card.DisplayColumns = response.Result.Data;
-                                    gemini_appnav.pageCard.Options = gemini_commons.htmlEncode(JSON.stringify(card));
+
+                    if (gemini_filter.gridReorderCallback)
+                    {
+                        gemini_filter.gridReorderCallback(xProperty, yProperty);
+                    }
+                    else
+                    {
+                        gemini_ajax.postCall("items", 'reordercolumns?viewtype=' + gemini_filter.pageType,
+                            function (response) {
+                                if (response.Success) {
+                                    if (gemini_filter.refreshTable != null) {
+                                        gemini_filter.executeFilter();
+                                    }
+                                    else {
+                                        var currentPage = $('#pager-next').data('page');
+                                        gemini_filter.getFilteredItemsPage(currentPage - 1);
+                                        var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Items']));
+                                        card.DisplayColumns = response.Result.Data;
+                                        gemini_appnav.pageCard.Options['Items'] = gemini_commons.htmlEncode(JSON.stringify(card));
+                                    }
                                 }
-                            }
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-                        }
-                    });
+                            },
+                            function (xhr, ajaxOptions, thrownError) {
+                                gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
+                            }, { from: xProperty, to: yProperty });
+                    }
                 }
             }
         });
@@ -564,7 +657,7 @@ gemini_filter = {
         $('#tabledata').on('click', '.parent', function (e) {
             gemini_commons.stopClick(e);
             if ($(this).hasClass('fonticon-arrow-down')) {
-                gemini_ajax.postCall(csVars.ProjectUrl + 'items/' + $(this).parent().parent().data('issue-id'), 'fetchdependants', gemini_filter.showDependants, null, { filter: $('#filter-form').serialize() });
+                gemini_ajax.postCall('items', 'fetchdependants' + '?issueid=' + $(this).parent().parent().data('issue-id'), gemini_filter.showDependants, null, { filter: $('#filter-form').serialize() });
                 $(this).removeClass('fonticon-arrow-down');
                 $(this).addClass('fonticon-arrow-up');
             }
@@ -603,24 +696,15 @@ gemini_filter = {
                     $('.dragHandle', row).addClass('item-drag-handle-selected');
                     $('.dragHandle', row).removeClass('item-drag-handle');
                 }
-                $.ajax({
-                    type: "POST",
-                    url: csVars.Url + csVars.ProjectUrl + 'items/resequence',
-                    data: {
-                        issueId: $(row).data('issue-id'),
-                        afterIssueId: row.rowIndex == 1 || dropZoneIndex < row.rowIndex ? 0 : $(table.rows[row.rowIndex - 1]).data('issue-id'),
-                        newIndex: dropZoneIndex < row.rowIndex ? -1 : row.rowIndex - 1,
-                        oldIndex: gemini_filter.rowDragIndex - 1
-                    },
-                    success: function (response) {
-                        if (response.Success) {
 
-                        }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
+                gemini_ajax.postCall("items", "resequence",null,
+                    function (xhr, ajaxOptions, thrownError) {
                         gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-                    }
-                });
+                    },
+                    {
+                        issueId: $(row).data('issue-id'), afterIssueId: row.rowIndex == 1 || dropZoneIndex < row.rowIndex ? 0 : $(table.rows[row.rowIndex - 1]).data('issue-id'),
+                        newIndex: dropZoneIndex < row.rowIndex ? -1 : row.rowIndex - 1,  oldIndex: gemini_filter.rowDragIndex - 1
+                    });
             },
             onDragStart: function (table, row) {
                 gemini_filter.rowDragIndex = row.parentNode.parentNode.rowIndex;
@@ -651,39 +735,36 @@ gemini_filter = {
             return;
         }
         $('#items-grid').css('opacity', '0.6');
-        gemini_filter.currentExecuteRequest = $.ajax({
-            type: "POST",
-            url: csVars.Url + csVars.ProjectUrl + 'items/' + page + '?card=' + gemini_appnav.pageCard.Id,
-            data: { filterForm: $('#filter-form').serialize() },
-            success: function (response) {
-                gemini_filter.currentExecuteRequest = null;
-                if (response.Success) {
-                    $('#pager-next').data('page', response.Result.CurrentPage);
-                    $('#pager-prev').data('page', response.Result.CurrentPage);
-                    $('#data').html(response.Result.Data);
-                    gemini_filter.initDataTable();
-                    gemini_ui.fancyInputs('#tabledata .fancy');
-                    gemini_items.initCheckAllItems();
-                    gemini_items.initShiftSelect();
-                    gemini_items.initPageSize();
-                    if (!($('#tabledata tbody tr:not(.drop-zone):first').length)) {
-                        $('#pageSizeContainer').hide();
-                    }
-                    else {
-                        $('#pageSizeContainer').show();
-                    }
-                }
-                $.publish('items-grid-page-loaded');
-                $('#items-grid').css('opacity', '1');
+        gemini_filter.currentExecuteRequest = gemini_ajax.postCall('items/page', '' + page,
+                                                function (response) {
+                                                    gemini_filter.currentExecuteRequest = null;
+                                                    if (response.Success) {
+                                                        $('#pager-next').data('page', response.Result.CurrentPage);
+                                                        $('#pager-prev').data('page', response.Result.CurrentPage);
+                                                        $('#data').html(response.Result.Data);
+                                                        gemini_filter.initDataTable();
+                                                        gemini_ui.fancyInputs('#tabledata .fancy');
+                                                        gemini_items.initCheckAllItems();
+                                                        gemini_items.initShiftSelect();
+                                                        gemini_items.initPageSize();
+                                                        if (!($('#tabledata tbody tr:not(.drop-zone):first').length)) {
+                                                            $('#pageSizeContainer').hide();
+                                                        }
+                                                        else {
+                                                            $('#pageSizeContainer').show();
+                                                        }
+                                                    }
+                                                    $.publish('items-grid-page-loaded');
+                                                    gemini_items.resizeMainItemsGrid();
+                                                    $('#items-grid').css('opacity', '1');
+                                                    $.publish('items-grid-filter-executed', [response.Result]);
+                                                },
+                                                function (xhr, ajaxOptions, thrownError) {
+                                                    $('#items-grid').css('opacity', '1');
 
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                $('#items-grid').css('opacity', '1');
-
-                gemini_filter.currentExecuteRequest = null;
-                gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-            }
-        });
+                                                    gemini_filter.currentExecuteRequest = null;
+                                                    gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
+                                                }, { filterForm: $('#filter-form').serialize() });
     },
         
     sortColumn: function (options) {
@@ -713,15 +794,8 @@ gemini_filter = {
         
         if (gemini_filter.executeEndPoint != null) endPoint = gemini_filter.executeEndPoint;
 
-        if (endPoint.indexOf('?') != -1) {
-            endPoint = endPoint + '&card=' + gemini_appnav.pageCard.Id;
-        }
-        else {
-            endPoint = endPoint + '?card=' + gemini_appnav.pageCard.Id;
-        }
-
-        if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown) {
-            endPoint = endPoint + '&RF=1';
+        if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown || gemini_filter.pageType == gemini_commons.PAGE_TYPE.Calendar) {
+            endPoint = endPoint + '?RF=1';
         }
 
         var data;
@@ -734,72 +808,71 @@ gemini_filter = {
             data = gemini_filter.executeData == null ? { filterForm: $('#filter-form').serialize() } : gemini_filter.executeData();
         }
 
-        gemini_filter.currentExecuteRequest = $.ajax({
-            type: "POST",
-            url: csVars.Url + csVars.ProjectUrl + endPoint,
-            data: data,
-            success: function (response) {
-                gemini_filter.currentExecuteRequest = null;
-                if (response.Success) {
-                    $('#contents').toggleClass('cursor-busy');
+        gemini_filter.currentExecuteRequest = gemini_ajax.postCall('', endPoint,
+                                                function (response) {
+                                                    gemini_filter.currentExecuteRequest = null;
+                                                    if (response.Success) {
+                                                        $('#contents').toggleClass('cursor-busy');
 
-                    if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Planner) {
-                        planner.saveData();
-                        $.publish('items-grid-filter-executed', [response.Result]);
-                        return;
-                    }
-                    else if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown) {
-                        $.publish('items-grid-filter-executed', [response.Result]);
-                        return;
-                    }
-                    else {
-                        if (gemini_filter.refreshTable == null) {
-                            $('#data').html(response.Result.Data);
-                        }
-                        else {
-                            gemini_filter.refreshTable(response.Result.Data);
-                        }
-                        gemini_filter.initDataTable();
-                        gemini_items.resizeMainItemsGrid();
-                        gemini_ui.fancyInputs('#tabledata .fancy');
-                        gemini_items.initCheckAllItems();
-                        gemini_items.initShiftSelect();
-                        gemini_items.initPageSize();
-                    }
-                    if (response.Result.SavedCard != null) {
-                        gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
-                    }
+                                                        if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Planner) {
+                                                            planner.filterChanged();
+                                                            $.publish('items-grid-filter-executed', [response.Result]);
+                                                            gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
+                                                            return;
+                                                        }
+                                                        else if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown || gemini_filter.pageType == gemini_commons.PAGE_TYPE.Calendar) {
+                                                            $.publish('items-grid-filter-executed', [response.Result]);
+                                                            gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
+                                                            return;
+                                                        }
+                                                        else {
+                                                            if (gemini_filter.refreshTable == null) {
+                                                                $('#data').html(response.Result.Data);
+                                                            }
+                                                            else {
+                                                                gemini_filter.refreshTable(response.Result.Data);
+                                                            }
+                                                            gemini_filter.initDataTable();
+                                                            gemini_items.resizeMainItemsGrid();
+                                                            gemini_ui.fancyInputs('#tabledata .fancy');
+                                                            gemini_items.initCheckAllItems();
+                                                            gemini_items.initShiftSelect();
+                                                            gemini_items.initPageSize();
+                                                        }
+                                                        if (response.Result.SavedCard != null) {
+                                                            //gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
+                                                            gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
+                                                        }
 
-                    if (!($('#tabledata tbody tr:not(.drop-zone):first').length)) {
-                        $('#pageSizeContainer').hide();
-                    }
-                    else {
-                        $('#pageSizeContainer').show();
-                    }
-                    $.publish('items-grid-filter-executed', [response.Result]);
-                }
-                else {
-                    $('#items-grid').css('opacity', '1');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                gemini_filter.currentExecuteRequest = null;
-                $('#contents').toggleClass('cursor-busy');
-                $('#items-grid').css('opacity', '1');
-                gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-            }
-        });
+                                                        if (!($('#tabledata tbody tr:not(.drop-zone):first').length)) {
+                                                            $('#pageSizeContainer').hide();
+                                                        }
+                                                        else {
+                                                            $('#pageSizeContainer').show();
+                                                        }
+                                                        $.publish('items-grid-filter-executed', [response.Result]);
+                                                    }
+                                                    else {
+                                                        $('#items-grid').css('opacity', '1');
+                                                    }
+                                                },
+                                                function (xhr, ajaxOptions, thrownError) {
+                                                    gemini_filter.currentExecuteRequest = null;
+                                                    $('#contents').toggleClass('cursor-busy');
+                                                    $('#items-grid').css('opacity', '1');
+                                                }, data);
+       
     },
     refreshFilterCard: function () {
         var endPoint = 'items/executefilter';
-
+ 
         if (gemini_filter.executeEndPoint != null) endPoint = gemini_filter.executeEndPoint;
 
         if (endPoint.indexOf('?') != -1) {
-            endPoint = endPoint + '&card=' + gemini_appnav.pageCard.Id + '&RF=1';
+            endPoint = endPoint + '&RF=1';
         }
         else {
-            endPoint = endPoint + '?card=' + gemini_appnav.pageCard.Id + '&RF=1';
+            endPoint = endPoint + '?RF=1';
         }
 
         var data;
@@ -810,26 +883,21 @@ gemini_filter = {
             data = gemini_filter.executeData == null ? { filterForm: $('#filter-form').serialize() } : gemini_filter.executeData();
         }
 
-        $.ajax({
-            type: "POST",
-            url: csVars.Url + csVars.ProjectUrl + endPoint,
-            data: data,
-            success: function (response) {
+        gemini_ajax.postCall('', endPoint,
+            function (response) {
                 gemini_filter.currentExecuteRequest = null;
                 if (response.Success) {
 
                     if (response.Result.SavedCard != null) {
-                        gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
+                        //gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
+                        gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
                     }
                 }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-            }
-        });
+            },null, data);
     },
     gridColumnPickerInit: function (refreshCallback) {
 
+        gemini_filter.gridColumnRefreshCallback = refreshCallback;
        /* $("#column-picker").position({
             "of": $("#grid-column-picker"),
             "my": "right top",
@@ -847,72 +915,50 @@ gemini_filter = {
                 gemini_keyboard.unbindEscape("#column-picker");
             }
             else {
-                $.ajax({
-                    type: "GET",
-                    url: csVars.Url + csVars.ProjectUrl + 'items/getcolumns/' + gemini_filter.pageType + '?card=' + gemini_appnav.pageCard.Id,
-                    success: function (response) {
+                gemini_ajax.call('items', 'getcolumns?viewtype=' + gemini_filter.pageType,
+                    function (response) {
                         if (response.Success) {
-        
-                            /*$("#column-picker").position({
-                                "of": $("#grid-column-picker"),
-                                "my": "right top",
-                                "at": "right bottom",
-                                "offset": "0 8",
-                                "collision": "none"
-                            });*/
-
                             $("#column-picker").css({
                                 top: $("#grid-column-picker").position().top + $("#grid-column-picker").height() + 8,
                                 left: $("#grid-column-picker").position().left - 225
                             });
 
-                            
-                            
                             $('#column-picker').html(response.Result.Data);
-            
+
                             $("#column-picker").slideDown('fast');
 
                             $('#colmun-picker-submit').click(function () {
                                 $("#column-picker").fadeOut('fast');
                                 gemini_ui.startBusy('#column-picker #colmun-picker-submit');
-                                $.ajax({
-                                    type: "POST",
-                                    url: csVars.Url + csVars.ProjectUrl + 'items/setcolumns/' + gemini_filter.pageType + '?card=' + gemini_appnav.pageCard.Id,
-                                    data: $('#column-picker-form').serialize(),
-                                    success: function (response) {
+
+                                gemini_ajax.postCall('items', 'setcolumns?viewtype=' + gemini_filter.pageType,
+                                    function (response) {
                                         if (response.Success) {
-                                            if (refreshCallback) {
-                                                refreshCallback();
+                                            if (gemini_filter.gridColumnRefreshCallback) {
+                                                gemini_filter.gridColumnRefreshCallback(response);
                                             }
                                             else {
                                                 var currentPage = $('#pager-next').data('page') - 1;
                                                 if (currentPage < 0) currentPage = 0;
-                                                var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options));
+                                                var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Items']));
                                                 card.DisplayColumns = response.Result.Data;
-                                                gemini_appnav.pageCard.Options = gemini_commons.htmlEncode(JSON.stringify(card));
+                                                gemini_appnav.pageCard.Options['Items'] = gemini_commons.htmlEncode(JSON.stringify(card));
                                                 gemini_filter.getFilteredItemsPage(currentPage);
                                             }
-                                     
+
                                         }
                                         gemini_ui.stopBusy('#column-picker #colmun-picker-submit');
                                     },
-                                    error: function (xhr, ajaxOptions, thrownError) {
-                                        gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
+                                    function (xhr, ajaxOptions, thrownError) {
                                         gemini_ui.stopBusy('#column-picker #colmun-picker-submit');
-                                    }
-                                });
-
+                                    }, $('#column-picker-form').serialize());
                             });
 
                             gemini_keyboard.bindEscape("#column-picker", gemini_filter.EscapeDropdowns);
 
                             gemini_ui.fancyInputs('#column-picker .fancy');
                         }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-                    }
-                });
+                    });               
             }
         });
     }

@@ -1,13 +1,19 @@
 ﻿@model Countersoft.Gemini.Models.Admin.SystemOptionsModel
-
+@{
+    var logo = GeminiContext.Config.Logo;
+}
 <p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide user options such as Language, Theme, Administrator email and more.</p>
 
 <div id="cs-adhoc-page">
     <form id="system-options-form" action="" method="post" autocomplete="off">
         <table class="data-entry-box">
             <tr>
+                <td></td>
+                <td><input id="system-logo-set" type="button" value='Set Logo' class='button-primary margin-right-10 left margin-top-5' /><div class="logo left @if(!logo.HasValue()){<text>hide</text>}"><img src="@(GeminiContext.AssetsUrl)/images/logo/@logo" class="logo" /></div></td>
+            </tr>
+            <tr>
                 <td>Welcome Title</td>
-                <td><input type="text" id="WelcomeTitle" name="WelcomeTitle" class="input-size9 required" value="@Model.WelcomeTitle"/></td>
+                <td><input type="text" id="WelcomeTitle" name="WelcomeTitle" class="input-size9" value="@Model.WelcomeTitle"/></td>
             </tr>
             <tr>
                 <td valign="top">Welcome Message</td>
@@ -26,10 +32,14 @@
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
             
             <tr>
+                <td>@GetResource(ResourceKeys.Timezone)</td>
+                <td>@Html.DropDownList("Timezone", Model.Timezones, new { @class = "input-size9" })</td>
+            </tr>
+            <tr>
                 <td>@GetResource(ResourceKeys.Language)</td>
                 <td>@Html.DropDownList("Language", Model.Languages, new {@class="input-size9"})</td>
             </tr>
-            <tr>
+            <tr class="hide">
                 <td>@GetResource(ResourceKeys.Theme)</td>
                 <td>@Html.DropDownList("Theme", Model.Themes, new {@class="input-size9"})</td>
             </tr>
@@ -66,11 +76,28 @@
 
             var formData = $("#system-options-form").serialize();
             gemini_ui.startBusy('#cs-adhoc-page .data-entry-box #system-options-save');
+
             gemini_ajax.postCall("configure/System/Options", "savedata",
             function () {
                 gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-options-save');
                 gemini_admin.saveFinished("#system-options-save");
-            }, function () { gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-options-save'); }, formData);
+            }, function () { gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #system-options-save'); }, formData, null, true);
+        });
+
+        $('#system-logo-set, #cs-adhoc-page .logo img').click(function (e)
+        {
+            gemini_logo.saveCallback = function () {
+                if (!$('img', '#product-logo').is(':visible'))
+                {
+                    $('#cs-adhoc-page .logo').hide();
+                }
+                else
+                {
+                    $('#cs-adhoc-page .logo img').attr('src', $('img', '#product-logo').attr('src'));
+                    $('#cs-adhoc-page .logo').show();
+                }
+            };
+            gemini_logo.showPopup(e);
         });
     }); 
 </script>

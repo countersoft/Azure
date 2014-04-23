@@ -8,6 +8,7 @@ else
 {
     List<int> cardIds = new List<int>();
     bool showSequencing = false;
+    bool showSLA = false;
     bool allowSequencing = false;
 
     if (Model is ItemsGridModel)
@@ -15,9 +16,10 @@ else
         var itemsModel = ((ItemsGridModel)Model);
         showSequencing = itemsModel.ShowSequencing;
         allowSequencing = itemsModel.AllowSequencing;
+        showSLA = itemsModel.ShowSLA;
     }
 
-    if (Model.CurrentPageCard.CardData.Badges.Count > 0)
+    if (Model.CurrentPageCard.CardData.HighlightChanges && Model.CurrentPageCard.CardData.Badges.Count > 0)
     {
         var ids = Model.CurrentPageCard.CardData.Badges;
         foreach (var id in ids)
@@ -28,16 +30,17 @@ else
     <table id="tabledata" border="0" >
     <thead>
         <tr>
-            <th class="items-first-column">
+            <th class="items-first-column" data-id="SLA">
                 @if (allowSequencing && showSequencing)
                 {
                     <span class="fonticon-drag-handle dragHandle item-drag-handle invisible"></span>
-                    <input type="checkbox" name="check-all-items" id="check-all-items" value="1" class="fancy" />
                 }
-                else
+                else if(showSLA)
                 {
-                    <input type="checkbox" name="check-all-items" id="check-all-items" value="1" class="fancy"/>
+                    <img src="~/assets/images/clock-icon.png" class="sla-clock" title="SLA" />
                 }
+                <input type="checkbox" name="check-all-items" id="check-all-items" value="1" class="fancy"/>
+                
             </th>
 
         @foreach (var property in Model.Columns)
@@ -57,12 +60,12 @@ else
                     }
                     else
                     {
-            <th class="sortable @property.headerCssClass" data-id='@id'>@property.name</th>
+            <th class="sortable @property.headerCssClass @if(property.Sorted){<text>no-wrap</text>}" data-id='@id'>@property.name @if(property.Sorted){<text><span class="@(property.SortedDescending ? "fonticon-arrow-down" : "fonticon-arrow-up") valign-text-bottom"></span></text>}</th>
                     }
                 }
                 else
                 {
-            <th data-id='@id' class='align-left'>@property.name</th>
+            <th data-id='@id' class='align-left @if(property.Sorted){<text>no-wrap</text>}'>@property.name @if(property.Sorted){<text><span class="@(property.SortedDescending ? "fonticon-arrow-down" : "fonticon-arrow-up") valign-text-bottom"></span></text>}</th>
                 }
             }
         }
@@ -78,13 +81,18 @@ else
         {
             bool firstCol = true;
             var sequenceData = itemsModel.SequencedData[issue.Entity.Id];
-            var lastColumn = sequenceData.Count == 0 ? null : sequenceData[sequenceData.Count - 1];
 <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
 <td class='align-left no-wrap items-first-column read-only'>
 
 @if (allowSequencing)
 {
 <span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+}
+else if(showSLA)
+{
+    <div @if(issue.IsInSLA && issue.Entity.SLAStatus.HasValue) {<text>class="sla-@issue.Entity.SLAStatus.Value"</text>} else if(issue.IsInSLA) {<text>class="sla-3"</text>} title="@issue.SLATimeLeftFull" >
+    <span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
+    </div>
 }
 <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id" />
 </td>
@@ -99,10 +107,6 @@ else
 <span class='parent fonticon-arrow-down expander'></span>
     }
     firstCol = false;
-}
-else if (lastColumn == coldata)
-{
-<div class='item-context-menu fonticon-dropdown right'></div>
 }
 </td>
 }
@@ -130,11 +134,16 @@ else if (lastColumn == coldata)
 <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds)'>       
 @{
     var data = Model.DisplayData[issue.Entity.Id];
-    var lastColumn = data.Count == 0 ? null : data[data.Count - 1];
 <td class="align-left no-wrap items-first-column read-only">
 @if (allowSequencing && showSequencing)
 {
 <span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+}
+else if (showSLA && issue.IsInSLA)
+{
+    <div @if(issue.IsInSLA && issue.Entity.SLAStatus.HasValue) {<text>class="sla-@issue.Entity.SLAStatus.Value"</text>} else {<text>class="sla-3"</text>} title="@issue.SLATimeLeftFull">
+    <span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
+    </div>
 }
 <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 </td>
@@ -150,10 +159,6 @@ foreach (var coldata in data)
 <span class='parent fonticon-arrow-down expander'></span>
     }
     firstCol = false;
-}
-else if (lastColumn == coldata)
-{
-<div class='item-context-menu fonticon-dropdown right'></div>
 }
 </td>
 }
@@ -173,13 +178,13 @@ else if (lastColumn == coldata)
 @if (IsAuthenticated)
 {
     <ul id="item-grid-context-menu" class="cs-menu-context">
-            <li><a href="#view">@GetResource(ResourceKeys.View)</a></li>
+        <li><a href="#view">@GetResource(ResourceKeys.View)</a></li>
         <li><a href="#comment">@GetResource(ResourceKeys.Comment)</a></li>
         <li><a href="#edit">@GetResource(ResourceKeys.Edit)</a></li>
-        <li class="separator"></li>
-        <li ><a href="#pin">@GetResource(ResourceKeys.PinUnPin)</a></li>
         <li ><a href="#follow">@GetResource(ResourceKeys.FollowUnfollow)</a></li>
-        <li class="separator"></li>
-        <li class="highlight"><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>
+        @if (!GeminiContext.PermissionsManager.IsHelpdeskUser())
+        { 
+            <li class="highlight"><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>
+        }
     </ul>
 }

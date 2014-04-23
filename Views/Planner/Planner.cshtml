@@ -13,121 +13,7 @@
     <form id = "PlanForm">
         
     <div id="page-options-box" class="right">
-        <div class="box-right size-0">
-            <div>
-                <!-- Zoom -->
-                <div class="option vertical-align">
-                    <div id="PlannerLevel" class='zoom-icon level-@Html.Raw(Model.PlannerLevel)' title="@GetResource(ResourceKeys.Zoom)" ></div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Axis -->
-                <div class="option vertical-align">
-                    <div id="planner-axis-option" title="@GetResource(ResourceKeys.GroupBy)" class="control-icon axis"></div>
-                    <div class="options">
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.Axis1Selected, @GetResource(ResourceKeys.GroupBy), new { @id = "lblAxis1Selected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.Axis1Selected, new SelectList(Model.Axis1Values, "Value", "Text", Model.Axis1Selected))
-                            </div>
-                            <div class="right sort @Model.Axis1Sort" id="Axis1Sort"></div>
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            <input type="button" id="AxisFlipped" class="button-secondary button-small" title="Flip Axis" value="," />
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.Axis2Selected, @GetResource(ResourceKeys.ThenBy), new { @id = "lblAxis2Selected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.Axis2Selected, new SelectList((IEnumerable<ValueTextPair>)Model.Axis2Values, "Value", "Text", Model.Axis2Selected))
-                            </div>
-                            <div class="right sort @Model.Axis2Sort" id="Axis2Sort"></div>
-                        </div>
-                    </div>                
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Limit -->
-                <div class="option vertical-align">
-                    <div title="@GetResource(ResourceKeys.Limit)" class="control-icon limits"></div>
-                    <div class="options">
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.SwimLaneLimits, @GetResource(ResourceKeys.Limit), new { @id = "lblLimit" })
-                            @Html.TextBoxFor(m => m.SwimLaneLimits, new { @class = "input-size2" })
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.AutoLimit, @GetResource(ResourceKeys.AutoLimit), new { @id = "lblAutoLimit" })
-                            @Html.TextBoxFor(m => m.AutoLimit, new { @class = "input-size2" })
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.TottingModeValues, @GetResource(ResourceKeys.Totting), new { @id = "lblTottingModeSelected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.TottingModeSelected, new SelectList((IEnumerable<ValueTextPair>)Model.TottingModeValues, "Value", "Text", Model.TottingModeSelected))
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Ordering -->
-                <div class="option vertical-align">
-                    <div title="@GetResource(ResourceKeys.OrderBy)" class="control-icon ordering"></div>
-                    <div class="options">
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.OrderBySelected, @GetResource(ResourceKeys.OrderBy), new { @id = "lblOrderBySelected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.OrderBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.OrderByValues, "Value", "Text", Model.OrderBySelected))
-                            </div>
-                            <div class="right sort @Model.OrderBySort" id="OrderBySort"></div>
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.ThenBySelected, @GetResource(ResourceKeys.ThenBy), new { @id = "lblThenBySelected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.ThenBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.ThenByValues, "Value", "Text", Model.ThenBySelected))
-                            </div>
-                            <div class="right sort @Model.ThenBySort" id="ThenBySort"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Color -->
-                <div class="option vertical-align">
-                    <div title="@GetResource(ResourceKeys.Color)" class="control-icon color"></div>
-                    <div class="options">
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.ColorBySelected, @GetResource(ResourceKeys.Color), new { @id = "lblColorBySelected" })
-                            @Html.DropDownListFor(m => m.ColorBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.ColorByValues, "Value", "Text", Model.ColorBySelected))
-                        </div>
-                        <div class="break">&nbsp;</div>
-                        <div class="break">&nbsp;</div>
-                        <div class="clearfix">
-                            @Html.LabelFor(m => m.DateRangeValues, @GetResource(ResourceKeys.DateRanges), new { @id = "lblDateRangeSelected" })
-                            <div class="left">
-                                @Html.DropDownListFor(m => m.DateRangeSelected, new SelectList((IEnumerable<ValueTextPair>)Model.DateRangeValues, "Value", "Text", Model.DateRangeSelected))
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-        </div>
+       @{Html.RenderPartial("_Options", Model);}
     </div>
 
     <!-- Hidden: the current selected view (shared view card or default)-->
@@ -143,23 +29,22 @@
         <li><a href="#view">@GetResource(ResourceKeys.View)</a></li>
         <li><a href="#comment">@GetResource(ResourceKeys.Comment)</a></li>
         <li><a href="#edit">@GetResource(ResourceKeys.Edit)</a></li>
-        <li class="separator"></li>
         <li><a href="#delete">@GetResource(ResourceKeys.Delete)</a></li>
-        @if (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard))
+        @if (!Model.CurrentPageCard.Locked) 
         {
-            <li class="separator"></li>
             <li class="highlight"><a href="#new">@GetResource(ResourceKeys.New, Resourcing.Dotted)</a></li>
         }
     </ul>
 }
 
 <div id="planner-context-popup-new-card">
+    <div class="caption">@(GetResource(ResourceKeys.New))</div>
     <textarea class="card-title" placeholder="@GetResource(ResourceKeys.Title, Resourcing.Dotted)"></textarea>
 </div>
 </div>
-
+<div id='dropTip' class='tooltip'><div id='dropTipText'></div></div>
 @section DocumentReady
 {
-    planner.initialize(@GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard).ToJSBool(true));
+    planner.initialize(@Model.CurrentPageCard.Locked.ToJSBool());
     gemini_filter.init(@((int) ProjectTemplatePageType.Planner), @Html.Raw(Model.Filter.AvailableFields.ToJson()));
 }

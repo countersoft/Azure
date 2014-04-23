@@ -8,6 +8,7 @@
 <div id="cs-adhoc-page">
     <form action="profile" method="post" id="regular-form" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" id="Id" name="Id" value="@Model.User.Entity.Id" />
+        <input type="hidden" id="returnurl" name="returnurl" value="@Model.ReturnUrl" />
 
         <table id="regular-credentials" class="data-entry-box margin-zero-auto">
 
@@ -69,8 +70,20 @@
             </tr>
             @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
             { 
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+               
+            if (ViewBag.Error)
+            {
+                <tr><td colspan="2" style="color:red;">@Html.Raw(ViewBag.ErrorMessage)</td></tr>
+            }
+                
             <tr>
-                <td>@GetResource(ResourceKeys.Password)</td>
+                <td>@GetResource(ResourceKeys.CurrentPassword)</td>
+                <td><input type="password" id="current-password" name="current-password" class="input-size6" /></td>
+            </tr>
+                
+            <tr>
+                <td>@GetResource(ResourceKeys.NewPassword)</td>
                 <td><input type="password" id="the-password" name="the-password" class="input-size6" /> 
                     <div class="password-meter">
                         <div class="password-meter-bg">
@@ -80,7 +93,7 @@
                 </td>
             </tr>
             <tr>
-                <td>@GetResource(ResourceKeys.ConfirmPassword)</td>
+                <td>@GetResource(ResourceKeys.ConfirmNewPassword)</td>
                 <td><input type="password" id="confirm-password" name="confirm-password" class="input-size6" /> </td>
             </tr>
             }
@@ -133,10 +146,10 @@
 {
     @if (ViewBag.Saved)
     {
-        <text>gemini_account.initProfile("@GetResource(ResourceKeys.Saved)");</text>
+        <text>gemini_account.initProfile("@GetResource(ResourceKeys.Saved)", "@ViewBag.Error");</text>
     }
     else
     {
-        <text>gemini_account.initProfile();</text>
+        <text>gemini_account.initProfile(false,"@ViewBag.Error");</text>
     }
 }

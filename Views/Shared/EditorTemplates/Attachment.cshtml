@@ -1,3 +1,19 @@
 ﻿@model AttachmentFieldModel
 
 <input type="file" data-input-type="attachment" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="inline-editing @Model.Classes  @(Model.Required ? "required" : "")"@if(Model.Multiple) { <text>multiple='multiple'</text> } @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>
+<input type="checkbox" id="delete_@Model.Id" title="@GetResource(ResourceKeys.Delete) @Model.Value" class="hide" name="delete_@Model.Id" value="true" />
+
+@if (Model.Value.HasValue())
+{
+    <span id="@Model.Id-delete-icon" style="font-size:16px;" class="cursor-pointer delete-attachment fonticon-delete valign-bottom" title="@GetResource(ResourceKeys.Delete) @Model.Value"></span>
+
+    <script type="text/javascript">
+        
+        $('#@Model.Id' + '-delete-icon').click(function (e) {        
+            e.preventDefault();
+            $('#@Model.Id-delete-icon').hide();
+            $('#delete_@Model.Id').prop('checked', true);
+            $('#delete_@Model.Id').trigger('change');
+        });        
+    </script>
+}

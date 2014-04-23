@@ -1,0 +1,81 @@
+﻿@model AppsConfig
+@if (Model.RequiresPermissions)
+{
+    <p id="tab-help-message"><strong>&#187;</strong>&nbsp; Set up permissions for @Model.AppName.<input type="text" class="invisible" /></p>
+    <div id="app-security">
+        <div id="cs-adhoc-page" class="admin-datatable-holder">
+            <form id="app-security-form" method="post" autocomplete="off">
+                <input type="hidden" id="appguid" name="appguid" value="@Model.AppGuid" />
+                <input type="hidden" id="appcontrolguid" name="appcontrolguid" value="@Model.AppControlGuid" />
+                <table class="data-entry-box">
+                    <tbody>
+                        <tr>
+                            <td>Projects</td>
+                            <td>@Html.ListBox("projects", Model.AllProjects, new { @class = "input-size9" })</td>
+                        </tr>
+                        @if (Model.CanViewGroups != null)
+                        {
+                            <tr>
+                                <td>Can View</td>
+                                <td>@Html.ListBox("canViewAppGroups", Model.CanViewGroups, new { @class = "input-size9" })</td>
+                            </tr>
+                        }
+                        @if (Model.CanCreateGroups != null)
+                        {
+                            <tr>
+                                <td>Can Create</td>
+                                <td>@Html.ListBox("canCreateAppGroups", Model.CanCreateGroups, new { @class = "input-size9" })</td>
+                            </tr>
+                        }
+                        @if (Model.CanEditGroups != null)
+                        {
+                            <tr>
+                                <td>Can Edit</td>
+                                <td>@Html.ListBox("canEditAppGroups", Model.CanEditGroups, new { @class = "input-size9" })</td>
+                            </tr>
+                        }
+                        @if (Model.CanDeleteGroups != null)
+                        {
+                            <tr>
+                                <td>Can Delete</td>
+                                <td>@Html.ListBox("canDeleteAppGroups", Model.CanDeleteGroups, new { @class = "input-size9" })</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="2"><div class="divider"></div></td>
+                        </tr>
+                        <tr>
+                            <td align="right" colspan="2">
+                                <input id="save-app-permission" class="button-primary" type="button" value="Save">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+}
+<div id="app-config" class="margin-top-20">@Html.Raw(Model.AppConfig)</div>
+
+@if (Model.RequiresPermissions)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#app-security-form #save-app-permission").click(function (e) {
+                if (!$("#app-security-form").valid()) { return; }
+
+                var formData = $("#app-security-form").serialize();
+
+                gemini_ui.startBusy('#app-security-form #save-app-permission');
+
+                gemini_ajax.postCall("configure/tab/apps/permissions", "save",
+                function () {
+                    gemini_popup.toast("Saved");
+                    gemini_ui.stopBusy('#cs-adhoc-page #app-security-form #save-app-permission');
+
+                }, function () { gemini_ui.stopBusy('#cs-adhoc-page #app-security-form #save-app-permission'); }, formData, null, true);
+            });
+        });
+    </script>
+}

@@ -17,8 +17,9 @@
  */
 define("tinymce/ui/MenuItem", [
 	"tinymce/ui/Widget",
-	"tinymce/ui/Factory"
-], function(Widget, Factory) {
+	"tinymce/ui/Factory",
+	"tinymce/Env"
+], function(Widget, Factory, Env) {
 	"use strict";
 
 	return Widget.extend({
@@ -69,6 +70,10 @@ define("tinymce/ui/MenuItem", [
 				settings.icon = 'selected';
 			}
 
+			if (!settings.preview && !settings.selectable) {
+				self.addClass('menu-item-normal');
+			}
+
 			self.on('mousedown', function(e) {
 				e.preventDefault();
 			});
@@ -112,9 +117,9 @@ define("tinymce/ui/MenuItem", [
 		 * @method showMenu
 		 */
 		showMenu: function() {
-			var self = this, settings = self.settings, menu;
+			var self = this, settings = self.settings, menu, parent = self.parent();
 
-			self.parent().items().each(function(ctrl) {
+			parent.items().each(function(ctrl) {
 				if (ctrl !== self) {
 					ctrl.hideMenu();
 				}
@@ -136,6 +141,10 @@ define("tinymce/ui/MenuItem", [
 						menu.type = menu.type || 'menu';
 					}
 
+					if (parent.settings.itemDefaults) {
+						menu.itemDefaults = parent.settings.itemDefaults;
+					}
+
 					menu = self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm());
 					menu.reflow();
 					menu.fire('show');
@@ -152,12 +161,17 @@ define("tinymce/ui/MenuItem", [
 					menu.show();
 				}
 
-				menu._parentMenu = self.parent();
+				menu._parentMenu = parent;
 
 				menu.addClass('menu-sub');
 
-				var rel = menu.testMoveRel(self.getEl(), ['tr-tl', 'br-bl', 'tl-tr', 'bl-br']);
+				var rel = menu.testMoveRel(
+					self.getEl(),
+					self.isRtl() ? ['tl-tr', 'bl-br', 'tr-tl', 'br-bl'] : ['tr-tl', 'br-bl', 'tl-tr', 'bl-br']
+				);
+
 				menu.moveRel(self.getEl(), rel);
+				menu.rel = rel;
 
 				rel = 'menu-sub-' + rel;
 				menu.removeClass(menu._lastRel);
@@ -199,20 +213,33 @@ define("tinymce/ui/MenuItem", [
 		 */
 		renderHtml: function() {
 			var self = this, id = self._id, settings = self.settings, prefix = self.classPrefix, text = self.encode(self._text);
-			var icon = self.settings.icon;
+			var icon = self.settings.icon, image = '', shortcut = settings.shortcut;
 
 			if (icon) {
 				self.parent().addClass('menu-has-icons');
+			}
+
+			if (settings.image) {
+				icon = 'none';
+				image = ' style="background-image: url(\'' + settings.image + '\')"';
+			}
+
+			if (shortcut && Env.mac) {
+				// format shortcut for Mac
+				shortcut = shortcut.replace(/ctrl\+alt\+/i, '&#x2325;&#x2318;'); // ctrl+cmd
+				shortcut = shortcut.replace(/ctrl\+/i, '&#x2318;'); // ctrl symbol
+				shortcut = shortcut.replace(/alt\+/i, '&#x2325;'); // cmd symbol
+				shortcut = shortcut.replace(/shift\+/i, '&#x21E7;'); // shift symbol
 			}
 
 			icon = prefix + 'ico ' + prefix + 'i-' + (self.settings.icon || 'none');
 
 			return (
 				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1">' +
-					(text !== '-' ? '<i class="' + icon + '"></i>&nbsp;' : '') +
+					(text !== '-' ? '<i class="' + icon + '"' + image + '></i>&nbsp;' : '') +
 					(text !== '-' ? '<span id="' + id + '-text" class="' + prefix + 'text">' + text + '</span>' : '') +
-					(settings.shortcut ? '<div id="' + id + '-shortcut" class="' + prefix + 'menu-shortcut">' +
-						settings.shortcut + '</div>' : '') +
+					(shortcut ? '<div id="' + id + '-shortcut" class="' + prefix + 'menu-shortcut">' +
+					 shortcut + '</div>' : '') +
 					(settings.menu ? '<div class="' + prefix + 'caret"></div>' : '') +
 				'</div>'
 			);
@@ -228,7 +255,7 @@ define("tinymce/ui/MenuItem", [
 
 			var textStyle = settings.textStyle;
 			if (typeof(textStyle) == "function") {
-				textStyle = textStyle();
+				textStyle = textStyle.call(this);
 			}
 
 			if (textStyle) {

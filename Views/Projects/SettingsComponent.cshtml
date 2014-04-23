@@ -8,6 +8,7 @@
                     <table id="project-admin-components" class="basic width-100">
                         <thead>
                             <tr>
+                                <th data-field="ID">@GetResource(ResourceKeys.Id)</th> 
                                 <th data-field="Name" data-required='true'>@GetResource(ResourceKeys.Name)</th>                
                                 <th data-field="Description" data-required='true'>@GetResource(ResourceKeys.Description)</th>
                                 <th data-field="ParentId" data-required='false' data-edit-type="select">@GetResource(ResourceKeys.Parent)</th>
@@ -19,6 +20,7 @@
                             @foreach (var component in Model.Components)
                             {
                                 <tr data-id="@component.Entity.Id" id="@component.Entity.Id" data-message="@GetResource(ResourceKeys.Delete)">
+                                    <td data-edit="false">@component.Entity.Id</td>  
                                     <td>@component.Entity.Name</td>                
                                     <td>@component.Entity.Description</td>
                                     <td style="width: 150px;">@component.ParentComponentName</td>
@@ -46,16 +48,31 @@
     
     $(document).ready(function ()
     {
-        gemini_admin.initDatatables("#project-admin-components", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [4] }], fnDrawCallback: function (value, y) {
+        $("#component-form").validate();
+
+        gemini_admin.initDatatables("#project-admin-components", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [5] }],"aaSorting": [[ 0, "desc" ]], fnDrawCallback: function (value, y) {
             gemini_ui.inlineEdit("#project-admin-components td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/components/getproperty", "project/" + @Model.ProjectId + "/settings/components/setproperty");
         } });
-        
 
-        $("#project-admin-components_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+        $("#project-admin-components_wrapper").prepend("<div id='add-button-container'><form id='component-form'><input type='text' name='name' id='name' class='margin-left-5 required' /><input id='system-options-add' type='submit' value='Add' class='button-primary'></form></div>");
 
-        $("#system-options-add").click(function ()
+        $("#component-form").submit(function() 
         {
-            gemini_popup.centerPopup("project/" + @Model.ProjectId + "/settings/components", "Add");
+            $("#project-admin-components_wrapper #system-options-add").click();
+            return false;
+        });
+
+        $("#project-admin-components_wrapper #system-options-add").click(function ()
+        {
+            if (!$("#component-form").valid()) return;
+            gemini_ui.startBusy('#component-form #system-options-add');
+            gemini_ajax.postCall("project/@Model.ProjectId/settings/components", "Save", function (response)
+            {
+                $.publish('component-added');
+                gemini_projects.settingsComponents(@Model.ProjectId);
+                gemini_ui.stopBusy('#component-form #system-options-add');
+            }, function () { gemini_ui.stopBusy('#component-form #system-options-add'); }, $("#component-form").serialize(), null, true);
+            return false;
         });
 
         $("#project-admin-components").off('click', ".action-button-delete").on('click', ".action-button-delete", function (e)
@@ -76,11 +93,10 @@
                         gemini_admin.removeRow(item);
                         var dt = $("#tree").dynatree("getTree");
                         dt.getNodeByKey(id).remove();
-
-                        // gemini_projects.settingsComponents(@Model.ProjectId);
+                        $.publish('component-deleted');
                     }
                     gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
             });
         });
 
@@ -101,7 +117,7 @@
                     var draggedId = sourceNode.data.Id;
                     var droppedId = node.data.Id;
                     
-                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/components", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode });
+                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/components", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode }, null, true);
                 },
                 onDragStart: function (node) {
                     return true;

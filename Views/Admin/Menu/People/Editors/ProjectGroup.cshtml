@@ -16,7 +16,7 @@
                 if (Model.Group.Id > 0)
                 {
                     <tr>
-                        <td>Can Share With</td>
+                        <td>Can Share/Chat With</td>
                         <td>@Html.ListBox("Interaction", Model.Interactions, new { @class = "input-size9" })</td>
                     </tr>
                     if(GeminiApp.Config.SyncWithActiveDirectory)
@@ -36,6 +36,11 @@
     gemini_ui.chosen("#Interaction", null, true);
     gemini_ui.chosen("#ADGroups", null, true);
 
+    $("#GroupForm").submit(function () {
+        $("#popup-button-yes").click();
+        return false;
+    });
+
     $("#popup-button-yes").unbind('click').click(function (e) {
 
         if ($("#GroupForm").valid()) {
@@ -45,7 +50,7 @@
                 gemini_admin.getPage();
                 gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
                 window.location.reload();
-            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#GroupForm").serialize());
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#GroupForm").serialize(), null, true);
         }
         else {
             $('.error:not(label)', '#cs-popup-content').first().focus();

@@ -1,0 +1,21 @@
+﻿@model RoadmapModel
+
+<div class="metric-chart">
+<div class="label">@(GetResource(ResourceKeys.Burndown))</div>
+<div id='burndownMetric' style="width:250px; height: 150px; display:inline-block;"></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var burndownCategory = @Html.Raw(Model.Burndown.Select(b => b.Category).ToJson());
+        var burndownOpenData = @Html.Raw(Model.Burndown.Select(b => b.OpenCount).ToJson());
+        var burndownCreatedData = @Html.Raw(Model.Burndown.Select(b => b.CreatedCount).ToJson());
+        var burndownIdealLine = @Html.Raw(Model.IdealLine.ToJson());
+        var burndownTrendLine = @Html.Raw(Model.BurndownTrendline.ToJson());
+        
+        var translation = {Items: '@((Model.ItemHours == CountTypes.Issues || Model.ItemHours == CountTypes.Points) ? (Model.ItemHours == CountTypes.Points ? GetResource(ResourceKeys.Points) : GetResource(ResourceKeys.Items)) : GetResource(ResourceKeys.Hours))', Total: '@GetResource(ResourceKeys.Total)', Created: '@GetResource(ResourceKeys.Created)', Open: '@GetResource(ResourceKeys.Open)', Closed: '@GetResource(ResourceKeys.Closed)' };
+
+        gemini_progress.burndownChartDashboard(translation,burndownCategory,burndownOpenData,burndownCreatedData,burndownIdealLine,burndownTrendLine);
+
+    });
+</script>

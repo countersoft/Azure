@@ -1,0 +1,21 @@
+﻿@model Countersoft.Gemini.Models.UserProfileModel
+
+<table class="data-entry-box ">
+    <tr>
+        <td>@GetResource(ResourceKeys.Timezone)</td>
+        <td>@Html.DropDownList("Timezone", Model.Timezones, new {@class="input-size8"})</td>
+    </tr>
+    <tr>
+        <td>@GetResource(ResourceKeys.Culture)</td>
+        <td>@Html.DropDownList("Culture", Model.Cultures, new {@class="input-size8"})</td>
+    </tr>
+    <tr>
+        <td>@GetResource(ResourceKeys.Language)</td>
+        <td>@Html.DropDownList("Language", Model.Languages, new {@class="input-size8"})</td>
+    </tr>
+    <tr class="hide">
+        <td>@GetResource(ResourceKeys.Theme)</td>
+        <td>@Html.DropDownList("Theme", Model.Themes, new {@class="input-size8"})</td>
+    </tr>           
+</table>
+

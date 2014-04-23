@@ -1,0 +1,435 @@
+﻿@model RulesActionsModel
+@{
+    int ruleIndex=0;              
+    int actionIndex=0;
+}
+<div id="RulesItemContainer" style="height: 500px;">
+<div id="rules-form-container">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.Id" name="Id" id="Id" />
+        <input type="hidden" value="" name="Rules" id="Rules" />
+        <input type="hidden" value="" name="Actions" id="Actions" />
+        <input type="hidden" value="@Model.HiddenAction" name="HiddenAction" id="HiddenAction" />
+        <input type="hidden" value="@Model.SLAId.GetValueOrDefault()" name="SLAId" id="SLAId" />
+        @if (Model.SLAId.GetValueOrDefault() == 0)
+        {
+            <table id="table-admin-rules" class="admin-data-entry margin-bottom-30" style="width:730px;">
+                <tbody>
+                    <tr>
+                        <td class="field-name">
+                            Name
+                        </td>
+                        <td>
+                            <input type="text" id="Name" name="Name"
+                                   class="input-field required input-size9" value="@Model.Name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="field-name">
+                            Description
+                        </td>
+                        <td>
+                            <textarea id="Description" name="Description" class="input-field required input-size9" rows="3">@Model.Description</textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        <h1>Conditions</h1>
+        <div class="margin-left-30 margin-bottom-30">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="hide"></td>
+                        <td style="width:700px;">
+                            <select id="rule-field" name="rule-field">
+                                <option value="Comment">Comment</option>
+                                <option value="Commented">Commented</option>
+                                <option value="CommentSource">Comment Source</option>
+                                <option value="CommentSourceType">Comment Source Type</option>
+                                <option value="Description">Description</option>
+                                <option value="DueDate">Due Date</option>
+                                <option value="EmailsCount">Emails Count</option>
+                                <option value="Issue">Issue</option>
+                                <option value="Priority">Priority</option>
+                                <option value="Project">Project</option>
+                                <option value="Resolution">Resolution</option>
+                                <option value="Resource">Resource</option>
+                                <option value="Severity">Severity</option>
+                                <option value="Source">Source</option>
+                                <option value="SourceType">Source Type</option>
+                                <option value="StartDate">Start Date</option>
+                                <option value="Status">Status</option>
+                                <option value="InSLA">In SLA</option>
+                                <option value="SLA">SLA</option>
+                                <option value="SLATimeLeft">SLA Time Left</option>
+                                <option value="SLATimePassed">SLA Time Passed</option>
+                                <option value="Title">Title</option>
+                                <option value="Type">Type</option>
+                            </select>
+                            &nbsp;
+                            <select id="rule-operator">
+                                <option value="Equal">Equals</option>
+                                <option value="LessThan">Less Than</option>
+                                <option value="LessThanOrEqual">Less Than Or Equal</option>
+                                <option value="GreaterThan">Greater Than</option>
+                                <option value="GreaterThanOrEqual">Greater Than Or Equal</option>
+                                <option value="Contains">Contains</option>
+                                <option value="NotEqual">Not Equal</option>
+                            </select>
+                            &nbsp;
+                            <span id="rule-value-container">
+                                <input type="text" id="rule-value" class="input-size5 valign-top" />
+                            </span>
+                            <input type="button" value=" Add " id="rule-add" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="admin-datatable-holder">
+                            <br />
+                            <table id="table-admin-slas" class="basic">
+                                <thead>
+                                    <tr>
+                                        <th class="hide"></th>
+                                        <th>Condition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var rule in Model.Rules)
+                                    {
+                                        <tr>
+                                            <td class="hide"></td>
+                                            <td>@(Model.RulesParameters[ruleIndex])&nbsp;<div class="action-button-delete cursor-pointer right type-rule" title="Delete" data-id="@(++ruleIndex)"></div></td>
+                                        </tr>
+                                    }
+                                    <tr id="rule-add-row" class="hide"><td class="hide"></td><td></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h1>Actions</h1>
+        <div class="margin-left-30 margin-bottom-30">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="hide"></td>
+                        <td style="width:700px;">
+                            <select id="action-type" name="action-type">
+                                <option value="Email">Email</option>
+                                <option value="SetField">Set Field</option>
+                                <option value="SetCustomField">Set Custom Field</option>
+                                <option value="VetoAction">Veto Action</option>
+                                <option value="StopClock">Stop Clock</option>
+                                <option value="PauseClock">Pause Clock</option>
+                                <option value="ResumeClock">Resume Clock</option>
+                            </select>
+                            &nbsp;
+                            <span id="action-parameter-container">
+                                <input type="text" id="action-parameter" />
+                            </span>
+                            <input type="button" value=" Add " id="action-add" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="admin-datatable-holder">
+                            <br />
+                            <table id="table-admin-slas" class="basic">
+                                <thead>
+                                    <tr>
+                                        <th class="hide"></th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int aid = 0;
+                                        foreach (var action in Model.Actions)
+                                        {
+                                            <tr>
+                                                <td class="hide"></td>
+                                                <td>@(EnumHelper.FromCamel(action.Type))&nbsp;@Model.ActionParameters[aid++]<div class="action-button-delete cursor-pointer right type-action margin-left" title="Delete" data-id="@(++actionIndex)"></div></td>
+                                            </tr>
+                                        }
+                                    }
+                                    <tr id="action-add-row" class="hide"><td></td><td></td></tr>
+                                </tbody>
+                            </table>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    </div>
+</div>
+<script type="text/javascript">
+    var rules = [
+        @{
+            ruleIndex=1;
+            foreach(var rule in Model.Rules)
+            {
+                <text>{ Id: @(ruleIndex), Field: '@(rule.Field)', Value: '@(rule.Value)', Operator: '@(rule.Operator)' }@if(rule != Model.Rules[Model.Rules.Count - 1]){<text>,</text>}</text>
+                ruleIndex++;
+            }
+            
+        }
+    ];
+    var ruleId = @(Model.Rules.Count);
+
+    var actions = [
+        @{
+            actionIndex=1;
+            foreach(var action in Model.Actions)
+            {
+                <text>{ Id: @(actionIndex), Type: '@(action.Type)', Parameters: @Html.Raw(action.Parameters.ToJson()) }@if(action != Model.Actions[Model.Actions.Count - 1]){<text>,</text>}</text>
+                actionIndex++;
+            }
+            
+        }
+    ];
+    var actionId = @(Model.Actions.Count);
+
+    function addRule()
+    {
+        ruleId++;
+
+        var value = '';
+        var text = '';
+        if($('select', '#rule-value-container').length == 1)
+        {
+            /*_.each($('select', '#rule-value-container').val(), function(e)
+            {
+                value +=e + ',';
+            });*/
+
+            _.each($('select option:selected', '#rule-value-container'), function(e)
+            {
+                value +=$(e).val() + ',';
+                text +=$(e).text() + ', ';
+            });
+
+            if(value.length > 0)
+            {
+                value = value.substr(0, value.length-1);
+            }
+
+            if(text.length > 0)
+            {
+                text= text.substr(0, text.length-2);
+            }
+        }
+        else
+        {
+            value = $('input', '#rule-value-container').val();
+            text = value;
+        }
+
+        rules.push({ Id: ruleId, Field: $('#rule-field option:selected').val(), Value: value, Operator: $('#rule-operator option:selected').val() });
+        var newTR = '<tr><td class="hide"></td><td>' + $('#rule-field option:selected').text() + '&nbsp;' + $('#rule-operator option:selected').text() + '&nbsp;' + text + '&nbsp;<div class="action-button-delete cursor-pointer right type-rule" title="Delete" data-id="' + ruleId  + '"></div></td></tr>';
+        $('#rule-add-row').before(newTR);
+
+        $('input', '#rule-value-container').val('');
+        $('select', '#rule-value-container').val('');
+        gemini_ui.chosenUpdate($('select', '#rule-value-container'));
+
+        /*var api = $("#rules-form-container").data('jsp');
+        api.scrollToBottom();*/
+        //$('#rules-form-container').scrollTo($('#rule-value-container').offset().top);
+    }
+
+    function addAction()
+    {
+        actionId++;
+
+        var value = '';
+        var textValue = '';
+
+        if($('#action-type option:selected').val() == 'Email')
+        {
+            value =  [$('input', '#action-parameter-container').val(), $('select option:selected', '#action-parameter-container').val()];
+            textValue = $('input', '#action-parameter-container').val() + ', using ' + $('select option:selected', '#action-parameter-container').text() + ' template';
+        }
+        else if($('#action-type option:selected').val() == 'SetField')
+        {
+            if($('#action-fields option:selected', '#action-parameter-container').val() == "DueDate" || $('#action-fields option:selected', '#action-parameter-container').val() == "StartDate")
+            {
+                value =  [$('#action-fields option:selected', '#action-parameter-container').val(), $('#rule-value', '#action-parameter-container').val()];
+                textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#rule-value', '#action-parameter-container').val();
+            }
+            else
+            {
+                value =  [$('#action-fields option:selected', '#action-parameter-container').val(), $('#parameter-values option:selected', '#action-parameter-container').val()];
+                textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#parameter-values option:selected', '#action-parameter-container').text();
+            }
+        }
+        else if(gemini_commons.endsWith($('#action-type option:selected').val(), 'SetCustomField'))
+        {
+            value =  [$('#action-fields option:selected', '#action-parameter-container').text(), $('#parameter-values option:selected', '#action-parameter-container').val()];
+            textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#parameter-values option:selected', '#action-parameter-container').text();
+        }
+        else
+        {
+            if($('select', '#action-parameter-container').length)
+            {
+                value =  [$('select', '#action-parameter-container').val()];
+                textValue = $('select', '#action-parameter-container').text();
+            }
+            else if($('input', '#action-parameter-container').length)
+            {
+                value = [$('input', '#action-parameter-container').val()];
+                textValue = value;
+            }
+        }
+
+        actions.push({ Id: actionId, Type: $('#action-type option:selected').val(), Parameters: value });
+        var newTR = '<tr><td class="hide"></td><td>' + $('#action-type option:selected').text() + '&nbsp;' + textValue + '&nbsp;<div class="action-button-delete cursor-pointer right type-action margin-left" title="Delete" data-id="' + actionId  + '"></div></td></tr>';
+        $('#action-add-row').before(newTR);
+
+        $('input', '#action-parameter-container').val('');
+        //$('select', '#action-parameter-container').val('');
+        gemini_ui.chosenUpdate($('select', '#action-parameter-container'));
+
+        /*var api = $("#rules-form-container").data('jsp');
+        api.scrollToBottom();*/
+        //$('#rules-form-container').scrollTo($('#action-parameter-container').offset().top);
+    }
+
+    function getRuleFieldValues()
+    {
+        gemini_ajax.postCall("configure/RulesSLA/Rules", "Editor?t=fv", 
+        function (response)
+        {
+           $('#rule-value-container').html(response.Result.Html);
+           gemini_ui.chosen("#rule-value-container select", null, true);
+           $('.masked').mask('99:99');
+
+        }, null, $("#rule-field").serialize() , null, true);
+    }
+
+    function getActionFieldOptions()
+    {
+        gemini_ajax.postCall("configure/RulesSLA/Rules", "Editor?t=av", 
+        function (response)
+        {
+            $('#action-parameter-container').html(response.Result.Html);
+            gemini_ui.chosen("#action-parameter-container select", null, true);
+            $("#action-parameter-container select").trigger('change');
+
+        }, null, $("#action-type").serialize() , null, true);
+    }
+
+    function actionFieldChanged()
+    {
+        gemini_ajax.postCall("configure/RulesSLA/Rules", "Editor?t=afv", 
+        function (response)
+        {
+            $('#field-values', '#action-parameter-container').remove();
+            $('#field_values_chosen', '#action-parameter-container').remove();
+            $('#rule-value', '#action-parameter-container').remove();
+            $('#parameter-values', '#action-parameter-container').remove();
+            $('#parameter_values_chosen', '#action-parameter-container').remove();
+            
+            $('#action-parameter-container').append(response.Result.Html);
+            gemini_ui.chosen("#action-parameter-container select", null, true);
+        }, null, 'action-field=' + $('#action-fields').val() , null, true);
+    }
+
+      $(document).ready(function () {
+
+          gemini_ui.fancyInputs('#regular-form .fancy');
+
+          gemini_admin.initDatatables("#rules-form-container #table-admin-slas", {"bPaginate": false,"bFilter": false, "bInfo": false});
+          //$("#rules-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+          gemini_ui.chosen("#rule-field", null, true);
+          gemini_ui.chosen("#rule-operator", null, true);
+          gemini_ui.chosen("#action-type", null, true);
+
+          $('#rule-add').click(addRule);
+          $('#action-add').click(addAction);
+
+          $('#RulesItemContainer').on('click', 'div.type-rule', function()
+          {
+              var id = $(this).attr('data-id');
+              for(var i = 0; i < rules.length; i++)
+              {
+                  if(rules[i].Id == id)  
+                  {
+                    rules.splice(i,1);
+                    $(this).parent().parent().remove();
+                    break;
+                  }
+              }
+          });
+
+          $('#RulesItemContainer').on('click', 'div.type-action', function()
+          {
+              var id = $(this).attr('data-id');
+              for(var i = 0; i < actions.length; i++)
+              {
+                  if(actions[i].Id == id)  
+                  {
+                    actions.splice(i,1);
+                    $(this).parent().parent().remove();
+                    break;
+                  }
+              }
+          });
+
+          $('#rule-value-container').on('keydown', 'input.rtxt', function(e)
+            {
+                var code = e.keyCode || e.which;
+                if (code == $.ui.keyCode.ENTER) {
+                    e.preventDefault();
+                    addRule();
+                    return false;
+                }
+
+            });
+
+          $('#action-parameter-container').on('keydown', 'input.atxt, input.rtxt', function(e)
+            {
+                var code = e.keyCode || e.which;
+                if (code == $.ui.keyCode.ENTER) {
+                    e.preventDefault();
+                    addAction();
+                    return false;
+                }
+
+          });
+
+          $('#action-parameter-container').on('change', '#action-fields', function(e)
+          {
+              actionFieldChanged();
+          });
+
+            $('#rule-field').change(getRuleFieldValues);
+            $('#action-type').change(getActionFieldOptions);
+
+            getRuleFieldValues();
+            getActionFieldOptions();
+
+          $("#popup-button-yes").click(function (e) {
+              if ($("#regular-form").valid()) {  
+                  $('#Rules').val(JSON.stringify(rules));
+                  $('#Actions').val(JSON.stringify(actions));
+                  gemini_ui.startBusy('#colorbox #popup-button-yes');
+                  gemini_ajax.postCall("configure/RulesSLA/Rules", "SaveData", 
+                      function (response)
+                      {
+                          gemini_popup.popupClose(e);
+                          gemini_admin.getPage();
+                                                    
+                          gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                      }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
+              } else {
+                  $('.error:not(label)', '#cs-popup-content').first().focus();
+              }
+          });
+
+          $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+      });
+</script>

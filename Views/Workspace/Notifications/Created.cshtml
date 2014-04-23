@@ -1,0 +1,22 @@
+﻿@model WorkspaceNotificationsModel
+
+<div id="workspace-notifications-zone" class="auto-popup" data-hide-func="gemini_notifications.hide()">
+    <div class="arrow-container"><div class="arrow"></div></div>
+    <div class="notification-container">
+        @if (Model.Items.Count > 0)
+        {
+            <div class="title">@Model.Title</div>
+
+            <ul id="notification-items">
+                @foreach (var item in Model.Items.Take(10))
+                {
+                    <li><a href="~/@item.Url">@item.Label</a></li>
+                }
+            </ul>
+        }
+        else
+        {
+            Html.RenderPartial("~/Views/Workspace/Notifications/_Nothing.cshtml");
+        }
+    </div>
+</div>

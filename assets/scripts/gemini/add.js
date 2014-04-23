@@ -1,47 +1,63 @@
-gemini_add = {
-
+gemini_add =
+{
     pendingChanges: false,
     editingMode: false,
     newItemRenderedCallbackOrig: null,
     newItemRenderedCallback: null,
     newItemCreatedCallback: null,
     newItemBeforeRenderedCallback: null,
+    newItemCloseCallback: null,
     hidePlan: false,
     hideProject: false,
     addUrl: false,
+    postData: null,
+
     init: function () {
 
-        gemini_add.addUrl = csVars.ProjectUrl;
+        gemini_add.addUrl = csVars.WorkspaceUrl;
         gemini_keyboard.initKeyboard();
+                
+        $("#add-item, #add-item-dropdown").click(function (e)
+        {
+            if ($(this).attr('data-projects') == '0')
+            {
+                $("#add-project").click();
+                return;
+            }
+            if ($("#cs-popup-add").is(":visible"))
+            {
+                gemini_add.hide();
+            }
+            else
+            {
+                gemini_keyboard.bindEscape("#cs-popup-add #cs-popup-add-close");
 
-        $("#plus-header").click(function (e) {
-            if ($(".fonticon-plus", $(this)).length > 0) {
-                if ($("#cs-popup-add").is(":visible")) {
-                    $(".fonticon-plus", $(this)).removeClass("selected");
-                    gemini_add.hide();
+                //$('span[data-tab-id="quick-items"]', '#cs-popup-add').hide();
+                gemini_add.hidePlan = true;
 
-                } else {                  
-                    $(".fonticon-plus", $(this)).addClass("selected");
+                $('span[data-tab-id="full-item"]', '#cs-popup-add').show();
 
-                    gemini_keyboard.bindEscape("#cs-popup-add #cs-popup-add-close");
-                    if (gemini_add.hidePlan) {
-                        $('span[data-tab-id="quick-items"]', '#cs-popup-add').hide();
-                        gemini_add.hidePlan = false;
-                    }
-                    else {
-                        $('span[data-tab-id="quick-items"]', '#cs-popup-add').show();
-                    }
-                    if (gemini_add.hideProject) {
-                        $('span[data-tab-id="new-project"]', '#cs-popup-add').hide();
-                        gemini_add.hideProject = false;
-                    }
-                    else {
-                        $('span[data-tab-id="new-project"]', '#cs-popup-add').show();
-                    }
-                    gemini_add.show();
-                }
+                $('span[data-tab-id="new-project"]', '#cs-popup-add').hide();
+                gemini_add.hideProject = true;
+                
+                gemini_add.show();
             }
         });
+
+        $("#add-project").click(function (e)
+        {
+            gemini_add.addProject();
+        });
+
+        $("#add-workspace").click(function (e)
+        {
+            gemini_appnav.newWorkspace();
+        });
+
+        $("#add-coworker").click(function (e) {
+            gemini_add.addCoWorkers();
+        });
+
     },
 
     triggerChange: function (elem) {
@@ -59,9 +75,11 @@ gemini_add = {
         gemini_ui.destroyHtmlEditor('.wysiwyg-editor');
         
         gemini_add.newItemRenderedCallback = gemini_add.newItemRenderedCallbackOrig;
-        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + "edit", gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent());
+        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
     },
-    triggerCustomfieldChange: function (elem) {
+
+    triggerCustomfieldChange: function (elem)
+    {
         var trigger = $(elem).data('customfield-trigger');
 
         if (trigger == '') return;
@@ -75,14 +93,16 @@ gemini_add = {
         if(selectedval.length > 0)
             selectedval = selectedval.slice(0, -1); //remove trailing |
 
-        gemini_ajax.postCall("project", "cascadeddata", gemini_add.cascadeUpdate, null,
+        gemini_ajax.postCall("", "cascade", gemini_add.cascadeUpdate, null,
             {
                 fieldid: id, value: selectedval,
                 projectid: $("#ProjectName", "#cs-popup-add").find("option:selected").val(),
                 issueid: $("#id", "#cs-popup-add").val()
             });
     },
-    cascadeUpdate: function (response) {
+
+    cascadeUpdate: function (response)
+    {
         var data = response.Result.Data;
         
         for (var i = 0; i < data.length; i++) {
@@ -102,16 +122,20 @@ gemini_add = {
                 }
                 $("#" + item.Key, '#cs-popup-add').append("<option " + selected + "value='" + item.Value[j].Value + "'>" + item.Value[j].Text + "</option>");
             }
-            $("#" + item.Key, '#cs-popup-add').trigger("liszt:updated");
+
+            gemini_ui.chosenUpdate($("#" + item.Key, '#cs-popup-add'));
             //call update on this.
             $("#" + item.Key, '#cs-popup-add').change();
         }
     },
-    populateAddItem: function (response) {
+
+    populateAddItem: function (response)
+    {
         if (response.success == null || (response.success != null && response.success)) {
 
             $('#full-item').html(response);
             $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' });
+            setTimeout(function () { $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' }); }, 500);
             $(".checked-select", '#cs-popup-add-content').jScrollPane({});
 
             gemini_ui.datePicker('#cs-popup-add-content .datepicker');
@@ -143,7 +167,7 @@ gemini_add = {
                     //gemini_add.save();
                 }
             });*/
-            $('.chzn-results', '#cs-popup-add-content').jScrollPane({});
+            //$('.chosen-results', '#cs-popup-add-content').jScrollPane({});
             gemini_ui.htmlEditor('.wysiwyg-editor', /*gemini_edit.onHtmlEditorInit*/null, gemini_add.setPendingChanges);
             gemini_ui.userAutocomplete('#cs-popup-add-content .user-autocomplete');
 
@@ -155,7 +179,14 @@ gemini_add = {
             var options = {
                 dataType: "json",
                 success: function (responseText, statusText, xhr, $form) {
-                    if (responseText.success) gemini_add.postIssueCreate(responseText);
+                    if (responseText.success)
+                    {
+                        gemini_add.postIssueCreate(responseText);
+                    }
+                    else
+                    {
+                        $('#server-validation-error', '#cs-popup-add').html(responseText.Message).show();
+                    }
                     gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save');
 
                 },
@@ -178,19 +209,22 @@ gemini_add = {
         }
     },
 
-show: function () {
+    show: function () {
         var oldProjectUrl = gemini_add.addUrl;
         if (gemini_add.newItemBeforeRenderedCallback) {
             gemini_add.newItemBeforeRenderedCallback();
             gemini_add.newItemBeforeRenderedCallback = null;
         }
-        gemini_ajax.postCall(gemini_add.addUrl + "edit", gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem);
+        gemini_ajax.postCall(gemini_add.addUrl, "item/edit?viewtype=" + gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem, null, gemini_add.postData, null, true);
+        gemini_add.postData = null;
         gemini_add.addUrl = oldProjectUrl;
         gemini_add.showContent();
     },
-    showContent: function () {
+
+    showContent: function ()
+    {
         window.onbeforeunload = gemini_add.warn;
-        $('#cs-popup-add-content').html('<div id="cs-template"><div id="quick-items" class="nestedSortable tab-content hide"></div><div id="full-item" class="tab-content"></div><div id="new-project" class="tab-content hide"></div></div>');
+        $('#cs-popup-add-content').html('<div id="cs-template"></div><div id="full-item" class="tab-content"></div><div id="new-project" class="tab-content hide"></div></div>');
         $('#cs-popup-add').show();
         $('#cs-popup-add-zone').show();
                 
@@ -250,12 +284,6 @@ show: function () {
             $('.tab-content', '#cs-popup-add-content').hide();
             $('#' + $(this).data('tab-id')).show();
             $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' });
-            if ($(this).attr('data-tab-id') == 'new-project') {
-                gemini_ajax.postCall(gemini_add.addUrl, "wizard", function (response) {
-                    $('#new-project').html(response)
-                });
-            }
-            $("#quick-items input[type='text']:first").focus();
         });
 
         /*$("#cs-popup-add-zone").csTabs({
@@ -269,42 +297,50 @@ show: function () {
         });*/
 
 
-        $("#quick-items").liManipulator({
+        /*$("#quick-items").liManipulator({
             debug: false,
             events: {
                 onAddText: gemini_add.setPendingChanges
             }
-        });
+        });*/
 
-        $('#quick-items input').attr('placeholder', 'Issue');
+        /*$('#quick-items input').attr('placeholder', 'Issue');*/
+
+        $("#cs-popup-add-buttons .button-popup").css('width', '');
+        gemini_sizing.sameWidth("#cs-popup-add-buttons .button-popup", 10);
+
+        $('.tab:not(":hidden")', '#cs-popup-add').click();
     },
-    setPendingChanges: function () {
+
+    setPendingChanges: function ()
+    {
         gemini_add.pendingChanges = true;
         $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' });
     },
 
     save: function () {
+        $('#server-validation-error', '#cs-popup-add').hide();
 
-        if ($("#quick-items .limTextContainer input").length > 0 && $.trim($("#quick-items .limTextContainer input").val()) != "") {
-            var val = $("#quick-items .limTextContainer input").val();
-            $("#quick-items .limTextContainer").parent().html("<div><span class='fonticon-drag-handle valign-text-bottom margin-right-5' style='color:#C4C4C4;'></span>" + val + "</div>");
-        }
+        //if ($("#quick-items .limTextContainer input").length > 0 && $.trim($("#quick-items .limTextContainer input").val()) != "") {
+        //    var val = $("#quick-items .limTextContainer input").val();
+        //    $("#quick-items .limTextContainer").parent().html("<div><span class='fonticon-drag-handle valign-text-bottom margin-right-5' style='color:#C4C4C4;'></span>" + val + "</div>");
+        //}
 
         var fullItem = $('.tab[data-tab-id="full-item"]', '#cs-popup-add-zone').hasClass('selected');
         var project = $('.tab[data-tab-id="new-project"]', '#cs-popup-add-zone').hasClass('selected');
         var valid = !(fullItem) || $("#inline-edit-form", '#cs-popup-add').valid();
-        var data = $("#quick-items").liManipulator("data");
-        var isQuickItems = $('#quick-items').is(':visible');
-        if (data.length > 0) {
-            if (isQuickItems) gemini_ui.startBusy('#cs-popup-add #cs-popup-add-save');
-            gemini_ajax.postCall(gemini_add.addUrl + "items", "dump/SaveItemDump", function (response) {
-                if (valid && response.Success) {
-                    gemini_add.postIssueCreate(response);
-                }
-                if (isQuickItems) gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save');
-            }, function () { if (isQuickItems) gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save'); }, { items: JSON.stringify(data) });
+       // var data = $("#quick-items").liManipulator("data");
+        //var isQuickItems = $('#quick-items').is(':visible');
+        //if (data.length > 0) {
+        //    if (isQuickItems) gemini_ui.startBusy('#cs-popup-add #cs-popup-add-save');
+        //    gemini_ajax.postCall(gemini_add.addUrl + "items", "dump/SaveItemDump", function (response) {
+        //        if (valid && response.Success) {
+        //            gemini_add.postIssueCreate(response);
+        //        }
+        //        //if (isQuickItems) gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save');
+        //    }, function () { /*if (isQuickItems) gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save');*/ }, { items: JSON.stringify(data) }, null, true);
 
-        }
+        //}
         if (fullItem) {
             // Save new item
             if ($("#inline-edit-form", '#cs-popup-add').valid()) {
@@ -329,26 +365,27 @@ show: function () {
         }
     },
 
-    postIssueCreate: function (data) {
+    postIssueCreate: function (data)
+    {
         gemini_add.pendingChanges = false;
         gemini_add.hide();
 
-        gemini_ajax.postCall("account", "actions", function (response) {
+        if ($('#pager-next').length > 0) {
+            var currentPage = $('#pager-next').data('page') - 1;
 
+            if (currentPage < 0) currentPage = 0;
 
-            if ($('#pager-next').length > 0) {
-                var currentPage = $('#pager-next').data('page') - 1;
-                if (currentPage < 0) currentPage = 0;
-                gemini_filter.getFilteredItemsPage(currentPage);
-            }
+            gemini_filter.getFilteredItemsPage(currentPage);
+        }
+        else if ($('#data.items-data-container img').length > 0)
+        {
+            gemini_filter.getFilteredItemsPage(0); // Refresh the filter when we have the "no items" image and the grid is hidden
+        }
 
-            $("#notification-center").html(response.Result.Data);
-            gemini_master.initNotificationCenter();
-            gemini_master.showNotificationCenter();
+        gemini_notifications.fetchLastItem();
 
-        }, null);
-
-        if (gemini_add.newItemCreatedCallback) {
+        if (gemini_add.newItemCreatedCallback)
+        {
             gemini_add.newItemCreatedCallback(data.Result.Item.Id);
             gemini_add.newItemCreatedCallback = null;
         }
@@ -361,11 +398,12 @@ show: function () {
     },
 
     hide: function () {
+        $('#server-validation-error', '#cs-popup-add').hide();
         // wants to move away from editing?
         if (gemini_add.pendingChanges) {
             // warn of lost changes
-            $('#cs-popup-add').hide();
-            gemini_popup.sameConfirmWidth();
+            //$('#cs-popup-add').hide();
+            //gemini_popup.sameConfirmWidth();
             gemini_popup.modalConfirm("Save changes?", null,
             function () {
                 gemini_add.save();
@@ -379,10 +417,8 @@ show: function () {
         else {
             // nothing to save, so dismiss
             $('#cs-popup-add').hide();
-            $(".fonticon-plus", $("#plus-header")).removeClass("selected");
             gemini_add.pendingChanges = false;
             gemini_add.editingMode = false;
-            //gemini_commons.inputKeyHandlerUnbind($(document));
 
             $('#cs-popup-add-content').empty();
             $('#cs-popup-add-content').data("jsp", "");
@@ -391,8 +427,14 @@ show: function () {
             $.colorbox.close();
         }
 
+        if (gemini_add.newItemCloseCallback) {
+            gemini_add.newItemCloseCallback();
+            gemini_add.newItemCloseCallback = null;
+        }
     },
-    initNewProjectWizard: function () {
+
+    initNewProjectWizard: function ()
+    {
         $('li', '#new-project-wizard').click(function () {
             $('li', '#new-project-wizard').removeClass('selected');
             $('.title', '#template-details').html($(this).data('title'));
@@ -432,5 +474,99 @@ show: function () {
                 }
             });
         }
+    },
+
+    addCoWorkers: function () {
+        $("#cs-popup-center-content").css("width", "615px");
+        $("#cs-popup-center-content").css("height", "370px");
+
+        var add = "Save";
+
+        gemini_commons.translateMessage("[[Send]]", ['Send'], function (message) {
+            add = message;
+
+            gemini_popup.centerPopup('coworkers', 'show', null, null, add, null, null, null,
+                function ()
+                {
+                    $("#popup-button-no", "#cs-popup-center").click(function (e)
+                    {
+                        gemini_popup.popupClose(e);
+                    });
+
+                    $("#popup-button-yes", "#cs-popup-center").click(function (e)
+                    {
+                        if ($(".popup-header #regular-form").valid())
+                        {
+                            
+                            gemini_ajax.postCall('coworkers', 'add', function (response)
+                            {
+                                
+                            }, null, $('#regular-form').serialize(), null, true);
+
+                            gemini_popup.popupClose(e);
+                        }
+                    });
+
+                    $("#Key", "#cs-popup-center").focus();
+                    $(".popup-header #regular-form").validate();
+
+                    // Fix for browsers (i.e IE9) which don't support placeholder attribute
+                    if (!Modernizr.input.placeholder)
+                    {
+                        $("#edit-appnav-card input[type=text]").each(function ()
+                        {
+                            gemini_ui.legacyPlaceholder($(this));
+                        });
+                    }
+
+                }, true
+            );
+        });
+    },
+
+    addProject: function () {
+        $("#cs-popup-center-content").css("width", "850px");
+        $("#cs-popup-center-content").css("height", "550px");
+
+        var add = "Add";
+
+        gemini_commons.translateMessage("[[Add]]", ['Add'], function (message) {
+            add = message;
+
+            gemini_popup.centerPopup('', 'wizard', null, null, add, null, null, null,
+                function ()
+                {
+                    $("#popup-button-no", "#cs-popup-center").click(function (e) {
+                        gemini_popup.popupClose(e);
+                    });
+
+                    $("#popup-button-yes", "#cs-popup-center").click(function (e) {
+                        if ($("#new-project-form").valid()) {
+
+                            gemini_ajax.postCall('wizard', 'save', function (response) {
+                                if(response.success)
+                                {
+                                    window.location.href = response.Result.Data;
+                                }
+                            }, null, $('#new-project-form').serialize());
+
+                            gemini_popup.popupClose(e);
+                        }
+                    });
+
+                    $("input:first", "#cs-popup-center").focus();
+                    $("#new-project-form",'#new-project-wizard').validate();
+
+                    // Fix for browsers (i.e IE9) which don't support placeholder attribute
+                    if (!Modernizr.input.placeholder) {
+                        $("#new-project-wizard input[type=text]").each(function () {
+                            gemini_ui.legacyPlaceholder($(this));
+                        });
+                    }
+
+                }
+            );
+        });
     }
 };
+

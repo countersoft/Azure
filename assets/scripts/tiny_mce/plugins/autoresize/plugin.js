@@ -28,15 +28,24 @@ tinymce.PluginManager.add('autoresize', function(editor) {
 	 * This method gets executed each time the editor needs to resize.
 	 */
 	function resize(e) {
-		var deltaSize, d = editor.getDoc(), body = d.body, de = d.documentElement, DOM = tinymce.DOM;
-		var resizeHeight = settings.autoresize_min_height, myHeight;
+		var deltaSize, d = editor.getDoc(), body = d.body, de = d.documentElement, DOM = tinymce.DOM,
+			resizeHeight = settings.autoresize_min_height, myHeight, marginTop, marginBottom;
 
-		if ((e.type == "setcontent" && e.initial) || (editor.plugins.fullscreen && editor.plugins.fullscreen.isFullscreen())) {
+		if (!body || !e || (e.type === "setcontent" && e.initial) ||
+				(editor.plugins.fullscreen && editor.plugins.fullscreen.isFullscreen())) {
 			return;
 		}
 
-		// Get height differently depending on the browser used
-		myHeight = tinymce.Env.ie ? body.scrollHeight : (tinymce.Env.webkit && body.clientHeight === 0 ? 0 : body.offsetHeight);
+		// Calculate outer height of the body element using CSS styles
+		marginTop = editor.dom.getStyle(body, 'margin-top', true);
+		marginBottom = editor.dom.getStyle(body, 'margin-bottom', true);
+		myHeight = body.offsetHeight + parseInt(marginTop, 10) + parseInt(marginBottom, 10);
+
+		// Make sure we have a valid height
+		if (isNaN(myHeight) || myHeight <= 0) {
+			// Get height differently depending on the browser used
+			myHeight = tinymce.Env.ie ? body.scrollHeight : (tinymce.Env.webkit && body.clientHeight === 0 ? 0 : body.offsetHeight);
+		}
 
 		// Don't make it smaller than the minimum height
 		if (myHeight > settings.autoresize_min_height) {
@@ -68,6 +77,22 @@ tinymce.PluginManager.add('autoresize', function(editor) {
 		}
 	}
 
+	/**
+	 * Calls the resize x times in 100ms intervals. We can't wait for load events since
+	 * the CSS files might load async.
+	 */
+	function wait(times, interval, callback) {
+		setTimeout(function() {
+			resize({});
+
+			if (times--) {
+				wait(times, interval, callback);
+			} else if (callback) {
+				callback();
+			}
+		}, interval);
+	}
+
 	// Define minimum height
 	settings.autoresize_min_height = parseInt(editor.getParam('autoresize_min_height', editor.getElement().offsetHeight), 10);
 
@@ -76,14 +101,26 @@ tinymce.PluginManager.add('autoresize', function(editor) {
 
 	// Add padding at the bottom for better UX
 	editor.on("init", function() {
-		editor.dom.setStyle(editor.getBody(), 'paddingBottom', editor.getParam('autoresize_bottom_margin', 50) + 'px');
+		var overflowPadding = editor.getParam('autoresize_overflow_padding', 1);
+
+		editor.dom.setStyles(editor.getBody(), {
+			paddingBottom: editor.getParam('autoresize_bottom_margin', 50),
+			paddingLeft: overflowPadding,
+			paddingRight: overflowPadding
+		});
 	});
 
 	// Add appropriate listeners for resizing content area
 	editor.on("change setcontent paste keyup", resize);
 
 	if (editor.getParam('autoresize_on_init', true)) {
-		editor.on('load', resize);
+		editor.on('init', function() {
+			// Hit it 20 times in 100 ms intervals
+			wait(20, 100, function() {
+				// Hit it 5 times in 1 sec intervals
+				wait(5, 1000);
+			});
+		});
 	}
 
 	// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');

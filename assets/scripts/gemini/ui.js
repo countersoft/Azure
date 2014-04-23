@@ -27,16 +27,38 @@ gemini_ui = {
     {
         $(selector).css('opacity', '0.6');
     },
+
     visualProgressFinish: function (selector)
     {
         $(selector).css('opacity', '1');
     },
-    runSpinnerSmall: function(spinnerId, selector) {
+
+    removeSpinner: function (id, selector)
+    {
+        $('#spinner-'+id, selector).remove();
+    },
+
+    runSpinner: function (id, selector, width, height)
+    {
+        if (gemini_commons.isEmpty(id)) id = gemini_commons.guidGenerator();
+
+        var spinner = {
+            Markup: "<div id='spinner-" + id + "' style='height:" + height + "px;width:" + width + "px;'>&nbsp;</div>",
+            JS: "$('#spinner-" + id + "').spin(gemini_ui.spinnerOptionsSmall);"
+        };
+        $(selector).html(spinner.Markup);
+        eval(spinner.JS);
+    },
+
+    runSpinnerSmall: function (spinnerId, selector)
+    {
         var spinner = gemini_ui.getSpinnerSmall(spinnerId);
         $(selector).html(spinner.Markup);
         eval(spinner.JS);
     },
-    getSpinner: function (id) {
+
+    getSpinner: function (id)
+    {
         if (gemini_commons.isEmpty(id)) id = gemini_commons.guidGenerator();
 
         return {
@@ -73,6 +95,15 @@ gemini_ui = {
         };
     },
 
+    getSpinnerProgressBlack: function (id) {
+        if (gemini_commons.isEmpty(id)) id = gemini_commons.guidGenerator();
+
+        return {
+            Markup: "<div id='spinner-" + id + "' style='margin-bottom:4px;height:10px;width:20px;'>&nbsp;</div>",
+            JS: "$('#spinner-" + id + "').spin(gemini_ui.spinnerProgressBlackOptions);"
+        };
+    },
+
     spinnerOptions: {
         lines: 6, // The number of lines to draw
         length: 0, // The length of each line
@@ -104,6 +135,20 @@ gemini_ui = {
         corners: 0,
         rotate: 47,
         color: '#fff', // #rgb or #rrggbb
+        speed: 1.2, // Rounds per second
+        trail: 53, // Afterglow percentage
+        shadow: false // Whether to render a shadow
+    },
+
+    // Black progress spinner -- used on divs in side pane
+    spinnerProgressBlackOptions: {
+        lines: 17, // The number of lines to draw
+        length: 1, // The length of each line
+        width: 3, // The line thickness
+        radius: 7, // The radius of the inner circle
+        corners: 0,
+        rotate: 47,
+        color: '#000', // #rgb or #rrggbb
         speed: 1.2, // Rounds per second
         trail: 53, // Afterglow percentage
         shadow: false // Whether to render a shadow
@@ -322,19 +367,28 @@ gemini_ui = {
         }
         return false;
     },
-    htmlEditor: function (selector, onInit, onChange, autoFocus) {
+    htmlEditor: function (selector, onInit, onChange, autoFocus, height, width) {
+        if (!height)
+        {
+            height = 300;
+        }
+        if (!width)
+        {
+            width = 571;
+        }
         tinymce.init({
             selector: selector,
             relative_urls: false,
             browser_spellcheck: true,
             gecko_spellcheck: true,
-            height: 300,
-            width: 600,
+            height: height,
+            width: width,
             oninit: onInit,
             theme: "modern",
             skin : 'lightgray',
             statusbar: false,
             paste_data_images: true,
+            fontsize_formats: "8pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt",
             plugins: [
                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                "searchreplace visualblocks visualchars code fullscreen",
@@ -354,7 +408,8 @@ gemini_ui = {
             },
             
             toolbar_items_size: 'small',
-            toolbar1: "bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor backcolor | link image table styleselect",
+            toolbar1: "formatselect fontselect fontsizeselect | link unlink anchor table image media | charmap emoticons",
+            toolbar2: "bold italic underline strikethrough subscript superscript | outdent indent alignleft aligncenter alignright alignjustify | bullist numlist | blockquote | forecolor backcolor",
             setup: function (editor) {
                 if (autoFocus) {
                     editor.on('init', function (e) {
@@ -362,13 +417,30 @@ gemini_ui = {
                     });
                 }
                 editor.on('change', function (e) {
-                    editor.save();
-                    setTimeout(function () { editor.save(); }, 250);
+                    //editor.save();
+                    //setTimeout(function () { editor.save(); }, 250);
                     if (onChange) onChange();
                 });
                 editor.on('blur', function (e) {
-                    editor.save();
-                    setTimeout(function () { editor.save(); }, 250);
+                    try
+                    {
+                        editor.save();
+                    }
+                    catch(err)
+                    {
+                        var x=0;
+                    }
+                    setTimeout(function () 
+                    {
+                        try
+                        {
+                            editor.save(); 
+                        }
+                        catch(err2)
+                        {
+                            var z = 0;
+                        }
+                    }, 250);
                     if (onChange) onChange();
                 });
             }
@@ -413,21 +485,31 @@ gemini_ui = {
             increaseArea: '20%' // optional
         });
     },
-
+    chosenUpdate: function (element)
+    {
+        if (element instanceof jQuery)
+        {
+            element.trigger("chosen:updated");
+        }
+        else 
+        {
+            $(element).trigger("chosen:updated");
+        }
+    },
     chosen: function (selector, topmostContainer, fix_popup) {
         if (fix_popup == null || fix_popup == undefined) fix_popup = false;
-        $(selector).chosen({ stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup });
+        $(selector).chosen({ stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup, display_selected_options: false });
     },
     ajaxChosen: function (selector, topmostContainer, fix_popup, projectUrl, data) {
         if (fix_popup == null || fix_popup == undefined) fix_popup = false;
-        if (projectUrl == null || projectUrl == undefined || projectUrl.length == 0) projectUrl = 'project/ALL/{projectid}'
+        if (projectUrl == null || projectUrl == undefined || projectUrl.length == 0) projectUrl = 'project/{projectid}' + '/item/get/customfield';
         method = 'GET';
         if (data != null) method = 'POST';
         $(selector).each(function () {
             $(this).ajaxChosen({
                 type: method,
                 data: data,
-                url: csVars.Url + projectUrl + '/editcfac',
+                url: csVars.Url + projectUrl,
                 dataType: 'json',
                 minTermLength: 1
             }, function (data) {
@@ -437,11 +519,12 @@ gemini_ui = {
                 });
 
                 return results;
-            }, { stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup });
+            }, { stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup});
         });
     },
     setDropdownValue: function (selector, val) {
-        $(selector).val(val).trigger("liszt:updated");
+        $(selector).val(val);
+        gemini_ui.chosenUpdate($(selector)); 
     },
     destroyJScrollPane: function (element) {
         var api = $(element).data('jsp');
@@ -592,10 +675,13 @@ gemini_ui = {
     },
     stopBusy: function (buttonSelector)
     {
-        $("#progress-indicator").addClass('hide');
-        $("#progress-indicator").css('top',-200).css('left',-200);
-        $(buttonSelector).val($(buttonSelector).attr("data-progress"));    
-        $(buttonSelector).removeAttr('disabled');
+        if (!$("#progress-indicator").hasClass('hide'))
+        {
+            $("#progress-indicator").addClass('hide');
+            $("#progress-indicator").css('top', -200).css('left', -200);
+            $(buttonSelector).val($(buttonSelector).attr("data-progress"));
+            $(buttonSelector).removeAttr('disabled');
+        }
     },
     startBusy2: function(buttonSelector, progressContainer)
     {        
@@ -630,21 +716,52 @@ gemini_ui = {
         $(buttonSelector).removeAttr('disabled');
     },
 
+    startBusyDiv: function (div) {
+        $(div).attr('disabled', 'disabled');
+        var spinner = gemini_ui.getSpinnerProgressBlack();
+
+        $("#progress-indicator").html(spinner.Markup);
+
+        var buttonWidth = $(div).width();
+
+        //$(div).attr("data-progress", $(div).html());
+        $(div).css('min-width', buttonWidth);//.html(' ');
+
+        $("#progress-indicator").css('width', buttonWidth).css('z-index', 2147483640);
+        $("#progress-indicator > div").css('margin', '0 auto');
+        $("#progress-indicator").removeClass('hide');
+        $('#progress-indicator').position({
+            "of": $(div),
+            "my": "center center",
+            "at": "center center",
+            "offset": "0 0",
+            "collision": "none"
+        });
+        eval(spinner.JS);
+    },
+
+    stopBusyDiv: function (div) {
+        if (!$("#progress-indicator").hasClass('hide')) {
+            $("#progress-indicator").addClass('hide');
+            $("#progress-indicator").css('top', -200).css('left', -200);
+            //$(div).html($(div).attr("data-progress"));
+            $(div).removeAttr('disabled');
+            $(div).css('min-width', '');
+        }
+    },
+
     userAutocomplete: function (selector) {
         $(selector).autocomplete({
             source: function (request, response) {
-                $.ajax({
-                    url: csVars.Url + csVars.ProjectUrl + "account/getusersdropdown",
-                    dataType: "json",
-                    data: { term: request.term, returnValue: "FullnameRUsername" },
-                    success: function (data) {
+                gemini_ajax.call(csVars.ProjectUrl + "account", "getusersdropdown",
+                    function (data)
+                    {
                         var rows = new Array();
                         for (var i = 0; i < data.Result.Data.length; i++) {
                             rows[rows.length] = { label: data.Result.Data[i].label, value: data.Result.Data[i].value };
                         }
                         response(rows);
-                    }
-                });
+                    }, null, { term: request.term, returnValue: "FullnameRUsername" }, null, true);
             },
             minLength: 2,
             width: 200,
@@ -666,6 +783,31 @@ gemini_ui = {
     scrollTo: function (scrollContainer, scrollToElement)
     {
         $(scrollContainer).scrollTo($(scrollToElement), 1000);
+    },
+
+    legacyPlaceholder: function (object)
+    {
+        if (object.attr("placeholder") != "")
+        {
+            object.addClass("search_box_placeholder");
+
+            if (object.val() == '') object.val(object.attr("placeholder"));
+
+            object.focus(function ()
+            {
+                if (object.val() == object.attr("placeholder")) object.val("");
+                object.removeClass("search_box_placeholder");
+            });
+
+            object.blur(function ()
+            {
+                if (object.val() == "")
+                {
+                    object.val(object.attr("placeholder"));
+                    object.addClass("search_box_placeholder");
+                }
+            });
+        }
     }
 };
 

@@ -1,23 +1,8 @@
 ﻿@model ItemsGridModel
+
+@if (Model.Issues.Count > 0 || Model.SequencedIssues.Count > 0)
+{
 <div id="items-grid-control-box">
-    <div id="split-view-grid">
-        <div class="grid-button split-view-selected">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    <div id="split-view-item">
-        <div class="grid-button">
-            <div class="details">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <div class="box"></div>
-        </div>
-    </div>
     <div id="grid-pager" class="left pad-top-20">
         @Model.Pager.TotalItems @GetResource(ResourceKeys.ItemsFound, Resourcing.Lower) @if(Model.Pager.TotalItems > 0) {
         <text>(@GetResource(ResourceKeys.Page) @Model.Pager.CurrentPage @GetResource(ResourceKeys.Of, Resourcing.Lower)
@@ -26,40 +11,50 @@
     <div id="page-options-box" class="right">
         <div class="box-right size-0">
             <div>
-                <div class="option vertical-align">
-                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="<<" data-page="@Model.Pager.CurrentPage" />
-                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value=">>" data-page="@Model.Pager.CurrentPage" />
+                <div class="option vertical-align margin-top-5">
+                    <div id="split-view-grid" title="@GetResource(ResourceKeys.Items)">
+                        <div class="grid-button split-view-selected">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div id="split-view-item" title="@GetResource(ResourceKeys.Item)">
+                        <div class="grid-button">
+                            <div class="details">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div class="box"></div>
+                        </div>
+                    </div>
                 </div>
-                @if(GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations))
+                <div class="divider">
+                </div>
+                <div class="option" style="margin-top:5px; margin-right: 10px;">
+                    <div id='pageSizeContainer'>
+                        <input type="text" name='pageSize' id='pageSize' class='input-size2' value="@Model.Filter.PageSize"/>
+                        <span style="display:inline-block;margin-top:3px;">@GetResource(ResourceKeys.Items, Resourcing.Lower)</span>
+                    </div>
+                </div>
+                <div class="option vertical-align">
+                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="<" data-page="@Model.Pager.CurrentPage" />
+                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value=">" data-page="@Model.Pager.CurrentPage" />
+                </div>
+                @if (Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser())
                 {
                 <div class="divider">
                 </div>
                 <div class="option vertical-align">
-                    <input class="button-secondary button-small" id='bulk-update' type="button" title="@GetResource(ResourceKeys.Update)" value="@GetResource(ResourceKeys.Update)" />
                     <input class="button-secondary button-small" id='bulk-delete' type="button" title="@GetResource(ResourceKeys.Delete)" value="@GetResource(ResourceKeys.Delete)" />
                 </div>
                 }
                 <div class="divider">
                 </div>
-                @if (GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanPerformBulkOperations) && GeminiContext.Project.Entity.Id != Constants.AllProjectsId && !GeminiContext.PermissionsManager.IsHelpdeskUser()) 
-                {
-                    <div class="option vertical-align pos-relative">
-                        <div id="grid-import-data" class="control-icon import" title="@GetResource(ResourceKeys.ImportWizard)"></div>
-                    </div>
-                }
-                <div class="option vertical-align pos-relative">
-                    <div id="grid-export-excel" class="control-icon pie" title="@GetResource(ResourceKeys.Reports)"></div>
-                </div>
                 <div class="option vertical-align">
                     <div id="grid-column-picker" class="control-icon gear" title="@GetResource(ResourceKeys.Columns)">
-                    </div>
-                </div>
-                <div class="divider">
-                </div>
-                <div class="option" style="margin-top:5px;">
-                    <div id='pageSizeContainer'>
-                        <input type="text" name='pageSize' id='pageSize' class='input-size2' value="@Model.InstantFilter.PageSize"/>
-                        <span style="display:inline-block;margin-top:3px;">@GetResource(ResourceKeys.Items)</span>
                     </div>
                 </div>
             </div>
@@ -71,23 +66,26 @@
 <div id="items-grid">
     @Html.DisplayFor(m => m, "IssueDto")
 </div>
-<div class="export-to-container">
-    <ul>
-        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/csv">CSV</a></li>
-        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/xlsx">Excel</a>&nbsp;<a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/xls">(XLS)</a></li>
-        <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexport/html">Html</a></li>
-        
-        @if (Model.ExcelReports.Count > 0)
-        {
-            <text><li class="divider">&nbsp;</li></text>
-            
-            foreach (var report in Model.ExcelReports)
-            {
-                <li><a target="_blank" href="@(GeminiContext.Url)project/@GeminiContext.Project.Entity.Code/@GeminiContext.Project.Entity.Id/Items/prepareexportxlsx/@report.Key">@report.Value</a></li>
-            }
-        }
-    </ul>
-</div>
+{
+    var url = GeminiContext.Url;
+    if(GeminiContext.Card.Id > 0)
+    {
+        url = string.Concat(url, "workspace/", GeminiContext.Card.Id);
+    }
+    else
+    {
+        url = string.Concat(url, "project/", GeminiContext.Project.Entity.Id);
+    }
+    
+}
+if(Model.SavedCards.Count == 0 && Model.Ajax)
+{
+    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "workspace.png"); 
+}
+else if (ShowAddCoworkers())
+{
+    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "coworkers.png"); 
+}
 <div id='column-picker'>
 </div>
 <script type="text/javascript">
@@ -95,3 +93,12 @@
         gemini_filter.gridColumnPickerInit();
     });
 </script>
+}
+else if (GeminiContext.User.Entity.HasExperienced(Countersoft.Gemini.Commons.Entity.User.UserExperience.AddItem))
+{
+    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "no-issues.png"); // Already created an item
+}
+else
+{
+    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "issue.png"); // Never created an item
+}

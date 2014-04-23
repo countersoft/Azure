@@ -1,0 +1,118 @@
+﻿@model PlannerModel
+
+
+<div class="box-right size-0">
+            <div>
+                <!-- Zoom -->
+                <div class="option vertical-align">
+                    <div id="PlannerLevel" class='zoom-icon level-@Html.Raw(Model.PlannerLevel)' title="@GetResource(ResourceKeys.Zoom)" ></div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Axis -->
+                <div class="option vertical-align">
+                    <div id="planner-axis-option" title="@GetResource(ResourceKeys.GroupBy)" class="control-icon axis"></div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.Axis1Selected, @GetResource(ResourceKeys.GroupBy), new { @id = "lblAxis1Selected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.Axis1Selected, new SelectList(Model.Axis1Values, "Value", "Text", Model.Axis1Selected))
+                            </div>
+                            <div class="right sort @Model.Axis1Sort" id="Axis1Sort"></div>
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            <input type="button" id="AxisFlipped" class="button-secondary button-small" title="Flip Axis" value="," />
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.Axis2Selected, @GetResource(ResourceKeys.ThenBy), new { @id = "lblAxis2Selected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.Axis2Selected, new SelectList((IEnumerable<ValueTextPair>)Model.Axis2Values, "Value", "Text", Model.Axis2Selected))
+                            </div>
+                            <div class="right sort @Model.Axis2Sort" id="Axis2Sort"></div>
+                        </div>
+                    </div>                
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Limit -->
+                <div class="option vertical-align">
+                    <div title="@GetResource(ResourceKeys.Limit)" class="control-icon limits"></div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.SwimLaneLimits, @GetResource(ResourceKeys.Limit), new { @id = "lblLimit" })
+                            @Html.TextBoxFor(m => m.SwimLaneLimits, new { @class = "input-size2" })
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.AutoLimit, @GetResource(ResourceKeys.AutoLimit), new { @id = "lblAutoLimit" })
+                            @Html.TextBoxFor(m => m.AutoLimit, new { @class = "input-size2" })
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.TottingModeValues, @GetResource(ResourceKeys.Totting), new { @id = "lblTottingModeSelected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.TottingModeSelected, new SelectList((IEnumerable<ValueTextPair>)Model.TottingModeValues, "Value", "Text", Model.TottingModeSelected))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Ordering -->
+                <div class="option vertical-align">
+                    <div title="@GetResource(ResourceKeys.OrderBy)" class="control-icon ordering"></div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.OrderBySelected, @GetResource(ResourceKeys.OrderBy), new { @id = "lblOrderBySelected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.OrderBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.OrderByValues, "Value", "Text", Model.OrderBySelected))
+                            </div>
+                            <div class="right sort @Model.OrderBySort" id="OrderBySort"></div>
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.ThenBySelected, @GetResource(ResourceKeys.ThenBy), new { @id = "lblThenBySelected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.ThenBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.ThenByValues, "Value", "Text", Model.ThenBySelected))
+                            </div>
+                            <div class="right sort @Model.ThenBySort" id="ThenBySort"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Color -->
+                <div class="option vertical-align">
+                    <div title="@GetResource(ResourceKeys.Color)" class="control-icon color"></div>
+                    <div class="options">
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.ColorBySelected, @GetResource(ResourceKeys.Color), new { @id = "lblColorBySelected" })
+                            @Html.DropDownListFor(m => m.ColorBySelected, new SelectList((IEnumerable<ValueTextPair>)Model.ColorByValues, "Value", "Text", Model.ColorBySelected))
+                        </div>
+                        <div class="break">&nbsp;</div>
+                        <div class="break">&nbsp;</div>
+                        <div class="clearfix">
+                            @Html.LabelFor(m => m.DateRangeValues, @GetResource(ResourceKeys.DateRanges), new { @id = "lblDateRangeSelected" })
+                            <div class="left">
+                                @Html.DropDownListFor(m => m.DateRangeSelected, new SelectList((IEnumerable<ValueTextPair>)Model.DateRangeValues, "Value", "Text", Model.DateRangeSelected))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>

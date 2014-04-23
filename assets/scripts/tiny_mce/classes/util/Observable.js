@@ -19,7 +19,7 @@ define("tinymce/util/Observable", [
 	var bindingsName = "__bindings";
 	var nativeEvents = Tools.makeMap(
 		"focusin focusout click dblclick mousedown mouseup mousemove mouseover beforepaste paste cut copy selectionchange" +
-		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragend dragover draggesture dragdrop drop drag", ' '
+		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragstart dragend dragover draggesture dragdrop drop drag", ' '
 	);
 
 	function returnFalse() {
@@ -228,6 +228,14 @@ define("tinymce/util/Observable", [
 			}
 
 			return self;
+		},
+
+		hasEventListeners: function(name) {
+			var bindings = this[bindingsName];
+
+			name = name.toLowerCase();
+
+			return !(!bindings || !bindings[name] || bindings[name].length === 0);
 		}
 	};
 });

@@ -3,46 +3,38 @@
 <ul class="cards">
     @foreach (NavigationCard card in Model.SavedCards)
     {
-        @:<li id="card-@card.Id" data-card-id="@card.Id" class="card @ViewHelpers.CardSystem(card)" data-counter="@card.BadgeCount">
-
+        string prefix = string.Empty;
+        if(card.Locked || card.CardData.Lock && card.CardData.IsShared)
+        {
+            prefix = string.Concat('[', GetResource(ResourceKeys.TeamWorkspace), "] ");
+        }
+        @:<li id="card-@card.Id" data-card-id="@card.Id" class="card @ViewHelpers.CardSystem(card)" data-counter="@card.BadgeCount" data-chat-count="@card.CardData.Chat.BadgeCount" title="@(prefix)@(card.Title)">
+        if (card.Locked || card.CardData.Lock && card.CardData.IsShared)
+        {
+            <div class="team-workspace" style="border-right-color:@card.Color"></div>
+        }
         if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null)
         {
                 @:<a href="@card.Url" target="_blank">
             }
         else
         {
-                @:<a href="@GeminiContext.Url@card.Url?card=@card.Id">
+                @:<a href="@(GeminiContext.Url)workspace/@(card.Id)/@card.Url">
             }
-                    <div class="card-box" title="@card.CardData.Comment">
+                    <div class="card-box">
                         <span class="img-container @ViewHelpers.CardLetters(card)" style="background-color:@(card.Color) !important;" data-color="@(card.Color)">
                             @if (card.LastSeen == null)
                             {
                                 @:<span class="not-seen">!!</span>
                             }
-                            @if (card.BadgeCount > 0)
+                            @if (card.CardData.ShowBadgeCounts && card.TotalBadgeCount > 0)
                             {
-                                @:<span id="badge-@card.Id" class="badge" data-badge-id="@card.Id" data-counter="@card.BadgeCount">@card.BadgeCountLabel</span>
+                                @:<span id="badge-@card.Id" class="badge" data-badge-id="@card.Id" data-counter="@card.TotalBadgeCount">@card.BadgeCountLabel</span>
                             }
                             <span class="key">@(card.Key)</span>
                         </span>
-                        <span class="info">
-                            <span class="title">@card.Title</span>
-                        </span>
                     </div>
-                @:</a>
-        
-            if (card.CardType != ProjectTemplatePageType.Custom && card.CardType != ProjectTemplatePageType.Marketing)
-            {
-                <div class="card-actions">
-                <div class="show-card-options" title="@GetResource(ResourceKeys.Options)"><img src="@AssetsPath/images/cog.png" /></div>
-
-                    @if (card.Id != Model.CurrentPageCard.Id)
-                    {
-                        <div class="remove-card" card-id="@card.Id" title="@GetResource(ResourceKeys.Delete)">X</div>
-                    }
-                </div>
-            }        
-        
+                @:</a>      
         @:</li>
     }
 </ul>

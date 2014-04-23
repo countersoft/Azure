@@ -36,6 +36,6 @@
         gemini_ajax.postCall("configure/People/ProjectGroups", "Editor", function (response)
         {
             item.parent().html(response.Result.Html);
-        }, null, { project: projectId, group: groupId, mode: "picker" } );
+        }, null, { project: projectId, group: groupId, mode: "picker" }, null, true );
     });
 </script>

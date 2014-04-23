@@ -1,0 +1,50 @@
+﻿@model Countersoft.Gemini.Models.UserProfileModel
+
+<table class="margin-zero-auto">
+    <tr>
+        <td>
+            <input class="fancy" type="checkbox" id="EmailMe" name="EmailMe" @if (Model.User.Entity.EmailMe) { <text> checked="checked" </text>    } />
+            <label class="valign-top margin-right-10" for="EmailMe">@GetResource(ResourceKeys.EmailMe)</label>
+
+            <input class="fancy" type="checkbox" id="EmailMeMyChanges" name="EmailMeMyChanges" @if (Model.User.Entity.EmailMeMyChanges) { <text> checked="checked" </text>    } />
+            <label class="valign-top" for="EmailMeMyChanges">@GetResource(ResourceKeys.EmailMeMyChanges)</label>
+        </td>
+    </tr>
+</table>
+
+@if (Model.Alerts.Count > 0)
+{
+    <h2>@GetResource(ResourceKeys.WorkSpaceAlerts)</h2>
+    
+    <table class="optout-table margin-top-20">
+        <thead>
+            <tr>
+                <th class="center hardBreak" style="min-width:70px;max-width:100px;overflow:hidden;">@GetResource(ResourceKeys.Alerts)</th>
+                <th class="center hardBreak" style="min-width: 70px; max-width: 100px; overflow: hidden;">@GetResource(ResourceKeys.Reports)</th>
+                <th class="align-left" style="width:40px;"></th>
+                <th class="align-left"></th>                
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var alert in Model.Alerts)
+            {
+                <tr>
+                    <td class="center"><input type="checkbox" class="fancy" name="alerts" value="@alert.Card.Id" @if (alert.HasEmailAlert && !alert.OptedOutFromAlerts) { <text> checked="checked" </text>  } @if (!alert.HasEmailAlert) { <text> disabled="disabled" </text> } /></td>
+                    <td class="center"><input type="checkbox" class="fancy" name="reports" value="@alert.Card.Id" @if (alert.HasReportAlert && !alert.OptedOutFromReports) { <text> checked="checked" </text>   } @if (!alert.HasReportAlert)  { <text> disabled="disabled" </text>  } /></td>
+                    <td>
+                        <div class="card">
+                            <span class="img-container @ViewHelpers.CardLetters(alert.Card)" style="background-color:@(alert.Card.Color) !important;" data-color="@(alert.Card.Color)">                               
+                                <span class="key">@(alert.Card.Key)</span>
+                            </span>
+                        </div>
+                    </td>              
+                    <td>
+                        <div class="card-title">@alert.Card.Title</div>
+                        <div class="card-owner"><span class="fonticon-arrow2-left" style="display:inline-block; vertical-align:bottom;"></span>@alert.CardUsername (@if(alert.HasEmailAlert) {<text>Alert</text>}@if(alert.HasEmailAlert && alert.HasReportAlert) {<text>, </text>}@if(alert.HasReportAlert) {<text>Report</text>})</div>
+                    </td>               
+                </tr>
+            }
+        </tbody>    
+    </table>
+}

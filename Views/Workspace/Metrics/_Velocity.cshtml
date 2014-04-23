@@ -1,0 +1,24 @@
+﻿@model RoadmapModel
+<div class="metric-chart">
+    <div class="label">@(GetResource(ResourceKeys.Velocity))</div>
+    <div id='velocityMetric' style="width:250px; height: 150px;display:inline-block;"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var velocityCategory = @Html.Raw(Model.Velocity.Select(b => b.Category).ToJson());
+        var velocityTotalData = @Html.Raw(Model.Velocity.Select(b => b.TotalCount).ToJson());
+        var velocityLine = @Html.Raw(Model.VelocityLine.ToJson()); 
+        
+        var translation = {Items: '@((Model.ItemHours == CountTypes.Issues || Model.ItemHours == CountTypes.Points) ? (Model.ItemHours == CountTypes.Points ? GetResource(ResourceKeys.Points) : GetResource(ResourceKeys.Items)) : GetResource(ResourceKeys.Hours))', Total: '@GetResource(ResourceKeys.Total)', Created: '@GetResource(ResourceKeys.Created)', Open: '@GetResource(ResourceKeys.Open)', Closed: '@GetResource(ResourceKeys.Closed)' };
+    
+        if (velocityCategory.length > 0) { 
+            gemini_progress.velocityChartDashboard(translation, velocityCategory, velocityTotalData, velocityLine); 
+        }
+        else {
+            $('#velocityMetric').hide();
+        }
+
+    });
+</script>

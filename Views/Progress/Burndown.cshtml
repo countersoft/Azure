@@ -6,7 +6,7 @@
 }
 <div id="progress-container">
     <div class="filter-container">
-	    @{Html.RenderPartial("InstantFilter", Model.InstantFilter);}	   
+	    @{Html.RenderPartial("InstantFilter", Model.Filter);}	   
     </div>
     <div class="clearfix"></div>
     <div id="progress">
@@ -16,7 +16,7 @@
 
 @section DocumentReady
 {
-    gemini_filter.init(@((int)ProjectTemplatePageType.Burndown), @Html.Raw(Model.InstantFilter.AvailableFields.ToJson()));
+    gemini_filter.init(@((int)ProjectTemplatePageType.Burndown), @Html.Raw(Model.Filter.AvailableFields.ToJson()));
     gemini_ui.fancyInputs('#burndown-form .fancy');
     gemini_progress.init();
     $.subscribe('items-grid-filter-executed.burndown', function (_, result) {

@@ -107,19 +107,21 @@
 
                 
 
-            }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#TemplateForm").serialize());
+            }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#TemplateForm").serialize(), null, true);
         }
     });
   
-    if ($('#TemplateForm #id').val() == 0)
-    {
-        $('#TemplateForm select:eq(0)').change(function () {              
-            var id = $(this).val();
+    disableEnableProjectsDropDown($('#TemplateForm select:eq(0)').val());
+    $('#TemplateForm select:eq(0)').change(function () {              
+        var id = $(this).val();
+
+        disableEnableProjectsDropDown(id);
+
+        if ($('#TemplateForm #id').val() == 0)
+        {
             gemini_ajax.postCall("configure/System/AlertTemplates", "getemailtemplate",
-            function (response)
-            {
-                if (response.Success)
-                {
+            function (response) {
+                if (response.Success) {
 
                     $('#TemplateForm .wysiwyg-container .CodeMirror').remove();
                     $('#TemplateForm #Content').html(response.Result.Html);
@@ -135,11 +137,25 @@
                     });
                 }
 
-            }, function () { }, { alertType: id });
+            }, function () { }, { alertType: id }, null, true);
+        }
             
-        });
-    }
+    });
 
     $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
 
+    function disableEnableProjectsDropDown(id)
+    {
+        if (id == 2 || id == 4)
+        {
+            $('#Project', '#TemplateForm').val(0);
+            $('#Project', '#TemplateForm').attr('disabled', 'disabled');
+        }
+        else
+        {
+            $('#Project', '#TemplateForm').removeAttr('disabled');
+        }
+
+        gemini_ui.chosenUpdate($('#Project', '#TemplateForm'));
+    }
 </script>

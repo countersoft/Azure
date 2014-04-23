@@ -9,7 +9,7 @@
  */
 
 /**
- * This class used as a factory for manager for tinymce.Editor instaces.
+ * This class used as a factory for manager for tinymce.Editor instances.
  *
  * @example
  * tinymce.EditorManager.init({});
@@ -107,7 +107,11 @@ define("tinymce/EditorManager", [
 				for (var i = 0; i < scripts.length; i++) {
 					var src = scripts[i].src;
 
-					if (/tinymce(\.jquery|)(\.min|\.dev|)\.js/.test(src)) {
+					// Script types supported:
+					// tinymce.js tinymce.min.js tinymce.dev.js
+					// tinymce.jquery.js tinymce.jquery.min.js tinymce.jquery.dev.js
+					// tinymce.full.js tinymce.full.min.js tinymce.full.dev.js
+					if (/tinymce(\.full|\.jquery|)(\.min|\.dev|)\.js/.test(src)) {
 						if (src.indexOf('.min') != -1) {
 							suffix = '.min';
 						}
@@ -206,10 +210,10 @@ define("tinymce/EditorManager", [
 				return c.constructor === RegExp ? c.test(n.className) : DOM.hasClass(n, c);
 			}
 
-			self.settings = settings;
-
-			DOM.bind(window, 'ready', function() {
+			function readyHandler() {
 				var l, co;
+
+				DOM.unbind(window, 'ready', readyHandler);
 
 				execCallback(settings, 'onpageload');
 
@@ -307,7 +311,11 @@ define("tinymce/EditorManager", [
 						}
 					});
 				}
-			});
+			}
+
+			self.settings = settings;
+
+			DOM.bind(window, 'ready', readyHandler);
 		},
 
 		/**
@@ -403,7 +411,7 @@ define("tinymce/EditorManager", [
 		 * @return {tinymce.Editor} The editor that got passed in will be return if it was found otherwise null.
 		 */
 		remove: function(selector) {
-			var self = this, i, editors = self.editors, editor;
+			var self = this, i, editors = self.editors, editor, removedFromList;
 
 			// Remove all editors
 			if (!selector) {
@@ -438,6 +446,7 @@ define("tinymce/EditorManager", [
 			for (i = 0; i < editors.length; i++) {
 				if (editors[i] == editor) {
 					editors.splice(i, 1);
+					removedFromList = true;
 					break;
 				}
 			}
@@ -447,25 +456,21 @@ define("tinymce/EditorManager", [
 				self.activeEditor = editors[0];
 			}
 
-			// Don't remove missing editor or removed instances
-			if (!editor || editor.removed) {
-				return;
-			}
-
-			editor.remove();
-			editor.destroy();
-
 			/**
 			 * Fires when an editor is removed from EditorManager collection.
 			 *
 			 * @event RemoveEditor
 			 * @param {Object} e Event arguments.
 			 */
-			self.fire('RemoveEditor', {editor: editor});
+			if (removedFromList) {
+				self.fire('RemoveEditor', {editor: editor});
+			}
 
 			if (!editors.length) {
 				DOM.unbind(window, 'beforeunload', beforeUnloadDelegate);
 			}
+
+			editor.remove();
 
 			return editor;
 		},

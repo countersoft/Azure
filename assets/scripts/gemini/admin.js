@@ -7,8 +7,10 @@ gemini_admin = {
     tabLeftSelector: "#tabs-left",
     currentXHR: null,
     currentTable: null,
+    rowDragIndex: 0,
 
-    initGlobal: function (templatedId) {
+    initGlobal: function (templatedId)
+    {
         var tabsTop = gemini_admin.tabTopSelector;
         var tabsLeft = gemini_admin.tabLeftSelector;
 
@@ -21,8 +23,8 @@ gemini_admin = {
         // Top tabs
         gemini_sizing.sameWidth(tabsTop);
 
-        $(tabsTop).on("click", function (e) {
-
+        $(tabsTop).on("click", function (e)
+        {
             $(tabsTop).removeClass("selected").addClass("normal");
             $(this).removeClass("normal").addClass("selected");
 
@@ -31,8 +33,8 @@ gemini_admin = {
         });
 
         // Left tabs
-        $(tabsLeft).on("click", "div:not(.help)", function (e) {
-
+        $(tabsLeft).on("click", "div:not(.help)", function (e)
+        {
             $("#tabs-left div:not(.help)").removeClass("selected").addClass("normal");
             $(this).removeClass("normal").addClass("selected");
 
@@ -51,9 +53,42 @@ gemini_admin = {
         }
         
         gemini_admin.getSubTab(gemini_admin.currentSubTab);
+
+        var index = window.location.href.indexOf('message=');
+        var lastIndex = window.location.href.indexOf('&', index);
+        if(index != -1)
+        {
+            var msg ='';
+            if (lastIndex == -1)
+            {
+                msg = decodeURIComponent(window.location.href.substring(index + 8));
+            }
+            else
+            {
+                msg = decodeURIComponent(window.location.href.substring(index + 8, lastIndex));
+            }
+            gemini_popup.toast(msg)
+        }
+
+        index = window.location.href.indexOf('action=');
+        lastIndex = window.location.href.indexOf('&', index);
+        if (index != -1)
+        {
+            var action = '';
+            if (lastIndex == -1)
+            {
+                action = decodeURIComponent(window.location.href.substring(index + 7));
+            }
+            else
+            {
+                action = decodeURIComponent(window.location.href.substring(index + 7, lastIndex));
+            }
+            if (action.length) setTimeout(function () { $('#' + action).click(); }, 1000);
+        }
     },
 
-    checkXHR: function () {
+    checkXHR: function ()
+    {
         if (gemini_admin.currentXHR != null) {
             gemini_admin.currentXHR.abort();
             gemini_admin.currentXHR = null;
@@ -63,45 +98,54 @@ gemini_admin = {
     getSubTab: function (subTab) {
         
         gemini_admin.checkXHR();
+
         if (subTab == null || subTab == undefined)
         {
             gemini_admin.currentSubTab = "";
         }
         
-        gemini_admin.currentXHR = gemini_ajax.jsonCall("configure", "tab/" + gemini_admin.currentTab, gemini_admin.renderSubTabs);
+        gemini_admin.currentXHR = gemini_ajax.jsonCall("configure", "tab/" + gemini_admin.currentTab, gemini_admin.renderSubTabs, null, null, null, true);
     },
 
-    renderSubTabs: function (response) {
+    renderSubTabs: function (response)
+    {
         $("#tabs-left-content").html(response.Result.Menu);
 
-        if (gemini_admin.currentSubTab == "") {
+        if (gemini_admin.currentSubTab == "")
+        {
             gemini_admin.currentSubTab = $("#tabs-left div:first-child").data("tab");
         }
+
         gemini_admin.currentXHR = null;
         gemini_admin.getPage();
     },
 
-    getPage: function () {
+    getPage: function ()
+    {
         gemini_admin.checkXHR();
         gemini_admin.clearPage();
 
         gemini_admin.currentXHR = gemini_ajax.postCall("configure", "tab/" + gemini_admin.currentTab
-            + "/" + gemini_admin.currentSubTab, gemini_admin.renderPage, null, { template: gemini_admin.currentTemplate } );
+            + "/" + gemini_admin.currentSubTab, gemini_admin.renderPage, null, { template: gemini_admin.currentTemplate }, null, true);
     },
 
-    clearPage: function () {
+    clearPage: function ()
+    {
         $("#configure-page-content").empty();
     },
 
-    getTemplateId: function () {
+    getTemplateId: function ()
+    {
         return gemini_admin.currentTemplate;
     },
 
-    getFormTemplateId: function() {
+    getFormTemplateId: function ()
+    {
         return "&template=" + gemini_admin.currentTemplate;
     },
 
-    renderPage: function (response) {
+    renderPage: function (response)
+    {
         $("#configure-page-content").html(response.Result.Page);
         gemini_admin.currentXHR = null;
 
@@ -146,7 +190,7 @@ gemini_admin = {
                             });
                             gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                             gemini_admin.getPage();
-                        }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); });
+                        }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, null, null, true);
                 }, null);
             });
 
@@ -154,43 +198,44 @@ gemini_admin = {
             $("#load-templates").unbind('click').click(function (e)
             {
                 gemini_commons.stopClick(e);
-                gemini_ajax.postCall("configure", "template/load/", gemini_admin.getPage);
+                gemini_ajax.postCall("configure", "template/load/", gemini_admin.getPage, null, null, null, true);
             });
 
             // Duplicate
             $("#duplicate-template").unbind('click').click(function (e)
             {
                 gemini_commons.stopClick(e);
-                gemini_popup.centerPopup("configure/template/duplicate", "popup", null);
+                gemini_popup.centerPopup("configure/template/duplicate", "popup", null, null, null, null, null, null, null, true);
             });
         }
     },
 
-    initDatatables: function (selector, options) {
+    initDatatables: function (selector, options)
+    {
         var optionsString = {};
 
         if (options != null) optionsString = options;
 
         var params = $.extend({},
-            {
-                bFilter: true,
-                bInfo: true,
-                bSort: true,
-                bPaginate: true,
-                bLengthChange: false,
-                iDisplayLength: 20,
-                sPaginationType: "full_numbers",
-                "oLanguage": {
-                    "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "sInfoEmpty": ""
-                }
-            }, optionsString);
-
+        {
+            bFilter: true,
+            bInfo: true,
+            bSort: true,
+            bPaginate: true,
+            bLengthChange: false,
+            iDisplayLength: 20,
+            sPaginationType: "full_numbers",
+            "oLanguage": {
+                "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "sInfoEmpty": ""
+            }
+        }, optionsString);
 
         gemini_admin.currentTable = $(selector).dataTable(params);
     },
-    rowDragIndex: 0,
-    initTableDnD: function (selector) {
+
+    initTableDnD: function (selector)
+    {
         $(selector).tableDnD({
             dragHandle: ".dragHandle",
             onDrop: function (table, row) {
@@ -200,7 +245,7 @@ gemini_admin = {
                     afterid: row.rowIndex == 1 ? 0 : $(table.rows[row.rowIndex - 1]).data('id'),
                     newIndex: row.rowIndex - 1,
                     oldIndex: gemini_admin.rowDragIndex - 1
-                });
+                }, null, true);
             },
             onDragStart: function (table, row) {
                 gemini_admin.rowDragIndex = row.parentNode.parentNode.rowIndex;
@@ -211,7 +256,9 @@ gemini_admin = {
             }
         });
     },
-    initDatatablesWithEdit: function (selector, dndEnabled, editSelector, options) {
+
+    initDatatablesWithEdit: function (selector, dndEnabled, editSelector, options)
+    {
         var optionsString = {};
 
         if (editSelector == null || editSelector == undefined) editSelector = "tbody td:not([data-edit='false'])";
@@ -320,7 +367,7 @@ gemini_admin = {
         gemini_ajax.call(controller, method, function (response) {
             $("#cs-popup-center-content").html(response.result.data.html);
             $("#cs-popup-center").show();
-        }, null, { id: id }, null);
+        }, null, { id: id }, null, true);
     },
     
     saveStarted: function(button) {
@@ -417,14 +464,14 @@ gemini_admin = {
                 }
             }
             
-            $('option', '#attribute-options-ProjectGroup').attr('selected', false);
+            $('option', '#attribute-options-ProjectGroup').prop('selected', false);
 
             var groups = field.attr('data-project-groups').split("|");
             $(groups).each(function (e) {
-                if (this != '') $('option[value="' + this + '"]', '#attribute-options-ProjectGroup').attr('selected', true);
+                if (this != '') $('option[value="' + this + '"]', '#attribute-options-ProjectGroup').prop('selected', true);
             });
 
-            $("#attribute-options-ProjectGroup").trigger("liszt:updated");    // Chosen needs updating too !!!
+            gemini_ui.chosenUpdate($("#attribute-options-ProjectGroup")); // Chosen needs updating too !!!
 
             $('#attribute-options-picker').attr('data-field', field.attr("id"));
             $('#attribute-options-picker').addClass(field.attr("id"));

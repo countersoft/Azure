@@ -2,8 +2,8 @@
 
         <div id='additional-section' data-contentid="additional-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.AdditionalInformation)</h3></div>
     
-    <div id="additional-content" class="content hide additional">
-        <table class="cs-properties cursor-pointer">
+    <div id="additional-content" class="tab-content hide additional">
+    	<table class="cs-properties cursor-pointer">
         @foreach (var customField in Model.ContentCustomFields)
         {
             <tr class="attribute-header attribute" data-attribute-id='cf_@customField.Entity.CustomFieldId'>

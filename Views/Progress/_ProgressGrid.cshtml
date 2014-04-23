@@ -20,10 +20,13 @@
     @Html.DisplayFor(m => m, "IssueDto")
     </div>
 </div>
+@{
+    var card = (GeminiContext.Card.Id > 0) ? string.Format("?card={0}",GeminiContext.Card.Id) : "";
+}
 <div class="export-to-container">
     <ul>
-        <li><a target="_blank" href="@string.Format("prepareexport/{0}/xlsx",@Model.VersionId)">Excel</a>&nbsp;<a target="_blank" href="@string.Format("prepareexport/{0}/xls",@Model.VersionId)">(XLS)</a></li>
-        <li><a target="_blank" href="@string.Format("prepareexport/{0}/csv",@Model.VersionId)">CSV</a></li>
-        <li><a target="_blank" href="@string.Format("prepareexport/{0}/html",@Model.VersionId)">Html</a></li>                 
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/xlsx{1}",@Model.VersionId,@card)">Excel</a>&nbsp;<a target="_blank" href="@string.Format("prepareexport/{0}/xls{1}",@Model.VersionId,@card)">(XLS)</a></li>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/csv{1}",@Model.VersionId,@card)">CSV</a></li>
+        <li><a target="_blank" href="@string.Format("prepareexport/{0}/html{1}",@Model.VersionId,@card)">Html</a></li>                 
     </ul>
 </div>

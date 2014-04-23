@@ -1,54 +1,55 @@
 gemini_popup = {
 
     buttonModalResized: false,
+
     init: function () {
-        $(document).bind('cbox_complete', function () {
-            
-            //if (!gemini_popup.buttonModalResized) {
-            if(!$('#cboxLoadedContent .button-modal').hasClass('button-resized')) {
+        $(document).bind('cbox_complete', function ()
+        {                
+            $("#cboxLoadedContent .button-modal").each(function () {
+                $(this).css('width', '');
+            });
 
-                gemini_sizing.sameWidth("#cboxLoadedContent .button-modal", 3 + 30);
+            gemini_sizing.sameWidth("#cboxLoadedContent .button-modal", 3 + 30);
                 // ...3 for border width, 30 for extra padding
+        });
 
-                //gemini_popup.buttonModalResized = true;
-                $('#cboxLoadedContent .button-modal').addClass('button-resized')
-            }
+        $(document).bind('cbox2_complete', function ()
+        {
+            $("#cbox2LoadedContent .button-modal").each(function ()
+            {
+                $(this).css('width', '');
+            });
+            gemini_sizing.sameWidth("#cbox2LoadedContent .button-modal", 3 + 30);
+                // ...3 for border width, 30 for extra padding
         });
 
     },
-    sameConfirmWidth: function () {
-        if (!gemini_popup.buttonModalResized2) {
 
-            gemini_sizing.sameWidth(".button-modal", 3 + 30);
-            // ...3 for border width, 30 for extra padding
-
-            gemini_popup.buttonModalResized2 = true;
-        }
-    },
     close: function (e) {
         gemini_commons.stopClick(e);
-        $.colorbox.close();
+        $.colorbox2.close();
 
         $("#modal-button-yes", "#modal-confirm").unbind('click');
         $("#modal-button-no", "#modal-confirm").unbind('click');
-        gemini_keyboard.unbindEscape("#colorbox #modal-button-no");
-        gemini_keyboard.unbindNo("#colorbox #modal-button-no");
-        gemini_keyboard.unbindYes("#colorbox #modal-button-yes");
+        gemini_keyboard.unbindEscape("#colorbox2 #modal-button-no");
+        gemini_keyboard.unbindNo("#colorbox2 #modal-button-no");
+        gemini_keyboard.unbindYes("#colorbox2 #modal-button-yes");
     },
+
     modalTranslatedConfirm: function (message, options, yesCallback, noCallback, keys) {
-        $.ajax({
-            type: "POST",
-            url: csVars.Url + 'resources/get',
-            data: {keys : JSON.stringify(keys)},
-            success: function (response) {
-                $(response.Result.Data).each(function (i, e) {
+        gemini_ajax.postCall("resources", "get",
+            function (response)
+            {
+                $(response.Result.Data).each(function (i, e)
+                {
                     message = message.replace("[[" + e.Key + "]]", e.Value);
                 });
                 gemini_popup.modalConfirm(message, options, yesCallback, noCallback);
-            }
-        });
+            }, null, { keys: JSON.stringify(keys) }, null, true);
     },
-    modalConfirm: function (message, options, yesCallback, noCallback) {
+
+    modalConfirm: function (message, options, yesCallback, noCallback)
+    {
         var optionsString = "{}";
 
         if (options != null) optionsString = options;
@@ -79,20 +80,36 @@ gemini_popup = {
             },
             optionsString);
 
-        $.colorbox(params);
+        $.colorbox2(params);
 
-        gemini_keyboard.bindEscape("#colorbox #modal-button-no");
-        gemini_keyboard.bindNo("#colorbox #modal-button-no");
-        gemini_keyboard.bindYes("#colorbox #modal-button-yes");
+        gemini_keyboard.bindEscape("#colorbox2 #modal-button-no");
+        gemini_keyboard.bindNo("#colorbox2 #modal-button-no");
+        gemini_keyboard.bindYes("#colorbox2 #modal-button-yes");
+        $('#colorbox2 #modal-button-yes').focus(); 
     },
 
-
     centerPendingChanges: false,
+    origActionText: null,
+    origCancelText: null,
 
-    centerPopup: function (controller, method, params, extra, actionButtonText, cancelButtonText, hideActionButton, hideCancelButton, successCallback) {
+    centerPopup: function (controller, method, params, extra, actionButtonText, cancelButtonText, hideActionButton, hideCancelButton, successCallback, ignoreContainer) {
+        if (!actionButtonText)
+        {
+            actionButtonText = "Save";
+        }
+        else
+        {
+            gemini_popup.origActionText = $("#popup-button-yes", "#cs-popup-center").attr("value");
+        }
+        if (!cancelButtonText)
+        {
+            cancelButtonText = "Cancel";
+        }
+        else
+        {
+            gemini_popup.origCancelText = $("#popup-button-no", "#cs-popup-center").attr("value");
+        }
 
-        if (!actionButtonText) actionButtonText = "Save";
-        if (!cancelButtonText) cancelButtonText = "Cancel";
         $("#popup-button-yes", "#cs-popup-center").show();
         $("#popup-button-no", "#cs-popup-center").show();
 
@@ -112,10 +129,11 @@ gemini_popup = {
                 
                 if (successCallback != null && successCallback != undefined) successCallback(response);
             }
-        }, null, params, extra);
+        }, null, params, extra, ignoreContainer);
         
         
     },
+
     showCenterPopup: function (response)
     {
         if (response.success) {
@@ -127,8 +145,7 @@ gemini_popup = {
             else
                 div.html(response.Result.Html);
             $("#cs-popup-center-buttons").css("top", "auto");
-
-
+                        
             var height = $("#cs-popup-center-content").height() + $("#cs-popup-center-buttons").height() + 50;
             var width = $("#cs-popup-center-content").width() + 20;
             $("#cs-popup-center-buttons").css("top", $("#cs-popup-center-buttons").position().top + "px");
@@ -151,7 +168,9 @@ gemini_popup = {
             gemini_keyboard.bindEscape("#colorbox #popup-button-no");
         }
     },
-    popupCallback: function (response, extra) {
+
+    popupCallback: function (response, extra)
+    {
         $("#popup-button-yes", "#cs-popup-center").click(function (e) {
             gemini_popup.centerSave(e, extra);
         });
@@ -201,31 +220,41 @@ gemini_popup = {
         $("#popup-button-yes", "#cs-popup-center").unbind();
         $("#popup-button-no", "#cs-popup-center").unbind();
         $("#cs-popup-center").css("display", "none");
-    },
-    toast: function(text, error)
-    {
-        if ($(".toast").is(":visible")) return;
-        
-        $(".toast").css({ top: $(window).scrollTop() + 50, 'z-index': 10000 });
 
-        if (error != null && error != undefined && error == true) {
-            $('.toast').addClass('error');
-            $('.fonticon-tick', '.toast').addClass('fonticon-cross').removeClass('fonticon-tick');
+        if (gemini_popup.origActionText != null) {
+            $("#popup-button-yes", "#cs-popup-center").attr("value", gemini_popup.origActionText);
+            gemini_popup.origActionText = null;
+        }
+        if (gemini_popup.origCancelText != null) {
+            $("#popup-button-no", "#cs-popup-center").attr("value", gemini_popup.origCancelText);
+            gemini_popup.origCancelText = null;
+        }
+    },
+
+    toast: function (text, error)
+    {
+        if ($("#toast-popup").is(":visible")) return;
+        
+        if (error != null && error != undefined && error == true)
+        {
+            $('#toast-popup').addClass("toast-bad").removeClass("toast-good");
+        }
+        else
+        {
+            $('#toast-popup').addClass("toast-good").removeClass("toast-bad");
         }
 
-        $(".toast-message").html(text);
-        $(".toast").fadeIn("fast");
+        $("#toast-popup .toast-message").html(text);
 
-        $("body").off("click", ".toast");
-        $("body").on("click", ".toast", function (e) {$(this).hide();});
+        $('#toast-popup').show('slide', { direction: 'right' }, 700, function ()
+        {
+            $("body").off("click", "#toast-popup");
+            $("body").on("click", "#toast-popup", function (e) { $(this).fadeOut('fast'); });
 
-        setTimeout(function () {
-            $(".toast").fadeOut("slow", function () {
-                if (error != null && error != undefined && error == true) {
-                    $('.toast').removeClass('error');
-                    $('.fonticon-cross', '.toast').addClass('fonticon-tick').removeClass('fonticon-cross');
-                }
-            });
-        }, 2500);
+            setTimeout(function ()
+            {
+                $('#toast-popup').hide('slide', { direction: 'right' }, 700);
+            }, 3000);
+        });
     }
 };

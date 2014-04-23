@@ -1,33 +1,28 @@
 gemini_activity = {
     callback: [],
-
-    initTimeline: function () {
-        $('#timeline-datepicker').DatePicker({
-            flat: false,
-            calendars: 2,
-            starts: 1,
-            mode: 'range',
-            format: 'd B',
-            date: [new Date($('#timeline-from-date').val()), new Date($('#timeline-to-date').val())],
-            //date: [new Date(fromDate), new Date(toDate)],
-            onBeforeShow: function () {
-                //$('#timeline-datepicker').DatePickerSetDate($('#timeline-datepicker').data(""), true);
-            },
-            onChange: function (formated, dates) {
-                $('#timeline-datepicker').text(formated.join(' - '));
-                $('#timeline-from-date').val(moment(dates[0]).format("DD MMM YYYY"));
-                $('#timeline-to-date').val(moment(dates[1]).format("DD MMM YYYY"));
-            },
-            onHide: function () {
-                $('#timeline-options').submit();
-            }
-        });
-
+    currentCalendarChecked: false,
+    currentCalendarIndex: 0,
+    initTimeline: function ()
+    {
+        gemini_master.currentRefreshFunction = gemini_activity.executeTimeline;
         gemini_activity.sizeTimelanes();
 
         $(window).resize(function () {
             waitForFinalEvent(function () { gemini_activity.sizeTimelanes(); }, 500, "timelane-resize");
         });
+
+        $.subscribe('items-grid-filter-executed.timeline', function (_, result) {
+            gemini_activity.executeTimeline();
+        });
+    },
+
+    executeTimeline: function()
+    {
+        gemini_ajax.postCall('timeline', 'fetch', function (response)
+        {
+            $('#activity-timeline-data', '#activity-timeline').html(response.Result.Data.Html);
+            gemini_activity.sizeTimelanes();
+        }, null, { filter: $('#filter-form').serialize() });
     },
 
     sizeTimelanes: function () {
@@ -39,7 +34,7 @@ gemini_activity = {
         var events = [];
 
         if (response.Result.SavedCard != null) {
-            gemini_appnav.pageCard.Options = response.Result.SavedCard.Options;
+            gemini_appnav.pageCard.Options['Calendar'] = response.Result.SavedCard.Options['Calendar'];
         }
 
         $(response.Result.Events).each(function () {
@@ -70,11 +65,8 @@ gemini_activity = {
 
     initCalendar: function ()
     {
-        if (gemini_appnav.pageCard != null && gemini_appnav.pageCard.Id != 0)
-        {
-        }
-
-        var options = jQuery.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options));
+        gemini_master.currentRefreshFunction = gemini_activity.refreshView;
+        var options = jQuery.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Calendar']));
         gemini_ui.fancyInputs('#calendar-control-box .fancy', 'background-color-white');
         $("#widget-calendar").fullCalendar({
             editable: true,
@@ -98,11 +90,11 @@ gemini_activity = {
                 else {
                     var data =
                         {
-                            id: event.id,
+                            issueid: event.id,
                             daysOffset: dayDelta,
                             minutesOffset: minuteDelta
                         };
-                    gemini_ajax.call(csVars.ProjectUrl + "calendar", "dropSave", function (result) { if (!result.Success) { revertFunc(); } }, revertFunc, data);
+                    gemini_ajax.call("calendar", "dropSave", function (result) { if (!result.Success) { revertFunc(); } }, revertFunc, data);
 
                 }
             },
@@ -114,11 +106,11 @@ gemini_activity = {
                 else {
                     var data =
                         {
-                            id: event.id,
+                            issueid: event.id,
                             daysOffset: dayDelta,
                             minutesOffset: minuteDelta
                         };
-                    gemini_ajax.call(csVars.ProjectUrl + "calendar", "resizeSave", function (result) { if (!result.Success) { revertFunc(); } }, revertFunc, data);
+                    gemini_ajax.call("calendar", "resizeSave", function (result) { if (!result.Success) { revertFunc(); } }, revertFunc, data);
                 }
             },
             
@@ -208,6 +200,16 @@ gemini_activity = {
                 "collision": "none"
             });
         });
+
+        $.subscribe('items-grid-filter-executed.calendar', function (_, result) {
+            gemini_activity.executeCalendarFilter();
+
+        });
+    },
+
+    refreshView: function()
+    {
+        gemini_activity.changeView($("#widget-calendar").fullCalendar("getView").name);
     },
 
     changeView: function (viewname) {
@@ -226,6 +228,8 @@ gemini_activity = {
     },
 
     amendSource: function (checked, index) {
+        gemini_activity.currentCalendarChecked = checked;
+        gemini_activity.currentCalendarIndex = index;
         switch (index) {
             case 0:
                 //$("#IncGantt").prop("checked", false);
@@ -261,24 +265,27 @@ gemini_activity = {
 
     calendarSources: [
         function (start, end, callback) {
-            gemini_ajax.postCall(csVars.ProjectUrl + "calendar", "StartDate", gemini_activity.loadCalendarItems, null, {
+            gemini_ajax.postCall("calendar", "StartDate", gemini_activity.loadCalendarItems, null, {
                 start: Math.round(start.getTime() / 1000),
                 end: Math.round(end.getTime() / 1000),
-                options: gemini_activity.getOptions()
+                options: gemini_activity.getOptions(),
+                filterForm: $('#filter-form').serialize()
             }, callback);
         },
         function (start, end, callback) {
-            gemini_ajax.postCall(csVars.ProjectUrl + "calendar", "DueDate", gemini_activity.loadCalendarItems, null, {
+            gemini_ajax.postCall("calendar", "DueDate", gemini_activity.loadCalendarItems, null, {
                 start: Math.round(start.getTime() / 1000),
                 end: Math.round(end.getTime() / 1000),
-                options: gemini_activity.getOptions()
+                options: gemini_activity.getOptions(),
+                filterForm: $('#filter-form').serialize()
             }, callback);
         },
         function (start, end, callback) {
-            gemini_ajax.postCall(csVars.ProjectUrl + "calendar", "Gantt", gemini_activity.loadCalendarItems, null, {
+            gemini_ajax.postCall("calendar", "Gantt", gemini_activity.loadCalendarItems, null, {
                 start: Math.round(start.getTime() / 1000),
                 end: Math.round(end.getTime() / 1000),
-                options: gemini_activity.getOptions()
+                options: gemini_activity.getOptions(),
+                filterForm: $('#filter-form').serialize()
             }, callback);
         }
     ],
@@ -299,5 +306,12 @@ gemini_activity = {
         };
         
         return JSON.stringify(opts);
+    },
+    executeCalendarFilter: function () {
+        $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[0]);
+        $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[1]);
+        $("#widget-calendar").fullCalendar('removeEventSource', gemini_activity.calendarSources[2]);
+        $("#widget-calendar").fullCalendar('addEventSource', gemini_activity.calendarSources[gemini_activity.currentCalendarIndex]);
+  //      gemini_activity.amendSource(gemini_activity.currentCalendarChecked, gemini_activity.currentCalendarIndex);
     }
 };

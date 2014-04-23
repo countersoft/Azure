@@ -70,38 +70,57 @@
             }
         });
         
-        //gemini_projects.settingsComponents(projectId);
+        gemini_ui.chosen('#project-administration #ProjectId');
+        $('#project-administration #ProjectId').change(function ()
+        {
+            gemini_popup.centerPopup("project", "settings", { projectId: $(this).val() }, null, null, 'Close', true);
+        });
+
         $(".tab", "#project-administration").first().click();
+
+        $("#popup-button-no").click(function (e)
+        {
+            gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
+            $('#cs-popup-center-content').empty();
+            gemini_popup.popupClose(e);
+        });
     },
     
     settingsComponents: function (projectId)
     {
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "components", function (response)
         {
+            gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
             $("#setting-zone", "#project-administration").html(response.Result.Html);
             gemini_sizing.stretchWindow();
-        });
+        }, null, null, null, true);
     },
 
     settingsVersions: function (projectId)
     {
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "versions", function (response)
         {
+            gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
             $("#setting-zone", "#project-administration").html(response.Result.Html);
             gemini_sizing.stretchWindow();
-        });
+        }, null, null, null, true);
     },
 
     settingsDefaults: function (projectId, typeId) {
-        gemini_ajax.jsonCall("project/" + projectId + "/settings", "defaults", function (response) {
+        gemini_ajax.jsonCall("project/" + projectId + "/settings", "defaults", function (response)
+        {
+            gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
+            $("#setting-zone", "#project-administration").empty();
             $("#setting-zone", "#project-administration").html(response.Result.Html);
             gemini_ui.fancyInputs('#defaults-form .fancy');
             gemini_sizing.stretchWindow();
-        }, null, { typeId: typeId });
+        }, null, { typeId: typeId }, null, true);
     },
-    settingsCFLookup: function (projectId, fieldId) {
+    settingsCFLookup: function (projectId, fieldId)
+    {
+        gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "cflookup", function (response) {
             $("#setting-zone", "#project-administration").html(response.Result.Html);
-        }, null, { id: fieldId, projectId : projectId });
+        }, null, { id: fieldId, projectId: projectId }, null, true);
     }
 };

@@ -15,7 +15,7 @@ define("tinymce/EnterKey", [
 	"tinymce/dom/TreeWalker",
 	"tinymce/Env"
 ], function(TreeWalker, Env) {
-	var isIE = Env.ie;
+	var isIE = Env.ie && Env.ie < 11;
 
 	return function(editor) {
 		var dom = editor.dom, selection = editor.selection, settings = editor.settings;
@@ -81,6 +81,33 @@ define("tinymce/EnterKey", [
 			function moveToCaretPosition(root) {
 				var walker, node, rng, lastNode = root, tempElm;
 
+				function firstNonWhiteSpaceNodeSibling(node) {
+					while (node) {
+						if (node.nodeType == 1 || (node.nodeType == 3 && node.data && /[\r\n\s]/.test(node.data))) {
+							return node;
+						}
+
+						node = node.nextSibling;
+					}
+				}
+
+				// Old IE versions doesn't properly render blocks with br elements in them
+				// For example <p><br></p> wont be rendered correctly in a contentEditable area
+				// until you remove the br producing <p></p>
+				if (Env.ie && Env.ie < 9 && parentBlock && parentBlock.firstChild) {
+					if (parentBlock.firstChild == parentBlock.lastChild && parentBlock.firstChild.tagName == 'BR') {
+						dom.remove(parentBlock.firstChild);
+					}
+				}
+
+				if (root.nodeName == 'LI') {
+					var firstChild = firstNonWhiteSpaceNodeSibling(root.firstChild);
+
+					if (firstChild && /^(UL|OL)$/.test(firstChild.nodeName)) {
+						root.insertBefore(dom.doc.createTextNode('\u00a0'), root.firstChild);
+					}
+				}
+
 				rng = dom.createRng();
 
 				if (root.hasChildNodes()) {
@@ -135,12 +162,26 @@ define("tinymce/EnterKey", [
 				selection.scrollIntoView(root);
 			}
 
+			function setForcedBlockAttrs(node) {
+				var forcedRootBlockName = settings.forced_root_block;
+
+				if (forcedRootBlockName && forcedRootBlockName.toLowerCase() === node.tagName.toLowerCase()) {
+					dom.setAttribs(node, settings.forced_root_block_attrs);
+				}
+			}
+
 			// Creates a new block element by cloning the current one or creating a new one if the name is specified
 			// This function will also copy any text formatting from the parent block and add it to the new one
 			function createNewBlock(name) {
 				var node = container, block, clonedNode, caretNode;
 
-				block = name || parentBlockName == "TABLE" ? dom.create(name || newBlockName) : parentBlock.cloneNode(false);
+				if (name || parentBlockName == "TABLE") {
+					block = dom.create(name || newBlockName);
+					setForcedBlockAttrs(block);
+				} else {
+					block = parentBlock.cloneNode(false);
+				}
+
 				caretNode = block;
 
 				// Clone any parent styles
@@ -246,6 +287,7 @@ define("tinymce/EnterKey", [
 
 					if (!parentBlock.hasChildNodes()) {
 						newBlock = dom.create(blockName);
+						setForcedBlockAttrs(newBlock);
 						parentBlock.appendChild(newBlock);
 						rng.setStart(newBlock, 0);
 						rng.setEnd(newBlock, 0);
@@ -266,6 +308,7 @@ define("tinymce/EnterKey", [
 
 					if (startNode && schema.isValidChild(rootBlockName, blockName.toLowerCase())) {
 						newBlock = dom.create(blockName);
+						setForcedBlockAttrs(newBlock);
 						startNode.parentNode.insertBefore(newBlock, startNode);
 
 						// Start wrapping until we hit a block
@@ -350,8 +393,14 @@ define("tinymce/EnterKey", [
 					tmpRng.setStartAfter(parentBlock);
 					tmpRng.setEndAfter(containerBlock);
 					fragment = tmpRng.extractContents();
-					dom.insertAfter(fragment, containerBlock);
-					dom.insertAfter(newBlock, containerBlock);
+
+					if (newBlockName == 'LI' && fragment.firstChild.nodeName == 'LI') {
+						newBlock = fragment.firstChild;
+						dom.insertAfter(fragment, containerBlock);
+					} else {
+						dom.insertAfter(fragment, containerBlock);
+						dom.insertAfter(newBlock, containerBlock);
+					}
 				}
 
 				dom.remove(parentBlock);
@@ -583,6 +632,7 @@ define("tinymce/EnterKey", [
 				// Insert new block before
 				newBlock = parentBlock.parentNode.insertBefore(createNewBlock(), parentBlock);
 				renderBlockOnIE(newBlock);
+				moveToCaretPosition(parentBlock);
 			} else {
 				// Extract after fragment and insert it after the current block
 				tmpRng = rng.cloneRange();
@@ -597,6 +647,10 @@ define("tinymce/EnterKey", [
 			}
 
 			dom.setAttrib(newBlock, 'id', ''); // Remove ID since it needs to be document unique
+
+			// Allow custom handling of new blocks
+			editor.fire('NewBlock', { newBlock: newBlock });
+
 			undoManager.add();
 		}
 

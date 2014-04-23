@@ -114,7 +114,7 @@
   	border-bottom: 2px solid $color-grayscale3;
 }
 
-@mixin cs-menu($color: $theme-color, $radius: 0px, $font: 11px, $width: 120px)
+@mixin cs-menu($font: 12px, $width: 120px)
 {
 	position: absolute;
 	min-width: $width;
@@ -125,15 +125,42 @@
 	font-family: $font-body;
 	font-size: $font;
 
-	background-color: $color-grayscale3;
-
+	li.arrow
+	{
+		height: 10px;
+		background-color: transparent;
+		border-bottom: none !important;
+		div
+		{
+			width: 0px;
+			height: 0px;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+			border-bottom: 9px solid $color-black;
+			position: absolute;
+			right: 13px;
+			top: 1px;
+		}
+		&:hover
+		{
+			background-color: transparent;
+		}
+	}
 	li
 	{
 		list-style: none;
 		padding: 0px;
 		margin: 0px;
-		white-space:nowrap;
+		white-space: nowrap;
+		border-bottom: 1px solid darken($color-black, 4%) !important;
+		background-color: $color-black;
+
+		&:hover
+		{
+			background-color: darken($color-black, 4%);
+		}
 	}
+
 	a
 	{
 		text-decoration: none;
@@ -143,20 +170,17 @@
 		background-position: 6px center;
 		background-repeat: no-repeat;
 		outline: none;
-		padding: 3px 10px 3px 10px;
-		color: $color-black;
+		padding: 5px 10px 5px 10px;
+		color: $color-white;
+		font-size: $font;
 
 		&:hover
 		{
-			color: $color-white;
-			background-color: $primary-color;
+			color: $color-grayscale4;
+			background-color: darken($color-black, 4%);
 		}
 	}
-	li.hover a
-	{
-		color: $color-white;
-		background-color: $primary-color;
-	}
+
 	li.disabled a
 	{
 		color: $color-grayscale2;                          
@@ -166,25 +190,10 @@
 	{
 		background-color: transparent;
 	}
-	li.separator 
-	{
-		border-top: 1px solid $color-grayscale1 !important;
-		border-bottom: none !important;
-		margin: 0 1px 0 1px;
-	}
 	li.highlight 
 	{
-		font-weight: bold;
-		background-color: $color-grayscale2 !important;
+		background-color: darken($color-black, 4%) !important;
 	}
-	li:first-child
-	{
-		padding-top: 3px;
-	}
-	li:last-child
-	{
-		padding-bottom: 3px;
-	}	
 }
 
 @mixin theme-banner($border: 1px)

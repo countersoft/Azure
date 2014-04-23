@@ -27,7 +27,7 @@
                 gemini_popup.popupClose(e);
                 gemini_admin.getPage();
                 gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
 
         }
         else {

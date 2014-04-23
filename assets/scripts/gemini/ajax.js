@@ -1,22 +1,44 @@
-gemini_ajax = {
+gemini_ajax =
+{
+    getUrl: function (controller, method, ignoreContainer) {
+        var url = '';
+        var slash = '/';
+        if (ignoreContainer) {
+            url = csVars.Url;
+            slash = '';
+        }
+        else //if (gemini_appnav.pageCard.Id != 0) 
+        {
+            url = csVars.Url + 'workspace/' + gemini_appnav.pageCard.Id 
+        }
+        /*else {
+            url = csVars.Url + 'project/' + csVars.ProjectId 
+        }*/
 
-    // make calls to a MVC Application via AJAX/JSON        - add parameter for dataType ????
-    getUrl: function (controller, method) {
-        var url = csVars.Url + controller + "/" + method;
-        if (url.indexOf('?') == -1) {
-            url += '?card=' + gemini_appnav.pageCard.Id;
+        if (controller != null && controller.length) {
+            url = url + slash + controller
+            if (!gemini_commons.endsWith(url, '/'))
+            {
+                slash = '/';
+            }
+            else
+            {
+                slash = '';
+            }
         }
-        else {
-            url += '&card=' + gemini_appnav.pageCard.Id;
-        }
+        if (method != null && method.length) url = url + slash + method;
+        
         return url;
     },
-    call: function (controller, method, callback, badCall, params, extra) {
+
+    call: function (controller, method, callback, badCall, params, extra, ignoreContainer) {
         /*if (gemini_ajaxXHR != undefined && gemini_ajaxXHR != null) {
             ajaxXHR.abort();
         }*/
 
-        var url = gemini_ajax.getUrl(controller, method);
+
+        var url = gemini_ajax.getUrl(controller, method, ignoreContainer);
+        gemini_session.isResetSession(controller, method);
 
         return $.ajax({
                 type: "GET",
@@ -43,18 +65,14 @@ gemini_ajax = {
                 }
             });
     },
-    jsonCall: function (controller, method, callback, badCall, params, extra) {
+
+    jsonCall: function (controller, method, callback, badCall, params, extra, ignoreContainer) {
         /*if (gemini_ajaxXHR != undefined && gemini_ajaxXHR != null) {
             ajaxXHR.abort();
         }*/
 
-        var url = csVars.Url + controller + "/" + method;
-        if (url.indexOf('?') == -1) {
-            url += '?card=' + gemini_appnav.pageCard.Id;
-        }
-        else {
-            url += '&card=' + gemini_appnav.pageCard.Id;
-        }
+        var url = gemini_ajax.getUrl(controller, method, ignoreContainer);
+        gemini_session.isResetSession(controller, method);
 
         gemini_ui.cursorWait();
 
@@ -87,18 +105,14 @@ gemini_ajax = {
             });
     },
 
-    postCall: function (controller, method, callback, badCall, params, extra) {
+    postCall: function (controller, method, callback, badCall, params, extra, ignoreContainer) {
         /*if (gemini_ajaxXHR != undefined && gemini_ajaxXHR != null) {
             ajaxXHR.abort();
         }*/
+        
+        gemini_session.isResetSession(controller, method);
 
-        var url = csVars.Url + controller + "/" + method;
-        if (url.indexOf('?') == -1) {
-            url += '?card=' + gemini_appnav.pageCard.Id;
-        }
-        else {
-            url += '&card=' + gemini_appnav.pageCard.Id;
-        }
+        var url = gemini_ajax.getUrl(controller, method, ignoreContainer);
 
         return $.ajax({
                 type: "POST",
@@ -126,5 +140,3 @@ gemini_ajax = {
             });
     }
 };
-
-

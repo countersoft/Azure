@@ -139,31 +139,29 @@ gemini_commons = {
         window.open(csVars.Url + csVars.ProjectUrl + "item/" + issueId, '_blank');
     },
     openIssueUrlInTabProj: function (issueId, projectid) {
-        window.open(csVars.Url + "project/All/"+ projectid +"/item/" + issueId, '_blank');
+        window.open(csVars.Url + "workspace/" + gemini_appnav.pageCard.Id + "/item/" + issueId, '_blank');
     },
     openIssueUrl: function (issueId) {
-        window.open(csVars.Url + csVars.ProjectUrl + "item/" + issueId, '_self');
+        window.open(+ "workspace/" + gemini_appnav.pageCard.Id + "/item/" + issueId, '_self');
     },
 
     showAddItem: function () {
-        $("#plus-header").click();
+        $("#add-item").click();
     },
+
     refreshPage: function() {
         window.location.reload();
     },
     translateMessage: function (message, keys, callback, callbackData) {
-
-        $.ajax({
-            type: "POST",
-            url: csVars.Url + 'resources/get',
-            data: { keys: JSON.stringify(keys) },
-            success: function(response) {
-                $(response.Result.Data).each(function(i, e) {
+        gemini_ajax.postCall("resources", "get",
+            function (response)
+            {
+                $(response.Result.Data).each(function (i, e)
+                {
                     message = message.replace("[[" + e.Key + "]]", e.Value);
                 });
                 callback(message, callbackData);
-            }
-        });
+            }, null, { keys: JSON.stringify(keys) }, null, true);
     },
     htmlEncode: function (value) {
         return $('<div/>').text(value).html();
@@ -192,7 +190,8 @@ gemini_commons = {
         MyWork: 17,
         MyWatched: 18,
         Timeline: 19,
-        Calendar: 20
+        Calendar: 20,
+        Marketing: 99
     },
     isMobile: function () {
         if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {

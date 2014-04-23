@@ -1,0 +1,25 @@
+﻿@model LogoModel
+
+<div id="edit-logo">
+    <div class="popup-header">
+        <form id="regular-form" action="#" method="post" enctype="multipart/form-data">
+            <div class="header">
+                <div class="title">@(GetResource(ResourceKeys.NewLogo))</div>
+                <div class="text">@(GetResource(ResourceKeys.NewLogoCaption))</div>
+            </div>
+
+            <div class="content">
+                    <div>
+                        <input type="radio" name="logo" value="none" id="none" class="fancy" @if(Model.Type == LogoModel.LogoType.None) {<text>checked="checked"</text>} ><label for="none">@GetResource(ResourceKeys.None)</label>
+                    </div>
+                    <div class="margin-top-20">
+                        <input type="radio" name="logo" value="gemini" id="gemini" class="fancy" @if (Model.Type == LogoModel.LogoType.Gemini) { <text> checked="checked" </text> }><label for="gemini">Gemini</label><br />
+                    </div>
+                <div class="margin-top-20">
+                    <input type="radio" name="logo" value="custom" id="custom" class="fancy" @if (Model.Type == LogoModel.LogoType.Custom) { <text> checked="checked" </text> }><label for="custom">@GetResource(ResourceKeys.Customize)</label><input class="file" type="file" name="file" disabled="disabled" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

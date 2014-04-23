@@ -30,33 +30,30 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function ()
+    {
         gemini_admin.initDatatablesWithEdit("#table-admin-links", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2] }] });
         
         //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
-        $("#table-admin-links").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e) {
-
+        $("#table-admin-links").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e)
+        {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Links", "DeleteForm", { id: id }, null, "Delete");
-
+            gemini_popup.centerPopup("configure/Templates/Links", "DeleteForm", { id: id }, null, "Delete", null, null, null, null, true);
         });
 
-        $("#table-admin-links").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function () {
-
+        $("#table-admin-links").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function ()
+        {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Links", "Editor", { id: id });
-
+            gemini_popup.centerPopup("configure/Templates/Links", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
-
 
         $("#table-admin-links_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
-        $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/Templates/Links", "Add");
+        $("#system-options-add").click(function ()
+        {
+            gemini_popup.centerPopup("configure/Templates/Links", "Add", null, null, null, null, null, null, null, true);
         });
-
-
     });
 </script>

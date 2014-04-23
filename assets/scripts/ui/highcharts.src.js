@@ -8716,7 +8716,8 @@ MouseTracker.prototype = {
 			// normalize
 			e = mouseTracker.normalizeMouseEvent(e);
 			if (!hasTouch) { // not for touch devices
-				e.returnValue = false;
+			    if (e.preventDefault) e.preventDefault()
+                else e.returnValue = false;
 			}
 
 			var chartX = e.chartX,

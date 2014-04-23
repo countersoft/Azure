@@ -123,6 +123,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="field-name">White List
+                    </td>
+                    <td>
+                        <textarea id="Whitelist" name="Whitelist" class="input-field input-size9">@Model.Mailbox.WhiteList</textarea>
+                    </td>
+                </tr>
+                <tr>
                     <td class="field-name">No-Reply List
                     </td>
                     <td>
@@ -241,13 +248,13 @@
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
           gemini_ui.chosen("#AlertTemplate", null, true);
-          gemini_ui.setDropdownValue("#AlertTemplate", '@(Model.Mailbox.AlertTemplateId)');
+          gemini_ui.setDropdownValue("#AlertTemplate", '@(Model.Mailbox.AlertTemplateId.GetValueOrDefault())');
 
           $('option', '#SmtpServer').each(function () {
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
           gemini_ui.chosen("#SmtpServer", null, true);
-          gemini_ui.setDropdownValue("#SmtpServer", '@(Model.Mailbox.SmtpServerId)');
+          gemini_ui.setDropdownValue("#SmtpServer", '@(Model.Mailbox.SmtpServerId.GetValueOrDefault())');
 
           $('option', '#AuthMode').each(function () {
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
@@ -262,7 +269,6 @@
           $('option', '#MailboxType').each(function () {
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
-          gemini_ui.setDropdownValue("#MailboxType", '@(Model.Mailbox.Mode)');
           gemini_ui.chosen("#MailboxType", null, true);
           $("#MailboxType").trigger('change');
 
@@ -276,20 +282,19 @@
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
           gemini_ui.chosen("#Project", null, true);
-          gemini_ui.setDropdownValue("#Project", '@(Model.Mailbox.ProjectId)');
+          gemini_ui.setDropdownValue("#Project", '@(Model.Mailbox.ProjectId.GetValueOrDefault())');
 
           $('option', '#IssueType').each(function () {
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
           gemini_ui.chosen("#IssueType", null, true);
-          gemini_ui.setDropdownValue("#IssueType", '@(Model.Mailbox.IssueTypeId)');
+          gemini_ui.setDropdownValue("#IssueType", '@(Model.Mailbox.IssueTypeId.GetValueOrDefault())');
 
           $('option', '#Queue').each(function () {
               if($(this).attr('value') == '0') $(this).attr('value', '');
               $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
           });
           gemini_ui.chosen("#Queue", null, true);
-          gemini_ui.setDropdownValue("#Queue", '@(Model.Mailbox.QueueId)');
 
           gemini_ui.chosen("#SubjectLikeExpressions", null, true);
           gemini_ui.chosen("#SubjectNotLikeExpressions", null, true);
@@ -326,7 +331,7 @@
                           }, 1000);
 
                           gemini_ui.stopBusy('#colorbox #popup-button-yes');
-                      }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+                      }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
               } else {
                   $('.error:not(label)', '#cs-popup-content').first().focus();
               }
@@ -340,7 +345,7 @@
                   if ($(this).is(":visible")) {
                       gemini_ajax.postCall("configure/Breeze/Mailbox", "Editor", function (response) {
                           $("#pnlIMAPFolder").html(response.Result.Html);
-                      }, null, $("#regular-form").serialize() + gemini_admin.getFormTemplateId() + "&t=imap");
+                      }, null, $("#regular-form").serialize() + gemini_admin.getFormTemplateId() + "&t=imap", null, true);
                   }
               });
           });
@@ -402,7 +407,7 @@
                 $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>').replace('&#39;', '\''));
             });
             gemini_ui.chosen("#IssueType", null, true);
-        }, null, $("#regular-form").serialize() + gemini_admin.getFormTemplateId() + "&t=itype");
+        }, null, $("#regular-form").serialize() + gemini_admin.getFormTemplateId() + "&t=itype", null, true);
     }
       function setValue(val) {
           $("#ImapFolder").val(val);

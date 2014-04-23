@@ -63,11 +63,17 @@
   <item id="Keywords">Anahtar Kelimeler</item>
   <item id="ItemId">Kayıt No</item>
   <item id="ItemKey">Kayıt Anahtarı</item>
+  <item id="RevisedTime">Revised Time</item>
+  <item id="CreatedTime">Created Time</item>
+  <item id="RevisedTimestamp">Revised Timestamp</item>
+  <item id="CreatedTimestamp">Created Timestamp</item>
   <item id="ReportedBy">Gönderen</item>
   <item id="FollowedBy">İzleyen</item>
   <item id="GroupDependencies">Grup Bağımlılıkları</item>
   <item id="Grouped">Gruplanmış</item>
   <item id="ShowSequence">Sıralı Kayıtlar</item>
+  <item id="NoZone">Hide zones</item>
+  <item id="ShowSLA">Show SLA zone</item>
   <item id="FilterNoType">Tüm Kayıtlar</item>
   <item id="FilterIncludeClosed">Kapalıları da Göster</item>
   <item id="FilterOpenIssues">Açıklar</item>
@@ -381,4 +387,88 @@
   <item id="Hide">Hide</item>
   <item id="EstimatedReleaseDate">Estimated Release Date</item>
   <item id="Excess">Excess</item>
+
+  <item id="Dashboard">Dashboard</item>
+  <item id="Chat">Chat</item>
+  <item id="Workspace">Workspace</item>
+  <item id="TeamWorkspace">Team Workspace</item>
+  <item id="CreateWorkspace">New Workspace</item>
+  <item id="LockSync">Lock and sync changes</item>
+  <item id="EnableTeamChat">Enable team chat</item>
+  <item id="HighlightChanges">Highlight changes</item>
+  <item id="ShowBadgeCounts">Show badge counts</item>
+  <item id="SelectCharts">Select the charts and numbers you would like to show</item>
+  <item id="CurrentPassword">Current Password</item>
+  <item id="NewPassword">New Password</item>
+  <item id="ConfirmNewPassword">Confirm New Password</item>
+
+  <item id="Notifications">Notifications</item>
+  <item id="Unknown">Unknown</item>
+  <item id="FilterAssignedToMeIssues">Assigned to me</item>
+  <item id="TimeLogger">Time Logger</item>
+  <item id="FilterTimeLoggedByMeIssues">Time logged by me</item>
+  <item id="FilterFollowedByMeIssues">Followed by me</item>
+  <item id="TeamChat">Team Chat</item>
+  <item id="Workspaces">Workspaces</item>
+  <item id="Metrics">Metrics</item>
+  <item id="CreateWorkspaceCaption">Workspaces enable collaboration across multiple projects with co-workers. Use metrics, team chat, email notifications and reporting to manage your work.</item>
+
+  <item id="Send">Send</item>
+
+  <item id="NewProject">New Project</item>
+  <item id="NewProjectCaption">Projects contain work items of different types with associated workflow, customfields and data capture screens to suit your business. Select the project's template type.</item>
+
+  <item id="NewCoWorkers">Invite Co-workers</item>
+  <item id="CreateCoWorkersCaption">Invite co-workers to test out Gemini. They will each receive an email containing user credentials as well as the Gemini instance URL.</item>
+  <item id="WorkSpaceAlerts">Workspace Alerts</item>
+
+  <item id="People">People</item>
+  <item id="NewLogo">New Logo</item>
+  <item id="NewLogoCaption">Upload your own logo (max. 160px x 40px), use the Gemini logo or remove the logo completely.</item>
+
+  <item id="TotalPoints">Total Points</item>
+  <item id="OpenedToday">Opened Today</item>
+  <item id="ClosedToday">Closed Today</item>
+  <item id="OpenSummary">Open Summary</item>
+  <item id="ClosedSummary">Closed Summary</item>
+  <item id="TotalSummary">Total Summary</item>
+  <item id="ProgressPercentage">Progress Percentage</item>
+  <item id="EndDate">End Date</item>
+  <item id="MetricEstimatedEffort">Estimated Effort</item>
+  <item id="MetricTimeRemaining">Time Remaining</item>
+  <item id="CompletionDate">Completion Date</item>
+  <item id="EstCompletionDate">Est. Completion Date</item>
+  <item id="Velocity">Velocity</item>
+  <item id="TypeChart">Type Chart</item>
+  <item id="SeverityChart">Severity Chart</item>
+  <item id="PriorityChart">Priority Chart</item>
+  <item id="StatusChart">Status Chart</item>
+  <item id="ResolutionChart">Resolution Chart</item>
+  <item id="ResourceChart">Resource Chart</item>
+  <item id="VersionChart">Version Chart</item>
+  <item id="ComponentChart">Component Chart</item>
+  <item id="BurndownItems">Burndown by Items</item>
+  <item id="BurndownHours">Burndown by Hours</item>
+  <item id="BurndownPoints">Burndown by Points</item>
+  <item id="BurnupItems">Burn-up by Items</item>
+  <item id="BurnupHours">Burn-up by Hours</item>
+  <item id="BurnupPoints">Burn-up by Points</item>
+  <item id="VelocityItems">Velocity by Items</item>
+  <item id="VelocityHours">Velocity by Hours</item>
+  <item id="VelocityPoints">Velocity by Points</item>
+
+  <item id="DeleteTeamChatsAndScheduledReports">All associated team chats and scheduled reports will be removed.</item>
+  <item id="OrTransferWorkspace">Or transfer the workspace to someone else</item>
+
+  <item id="SLA">SLA</item>
+  <item id="Breached">Breached</item>
+  <item id="Paused">Paused</item>
+  <item id="Finished">Finished</item>
+
+  <item id="ReceiveIndividualEmailAlerts">Receive individual email alerts per item (not batched)</item>
+  <item id="SubscribeOthers">Subscribe others</item>
+  <item id="Users">Users</item>
+  <item id="Groups">Groups</item>
+  <item id="Subject">Subject</item>
+  <item id="Message">Message</item>
 </Resource>

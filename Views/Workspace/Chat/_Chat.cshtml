@@ -1,0 +1,11 @@
+﻿@model WorkspaceChatModel.ChatMessage
+
+<div id="workspace-chat-zone-message-@(Model.Id)" data-id="@(Model.Id)" class="chat-box @Model.Classes">
+    <div class="gravatar">@if(Model.Gravatar.HasValue()) {<img src="@Model.Gravatar"/>} else {<div class="gravatar-empty" />}</div>
+    <div class="chat-pointer"></div>
+    <div class="message">
+        <div class="fullname" title="@(Model.Fullname)" >@(Model.Fullname)</div>
+        <div class="time">@(Model.Time)</div>
+        <div class="text word-wrap">@Html.Raw(Model.Text)</div>
+    </div>
+</div>

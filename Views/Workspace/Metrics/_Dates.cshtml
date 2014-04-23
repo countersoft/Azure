@@ -1,0 +1,6 @@
+﻿@model DatesModel
+
+<div class="metric-large">
+    <div class="label">@Model.Label</div>
+    <div class="data" style="color:#232323;">@if (Model.Date != null) { <text>@Model.Date.Value.ToString("dd MMM")</text> }</div>
+</div>

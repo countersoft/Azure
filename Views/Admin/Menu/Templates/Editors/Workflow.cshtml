@@ -37,6 +37,24 @@
                 var left = 10;
                 foreach (var status in Model.Workflow)
                 {
+                    if (status.top.ToInt() < 0) 
+                    {
+                        status.top = "10";
+                    }
+                    else if(status.top.ToInt() > 1000)
+                    {
+                        status.top = "10";
+                    }
+                    
+                    if (status.left.ToInt() < 0) 
+                    {
+                        status.left = "10";
+                    }
+                    else if (status.left.ToInt() > 1000)
+                    {
+                        status.left = "10";
+                    }
+                    
                     var topLabel = status.top != "0" ? status.top + "px" : top.ToString() + "px";
                     var leftLabel = status.left != "0" ? status.left + "px" : left.ToString() + "px";
 
@@ -88,7 +106,7 @@
                     $('#attribute-options-picker').hide();
                     gemini_popup.popupClose(e);
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'workflow', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() });
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'workflow', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() }, null, true);
         });
 
         $("#popup-button-no").unbind("click").click(function (e) {
@@ -149,7 +167,7 @@
                         groupsList = [];                        
                     }
 
-                    $('option', '#attribute-options-ProjectGroup').attr('selected', false);
+                    $('option', '#attribute-options-ProjectGroup').prop('selected', false);
 
                     pos = 0;
                     if (transitionsArray.length > 0 && groupsList.length > 0)
@@ -163,13 +181,13 @@
                                 groupsArray = $.grep(groupsList[pos].split(','), function(n) { return (n); });
 
                                 $(groupsArray).each(function(e) {
-                                    if (this != '') $('option[value="' + this + '"]', '#attribute-options-ProjectGroup').attr('selected', true);
+                                    if (this != '') $('option[value="' + this + '"]', '#attribute-options-ProjectGroup').prop('selected', true);
                                 });
                             }
                         }
                     }
 
-                    $("#attribute-options-ProjectGroup").trigger("liszt:updated"); 
+                    gemini_ui.chosenUpdate($("#attribute-options-ProjectGroup"));
                     
                     $('#attribute-options-picker').show();
                     $('#option-required', '#attribute-options-picker').hide();
@@ -297,7 +315,7 @@
         gemini_ajax.postCall("configure/Templates/Process", "Editor",
             function (response) {
                 $("#workflow-popup").replaceWith(response.Result.Html);
-            }, null, { id: $('#type-id').val(), mode: 'workflow', template: gemini_admin.currentTemplate, ReferenceId: $('#ReferenceId').val() });
+            }, null, { id: $('#type-id').val(), mode: 'workflow', template: gemini_admin.currentTemplate, ReferenceId: $('#ReferenceId').val() }, null, true);
     });
             
     //plot saved connections

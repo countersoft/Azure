@@ -12,7 +12,6 @@
                 <th>Template</th>          
                 <th data-field="Description" data-required='true'>Description</th>
                 <th data-field="Color" data-edit-type='color'>Color</th>
-                <th data-field="ReadOnly" data-edit-type='checkbox'>Locked?</th>
                 <th data-field="Archived" data-edit-type='checkbox'>Archived?</th>
                 <th></th>
             </tr>
@@ -27,7 +26,6 @@
                     <td data-edit="false" >@item.Template.Name (@item.Template.TemplateKey)</td>
                     <td>@item.Entity.Description</td>
                     <td>@item.Entity.Color</td>
-                    <td>@(item.Entity.ReadOnly ? "Yes" : string.Empty)</td>
                     <td>@(item.Entity.Archived ? "Yes" : string.Empty)</td>
                     <td data-edit="false" class="actions" >
                         <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
@@ -52,37 +50,37 @@
 
 
                 gemini_popup.modalConfirm(response.Result, null, function () {
-                    gemini_ui.startBusy('#colorbox #modal-confirm #modal-button-yes');
+                    gemini_ui.startBusy('#colorbox2 #modal-confirm #modal-button-yes');
                     gemini_ajax.call("configure/Projects/Projects", "Delete", function (delResponse) {
                         if (delResponse.Success) {
                             gemini_admin.removeRow(item);                            
                         }
                        
                         gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
                 });
             },
-                null, { id: id });
+                null, { id: id }, null, true);
         });
 
         $("#table-admin-projects").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function ()
         {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'edit' });
+            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'edit' }, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-projects").off('click', ".actions span[data-method='move']").on('click',".actions span[data-method='move']", function ()
         {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'move', other: 0 });
+            gemini_popup.centerPopup("configure/Projects/Projects", "Editor", { id: id, mode: 'move', other: 0 }, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-projects_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
         $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/Projects/Projects", "Add", {}, null);
+            gemini_popup.centerPopup("configure/Projects/Projects", "Add", {}, null, null, null, null, null, null, true);
         });
     });
 </script>

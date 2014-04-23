@@ -25,7 +25,7 @@
  *  element[attr^=value]
  *  element[attr$=value]
  *  element:<state>
- *  element:not(<expession>)
+ *  element:not(<expression>)
  *  element:first
  *  element:last
  *  element:odd
@@ -36,9 +36,8 @@
  * @class tinymce.ui.Selector
  */
 define("tinymce/ui/Selector", [
-	"tinymce/util/Class",
-	"tinymce/util/Tools"
-], function(Class, Tools) {
+	"tinymce/util/Class"
+], function(Class) {
 	"use strict";
 
 	/**
@@ -257,8 +256,12 @@ define("tinymce/ui/Selector", [
 						// Find the index and length since a psuedo filter like :first needs it
 						if (filters.psuedo) {
 							siblings = item.parent().items();
-							index = Tools.inArray(item, siblings);
-							length = siblings.length;
+							index = length = siblings.length;
+							while (index--) {
+								if (siblings[index] === item) {
+									break;
+								}
+							}
 						}
 
 						for (fi = 0, fl = filters.length; fi < fl; fi++) {
@@ -318,11 +321,11 @@ define("tinymce/ui/Selector", [
 
 					// All filters matched the item
 					if (fi === fl) {
-						// Matched item is on the last expession like: panel toolbar [button]
+						// Matched item is on the last expression like: panel toolbar [button]
 						if (index == selector.length - 1) {
 							matches.push(item);
 						} else {
-							// Collect next expession type
+							// Collect next expression type
 							if (item.items) {
 								collect(item.items(), selector, index + 1);
 							}

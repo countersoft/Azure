@@ -1,0 +1,6 @@
+﻿@model List<WorkspaceChatModel.ChatMessage>
+
+@foreach (var chat in Model)
+{
+    @Html.Partial("~/views/workspace/chat/_Chat.cshtml", chat)
+}

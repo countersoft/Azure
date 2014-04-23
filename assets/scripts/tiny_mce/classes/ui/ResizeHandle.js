@@ -69,10 +69,18 @@ define("tinymce/ui/ResizeHandle", [
 					self.fire('Resize', e);
 				},
 
-				end: function() {
+				stop: function() {
 					self.fire('ResizeEnd');
 				}
 			});
+		},
+
+		remove: function() {
+			if (this.resizeDragHelper) {
+				this.resizeDragHelper.destroy();
+			}
+
+			return this._super();
 		}
 	});
 });

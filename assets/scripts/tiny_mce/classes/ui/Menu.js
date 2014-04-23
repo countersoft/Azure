@@ -18,8 +18,9 @@
 define("tinymce/ui/Menu", [
 	"tinymce/ui/FloatPanel",
 	"tinymce/ui/KeyboardNavigation",
-	"tinymce/ui/MenuItem"
-], function(FloatPanel, KeyboardNavigation, MenuItem) {
+	"tinymce/ui/MenuItem",
+	"tinymce/util/Tools"
+], function(FloatPanel, KeyboardNavigation, MenuItem, Tools) {
 	"use strict";
 
 	var Menu = FloatPanel.extend({
@@ -41,6 +42,14 @@ define("tinymce/ui/Menu", [
 
 			settings.autohide = true;
 			settings.constrainToViewport = true;
+
+			if (settings.itemDefaults) {
+				var items = settings.items, i = items.length;
+
+				while (i--) {
+					items[i] = Tools.extend({}, settings.itemDefaults, items[i]);
+				}
+			}
 
 			self._super(settings);
 			self.addClass('menu');

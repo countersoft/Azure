@@ -1,0 +1,14 @@
+﻿@model ProgressModel
+
+<div id="dashboard-progress-chart" style="display:inline-block;width:250px;height:250px;"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var totalClosed = @Model.Closed;
+        var totalOpen = @Model.Open;
+        var total = @Model.Total;
+        var completeness = total > 0 ? Math.floor((totalClosed * 100)/total) : 0;
+        gemini_progress.showCompleteness(completeness, '#dashboard-progress-chart');
+    });
+
+</script>

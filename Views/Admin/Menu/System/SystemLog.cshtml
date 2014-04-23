@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <th>Dated</th>
+                <th class="hide">DatedSort</th>
                 <th>Entry</th>
                 <th>User</th>
             </tr>
@@ -21,6 +22,7 @@
             {
                 <tr data-id="@item.Id">
                     <td data-edit="false" class="no-width no-wrap valign-top">@item.Created</td>
+                    <td data-edit="false" class="hide">@(item.Created.Ticks/1000000)</td>
                     <td data-edit="false">@item.Message</td>
                     <td data-edit="false" class="no-width no-wrap valign-top">@item.Username</td>
                 </tr>
@@ -32,7 +34,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        gemini_admin.initDatatables("#table-admin-log", { "aaSorting": [] });
+        gemini_admin.initDatatables("#table-admin-log", { "aoColumnDefs": [{ "iDataSort": 1, "aTargets": [0] }], "aaSorting": [[0, "desc"]] });
 
         gemini_ui.fancyInputs('#configure-page-content .fancy');
 
@@ -40,7 +42,7 @@
             gemini_ajax.postCall("configure/System/SystemLog", "savedata", function ()
             {
                 gemini_popup.toast("Saved");
-            }, null , { DebugMode:  $('input:checked', $('#configure-page-content')).length > 0 });
+            }, null , { DebugMode:  $('input:checked', $('#configure-page-content')).length > 0 }, null, true);
         });
 
         // Delete
@@ -56,7 +58,7 @@
                         gemini_admin.getPage();                        
                     }
                     gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: 0 });
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: 0 }, null, true);
             });
         });
 

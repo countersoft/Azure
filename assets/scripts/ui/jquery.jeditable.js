@@ -529,6 +529,21 @@
                     return(input);
                 }
             },
+            masktext: {
+                element: function (settings, original) {
+                    var input = $('<input style="width:99%;"/>');
+
+                    if (settings.width != 'none') { input.attr('width', settings.width); }
+                    if (settings.height != 'none') { input.attr('height', settings.height); }
+
+                    /* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
+                    //input[0].setAttribute('autocomplete','off');
+                    input.attr('autocomplete', 'off');
+                    $(this).append(input);
+                    input.mask('99:99');
+                    return (input);
+                }
+            },
             textarea: {
                 element : function(settings, original) {
                     var textarea = $('<textarea />');
@@ -576,7 +591,7 @@
                     $('select', this).children().each(function() {
                         if ($(this).val() == u['selected'] || 
                             $(this).text() == $.trim(original.revert)) {
-                                $(this).attr('selected', 'selected');
+                                $(this).prop('selected', 'selected');
                         }
                     });
                     /* Submit on change if no submit button defined. */
@@ -642,7 +657,7 @@
                 },
                 content: function(data, settings, original) {
                     if(data == 'true' || data == 'True') {
-                        $('input[type="checkbox"]', this).attr('checked','checked');
+                        $('input[type="checkbox"]', this).prop('checked','checked');
                     }
                     
                     /* Submit on change if no submit button defined. */

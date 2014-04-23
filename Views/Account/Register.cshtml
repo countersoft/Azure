@@ -11,7 +11,6 @@
             {
             <td class="left-box" style="vertical-align:top">                
                 <table id="welcome-message-zone">
-                    <tr><td><div class="gemini-login"><img src="~/assets/images/gemini-login.png"/></div> <div class="divider-login"></div></td></tr>                   
                     <tr><td><h1 id="welcome-title">@GeminiContext.Config.WelcomeTitle</h1></td></tr>
                     <tr><td><div id="cs-template"><div id="welcome-message" class="cs-wysiwyg">@Html.Raw(GeminiContext.Config.WelcomeMessage)</div></div></td></tr>
                 </table>                
@@ -21,7 +20,7 @@
                 <table>
                     @if(!DeviceContext.IsDesktop)
                     {
-                        <tr><td><div class="gemini-login"><img src="~/assets/images/gemini-login.png"/></div> <div class="divider-login"></div></td></tr> 
+                        <tr><td><div class="gemini-login"><img src="~/assets/images/logo.png"/></div> <div class="divider-login"></div></td></tr> 
                     }
                     <tr>
                         <td>
@@ -49,7 +48,7 @@
                                                                                 <td> <h3>@GetResource(ResourceKeys.Username)</h3></td>
                                                                             </tr>
                                                                             <tr>                                                                    
-                                                                                <td><input type="text" id="Username" name="Username" class="input-field required input-size6" value="@Model.User.Username"/> </td>
+                                                                                <td><input type="text" id="Username" name="Username" class="input-field required input-size6" value="@User.Identity.Name" disabled="disabled" /></td>
                                                                             </tr>
                                                                         }
 
@@ -131,6 +130,7 @@
 @section DocumentReady
 {
     gemini_account.initRegister();
+    gemini_session.clearSessionTimeOut();
 }
 
 @section JavaScript

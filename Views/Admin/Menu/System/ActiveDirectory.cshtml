@@ -7,7 +7,7 @@
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="SyncWithActiveDirectory" name="SyncWithActiveDirectory" @if(!Model.Licensed) {<text>disabled="disabled"</text> }  @if(Model.SyncWithActiveDirectory){ <text>checked="checked"</text> } /> <label for="SyncWithActiveDirectory">Sync with Active Directory</label></td>
+                <td><input type="checkbox" class="fancy" id="SyncWithActiveDirectory" name="SyncWithActiveDirectory" @if(Model.SyncWithActiveDirectory){ <text>checked="checked"</text> } /> <label for="SyncWithActiveDirectory">Sync with Active Directory</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
@@ -55,7 +55,7 @@
             function () {
                 gemini_popup.toast("Saved");
                 gemini_ui.stopBusy('.data-entry-box #system-ad-save');
-            }, function () { gemini_ui.stopBusy('.data-entry-box #system-ad-save'); }, formData);
+            }, function () { gemini_ui.stopBusy('.data-entry-box #system-ad-save'); }, formData, null, true);
         });
     });
 </script>

@@ -1,7 +1,14 @@
 ﻿@model SystemLicensingModel
 
 <p id="tab-help-message"><strong>&#187;</strong>&nbsp;Activate your product and get add-ons from the upcoming <strong>Gemini Marketplace</strong>. </p>
-<p id="tab-help-message"><strong>&#187;</strong>&nbsp;<a href="@GeminiApp.GeminiLicense.FooterMessageHyperlink">@GeminiApp.GeminiLicense.FooterMessage</a></p>
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;@Html.Raw(GeminiApp.GeminiLicense.FooterMessage)</p>
+
+@if (GeminiApp.GeminiLicense.InvalidInstance)
+{
+    <div id="invalid-instance" class="left margin-top-15 margin-left-15">
+        No more than @GeminiApp.GeminiLicense.Users users permitted with this license
+    </div>
+}
 
 <div class="admin-datatable-holder">
     <table id="table-admin-licensing" class="basic">
@@ -42,7 +49,7 @@
         $("#table-admin-licensing_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
         $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/System/Licensing", "Add");
+            gemini_popup.centerPopup("configure/System/Licensing", "Add", null, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-licensing_wrapper").off('click', ".action-button-delete").on('click', ".action-button-delete", function (e) {
@@ -57,7 +64,7 @@
                         gemini_admin.removeRow(item);
                         gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                     }
-                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id, guid: guid });
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id, guid: guid }, null, true);
             });
         });
     });

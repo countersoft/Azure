@@ -18,18 +18,38 @@
         <div class="left">
             <div class="item-title" data-attribute-id="@ItemAttributeVisibility.Title.ToString()">@Model.Issue.IssueKey &nbsp;<span class="title">@Model.Issue.Title</span></div>
 
-            <div id="touch-info-container" class="margin-top-10">
+            <div class="project-info">
+                <a href="@(GeminiContext.Url)workspace/0/items?projects=@(Model.Issue.Project.Id)">@(Model.Issue.Project.Name)</a>
+            </div>
+
+            <div id="touch-info-container">
                 @{Html.RenderPartial("_TouchInfo");}
             </div>
 
             <div class="margin-top-20">
                 @{Html.RenderPartial("_ProgressInfo");}
-                @{Html.RenderPartial("_Collapse");}
             </div>
         </div>
         <div class="clearfix"></div>
-        <div id="view-item-collapse">      
+        @{Html.RenderPartial("_Collapse");}
+        
+        <div id="links-find-item-container" class="hide">
+            <input type="hidden" id="links-find-item-id"/>
+            <form name="links-form">
+                <span class="left">@GetResourceTemplate(ResourceKeys.Link)</span>
+                <input class="left input-size6 required" id="links-find-item" name="linksFindItem" type="text"/>        
+                @Html.DropDownList("linktypes", Model.IssueLinkTypes, new {@class="input-size5 left"})
+                <span class="fonticon-tick left"></span>
+                <span class="fonticon-cross left"></span>
+            </form>
+        </div>
 
+        <div id="dependencies-find-item-container" class="hide">
+            <span>@GetResourceTemplate(ResourceKeys.Dependency)</span>
+            <input id="dependencies-find-item" name="dependencies-find-item" type="text" class="input-size7"/>
+        </div>
+
+        <div id="view-item-collapse">      
             @{Html.RenderPartial("IssueDescription");}
 
             @if (Model[ItemAttributeVisibility.AssociatedLinks] && Model.Issue.Links.Count > 0)

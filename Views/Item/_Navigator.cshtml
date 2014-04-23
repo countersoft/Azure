@@ -3,7 +3,7 @@
 <div id="filter-navigator">
     @if(Model.PreviousIssue != null)
     {
-        <a href="~/project/@Model.PreviousIssue.Tag1/@Model.PreviousIssue.ProjectId/item/@Model.PreviousIssue.Id" class="previous">
+        <a href="~/workspace/@Model.WorkspaceId/item/@Model.PreviousIssue.Id" class="previous">
            <span class="fonticon-arrow-left"></span>
         </a>
     }
@@ -14,11 +14,11 @@
         </a>
     }
 
-    <a class="position" href="~/project/@Model.FilterProjectCode/@Model.FilterProjectId.GetValueOrDefault()/items">@Model.CurrentIssueLocation / @Model.TotalIssues</a>
+    <a class="position" href="~/workspace/@Model.WorkspaceId/items?session">@Model.CurrentIssueLocation / @Model.TotalIssues</a>
 
     @if(Model.NextIssue != null)
     {
-        <a href="~/project/@Model.NextIssue.Tag1/@Model.NextIssue.ProjectId/item/@Model.NextIssue.Id" class="next">
+        <a href="~/workspace/@Model.WorkspaceId/item/@Model.NextIssue.Id" class="next">
              <span class="fonticon-arrow-right"></span>
         </a>
     }

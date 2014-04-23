@@ -64,7 +64,7 @@
             }
         });
        
-        gemini_ajax.postCall(csVars.ProjectUrl + "bulk", 'save', function () {
+        gemini_ajax.postCall("bulk", 'save', function () {
             gemini_popup.popupClose(e);
             gemini_filter.getFilteredItemsCurrentPage();
             gemini_ui.stopBusy('#colorbox #popup-button-yes');          
@@ -80,22 +80,22 @@
         $(this).parent().parent().next().find('input, select').each(function () {
             if (checked) {
                 $(this).prop('disabled', false);
-                $(this).trigger("liszt:updated");
             }
             else {
                 $(this).prop('disabled', true);
-                $(this).trigger("liszt:updated");
             }
+
+            gemini_ui.chosenUpdate($(this));
         });
         var control = $('#bulk-edit-container #' + $(this).attr('id').substring(5));
         if (checked) {
             control.prop('disabled', false);
-            control.trigger("liszt:updated");
         }
         else {
             control.prop('disabled', true);
-            control.trigger("liszt:updated");
         }
+
+        gemini_ui.chosenUpdate(control);
     });
 
     gemini_ui.chosen('#bulk-edit-form table tr td.td-data select', '#cs-popup-center-zone', false);

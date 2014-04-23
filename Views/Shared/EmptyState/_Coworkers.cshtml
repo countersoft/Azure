@@ -1,0 +1,29 @@
+﻿<div>
+    <div class="popup-header">
+        <form id="regular-form" action="#" method="post" enctype="multipart/form-data">
+            <div class="header">
+                <div class="title">@(GetResource(ResourceKeys.NewCoWorkers))</div>
+                <div class="text">@(GetResource(ResourceKeys.CreateCoWorkersCaption))</div>
+            </div>
+
+            <div class="content">
+
+                <input type="text" name="To" id="To" placeholder="Email address (comma delimited)" value="" class="required input-size12 margin-top-10">
+                <input type="text" name="Subject" id="Subject" placeholder="Subject" value="Your Gemini Invite" class="required input-size12 margin-top-10">
+                <textarea name="Message" id="Message" placeholder="Message" rows="10" class="required input-size12 margin-top-10">
+Hi there,
+
+This is an invitation to join me in evaluating Gemini. You can login using the link below:
+
+{url}
+
+Regards,
+
+@GeminiContext.User.Fullname
+                </textarea>
+            </div>
+
+        </form>
+    </div>
+
+</div>

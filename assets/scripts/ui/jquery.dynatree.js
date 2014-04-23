@@ -1160,7 +1160,7 @@ DynaTreeNode.prototype = {
 				// Chrome and Safari don't focus the a-tag on click,
 				// but calling focus() seem to have problems on IE:
 				// http://code.google.com/p/dynatree/issues/detail?id=154
-				if(!$.browser.msie){
+			    if (csVars.IEVersion == -1) {
 					aTag[0].focus();
 				}
 			}else{

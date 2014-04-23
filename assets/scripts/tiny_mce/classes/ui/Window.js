@@ -54,6 +54,10 @@ define("tinymce/ui/Window", [
 
 			self._super(settings);
 
+			if (self.isRtl()) {
+				self.addClass('rtl');
+			}
+
 			self.addClass('window');
 			self._fixed = true;
 
@@ -65,7 +69,7 @@ define("tinymce/ui/Window", [
 					spacing: 3,
 					padding: 10,
 					align: 'center',
-					pack: 'end',
+					pack: self.isRtl() ? 'start' : 'end',
 					defaults: {
 						type: 'button'
 					},
@@ -93,7 +97,7 @@ define("tinymce/ui/Window", [
 		 * @method recalc
 		 */
 		recalc: function() {
-			var self = this, statusbar = self.statusbar, layoutRect, width, needsRecalc;
+			var self = this, statusbar = self.statusbar, layoutRect, width, x, needsRecalc;
 
 			if (self._fullscreen) {
 				self.layoutRect(DomUtils.getWindowSize());
@@ -108,7 +112,8 @@ define("tinymce/ui/Window", [
 			if (self.settings.title && !self._fullscreen) {
 				width = layoutRect.headerW;
 				if (width > layoutRect.w) {
-					self.layoutRect({w: width});
+					x = layoutRect.x - Math.max(0, width / 2);
+					self.layoutRect({w: width, x: x});
 					needsRecalc = true;
 				}
 			}
@@ -119,7 +124,8 @@ define("tinymce/ui/Window", [
 
 				width = statusbar.layoutRect().minW + layoutRect.deltaW;
 				if (width > layoutRect.w) {
-					self.layoutRect({w: width});
+					x = layoutRect.x - Math.max(0, width - layoutRect.w);
+					self.layoutRect({w: width, x: x});
 					needsRecalc = true;
 				}
 			}
@@ -144,8 +150,12 @@ define("tinymce/ui/Window", [
 			// Reserve vertical space for title
 			if (self.settings.title && !self._fullscreen) {
 				headEl = self.getEl('head');
-				layoutRect.headerW = headEl.offsetWidth;
-				layoutRect.headerH = headEl.offsetHeight;
+
+				var size = DomUtils.getSize(headEl);
+
+				layoutRect.headerW = size.width;
+				layoutRect.headerH = size.height;
+
 				deltaH += layoutRect.headerH;
 			}
 
@@ -308,11 +318,11 @@ define("tinymce/ui/Window", [
 					focusCtrl = focusCtrl || ctrl;
 
 					// TODO: Figure out a better way
-					if (ctrl.type == 'filepicker') {
+					if (ctrl.subinput) {
 						items.push(ctrl.getEl('inp'));
 
 						if (ctrl.getEl('open')) {
-							items.push(ctrl.getEl('open').firstChild);
+							items.push(ctrl.getEl('open'));
 						}
 					} else {
 						items.push(ctrl.getEl());
@@ -367,12 +377,6 @@ define("tinymce/ui/Window", [
 		 * @return {Object} Event arguments object.
 		 */
 		submit: function() {
-			// Blur current control so a onchange is fired before submit
-			var ctrl = this.getParentCtrl(document.activeElement);
-			if (ctrl) {
-				ctrl.blur();
-			}
-
 			return this.fire('submit', {data: this.toJSON()});
 		},
 
@@ -383,13 +387,18 @@ define("tinymce/ui/Window", [
 		 * @return {tinymce.ui.Control} Current control instance.
 		 */
 		remove: function() {
-			var self = this;
+			var self = this, prefix = self.classPrefix;
 
-			self._super();
 			self.dragHelper.destroy();
+			self._super();
 
 			if (self.statusbar) {
 				this.statusbar.remove();
+			}
+
+			if (self._fullscreen) {
+				DomUtils.removeClass(document.documentElement, prefix + 'fullscreen');
+				DomUtils.removeClass(document.body, prefix + 'fullscreen');
 			}
 		}
 	});

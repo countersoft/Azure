@@ -7,13 +7,16 @@
 {
     @{Html.RenderPartial("_Styles");}
     <style>@Html.Raw(Model.Styles)</style>
+    <!--[if IE 8]>
+    <style>#pageSizeContainer #pageSize, #search-form #search {line-height:20px;}</style>
+    <![endif]-->
 }
 
 @RenderSection("ZoneHeaderBar", false)
 
 @RenderSection("ZoneSideBar", false)
 
-<div id="page-content-zone">
+<div id="page-content-zone" @if(Model.HasSidebar) { if(Model.CurrentPageCard.CardData.State.AlwaysShow) { <text>style="margin-right:410px;"</text> } else { <text>style="margin-right:70px;"</text> } }>
     <section id="contents" class="clearfix">
         <div class="layout">
             @if(IsHelpDeskMode())
@@ -27,15 +30,59 @@
         </div>
     </section>
 </div>
+@if (Model.HasSidebar && Model.CurrentPageCard.UserId == GeminiContext.User.Entity.Id)
+{
+    var hideClass = "hide";
+    var showClass = string.Empty;
+    var widthClass = string.Empty;
+    if (!Model.CurrentPageCard.CardData.State.AlwaysShow)
+    {
+        hideClass = string.Empty;
+        showClass = "hide";
+        widthClass = "collapsed";
+    }
 
+    <div id="side-pane" class="@widthClass">
+        <div class="side-pane-toolbar"><div id="expand-collapse" @if (!Model.CurrentPageCard.CardData.State.AlwaysShow) { <text> class="collapsed" data-collapsed="1" </text>  }><div></div></div><div id="toolbar-contents" class="@showClass"></div></div>
+        <div class="@hideClass side-collapsed" data-action="metrics"><div class="side-collapsed-image side-collapsed-metrics"></div><div class="text">@GetResource(ResourceKeys.Metrics)</div></div>
+        <div class="@hideClass side-collapsed" data-action="reports"><div class="side-collapsed-image side-collapsed-reports"></div><div class="text">@GetResource(ResourceKeys.Reports)</div></div>
+        <div class="@hideClass side-collapsed" data-action="people"><div class="side-collapsed-image side-collapsed-people"></div><div class="text">@GetResource(ResourceKeys.People)</div></div>
+        <div class="@hideClass side-collapsed @if(Model.CurrentPageCard.IsNew || (!Model.CurrentPageCard.CardData.EnableChat && (Model.CurrentPageCard.CardData.IsShared || Model.CurrentPageCard.Locked))){<text>hide</text>}" data-action="chat"><div class="side-collapsed-image side-collapsed-chat"></div><div class="text">@GetResource(ResourceKeys.Chat)</div><div id="appnav-toolbar-badge-chat2" class="hide badge"><span></span></div></div>
+        @if (GeminiApp.LicenseSummary.IsGeminiTrial() || GeminiApp.GeminiLicense.IsFree) {<div class="@hideClass side-collapsed signup-background" data-action="sign-up"><div class="side-collapsed-image side-collapsed-signup"></div><div class="text color-white">Sales</div></div>}
+        <div class="contents"></div>
+        <div class="side-pane-tabs no-select @showClass">
+            <div class="tab selected" data-action="metrics" data-params="gemini_dashboard.getPostParams()">@GetResource(ResourceKeys.Metrics)</div>
+            <div class="tab" data-action="reports" data-params="gemini_people.getPostParams()">@GetResource(ResourceKeys.Reports)</div>
+            <div class="tab" data-action="people" data-params="gemini_people.getPostParams()">@GetResource(ResourceKeys.People)</div>
+            <div class="tab" data-action="chat">@GetResource(ResourceKeys.Chat)<div id="appnav-toolbar-badge-chat" class="hide badge"><span></span></div></div>
+            @if (GeminiApp.LicenseSummary.IsGeminiTrial() || GeminiApp.GeminiLicense.IsFree){<div class="tab" data-action="sign-up">Sales</div>}
+        </div>
+        @if (Model.CurrentPageCard.IsExisting)
+        {
+            <div class="workspace-actions toolbar-icons @hideClass">
+                <div id="appnav-toolbar-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)"><div class="action copy black"></div></div>
+                @if (!Model.CurrentPageCard.Locked)
+                {
+                    <div id="appnav-toolbar-delete" class="wrapper" title="@GetResource(ResourceKeys.Delete)"><div class="action delete black"></div></div>
+                }
+                <div id="appnav-toolbar-configure" class="wrapper" title="@GetResource(ResourceKeys.Configure)"><div class="action configure black"></div></div>
+            </div>
+        }
+    </div>
+}
 <footer id="footer" class="clearfix">
-    @{Html.RenderPartial("Footer");}
+    @{Html.RenderPartial("Footer", Model);}
 </footer>
 
 @section DocumentReady
 {
     gemini_sizing.stretchWindow();
     @RenderSection("DocumentReady", false)
+}
+
+@section WindowReady
+{
+    @RenderSection("WindowReady", false)
 }
 
 @section JavaScript

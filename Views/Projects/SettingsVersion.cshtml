@@ -8,11 +8,14 @@
                     <table id="project-admin-versions" class="basic width-100">
                         <thead>
                             <tr>
+                                <th data-field="Id">@GetResource(ResourceKeys.Id)</th>  
                                 <th data-field="Name" data-required='true'>@GetResource(ResourceKeys.Name)</th>                
                                 <th data-field="Label" data-required='true'>@GetResource(ResourceKeys.Description)</th>
                                 <th data-field="ParentId" data-required='false' data-edit-type="select">@GetResource(ResourceKeys.Parent)</th>
                                 <th data-field="StartDate" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">@GetResource(ResourceKeys.StartDate)</th>
+                                <th data-field="StartDateSort" class="hide" data-edit="false" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">StartDateSort</th>
                                 <th data-field="ReleaseDate" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">@GetResource(ResourceKeys.ReleaseDate)</th>
+                                <th data-field="ReleaseDateSort" class="hide" data-edit="false" data-required='false' data-date-format="@GeminiContext.User.GeminiDateFormat" data-edit-type="date">ReleaseDate</th>
                                 <th data-field="Archived" data-edit-type='checkbox' class="centered">@GetResource(ResourceKeys.Archived)</th>
                                 <th data-field="Released" data-edit-type='checkbox' class="centered">@GetResource(ResourceKeys.Released)</th>
                                 <th></th>
@@ -22,6 +25,7 @@
                             @foreach (var version in Model.Versions)
                             {
                                 <tr data-id="@version.Entity.Id" id="@version.Entity.Id" data-message="@GetResource(ResourceKeys.Delete)">
+                                    <td data-edit="false">@version.Entity.Id</td> 
                                     <td>@version.Entity.Name</td>                
                                     <td>@version.Entity.Label</td>
                                     <td style="width: 150px;">@version.ParentVersionName</td>
@@ -35,9 +39,25 @@
                                              }
                                          }
                                     </td>
+                                    
+                                    <td class="hide">
+                                        @{
+                                            if (version.Entity.StartDate.HasValue)
+                                            {<text>@(version.Entity.StartDate.Value.Ticks/10000000) </text>
+                                            }
+                                            else
+                                            {
+                                                <text>0</text>
+                                            }
+                                        }
+                                    </td>
+
+
+
                                     <td> @{
                                              if (version.Entity.ReleaseDate.HasValue)
-                                             {<text>@version.Entity.ReleaseDate.Value.ToShortDateString()</text>
+                                             {
+                                                 <text>@version.Entity.ReleaseDate.Value.ToShortDateString()</text>
                                              }
                                              else
                                              {
@@ -45,6 +65,20 @@
                                              }
                                          }
                                     </td>
+
+                                    <td class="hide">
+                                        @{
+                                            if (version.Entity.ReleaseDate.HasValue)
+                                            {
+                                                <text>@(version.Entity.ReleaseDate.Value.Ticks / 10000000) </text>
+                                            }
+                                            else
+                                            {
+                                                <text>0</text>
+                                            }
+                                        }
+                                    </td>
+
 
                                     <td class="centered no-width">@(version.Entity.Archived ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
                                     <td class="centered no-width">@(version.Entity.Released ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
@@ -70,15 +104,31 @@
 <script type="text/javascript">
     $(document).ready(function ()
     {
-        gemini_admin.initDatatables("#project-admin-versions", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [7] }], fnDrawCallback: function (value, y) {
+        $("#version-form").validate();
+
+        gemini_admin.initDatatables("#project-admin-versions", { "aoColumnDefs": [{ "iDataSort": 5, "aTargets": [4] },{ "iDataSort": 7, "aTargets": [6] },{ "bSortable": false, "aTargets": [10] }],"aaSorting": [[ 0, "desc" ]], fnDrawCallback: function (value, y) {
             gemini_ui.inlineEdit("#project-admin-versions td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/versions/getproperty", "project/" + @Model.ProjectId + "/settings/versions/setproperty");
         }});
 
-        $("#project-admin-versions_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+        $("#project-admin-versions_wrapper").prepend("<div id='add-button-container'><form id='version-form'><input type='text' name='name' id='name' class='margin-left-5 required' /><input id='system-options-add' type='submit' value='Add' class='button-primary'></form></div>");
 
-        $("#system-options-add").click(function ()
+        $("#version-form").submit(function() 
         {
-            gemini_popup.centerPopup("project/" + @Model.ProjectId + "/settings/versions", "Add");
+            $("#project-admin-versions_wrapper #system-options-add").click();
+            return false;
+        });
+
+        $("#project-admin-versions_wrapper #system-options-add").click(function ()
+        {
+            if (!$("#version-form").valid()) return;
+            gemini_ui.startBusy('#version-form #system-options-add');
+            gemini_ajax.postCall("project/@Model.ProjectId/settings/versions", "Save", function (response)
+            {
+                $.publish('version-added');
+                gemini_projects.settingsVersions(@Model.ProjectId);
+                gemini_ui.stopBusy('#version-form #system-options-add');
+            }, function () { gemini_ui.stopBusy('#version-form #system-options-add'); }, $("#version-form").serialize(), null, true);
+            return false;
         });
 
         $("#project-admin-versions").off('click', ".action-button-delete").on('click', ".action-button-delete", function (e)
@@ -99,10 +149,10 @@
                         gemini_admin.removeRow(item);
                         var dt = $("#tree").dynatree("getTree");
                         dt.getNodeByKey(id).remove();
-                       // gemini_projects.settingsVersions(@Model.ProjectId);
+                        $.publish('version-deleted');
                     }
                     gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); 
-                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id });
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
             });
         });
         
@@ -123,7 +173,7 @@
                     var draggedId = sourceNode.data.Id;
                     var droppedId = node.data.Id;
                     
-                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/versions", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode });
+                    gemini_ajax.postCall("project/" + @Model.ProjectId + "/settings/versions", "sequence", null, null, { dragged: draggedId, dropped: droppedId, mode: hitMode }, null, true);
                 },
                 onDragStart: function (node) {
                     return true;

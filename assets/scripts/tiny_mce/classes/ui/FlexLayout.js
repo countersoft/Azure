@@ -45,9 +45,9 @@ define("tinymce/ui/FlexLayout", [
 			contLayoutRect = container.layoutRect();
 			contPaddingBox = container._paddingBox;
 			contSettings = container.settings;
-			direction = contSettings.direction;
+			direction = container.isRtl() ? (contSettings.direction || 'row-reversed') : contSettings.direction;
 			align = contSettings.align;
-			pack = contSettings.pack;
+			pack = container.isRtl() ? (contSettings.pack || 'end') : contSettings.pack;
 			spacing = contSettings.spacing || 0;
 
 			if (direction == "row-reversed" || direction == "column-reverse") {
@@ -171,7 +171,7 @@ define("tinymce/ui/FlexLayout", [
 				ctrl = maxSizeItems[i];
 				ctrlLayoutRect = ctrl.layoutRect();
 				maxSize = ctrlLayoutRect[maxSizeName];
-				size = ctrlLayoutRect[minSizeName] + Math.ceil(ctrlLayoutRect.flex * ratio);
+				size = ctrlLayoutRect[minSizeName] + ctrlLayoutRect.flex * ratio;
 
 				if (size > maxSize) {
 					availableSpace -= (ctrlLayoutRect[maxSizeName] - ctrlLayoutRect[minSizeName]);
@@ -230,7 +230,7 @@ define("tinymce/ui/FlexLayout", [
 
 				// Calculate new size based on flex
 				if (ctrlLayoutRect.flex > 0) {
-					size += Math.ceil(ctrlLayoutRect.flex * ratio);
+					size += ctrlLayoutRect.flex * ratio;
 				}
 
 				rect[sizeName] = size;

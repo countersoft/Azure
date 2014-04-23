@@ -49,6 +49,15 @@
         gemini_ui.fancyInputs('#BreezeReplyaddressessItemContainer .fancy');
 
         gemini_ui.chosen("#Project", null, true);
+
+        $('#Email').keypress(function (e) {
+            if (e.which == 13) {
+                jQuery(this).blur();
+                jQuery("#popup-button-yes").click();
+                return false;
+            }
+        });
+        
         $("#popup-button-yes").click(function (e) {
             if ($('#Email').val() == '{current-user}') {
                 $('#Email').removeClass('email');
@@ -61,7 +70,7 @@
                     gemini_popup.popupClose(e);
                     gemini_admin.getPage();
                     gemini_ui.stopBusy('#colorbox #popup-button-yes');
-                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
             }
             else {
                 $('.error:not(label)', '#cs-popup-content').first().focus();

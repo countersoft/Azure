@@ -11,34 +11,47 @@
 /*global tinymce:true */
 
 tinymce.PluginManager.add('code', function(editor) {
-	function showSourceEditor() {
+	function showDialog() {
 		editor.windowManager.open({
 			title: "Source code",
 			body: {
 				type: 'textbox',
 				name: 'code',
 				multiline: true,
-				minWidth: 600,
-				minHeight: 500,
+				minWidth: editor.getParam("code_dialog_width", 600),
+				minHeight: editor.getParam("code_dialog_height", Math.min(tinymce.DOM.getViewPort().h - 200, 500)),
 				value: editor.getContent({source_view: true}),
-				spellcheck: false
+				spellcheck: false,
+				style: 'direction: ltr; text-align: left'
 			},
 			onSubmit: function(e) {
-				editor.setContent(e.data.code);
+				// We get a lovely "Wrong document" error in IE 11 if we
+				// don't move the focus to the editor before creating an undo
+				// transation since it tries to make a bookmark for the current selection
+				editor.focus();
+
+				editor.undoManager.transact(function() {
+					editor.setContent(e.data.code);
+				});
+
+				editor.selection.setCursorLocation();
+				editor.nodeChanged();
 			}
 		});
 	}
 
+	editor.addCommand("mceCodeEditor", showDialog);
+
 	editor.addButton('code', {
 		icon: 'code',
 		tooltip: 'Source code',
-		onclick: showSourceEditor
+		onclick: showDialog
 	});
 
 	editor.addMenuItem('code', {
 		icon: 'code',
 		text: 'Source code',
 		context: 'tools',
-		onclick: showSourceEditor
+		onclick: showDialog
 	});
 });

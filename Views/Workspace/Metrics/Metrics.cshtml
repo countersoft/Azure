@@ -1,0 +1,24 @@
+﻿@model WorkspaceMetricsModel
+
+<div id="dashboard-zone">
+    <div id="dashboard-wrapper">
+    @if (Model.Widgets.Count == 0 || Model.CurrentPageCard.IsNew)
+    {
+        if(Model.CurrentPageCard.IsExisting)
+        { 
+        <img src="@GeminiContext.AssetsUrl/images/empty-state/sidebar-metrics.png" />
+        }
+        else
+        {
+            <img src="@GeminiContext.AssetsUrl/images/empty-state/sidebar-metrics-no-workspace.png" />
+        }
+    }
+    else
+    {
+        foreach (var m in Model.Widgets)
+        {
+            <div class="inline-block center valign-top dashboard-widget">@{Html.RenderPartial(m.ViewFile, m.Model);}</div>
+        }
+    }
+    </div>
+</div>

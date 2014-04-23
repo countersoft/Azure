@@ -12,7 +12,6 @@
             <td class="left-box">
             
                 <table id="welcome-message-zone">
-                    <tr><td><div class="gemini-login"><img src="~/assets/images/gemini-login.png"/></div><div class="divider-login"></div></td></tr>                    
                     <tr><td><h1 id="welcome-title">@GeminiContext.Config.WelcomeTitle</h1></td></tr>
                     <tr><td><div id="cs-template"><div id="welcome-message" class="cs-wysiwyg">@Html.Raw(GeminiContext.Config.WelcomeMessage)</div></div></td></tr>
                 </table>   
@@ -24,7 +23,7 @@
                     <table>
                     @if(!DeviceContext.IsDesktop)
                     {
-                        <tr><td><div class="gemini-login"><img src="~/assets/images/gemini-login.png"/></div><div class="divider-login"></div></td></tr>   
+                        <tr><td><div class="gemini-login"><img src="~/assets/images/logo.png"/></div><div class="divider-login"></div></td></tr>   
                     }
                     <tr>
                         <td>
@@ -83,28 +82,34 @@
                                                                     <table id="regular-credentials" cellpadding="5px" cellspacing="5px">
                                                                         <tr>
                                                                             <!--<td>@GetResource(ResourceKeys.Username, Resourcing.Colon)</td>-->
-                                                                            <td><input type="text" id="Username" name="Username" class="input-field required input-size6" value="@Model.User.Username" /> </td>
+                                                                            <td><input type="text" id="Username" name="Username" class="input-field required input-size7" value="@Model.User.Username" /> </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <!--<td>@GetResource(ResourceKeys.Password, Resourcing.Colon)</td>-->
-                                                                            <td><input type="password" id="regular-password" name="regular-password" class="input-field required input-size6" /> </td>
+                                                                            <td><input type="password" id="regular-password" name="regular-password" class="input-field required input-size7" /> </td>
                                                                         </tr>
 
                                                                         <tr>
-                                                                            @if(GeminiContext.Config.ShowUserRegistrationLink)
-                                                                            {
-                                                                                <td style="float: left;">
-                                                                                    <a style="line-height: 26px;" href="~/account/register">Register<a/>
-                                                                                </td>
-                                                                            }
+                                                                           <td style="float: left;">
+                                                                                <input type="checkbox" class="fancy" name="rememberMe" id="RememberMe" />
+                                                                               <label for="RememberMe">Remember Me</label>
+                                                                            </td>  
                                                                             
                                                                             <td style="float: right;">
-                                                                                <input id="regular-signin" type="submit" value='@GetResource(ResourceKeys.Login)' class='button-primary button-small' style="width: 52px;" />
+                                                                                <input id="regular-signin" type="submit" value='@GetResource(ResourceKeys.Login)' class='button-primary button-small'/>
                                                                             </td>
                                                                         </tr>
 
+                                                                         @if(GeminiContext.Config.ShowUserRegistrationLink)
+                                                                        {
+                                                                        <tr>                                                                            
+                                                                            <td style="float: left;">
+                                                                                <a style="line-height: 26px;" href="~/account/register">Register<a/>
+                                                                            </td>                                                                            
+                                                                        </tr>
+                                                                        }
                                                                         <tr>                                                                   
-                                                                            <td><div class="invalid-credentials">@Model.ErrorMessage</div></td>
+                                                                            <td><div class="invalid-credentials">@Html.Raw(Model.ErrorMessage)</div></td>
                                                                         </tr>
                             
                                                                     </table>
@@ -113,8 +118,8 @@
                                                                 <h3 style="margin-bottom:15px;">Reset your password</h3>
                                                                 <div class='help-login'>
                                                                     <div class="margin-top-10">
-                                                                        <form action="forgot-password" method="post" id="forgot-password-form" style="margin-left: 11px;">
-                                                                            <input type="text" id="email" name="email" style="width: 185px" placeholder="Email" class="input-field required email" />&nbsp;&nbsp;<input id="forgot-password" name='forgot-password' type="submit" value='@GetResource(ResourceKeys.Reset)' class='button-secondary button-small' style="width: 52px;" />
+                                                                        <form action="password/reminder" method="post" id="forgot-password-form" style="margin-left: 11px;">
+                                                                            <input type="text" id="email" name="email" style="width: 175px" placeholder="Email" class="input-field required email" />&nbsp;&nbsp;<input id="forgot-password" name='forgot-password' style="float: right; margin-right: 10px;" type="submit" value='@GetResource(ResourceKeys.Reset)' class='button-secondary button-small' />
                                                                         </form>
                                                                     </div>
                                                                 </div>
@@ -152,4 +157,5 @@
 @section DocumentReady
 {
     gemini_account.initLogin();
+    gemini_session.clearSessionTimeOut();
 }

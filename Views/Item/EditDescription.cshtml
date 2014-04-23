@@ -54,7 +54,7 @@
         {
             if ($("#regular-form").valid()) {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
-                gemini_ajax.postCall(gemini_item.itemUrl + "item", $('#id', "#EditDescriptionPopupContainer").val() + "/updatedescription", function (response) {
+                gemini_ajax.postCall("item", "updatedescription?issueid=" + $('#id', "#EditDescriptionPopupContainer").val(), function (response) {
 
                     gemini_popup.popupClose();
                     if (response.Success) {

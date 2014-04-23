@@ -1,7 +1,7 @@
 ﻿@using System.Text
 @model TemplatesCustomFieldsEditModel
 
-<div id="TemplatesMetaItemContainer" style="height: 610px;">
+<div id="TemplatesMetaItemContainer" style="height: 550px;overflow:auto;">
     <form id="regular-form">
         <input type="hidden" value="@Model.CustomField.Id" name="Id" id="Id" />
         <table id="table-admin-customfield" class="admin-data-entry" cellpadding="0" cellspacing="0">
@@ -63,24 +63,24 @@
                     <td>Minimum Value
                     </td>
                     <td>
-                        <input type="text" id="MinimumValue" name="MinimumValue" 
-                           class="input-field input-size9" value="@Model.CustomField.MinValue"/>
+                        <input type="text" id="MinimumValue" name="MinimumValue" maxlength="9"
+                               class="input-field input-size9" value="@Model.CustomField.MinValue" />
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_NUMERIC">
                     <td>Maximum Value
                     </td>
                     <td>
-                        <input type="text" id="MaximumValue" name="MaximumValue" 
-                           class="input-field input-size9" value="@Model.CustomField.MaxValue"/>
+                        <input type="text" id="MaximumValue" name="MaximumValue" maxlength="9"
+                               class="input-field input-size9" value="@Model.CustomField.MaxValue" />
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_TEXT">
                     <td>Maximum Length
                     </td>
                     <td>
-                        <input type="text" id="MaximumLength" name="MaximumLength" 
-                           class="input-field required input-size9" value="@(Model.CustomField.MaxLen == 0 ? "" : Model.CustomField.MaxLen.ToString())"/>
+                        <input type="text" id="MaximumLength" name="MaximumLength" maxlength="9"
+                               class="input-field required input-size9" value="@(Model.CustomField.MaxLen == 0 ? "" : Model.CustomField.MaxLen.ToString())" />
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_TEXT">
@@ -246,7 +246,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
+        $("#TemplatesMetaItemContainer").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 100 });
 
         gemini_ui.chosen("#Type", null, true);
         gemini_ui.chosen("#VersionRestriction", null, true);
@@ -336,13 +336,14 @@
 
             if ($("#regular-form").valid()) {
                 gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                gemini_ajax.postCall("configure/Templates/CustomFields", "SaveData", function () {
+                gemini_ajax.postCall("configure/Templates/CustomFields", "SaveData", function ()
+                {
                     gemini_popup.toast("Saved");
-
                     gemini_popup.popupClose(e);
                     gemini_admin.getPage();
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
 
             }
             else {
@@ -350,6 +351,7 @@
             }
 
         });
+
         setTimeout(function () { setupForm($("#Type").val()) }, 10);
         setupCascading($("#CascadingField").val() > 0);
             

@@ -83,7 +83,7 @@ define("tinymce/ForceBlocks", [], function() {
 					}
 
 					if (!rootBlockNode) {
-						rootBlockNode = dom.create(forcedRootBlock);
+						rootBlockNode = dom.create(forcedRootBlock, editor.settings.forced_root_block_attrs);
 						node.parentNode.insertBefore(rootBlockNode, node);
 						wrapped = true;
 					}
@@ -126,7 +126,7 @@ define("tinymce/ForceBlocks", [], function() {
 
 		// Force root blocks
 		if (settings.forced_root_block) {
-			editor.on('KeyUp NodeChange', addRootBlocks);
+			editor.on('NodeChange', addRootBlocks);
 		}
 	};
 });

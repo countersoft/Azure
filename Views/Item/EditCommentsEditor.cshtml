@@ -2,7 +2,7 @@
 
 <div class="comments-wysiwyg-container" data-id="@Model.Issue.Id" data-controller="@Model.Controller">
     <h2>@Model.Issue.IssueKey</h2>
-    <form class="comments-form"  action="@Url.Action("addcomment", "AjaxItem", new RouteValueDictionary(new { projectid = Model.Issue.Project.Id, projectcode = Model.Issue.Project.Code, issueid = Model.Issue.Id }))" method="post" enctype="multipart/form-data">
+    <form class="comments-form"  action="@Url.Action("addcomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id }))" method="post" enctype="multipart/form-data">
         <div class='wysiwyg-container'>
             <textarea id="comments-wysiwyg-content" name="commentsWysiwygContent"></textarea>         
         </div> 
@@ -51,7 +51,7 @@
                         
                         var url = csVars.ProjectUrl + 'items/' + issueId + '/refreshrow';
                         var pageType = '@((int)Model.PageType)';
-                        gemini_ajax.call(url, pageType, function (response) {
+                        gemini_ajax.call('items', 'refreshrow?issueid=' + issueId + '&viewtype=' + pageType, function (response) {
                             if (response.success) {
                                 gemini_items.refreshRow(response, issueId, true);
                                 $('#tr-issue-' + issueId, '#data').addClass('view-issue-highlight');                               

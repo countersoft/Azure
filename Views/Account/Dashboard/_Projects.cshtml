@@ -1,0 +1,23 @@
+﻿@model PersonalDashboardModel
+
+<table class="projects">
+    <tbody>
+        @if(Model.AllProjects.Count > 0)
+        { 
+            foreach (var project in Model.AllProjects)
+            {
+                <tr>
+                    <td valign="top" class="key"><a href="@(GeminiContext.Url)workspace/0/items?projects=@(project.Entity.Id)">@(project.Entity.Code)</a></td>
+                    <td valign="top" class="title">
+                        @(project.Entity.Name)@if (project.Label.HasValue())
+                        {<text><span class="label">(@(project.Label))</span></text>}
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td class="key"></td><td class="title"></td></tr>
+        }
+    </tbody>
+</table>

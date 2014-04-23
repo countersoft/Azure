@@ -26,7 +26,7 @@
             var issue = link.Issue.Id == Model.Issue.Id ? link.OtherIssue : link.Issue;
             <tr data-id="@issue.Id">
                 <td>@link.LinkType</td>
-                <td><a target="_blank" href='@Url.Action("Item", "Item", new RouteValueDictionary(new {  projectid = issue.Project.Id, projectcode = issue.Project.Code, issueid = issue.Id }))' >@issue.IssueKey</a></td>
+                <td><a target="_blank" href='@Url.Action("Item", "Item", new RouteValueDictionary(new {  id = issue.Project.Id, issueid = issue.Id }))' >@issue.IssueKey</a></td>
                 <td>@issue.Type</td>
                 <td>@issue.Status</td>
                 <td>@issue.Title</td>

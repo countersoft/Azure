@@ -1,5 +1,12 @@
 ﻿@model ViewIssueModel
 
+@if(Model.Issue.SLA != null && Model[ItemAttributeVisibility.SLA])
+{
+    <div class="margin-bottom-20">
+    <div class="touch-info bold"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.SLA)</span></span> @(Model.Issue.SLA.Name) @(Model.SLAState)<span class="view-sla-@Model.Issue.Entity.SLAStatus sla-timer" data-sla-minutes="@Model.Issue.SLATimeLeftMinutes" data-sla-state="@Model.Issue.Entity.SLAStatus">@(Model.Issue.SLATimeLeftFull)</span></div>    
+    </div>
+}
+
 @if (Model.SourceLink.HasValue())
 {
     if (Model[ItemAttributeVisibility.Source])
@@ -11,13 +18,13 @@ else
 {
     if (Model[ItemAttributeVisibility.DateCreated])
     { 
-        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reporter</div>
+        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reporter @if(Model.Issue.Entity.ReportedBy != Model.Issue.Entity.Creator){<text>(via @(Model.Issue.Creator))</text>} </div>
     }
 }
 
 @if (Model[ItemAttributeVisibility.DateRevised])
 {
-    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Revised)</span></span> @Model.Issue.Revised.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reviser</div>
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Revised)</span></span> @Model.Issue.Revised.ToString("dd-MMM-yyyy HH:mm") @if (Model[ItemAttributeVisibility.AssociatedHistory]){ <text>&rarr;</text> @Model.Issue.Reviser }</div>
 }
 
 @if (Model[ItemAttributeVisibility.ClosedDate])

@@ -1,0 +1,68 @@
+﻿@model BreakdownModel
+<div class="metric-chart">
+    <div class="label">@Model.Title</div>
+    <div id='pie-@Model.Id' style="width:150px; height: 150px;display:inline-block;"></div>
+</div>
+
+@{
+    var buffer = new System.Text.StringBuilder();
+    foreach(var item in Model.Items)
+    {
+        buffer.AppendFormat("[\"{0}\", {1}],", item.Label, item.Count);
+    }
+    if(buffer.Length > 0)
+    {
+<script type="text/javascript">
+    $(document).ready(function () {
+        chart = new Highcharts.Chart(
+        {
+            chart: {
+                renderTo: 'pie-@Model.Id',
+                backgroundColor: '#e4e9f4',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            }, title: {
+                text: ''
+            }, tooltip: {
+                formatter: function () {
+                    return '' + this.point.name + ': ' + this.percentage.toFixed(0) + '%';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false, color: '#000000', connectorColor: '#000000', formatter: function () { return '' + this.point.name + ': ' + this.percentage.toFixed(0) + ' %'; }
+                    },
+                    showInLegend: true,
+                    size: 120/*,
+                    center: ["20%", 100]*/
+                }
+            },
+            legend: {
+                verticalAlign: 'bottom',
+                enabled:false,
+                y: 00/*,
+                maxHeight:20*/
+            },
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            series:
+                [{
+                    type: 'pie',
+                    name: 'Items',
+                    data: [
+                        @Html.Raw(buffer.ToString(0, buffer.Length-1))
+                    ]
+                }]
+        });
+    });
+</script>
+}
+}

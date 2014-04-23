@@ -11,7 +11,12 @@
 /*global tinymce:true */
 
 tinymce.PluginManager.add('autosave', function(editor) {
-	var settings = editor.settings, LocalStorage = tinymce.util.LocalStorage, prefix = editor.id, started;
+	var settings = editor.settings, LocalStorage = tinymce.util.LocalStorage, prefix, started;
+
+	prefix = settings.autosave_prefix || 'tinymce-autosave-{path}{query}-{id}-';
+	prefix = prefix.replace(/\{path\}/g, document.location.pathname);
+	prefix = prefix.replace(/\{query\}/g, document.location.search);
+	prefix = prefix.replace(/\{id\}/g, editor.id);
 
 	function parseTime(time, defaultTime) {
 		var multipels = {
@@ -25,33 +30,36 @@ tinymce.PluginManager.add('autosave', function(editor) {
 	}
 
 	function hasDraft() {
-		var time = parseInt(LocalStorage.getItem(prefix + "autosave.time"), 10) || 0;
+		var time = parseInt(LocalStorage.getItem(prefix + "time"), 10) || 0;
 
 		if (new Date().getTime() - time > settings.autosave_retention) {
-			removeDraft();
+			removeDraft(false);
 			return false;
 		}
 
 		return true;
 	}
 
-	function removeDraft() {
-		LocalStorage.removeItem(prefix + "autosave.draft");
-		LocalStorage.removeItem(prefix + "autosave.time");
+	function removeDraft(fire) {
+		LocalStorage.removeItem(prefix + "draft");
+		LocalStorage.removeItem(prefix + "time");
+
+		if (fire !== false) {
+			editor.fire('RemoveDraft');
+		}
 	}
 
 	function storeDraft() {
-		if (started && editor.isDirty()) {
-			LocalStorage.setItem(prefix + "autosave.draft", editor.getContent({format: 'raw', no_events: true}));
-			LocalStorage.setItem(prefix + "autosave.time", new Date().getTime());
+		if (!isEmpty() && editor.isDirty()) {
+			LocalStorage.setItem(prefix + "draft", editor.getContent({format: 'raw', no_events: true}));
+			LocalStorage.setItem(prefix + "time", new Date().getTime());
 			editor.fire('StoreDraft');
 		}
 	}
 
 	function restoreDraft() {
 		if (hasDraft()) {
-			editor.setContent(LocalStorage.getItem(prefix + "autosave.draft"), {format: 'raw'});
-			removeDraft();
+			editor.setContent(LocalStorage.getItem(prefix + "draft"), {format: 'raw'});
 			editor.fire('RestoreDraft');
 		}
 	}
@@ -76,7 +84,7 @@ tinymce.PluginManager.add('autosave', function(editor) {
 
 		self.disabled(!hasDraft());
 
-		editor.on('StoreDraft RestoreDraft', function() {
+		editor.on('StoreDraft RestoreDraft RemoveDraft', function() {
 			self.disabled(!hasDraft());
 		});
 
@@ -86,6 +94,7 @@ tinymce.PluginManager.add('autosave', function(editor) {
 	function restoreLastDraft() {
 		editor.undoManager.beforeChange();
 		restoreDraft();
+		removeDraft();
 		editor.undoManager.add();
 	}
 
@@ -101,8 +110,6 @@ tinymce.PluginManager.add('autosave', function(editor) {
 		onPostRender: postRender,
 		context: 'file'
 	});
-
-	this.storeDraft = storeDraft;
 
 	// Internal unload handler will be called before the page is unloaded
 	function beforeUnloadHandler() {
@@ -123,5 +130,33 @@ tinymce.PluginManager.add('autosave', function(editor) {
 		return msg;
 	}
 
+	function isEmpty(html) {
+		var forcedRootBlockName = editor.settings.forced_root_block;
+
+		html = tinymce.trim(typeof(html) == "undefined" ? editor.getBody().innerHTML : html);
+
+		return html === '' || new RegExp(
+			'^<' + forcedRootBlockName + '[^>]*>((\u00a0|&nbsp;|[ \t]|<br[^>]*>)+?|)<\/' + forcedRootBlockName + '>|<br>$', 'i'
+		).test(html);
+	}
+
+	if (editor.settings.autosave_restore_when_empty !== false) {
+		editor.on('init', function() {
+			if (hasDraft() && isEmpty()) {
+				restoreDraft();
+			}
+		});
+
+		editor.on('saveContent', function() {
+			removeDraft();
+		});
+	}
+
 	window.onbeforeunload = beforeUnloadHandler;
+
+	this.hasDraft = hasDraft;
+	this.storeDraft = storeDraft;
+	this.restoreDraft = restoreDraft;
+	this.removeDraft = removeDraft;
+	this.isEmpty = isEmpty;
 });

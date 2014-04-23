@@ -125,7 +125,7 @@
                     .data("value", $(this).attr("value"))
                     .data("name", $(this).text())
                     .appendTo(ul);
-                if ($(this).attr("selected")) { li.addClass("selected"); } 
+                if ($(this).prop("selected")) { li.addClass("selected"); } 
             });
 
             // build dialog box
@@ -223,34 +223,25 @@
         },
 
         labelClick: function () {
-            
             var $this = $(this);
-            var pos = $this.position();        
             var root = $this.data("root");
             var opts = root.data("options");
 
             var dialog = root.data("dialog");
-            var pos = $(this).offset();
+
+            var pos = dialog.css('position') == 'fixed' ? $(this).offset() : $this.position();
+
             var isVisible = dialog.is(':visible');
 
             $(this).parent().parent().find('.gentleselect-dialog').hide();
 
             if (!isVisible) {
-                /*$(dialog).position({
-                    "my": "left top",
-                    "at": "left bottom",
-                    "of": $(this),
-                    "offset": "0 0",
-                    "collision": "none"
-                });*/
-                dialog.css('left', pos.left).css('top', pos.top + 30).show();
+                dialog.css('left', pos.left).css('top', pos.top + 30);
 
                 if (opts.openEffect == "fade") {
                     dialog.hide();
-                    //dialog.fadeIn(opts.openSpeed);
                 } else {
                     dialog.show();
-                    //dialog.slideDown(opts.openSpeed);
                 }
             }
             else {

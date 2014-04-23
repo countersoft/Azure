@@ -1,0 +1,75 @@
+﻿@model ActivityTimelineModel
+
+<table id="activity-timeline-data" cellpadding="0" cellspacing="0"> 
+    <tr>
+        <td class="header">@Model.Created.Count @GetResource(ResourceKeys.New)</td>
+        <td class="header">@Model.Updated.Count @GetResource(ResourceKeys.Updates)</td>
+        <td class="header">@Model.Comments.Count @GetResource(ResourceKeys.Comments)</td>
+    </tr>
+
+    <tr>
+        <td class="items" valign="top" align="left">
+            <ul class="timelane">
+                @foreach (ActivityTimelineModel.CreatedModel data in Model.Created)
+                {
+                    <li class="item">
+                        <a href="@NavigationHelper.GetIssueUrl(GeminiContext, data.Item)">
+                            <div class="image">
+                                <img src="~/account/picture/@data.UserId/1" title="@data.Item.Reporter" alt="@data.Item.Reporter" width="40" height="40"/>
+                            </div>
+                            <div class="item-key">@data.Item.IssueKey</div>
+                            <div class="by">by</div>
+                            <div class="item-author">@data.Item.Reporter</div>
+                            <br />
+                            <div class="item-title">@data.Item.Title</div>
+                            <div class="item-desc hardBreak">@Countersoft.Foundation.Utility.Helpers.HtmlHelper.ConvertHtmlToText2(data.Item.Description.ToMaxMore(1000)).ToMaxMore(250)</div>
+                            <div class="dated">@data.Item.CreatedString</div>
+                        </a>
+                    </li>
+                }
+            </ul>                
+        </td>
+                
+        <td class="items" valign="top" align="left">
+            <ul class="timelane">
+                @foreach(ActivityTimelineModel.UpdatedModel item in Model.Updated)
+                {
+                    <li class="item">
+                        <a href="@NavigationHelper.GetIssueUrl(GeminiContext, item.ProjectId, item.ProjectCode, item.IssueId)">
+                            <div class="image">
+                                <img src="~/account/picture/@item.UserId/1" width="40" height="40"/>
+                            </div>
+                            <div class="item-key">@item.IssueKey</div>
+                            <br />
+                            <div class="item-title">@item.Title</div>
+                            @foreach (ActivityTimelineModel.UpdatedModel.ChangeLog changeEntry in item.Changes)
+                            {
+                                <div class="item-desc hardBreak"><span class="bold">@changeEntry.Field</span> @changeEntry.Change</div>
+                            }
+                        </a>
+                    </li>
+                }                        
+            </ul>
+        </td>
+                
+        <td class="items" valign="top" align="left">
+            <ul class="timelane">
+                @foreach(ActivityTimelineModel.CommentModel item in Model.Comments)
+                {
+                    <li class="item">
+                        <a href="@NavigationHelper.GetIssueUrl(GeminiContext, item.ProjectId, item.ProjectCode, item.IssueId)#comments">
+                            <div class="image">
+                                <img src="~/account/picture/@item.UserId/1" title="@item.Author" alt="@item.Author" width="40" height="40"/>
+                            </div>
+                            <div class="item-key">@item.Author</div>
+                            <br />
+                            <div class="item-desc hardBreak">@item.Comment</div>
+                            <div class="dated">@item.Dated</div>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </td>
+    </tr>
+</table>
+

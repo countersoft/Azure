@@ -73,6 +73,7 @@
 </div>
 
 <script type="text/javascript">
+    var origDataTable;
     $(document).ready(function () {
         @if(Model.HasProjectId && !Model.HideProjects)
         {
@@ -92,8 +93,8 @@
             }
         });
 
-        $("#add-lut-data", "#custom-field-lookup").click(function () {
-
+        $("#add-lut-data", "#custom-field-lookup").click(function ()
+        {
             var newDesc = $("#add-customfield-property-description").val();
 
             if (newDesc.length == 0)
@@ -101,25 +102,36 @@
                 $('#add-customfield-property-description').addClass('error');
             }
 
-            if ($('#add-customfield-property-id').val() != '' && $('#add-customfield-property-description').val() != '') {
-                gemini_ajax.postCall("configure/Templates/CustomFields", 'add', function(response) {
-                    $('#custom-field-lookup').html(response.Result.Html);
-                }, null, $('#custom-field-lookup #customfield-lookup-form').serialize());
+            if ($('#add-customfield-property-id').val() != '' && $('#add-customfield-property-description').val() != '')
+            {
+                gemini_ajax.postCall("configure/Templates/CustomFields", 'add', function(response) 
+                { 
+                    if(response.success)
+                    {
+                        $('#custom-field-lookup').html(response.Result.Html);
+
+                    }
+                },
+                    null, $('#custom-field-lookup #customfield-lookup-form').serialize(), null, true);
             }
         });
-
+        if(origDataTable == null || origDataTable == undefined)
+        {
+            origDataTable = gemini_admin.currentTable;
+        }
          gemini_admin.initDatatables("#custom-field-lookup-table", {"aaSorting": [], iDisplayLength: 10});
 
         $(".action-button-delete", "#custom-field-lookup-container").click(function () {
 
-            gemini_ajax.postCall("configure/Templates/CustomFields", 'Delete', function (response) {
-                $("#custom-field-lookup-container table [data-id='" + response.Result + "']").remove();
-            }, null, {
-                id: $(this).parents('tr:eq(0)').attr('data-id'), 
-                customfieldid: $('#custom-field-lookup-container table').attr('data-customfieldid'), 
-                projectId:@Model.SelectedProject,
-                hideProject: @Model.HideProjects.ToJSBool()
-            });
+            gemini_ajax.postCall("configure/Templates/CustomFields", 'Delete', 
+                function (response) {$("#custom-field-lookup-container table [data-id='" + response.Result + "']").remove();}, 
+                null,
+                {
+                    id: $(this).parents('tr:eq(0)').attr('data-id'), 
+                    customfieldid: $('#custom-field-lookup-container table').attr('data-customfieldid'), 
+                    projectId:@(Model.SelectedProject),
+                    hideProject: @Model.HideProjects.ToJSBool()
+                }, null, true);
         });
 
         function inlineEdit(selector, getUrl, saveUrl) {
@@ -157,14 +169,14 @@
                         customfieldid: $(this).parents('table:eq(0)').attr('data-customfieldid')
                     };
                 },
-                /*"callback": function (sValue, y) {
-                /// Redraw the table from the new data on the server
-                //oTable.fnDraw();
-                },*/
                 "height": "14px"
             });
         };
-        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+        $("#popup-button-no").click(function (e) 
+        { 
+            gemini_admin.currentTable = origDataTable;
+            gemini_popup.popupClose(e); 
+        });
         setTimeout(function() { $('#add-customfield-property-description').focus(); }, 250);
     });
 </script>

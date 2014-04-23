@@ -11,7 +11,7 @@
 /**
  * Text formatter engine class. This class is used to apply formats like bold, italic, font size
  * etc to the current selection or specific nodes. This engine was build to replace the browsers
- * default formatting logic for execCommand due to it's inconsistant and buggy behavior.
+ * default formatting logic for execCommand due to it's inconsistent and buggy behavior.
  *
  * @class tinymce.Formatter
  * @example
@@ -140,7 +140,14 @@ define("tinymce/Formatter", [
 				},
 
 				removeformat: [
-					{selector: 'b,strong,em,i,font,u,strike', remove: 'all', split: true, expand: false, block_expand: true, deep: true},
+					{
+						selector: 'b,strong,em,i,font,u,strike,sub,sup',
+						remove: 'all',
+						split: true,
+						expand: false,
+						block_expand: true,
+						deep: true
+					},
 					{selector: 'span', attributes: ['style', 'class'], remove: 'empty', split: true, expand: false, deep: true},
 					{selector: '*', attributes: ['style', 'class'], split: false, expand: false, deep: true}
 				]
@@ -806,6 +813,7 @@ define("tinymce/Formatter", [
 
 			function removeRngStyle(rng) {
 				var startContainer, endContainer;
+				var commonAncestorContainer = rng.commonAncestorContainer;
 
 				rng = expandRng(rng, formatList, TRUE);
 
@@ -814,15 +822,22 @@ define("tinymce/Formatter", [
 					endContainer = getContainer(rng);
 
 					if (startContainer != endContainer) {
-						// WebKit will render the table incorrectly if we wrap a TD in a SPAN
-						// so lets see if the can use the first child instead
-						// This will happen if you tripple click a table cell and use remove formatting
-						if (/^(TR|TD)$/.test(startContainer.nodeName) && startContainer.firstChild) {
-							if (startContainer.nodeName == "TD") {
-								startContainer = startContainer.firstChild || startContainer;
-							} else {
+						// WebKit will render the table incorrectly if we wrap a TH or TD in a SPAN
+						// so let's see if we can use the first child instead
+						// This will happen if you triple click a table cell and use remove formatting
+						if (/^(TR|TH|TD)$/.test(startContainer.nodeName) && startContainer.firstChild) {
+							if (startContainer.nodeName == "TR") {
 								startContainer = startContainer.firstChild.firstChild || startContainer;
+							} else {
+								startContainer = startContainer.firstChild || startContainer;
 							}
+						}
+
+						// Try to adjust endContainer as well if cells on the same row were selected - bug #6410
+						if (commonAncestorContainer &&
+							/^T(HEAD|BODY|FOOT|R)$/.test(commonAncestorContainer.nodeName) &&
+							/^(TH|TD)$/.test(endContainer.nodeName) && endContainer.firstChild) {
+							endContainer = endContainer.firstChild || endContainer;
 						}
 
 						// Wrap start/end nodes in span element since these might be cloned/moved
@@ -1007,9 +1022,15 @@ define("tinymce/Formatter", [
 			var startNode;
 
 			function matchParents(node) {
+				var root = dom.getRoot();
+
+				if (node === root) {
+					return false;
+				}
+
 				// Find first node with similar format settings
 				node = dom.getParent(node, function(node) {
-					return !!matchNode(node, name, vars, true);
+					return node.parentNode === root || !!matchNode(node, name, vars, true);
 				});
 
 				// Do an exact check on the similar format element
@@ -1085,8 +1106,9 @@ define("tinymce/Formatter", [
 				for (x = formatList.length - 1; x >= 0; x--) {
 					selector = formatList[x].selector;
 
-					// Format is not selector based, then always return TRUE
-					if (!selector) {
+					// Format is not selector based then always return TRUE
+					// Is it has a defaultBlock then it's likely it can be applied for example align on a non block element line
+					if (!selector || formatList[x].defaultBlock) {
 						return TRUE;
 					}
 
@@ -1516,16 +1538,19 @@ define("tinymce/Formatter", [
 			}
 
 			function findBlockEndPoint(container, sibling_name) {
-				var node;
+				var node, root = dom.getRoot();
 
 				// Expand to block of similar type
 				if (!format[0].wrapper) {
-					node = dom.getParent(container, format[0].block);
+					node = dom.getParent(container, format[0].block, root);
 				}
 
 				// Expand to first wrappable block element or any block element
 				if (!node) {
-					node = dom.getParent(container.nodeType == 3 ? container.parentNode : container, isTextBlock);
+					node = dom.getParent(container.nodeType == 3 ? container.parentNode : container, function(node) {
+						// Fixes #6183 where it would expand to editable parent element in inline mode
+						return node != root && isTextBlock(node);
+					});
 				}
 
 				// Exclude inner lists from wrapping
@@ -1576,14 +1601,14 @@ define("tinymce/Formatter", [
 
 			if (format[0].inline) {
 				if (rng.collapsed) {
-					// Expand left to closest word boundery
+					// Expand left to closest word boundary
 					endPoint = findWordEndPoint(startContainer, startOffset, true);
 					if (endPoint) {
 						startContainer = endPoint.container;
 						startOffset = endPoint.offset;
 					}
 
-					// Expand right to closest word boundery
+					// Expand right to closest word boundary
 					endPoint = findWordEndPoint(endContainer, endOffset);
 					if (endPoint) {
 						endContainer = endPoint.container;
@@ -1832,6 +1857,7 @@ define("tinymce/Formatter", [
 								if (isValid(forcedRootBlock, node.nodeName.toLowerCase())) {
 									if (!rootBlockElm) {
 										rootBlockElm = wrap(node, forcedRootBlock);
+										dom.setAttribs(rootBlockElm, ed.settings.forced_root_block_attrs);
 									} else {
 										rootBlockElm.appendChild(node);
 									}
@@ -1866,7 +1892,7 @@ define("tinymce/Formatter", [
 				next = next ? 'nextSibling' : 'previousSibling';
 
 				for (node = inc ? node : node[next]; node; node = node[next]) {
-					if (node.nodeType == 1 || !isWhiteSpaceNode(node)) {
+					if (node.nodeType == 1 && !isWhiteSpaceNode(node)) {
 						return node;
 					}
 				}
@@ -1924,7 +1950,7 @@ define("tinymce/Formatter", [
 						var name = attr.nodeName.toLowerCase();
 
 						// Don't compare internal attributes or style
-						if (name.indexOf('_') !== 0 && name !== 'style') {
+						if (name.indexOf('_') !== 0 && name !== 'style' && name !== 'data-mce-style') {
 							attribs[name] = dom.getAttrib(node, name);
 						}
 					});
@@ -2279,6 +2305,11 @@ define("tinymce/Formatter", [
 
 					// Move selection to text node
 					selection.setCursorLocation(node, 1);
+
+					// If the formatNode is empty, we can remove it safely. 
+					if (dom.isEmpty(formatNode)) {
+						dom.remove(formatNode);
+					}
 				}
 			}
 

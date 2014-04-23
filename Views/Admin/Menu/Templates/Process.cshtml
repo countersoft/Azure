@@ -38,8 +38,9 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-types", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 4, 5, 6] }] });
+    $(document).ready(function ()
+    {
+        gemini_admin.initDatatablesWithEdit("#table-admin-types", true, null, {bPaginate: false, "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 4, 5, 6] }] });
         gemini_admin.initTableDnD("#table-admin-types");
 
         //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
@@ -47,14 +48,14 @@
         
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Process", "DeleteForm", { id: id }, null, "Delete");
+            gemini_popup.centerPopup("configure/Templates/Process", "DeleteForm", { id: id }, null, "Delete", null, null, null, null, true);
         });
 
         $("#table-admin-types").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function ()
         {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id });
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-types").off('click', "#screens").on('click', "#screens", function (e)
@@ -62,21 +63,22 @@
             gemini_commons.stopClick(e);
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'screens', Template: gemini_admin.currentTemplate });
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'screens', Template: gemini_admin.currentTemplate }, null, null, null, null, null, null, true);
         });
 
-        $("#table-admin-types").off('click', "#workflow").on('click', "#workflow", function (e) {
+        $("#table-admin-types").off('click', "#workflow").on('click', "#workflow", function (e)
+        {
             gemini_commons.stopClick(e);
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'workflow', Template: gemini_admin.currentTemplate });
+            gemini_popup.centerPopup("configure/Templates/Process", "Editor", { id: id, mode: 'workflow', Template: gemini_admin.currentTemplate }, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-types_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
-        $("#system-options-add").click(function () {
-            gemini_popup.centerPopup("configure/Templates/Process", "Add");
+        $("#system-options-add").click(function ()
+        {
+            gemini_popup.centerPopup("configure/Templates/Process", "Add", null, null, null, null, null, null, null, true);
         });
-
     });
 </script>

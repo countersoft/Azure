@@ -14,6 +14,11 @@
 
 <script type="text/javascript">
 
+    $("#add-permission-form").submit(function () {
+        $("#popup-button-yes").click();
+        return false;
+    });
+
     $("#popup-button-yes").click(function (e)
     {
         if ($("#add-permission-form").valid()) {
@@ -25,7 +30,7 @@
                 gemini_popup.popupClose(e);
                 gemini_admin.getPage();
                 gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#add-permission-form").serialize());
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#add-permission-form").serialize(), null, true);
         }
     });
 

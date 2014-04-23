@@ -1,0 +1,35 @@
+﻿@model Countersoft.Gemini.Models.UserProfileModel
+
+<div id="cs-profile-view" class='clearfix cs-popup-tab-container'>
+    <div id="cs-popup-profile-zone" class="cs-popup-tabbed-zone">
+        <div id="cs-popup-profile-header" class="cs-popup-tab-header">
+            <div class="tabs left" >
+                <span class="tab selected" data-tab-id="profile">@GetResource(ResourceKeys.Profile)</span>
+                <span class="breaker">&nbsp;</span>
+                <span class="tab normal" data-tab-id="settings">@GetResource(ResourceKeys.Settings)</span>
+                <span class="breaker">&nbsp;</span>
+                <span class="tab normal" data-tab-id="password">@GetResource(ResourceKeys.Password)</span>
+                <span class="breaker">&nbsp;</span>
+                <span class="tab normal" data-tab-id="alerts">@GetResource(ResourceKeys.Alerts)</span>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        
+        <form action="profile" method="post" id="regular-form" autocomplete="off" enctype="multipart/form-data">
+            <input type="hidden" id="Id" name="Id" value="@Model.User.Entity.Id" />
+            <input type="hidden" id="returnurl" name="returnurl" value="@Model.ReturnUrl" />
+            
+            <div id="profile" class="cs-popup-tab-content selected">@Html.Partial("~/Views/Account/Profile/_Profile.cshtml", @Model)</div>
+            <div id="settings" class="cs-popup-tab-content">@Html.Partial("~/Views/Account/Profile/_Settings.cshtml", @Model)</div>
+            <div id="password" class="cs-popup-tab-content">@Html.Partial("~/Views/Account/Profile/_Password.cshtml", @Model)</div>
+            <div id="alerts" class="cs-popup-tab-content">@Html.Partial("~/Views/Account/Profile/_Alerts.cshtml", @Model)</div>
+        </form>
+
+    </div>
+    <div class='clearfix'></div>
+</div>
+
+@section DocumentReady
+{    
+    <text>gemini_account.initProfile("@GetResource(ResourceKeys.Saved)");</text>
+}

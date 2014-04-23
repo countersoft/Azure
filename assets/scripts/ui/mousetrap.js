@@ -891,7 +891,14 @@
             }
 
             // stop for input, select, and textarea
-            return element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+            var notButton = true;
+
+            if (element.type && element.type.toUpperCase() === 'BUTTON')
+            {
+                notButton = false;
+            }
+
+            return (element.tagName == 'INPUT' && notButton) || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
         },
 
         /**

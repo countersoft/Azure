@@ -107,6 +107,14 @@
             color: '@(Model.Color)'
         });
 
+        $('#Label').keypress(function (e) {
+            if (e.which == 13) {
+                jQuery(this).blur();
+                jQuery("#popup-button-yes").click();
+                return false
+            }
+        });
+
         $("#popup-button-yes").click(function (e)
         {
             if ($("#regular-form").valid())
@@ -118,7 +126,7 @@
                     gemini_popup.popupClose(e);
                     gemini_admin.getPage();
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId());
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
             }
             else {
                 $('.error:not(label)', '#cs-popup-content').first().focus();

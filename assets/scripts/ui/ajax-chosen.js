@@ -21,7 +21,7 @@
       options = $.extend({}, defaultOptions, $(select).data(), settings);
       this.chosen(chosenOptions ? chosenOptions : {});
       return this.each(function() {
-        return $(this).next('.chzn-container').find(".search-field > input, .chzn-search > input").bind('keyup', function() {
+        return $(this).next('.chosen-container').find(".search-field > input, .chosen-search > input").bind('keyup', function() {
           var field, msg, success, untrimmed_val, val;
           untrimmed_val = $(this).val();
           val = $.trim($(this).val());
@@ -32,11 +32,11 @@
           if (this.timer) {
             clearTimeout(this.timer);
           }
-          if ((val.length < options.minTermLength || val.length > options.minTermLength) && !select.next('.chzn-container').find('.no-results').is(':visible')) {
+          if ((val.length < options.minTermLength || val.length > options.minTermLength) && !select.next('.chosen-container').find('.no-results').is(':visible')) {
             return false;
           }
           msg = val.length < options.minTermLength ? options.keepTypingMsg : options.lookingForMsg + (" '" + val + "'");
-          select.next('.chzn-container').find('.no-results').text(msg);
+          select.next('.chosen-container').find('.no-results').text(msg);
           field = $(this);
           if (options.data == null) {
             options.data = {};
@@ -115,7 +115,7 @@
             });
 
             if (nbItems || update) {
-              select.trigger("liszt:updated");
+                gemini_ui.chosenUpdate(select);
             } else {
               select.data().chosen.no_results_clear();
               select.data().chosen.no_results(field.val());

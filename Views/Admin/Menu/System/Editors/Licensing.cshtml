@@ -25,7 +25,7 @@
             gemini_popup.popupClose(e);
             gemini_admin.getPage();
             gemini_ui.stopBusy('#colorbox #popup-button-yes');
-        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#license-form").serialize());
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#license-form").serialize(), null, true);
     });
 
     $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });

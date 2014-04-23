@@ -1,0 +1,44 @@
+﻿@model Countersoft.Gemini.Models.UserProfileModel
+
+<table class="data-entry-box margin-zero-auto">
+
+    <tr>
+        <td>@GetResource(ResourceKeys.Firstname)</td>
+        <td><input type="text" id="Firstname" name="Firstname" class="input-size8 required" value="@Model.User.Entity.Firstname"/> </td>
+    </tr>
+
+    <tr>
+        <td>@GetResource(ResourceKeys.Surname)</td>
+        <td><input type="text" id="Surname" name="Surname" class="input-size8 required" value="@Model.User.Entity.Surname" /> </td>
+    </tr>         
+
+    <tr>
+        <td>@GetResource(ResourceKeys.Username)</td>
+        <td><input type="text" class="input-size8 disabled" value="@Model.User.Entity.Username" disabled="disabled"/> </td>
+    </tr>
+
+    <tr>
+        <td>@GetResource(ResourceKeys.Email)</td>
+        <td><input type="text" id="Email" name="Email" class="input-size8 required email" value="@Model.User.Entity.Email" /> </td>
+    </tr> 
+
+    <tr>
+        <td valign="top">@GetResource(ResourceKeys.Picture)</td>
+        <td><img src="~/account/picture/@Model.User.Entity.Id?p=@(new Random().Next(1,100))" alt="Gravatar" width="64" height="64" /></td>
+    </tr>            
+
+    <tr>
+        <td valign="top"></td>
+        <td>
+            <input type="radio" id="option-gravatar" value="1" name="gravatar" class="avatar-option fancy" @if(Model.User.GetSettings().UseGravatar) {<text>checked="checked"</text>}/>
+            <label for="option-gravatar">Gravatar</label>
+            <input type="radio" id="option-upload" value="2" name="gravatar" class="margin-left-10 avatar-option fancy" @if(!Model.User.GetSettings().UseGravatar) {<text>checked="checked"</text>}/>
+            <label for="option-upload">@GetResource(ResourceKeys.Upload, Resourcing.Dotted)</label>
+        </td>
+    </tr>
+            
+    <tr id="upload-avatar" @if(Model.User.GetSettings().UseGravatar) {<text>class="invisible"</text>} >
+        <td valign="top"></td>
+        <td><input type="file" name="avatar" id="avatar"/></td>
+    </tr>          
+</table>

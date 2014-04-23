@@ -8,7 +8,7 @@
 <!--<![endif]-->
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>@ViewBag.Title</title>
@@ -25,62 +25,81 @@
     <script type="text/javascript">
     var csVars = {
         Url: "@GeminiContext.Url",
-        ProjectUrl: "project/@GeminiContext.Project.Entity.EscapedCode/@GeminiContext.Project.Entity.Id/",
+        ProjectUrl: "project/@GeminiContext.Project.Entity.Id/",
+        WorkspaceUrl: "workspace/@Model.CurrentPageCard.Id/",
+        ProjectId: @GeminiContext.Project.Entity.Id,
         AssetsPath: "@AssetsPath/",
         IEVersion: @Url.GetInternetExplorerVersion(),
         IsOpera: @Url.IsOpera().ToJSBool(),
         IsSafari: @Url.IsSafari().ToJSBool(),
+        IsFireFox: @Url.IsFireFox().ToJSBool(),
         FirstDayOfWeek: @((int)GeminiContext.User.CultureInfo.DateTimeFormat.FirstDayOfWeek),
         Licensed: @((GeminiApp.GeminiLicense.LicenseType == Rhino.Licensing.LicenseType.Standard && !GeminiApp.GeminiLicense.InvalidInstance).ToJSBool()),
         DontUseInlineEdit: @GeminiContext.Config.NoInlineEdit.ToJSBool()
     };
     </script>
     <script type="text/javascript">
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            @if (DeviceContext.IsMobile)
+        @if (DeviceContext.IsMobile)
             {
                 <text>
-                $(".dropdown").click(function() 
-                {
-                    $(this).find("ul.inner").toggleClass("show");
-                });
-                </text>
+        $(".dropdown").click(function()
+        {
+            $(this).find("ul.inner").toggleClass("show");
+        });
+        </text>
             }
 
-            @if (DeviceContext.IsDesktop)
+        @if (DeviceContext.IsDesktop)
             {
                 <text>
-                </text>
+        </text>
             }
 
-            @if (Model.HasCurrentPageCard)
+        gemini_session.init(@GeminiApp.Config.SessionTimeOut);
+
+        @if (Model.HasCurrentPageCard)
             {
                 @:gemini_appnav.pageCard = @Html.Raw(Model.CurrentPageCard.ToJson());
-                @:gemini_appnav.previousCards = @Html.Raw(Model.SavedCards.Select(x => x.Id).ToJson());
-            }
+                        @:gemini_appnav.previousCards = @Html.Raw(Model.SavedCards.Select(x => x.Id).ToJson());
+                    }
 
-            gemini_master.initBase(@Model.DisplayPageActions.ToJSBool(), @Model.ModelStatus, @Html.Raw(Model.AllProjectsLight.ToJson()));
+        gemini_master.initBase(@Model.DisplayPageActions.ToJSBool(), @Model.ModelStatus, @Html.Raw(Model.AllProjectsLight.ToJson()), @Model.NewWorkspace.ToJSBool(), @GeminiContext.User.IsGlobalAdmin.ToJSBool());
 
-            @RenderSection("DocumentReady", false)
+        @RenderSection("DocumentReady", false)
 
-            @if(Model.CID.HasValue())
+        @if(Model.CID.HasValue())
             {
                 <text>$.ajax({
-                    type: "GET",
-                    url: 'https://download.countersoft.com',
-                    data: { data: '@Model.CID' },
-                    dataType: "jsonp",
-                    success: function (data) {
-                    
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                    
-                    }
-                });</text>
-            }
-        });
+            type: "GET",
+            url: 'https://download.countersoft.com',
+            data: { data: '@Model.CID' },
+            dataType: "jsonp",
+            success: function (data) {
 
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });</text>
+            }
+    });
+
+    $(window).load(function() {
+        gemini_master.initTabs();
+        @RenderSection("WindowReady", false)
+        @if (GeminiContext.User.Entity.IsExisting && !GeminiContext.User.Entity.Fullname.HasValue())
+        {
+            <text>
+        setTimeout(function() 
+        {
+            $('.open-profile', '#user-menu').click();
+            $('.cs-menu-dropdown', '#user-menu').hide();
+        }, 200);
+            </text>
+        }
+    });
     @RenderSection("JavaScript", false)
     </script>
     <div class="hide">
@@ -103,8 +122,12 @@
                 @if (GeminiApp.GeminiLicense.InvalidInstance)
                 {
                     <div id="invalid-instance" class="left margin-top-15 margin-left-15">
-                        No more than @GeminiApp.GeminiLicense.MaxUsers users permitted with this license
+                        No more than @GeminiApp.GeminiLicense.Users users permitted with this license
                     </div>
+                }
+                else
+                {
+                    <div id="server-validation-error" class="hide left margin-top-15 margin-left-15"></div>
                 }
                 <div class="buttons right">
                     @if (!GeminiApp.GeminiLicense.InvalidInstance)
@@ -125,20 +148,6 @@
                     <span class="tab selected" data-tab-id="full-item">
                         @GetResource(ResourceKeys.Item)
                     </span>
-                    @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && GeminiContext.PermissionsManager.IsInRole(GeminiContext.Project.Entity, Countersoft.Gemini.Commons.Permissions.Roles.CanManagePlannerBoard))
-                    {
-                        <span class="breaker">&nbsp;</span>
-                        <span class="tab normal" data-tab-id="quick-items">
-                            @GetResource(ResourceKeys.Plan)
-                        </span>
-                    }
-                    @if (GeminiContext.Project.Entity.Id != Constants.AllProjectsId && (GeminiContext.User.IsGlobalAdmin || GeminiContext.Config.Sandbox))
-                    {
-                        <span class="breaker">&nbsp;</span>
-                        <span class="tab normal" data-tab-id="new-project">
-                            @GetResource(ResourceKeys.Project)
-                        </span>
-                    }
                 </div>
             </div>
             <div class="clearfix">
@@ -149,13 +158,17 @@
                 @if (GeminiApp.GeminiLicense.InvalidInstance)
                 {
                     <div id="invalid-instance" class="left margin-top-15 margin-left-15">
-                        No more than @GeminiApp.GeminiLicense.MaxUsers users permitted with this license
+                        No more than @GeminiApp.GeminiLicense.Users users permitted with this license
                     </div>
+                }
+                else
+                {
+                    <div id="server-validation-error" class="hide left margin-top-15 margin-left-15"></div>
                 }
                 <div class="buttons right">
                     @if (!GeminiApp.GeminiLicense.InvalidInstance)
                     {
-                       <input id="cs-popup-add-save" type="button" class="button-primary button-popup" value="@GetResource(ResourceKeys.Create)"/>
+                       <input id="cs-popup-add-save" type="button" class="button-primary button-popup" value="@GetResource(ResourceKeys.Add)"/>
                     }
                     <input id="cs-popup-add-close" type="button" class="button-secondary button-popup" value="@GetResource(ResourceKeys.Cancel)"/>
                 </div>
@@ -170,6 +183,7 @@
                 <div id='cs-popup-center-content' class="pad-10">
                 </div>
                 <div id="cs-popup-center-buttons" class="margin-top-20">
+                    <div id="server-validation-error" class="hide left margin-top-15 margin-left-15"></div>
                     <div class="buttons right">
                         <input id="popup-button-yes" type="button" class="button-primary button-small button-modal" value="@GetResource(ResourceKeys.Save)"/>
                         <input id="popup-button-no" type="button" class="button-secondary button-small button-modal" value="@GetResource(ResourceKeys.Cancel)"/>
@@ -178,8 +192,8 @@
             </div>
         </div>
     @*</div>*@
-    <div class="toast">
-        <span class="fonticon-tick"></span><p class="toast-message"></p>
+    <div id="toast-popup" class="toast-good">
+        <div class="toast-message"></div>
     </div>
     <div id="progress-indicator" class='hide' style="width:100px;max-width:100px;position:absolute;left:-200px;top:-200px;"></div>
 </body>

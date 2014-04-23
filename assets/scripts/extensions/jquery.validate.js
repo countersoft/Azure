@@ -1308,7 +1308,7 @@ $.format = $.validator.format;
 			function handler(e) {
 				e = $.event.fix(e);
 				e.type = fix;
-				return $.event.handle.call(this, e);
+				return $(this).trigger(e);
 			}
 		});
 	}

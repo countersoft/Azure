@@ -1,7 +1,7 @@
 ﻿@model ViewIssueModel
 
         <div id='sourcecode-section' data-contentid="sourcecode-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.SourceControl)&nbsp;(@Model.Issue.SourceControlFiles.Count)</h3></div>
-        <div class="content source-code hide" id="sourcecode-content">
+        <div class="tab-content source-code hide" id="sourcecode-content">
         @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedSourceControl))
         {
             <div class="toolbar actions">

@@ -11,6 +11,7 @@
                 <th data-edit-type="checkbox">Enabled?</th>
                 <th>Schedule</th>
                 <th>Last Run Time</th>
+                <th class="hide">Last Run Time Sort</th>
                 <th class="sorting_disabled"></th>
                 <th class="sorting_disabled"></th>
             </tr>
@@ -24,6 +25,7 @@
                     <td>@(item.Enabled ? "Yes" : "No")</td>
                     <td data-edit="false">@Html.Raw(item.Schedule)</td>
                     <td data-edit="false">@item.LastRunTime</td>
+                    <td data-edit="false" class="hide">@if (!item.LastRunTime.Equals("Never Run", StringComparison.InvariantCultureIgnoreCase)) { <text>@Convert.ToDateTime(item.LastRunTime).Ticks / 1000000</text> }</td>
                     <td data-edit="false" class="actions">
                         @if (item.LastDebug.HasValue())
                         {
@@ -46,12 +48,12 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-appnav", false, null);
+        gemini_admin.initDatatablesWithEdit("#table-admin-appnav", false, null, { "aoColumnDefs": [{ "iDataSort": 5, "aTargets": [4] }] });
 
         $("#table-admin-appnav").off('click', ".actions span[data-method='edit']").on('click', ".actions span[data-method='edit']", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id });
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id }, null, null, null, null, null, null, true);
         });
 
         $("#table-admin-appnav").off('click', ".actions span[data-method='kick']").on('click', ".actions span[data-method='kick']", function () {
@@ -60,19 +62,19 @@
 
             gemini_ajax.call("configure/Apps/Timer", "Editor", function () {
                 gemini_popup.toast("App has been scheduled to run");
-            }, null, { id: id, kick: 1 });
+            }, null, { id: id, kick: 1 }, null, true);
         });
 
        $("#table-admin-appnav").off('click', "#error").on('click', "#error", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, error: 1 }, null, "Clear", "Close", false, false);
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, error: 1 }, null, "Clear", "Close", false, false, null, true);
         });
 
        $("#table-admin-appnav").off('click', "#log").on('click', "#log", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
-            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, debug: 1 }, null, "Clear", "Close", false, false);
+            gemini_popup.centerPopup("configure/Apps/Timer", "Editor", { id: id, debug: 1 }, null, "Clear", "Close", false, false, null, true);
        });
     });
 </script>

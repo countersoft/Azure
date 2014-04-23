@@ -586,9 +586,17 @@ qq.extend(qq.FileUploader.prototype, {
 
             var relatedTarget = document.elementFromPoint(e.clientX, e.clientY);
             // only fire when leaving document out
-            if (!relatedTarget || relatedTarget.nodeName == "HTML") {
+            if (e.clientX == 0 || !relatedTarget || relatedTarget.nodeName == "HTML") {
                 dropArea.style.display = 'none';
             }
+        });
+
+        qq.attach(document, 'dragend', function (e) {
+            dropArea.style.display = 'none';            
+        });
+
+        qq.attach(document, 'drop', function (e) {
+            dropArea.style.display = 'none';
         });
     },
     _onSubmit: function (id, fileName) {

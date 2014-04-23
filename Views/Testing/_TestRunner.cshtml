@@ -91,40 +91,40 @@
     <div id="inner" class="clearfix">
         <div id="attachment" class="test-run-uploader"></div>
         @foreach (var x in Model.RunInfo)
-        {
-            <div class='step' data-current='@string.Format("{0}", x.CurrentStep ? "true" : "false")' data-reset='@string.Format("{0}", x.AllowReset ? "true" : "false")' >
-                <table class="width-100 properties">
-                    <tr>
-                        <td style="width:200px;" class="step">
-                            @GetResource(ResourceKeys.Step)
-                        </td>
-                        <td>@Html.Raw(x.Description)</td>
-                    </tr>
-                    <tr>
-                        <td class="no-wrap">
-                            @GetResource(ResourceKeys.ExpectedResults)
-                        </td>
-                        <td>@Html.Raw(x.ExpectedResults)</td>
-                    </tr>
-                    <tr>
-                        <td  class="no-wrap">
-                            @GetResource(ResourceKeys.ActualResults)
-                        </td>
-                        <td>
-                            <textarea style="width:99%" rows="10" id='actual-@(x.StepId)'>@Html.Raw(x.ActualResult)</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            @GetResource(ResourceKeys.Attachments)
-                        </td>
-                        <td id="runner-attachment-container-@(x.StepId)">
-                            @Html.Partial("~/Views/Testing/_Attachments.cshtml",x.Attachments)
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        }
+{
+    <div class='step' data-stepid="step-@(x.StepId)" data-current='@string.Format("{0}", x.CurrentStep ? "true" : "false")' data-reset='@string.Format("{0}", x.AllowReset ? "true" : "false")'>
+        <table class="width-100 properties">
+            <tr>
+                <td style="width:200px;" class="step">
+                    @GetResource(ResourceKeys.Step)
+                </td>
+                <td>@Html.Raw(x.Description)</td>
+            </tr>
+            <tr>
+                <td class="no-wrap">
+                    @GetResource(ResourceKeys.ExpectedResults)
+                </td>
+                <td>@Html.Raw(x.ExpectedResults)</td>
+            </tr>
+            <tr>
+                <td class="no-wrap">
+                    @GetResource(ResourceKeys.ActualResults)
+                </td>
+                <td>
+                    <textarea style="width:99%" rows="10" id='actual-@(x.StepId)'>@Html.Raw(x.ActualResult)</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @GetResource(ResourceKeys.Attachments)
+                </td>
+                <td id="runner-attachment-container-@(x.StepId)">
+                    @Html.Partial("~/Views/Testing/_Attachments.cshtml", x.Attachments)
+                </td>
+            </tr>
+        </table>
+    </div>
+}
         
     </div>
     <div class="clearfix runner-controls margin-top-20">
