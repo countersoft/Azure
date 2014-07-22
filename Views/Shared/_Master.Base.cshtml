@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
+    <meta name="gemini:version" content="@GeminiContext.Config.DBVersion" />
     <title>@ViewBag.Title</title>
     @if (HttpContext.Current.IsDebuggingEnabled)
     {
@@ -71,18 +72,7 @@
 
         @if(Model.CID.HasValue())
             {
-                <text>$.ajax({
-            type: "GET",
-            url: 'https://download.countersoft.com',
-            data: { data: '@Model.CID' },
-            dataType: "jsonp",
-            success: function (data) {
-
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-
-            }
-        });</text>
+                <text>gemini_wizard.init();</text>
             }
     });
 
@@ -196,5 +186,6 @@
         <div class="toast-message"></div>
     </div>
     <div id="progress-indicator" class='hide' style="width:100px;max-width:100px;position:absolute;left:-200px;top:-200px;"></div>
+    <div id="wizard-placeholder" class="hide"></div>
 </body>
 </html>

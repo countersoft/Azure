@@ -37,6 +37,7 @@ define("tinymce/ui/ComboBox", [
 			self._super(settings);
 			self.addClass('combobox');
 			self.subinput = true;
+			self.ariaTarget = 'inp'; // TODO: Figure out a better way
 
 			settings = self.settings;
 			settings.menu = settings.menu || settings.values;
@@ -46,16 +47,16 @@ define("tinymce/ui/ComboBox", [
 			}
 
 			self.on('click', function(e) {
-				var elm = e.target;
+				var elm = e.target, root = self.getEl();
 
-				while (elm) {
+				while (elm && elm != root) {
 					if (elm.id && elm.id.indexOf('-open') != -1) {
 						self.fire('action');
 
 						if (settings.menu) {
 							self.showMenu();
 
-							if (e.keyboard) {
+							if (e.aria) {
 								self.menu.items()[0].focus();
 							}
 						}
@@ -143,7 +144,7 @@ define("tinymce/ui/ComboBox", [
 				});
 
 				self.on('focusin', function(e) {
-					if (e.target.tagName == 'INPUT') {
+					if (e.target.tagName.toUpperCase() == 'INPUT') {
 						self.menu.hide();
 					}
 				});
@@ -308,8 +309,8 @@ define("tinymce/ui/ComboBox", [
 
 			if (icon || text) {
 				openBtnHtml = (
-					'<div id="' + id + '-open" class="' + prefix + 'btn ' + prefix + 'open" tabIndex="-1">' +
-						'<button id="' + id + '-action" type="button" hidefocus tabindex="-1">' +
+					'<div id="' + id + '-open" class="' + prefix + 'btn ' + prefix + 'open" tabIndex="-1" role="button">' +
+						'<button id="' + id + '-action" type="button" hidefocus="1" tabindex="-1">' +
 							(icon != 'caret' ? '<i class="' + icon + '"></i>' : '<i class="' + prefix + 'caret"></i>') +
 							(text ? (icon ? ' ' : '') + text : '') +
 						'</button>' +
@@ -322,7 +323,7 @@ define("tinymce/ui/ComboBox", [
 			return (
 				'<div id="' + id + '" class="' + self.classes() + '">' +
 					'<input id="' + id + '-inp" class="' + prefix + 'textbox ' + prefix + 'placeholder" value="' +
-					value + '" hidefocus="true"' + extraAttrs + '>' +
+					value + '" hidefocus="1"' + extraAttrs + ' />' +
 					openBtnHtml +
 				'</div>'
 			);

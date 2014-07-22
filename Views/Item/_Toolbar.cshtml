@@ -14,7 +14,7 @@
             <div data-attribute-id="@ItemAttributeVisibility.Description.ToString()" id="add-description" class="wrapper" title="@GetResource(ResourceKeys.Description)"><div class="action edit-2"></div></div>
         }
 
-        @if (@Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        @if (@Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser() && !GeminiContext.PermissionsManager.IsProjectReadOnly(Model.Issue.Project))
         {
             <div id="action-move" class="wrapper" title="@GetResource(ResourceKeys.Move)"><div class="action move"></div></div>
             <div id="action-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)"><div class="action copy-2"></div></div>

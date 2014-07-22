@@ -419,7 +419,7 @@ gemini_ui = {
                 editor.on('change', function (e) {
                     //editor.save();
                     //setTimeout(function () { editor.save(); }, 250);
-                    if (onChange) onChange();
+                    if (onChange) onChange(e);
                 });
                 editor.on('blur', function (e) {
                     try
@@ -441,7 +441,7 @@ gemini_ui = {
                             var z = 0;
                         }
                     }, 250);
-                    if (onChange) onChange();
+                    if (onChange) onChange(e);
                 });
             }
         });
@@ -459,10 +459,10 @@ gemini_ui = {
         //$(selector).tinymce('remove');
         //        tinyMCE.execCommand('mceToggleEditor', '#Description'
         
-        $(selector).each(function(){
+        //$(selector).each(function(){
             tinymce.remove(selector);
             //gemini_ui.htmlEditorCommand('mceRemoveControl', false, $(this).attr('id'));
-        });
+        //});
         /*for (var i = 0; i < tinymce.editors.length; i++)
         {
             try

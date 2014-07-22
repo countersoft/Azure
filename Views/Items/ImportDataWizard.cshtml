@@ -1,23 +1,20 @@
 @model ImportDataModel 
 
 <div id="ImportDataWizardContainer">
-    <h2 class="wizardTitle">Import Wizard</h2>
+    <h2 class="wizardTitle">@GetResource(ResourceKeys.ImportWizard)</h2>
     <div class="error"></div>
     @if (Model.initialLoad) 
     {
-        <div class="margin-top-5">
-            The first row in your file must contain column headers (e.g. Title, Priority, Status). <br />
-            Excel is recommended where you have HTML or multi-line data.
-        </div>
+        <div class="margin-top-5" style="max-width:520px">@GetResource(ResourceKeys.FirstRowMustBeColumnHeader)</div>
         
         <div class="margin-top-10">
             <img src="@AssetsPath/images/import-example.png" width="700"/>
         </div>
         
         <div id="file-upload-container" class="margin-top-20">
-            <div class="bold margin-bottom-20">Select a project and a file to upload - supported formats: Microsoft Excel and CSV (text files delimited by PIPE, COMMA or TAB).</div><br />
+            <div class="bold margin-bottom-20"> @GetResource(ResourceKeys.SupportedUploadFormats)</div><br />
             <form id="regular-form" method="post" enctype="multipart/form-data"  data-url="@(GeminiContext.Url)project/" action="@(GeminiContext.Url)project/@(Model.projectId)/items/getimportdatafields?option=mapvalues">
-                <div class="margin-bottom-20"><div class="left bold" style="padding:8px 5px 0 0;">Project:</div>@Html.DropDownList("projects", Model.AvailableProjects, new { @class = "input-size6" })</div>
+                <div class="margin-bottom-20"><div class="left bold" style="padding:8px 5px 0 0;">@GetResource(ResourceKeys.Project):</div>@Html.DropDownList("projects", Model.AvailableProjects, new { @class = "input-size6" })</div>
                 <input type="file" name="file" id="file" />
                 <input id='uploadFile' type="submit" name="uploadFile" value="" class="hide"/>
             </form>
@@ -31,12 +28,12 @@
     @if (Model.Rows != null) 
     {
         var headerIndex = 0;
-        <div class="margin-top-5">Map imported columns to Gemini data fields</div>
+        <div class="margin-top-5">@GetResource(ResourceKeys.MapImportedColumns)</div>
             <div class="wizard-row header margin-top-20">
-                <div class="left row1 bold" title="Source Column">Source Column&nbsp;</div>
-                <div class="left row2 bold">Sample Data</div>
-                <div class="left row2 bold">Target Column</div>
-                <div class="left margin-left-10 bold">Ignore?</div>                           
+                <div class="left row1 bold" title="Source Column">@GetResource(ResourceKeys.SourceColumn)&nbsp;</div>
+                <div class="left row2 bold">@GetResource(ResourceKeys.SampleData)</div>
+                <div class="left row2 bold">@GetResource(ResourceKeys.TargetColumn)</div>
+                <div class="left margin-left-10 bold">@GetResource(ResourceKeys.Ignore)?</div>                           
             </div>  
         <div id="value-order-container">
             <div id="js-value-wrapper">
@@ -63,7 +60,7 @@
         </div>
     }
 
-    <div id="map-values-message" class="margin-top-5 hide">Map incoming column values to Gemini field values</div>
+    <div id="map-values-message" class="margin-top-5 hide">@GetResource(ResourceKeys.MapImportedColumnValues)</div>
     <div id="ImportData-container" class="margin-top-20">
         <div id="js-extra-wrapper">
             <form id="ImportData" method="post" class="hide" action="@(GeminiContext.Url)project/@(Model.projectId)/items/importdata">
@@ -288,7 +285,6 @@
 </div>
 
 <script type="text/javascript">
-
     (function ($) {
         $.fn.formToWizard = function (options) {
             options = $.extend({
@@ -333,7 +329,7 @@
 
             function createPrevButton(i) {
                 var stepName = "step" + i;
-                $("#" + stepName + "commands").append("<div class='left'><a href='#' id='" + stepName + "Prev' class='prev'> Back</a></div>");
+                $("#" + stepName + "commands").append("<div class='left'><a href='#' id='" + stepName + "Prev' class='prev'>" + '@GetResource(ResourceKeys.Prev)' + "</a></div>");
 
                 $("#" + stepName + "Prev").bind("click", function (e) {
                     $("#" + stepName).hide();
@@ -345,7 +341,7 @@
 
             function createNextButton(i) {
                 var stepName = "step" + i;
-                $("#" + stepName + "commands").append("<div class='right'><a href='#' id='" + stepName + "Next' class='next'>Next </a></div>");
+                $("#" + stepName + "commands").append("<div class='right'><a href='#' id='" + stepName + "Next' class='next'>" + '@GetResource(ResourceKeys.Next)' + "</a></div>"); 
 
                 currentStep = $("#step0Next");
                 $("#" + stepName + "Next").bind("click", function (e) {
@@ -354,7 +350,7 @@
                     $("#step" + (i + 1)).show();
                     if (i + 2 == count) {
                         //$(submmitButtonName).show();
-                        $('#cs-popup-center-buttons #popup-button-yes').show().val('Upload').addClass('upload');
+                        $('#cs-popup-center-buttons #popup-button-yes').show().val('@GetResource(ResourceKeys.Upload)').addClass('upload');
                     }
                     selectStep(i + 1);
                     $("#step" + (i + 1)).css('height', '335px').css('overflow', 'auto').css('width', '100%');
@@ -381,6 +377,8 @@
         var currentStep = false;      
         $("#cs-popup-center").css("display", "block"); //ensure the div stays this width if content inside is changed        
 
+        $('#cs-popup-center-buttons #popup-button-no').val('@GetResource(ResourceKeys.Cancel)');
+        $('#cs-popup-center-buttons #popup-button-yes').val('@Html.Raw(GetResource(ResourceKeys.Next))');
         if (screenUploadFile)
         {
             $('#file-upload-container #projects').change(function () {
@@ -406,7 +404,7 @@
                 }, // post-submit callback  
                 error: function () {
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
-                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                    $('.error').html("@GetResource(ResourceKeys.ImportWizardAccessProblem)").show();
                 }
             };
 
@@ -432,12 +430,12 @@
                 }, // post-submit callback  
                 error: function () {
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
-                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                    $('.error').html("@GetResource(ResourceKeys.ImportWizardAccessProblem)").show();
                 }
             };
 
             $("#field-order").ajaxForm(options2);
-            $('#cs-popup-center-buttons #popup-button-yes').val('Next');
+            //$('#cs-popup-center-buttons #popup-button-yes').val('@GetResource(ResourceKeys.Next)');
             $('#cs-popup-center-buttons #popup-button-yes').show();
         }
 
@@ -464,16 +462,16 @@
                     
                     $('#ImportData-container').html('');
                     $('#map-values-message').html('');
-                    $('#ImportDataWizardContainer .wizardTitle').html('Import Wizard Results');
+                    $('#ImportDataWizardContainer .wizardTitle').html('@GetResource(ResourceKeys.ImportWizardResult)');
 
-                    $('#ImportData-container').append('<div class="result-container summary-row margin-left-20"><span class="title">' + (parseInt(responseText.failednr) + parseInt(responseText.successfulnr)) + ' ROWS FOUND</span></div>');
-                    $('#ImportData-container').append('<div class="success-container summary-row margin-left-20"><span class="title">' + responseText.successfulnr + '</b> ROWS IMPORTED</span></div>');
+                    $('#ImportData-container').append('<div class="result-container summary-row margin-left-20"><span class="title">' + (parseInt(responseText.failednr) + parseInt(responseText.successfulnr)) + '  @GetResource(ResourceKeys.ImportWizardRowsFound)'  + '</span></div>');
+                    $('#ImportData-container').append('<div class="success-container summary-row margin-left-20"><span class="title">' + responseText.successfulnr + '</b>  @GetResource(ResourceKeys.ImportWizardRowsImported)' + '</span></div>');
 
                     if (responseText.istypeadded)
-                        $('#ImportData-container').append("<div class='type-added-container summary-row margin-left-20'>A Type was added. Please go to Customize -> Templates -> Process, select your Project Template <br /> and update the 'Screen' settings for your Type. </div>");
+                        $('#ImportData-container').append("<div class='type-added-container summary-row margin-left-20'>@GetResource(ResourceKeys.ImportWizardTypeAdded)</div>");
 
                     if (responseText.failednr != "0")
-                        $('#ImportData-container').append('<div class="failed-container summary-row margin-left-20"><span class="title">' + responseText.failednr + '</span> ROWS SKIPPED:</span></div>');
+                        $('#ImportData-container').append('<div class="failed-container summary-row margin-left-20"><span class="title">' + responseText.failednr + '</span> @GetResource(ResourceKeys.ImportWizardRowsSkipped):</span></div>');
                 
                     if (responseText.errored != null) {                   
                         jQuery.each(responseText.errored, function (i, val) {
@@ -485,12 +483,12 @@
                     //$("#ImportData-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
                     $('#cs-popup-center-buttons #popup-button-yes').hide();
-                    $('#cs-popup-center-buttons #popup-button-no').val('Finish');
+                    $('#cs-popup-center-buttons #popup-button-no').val('@Html.Raw(GetResource(ResourceKeys.Close))');
 
                 }, // post-submit callback  
                 error: function () {
                     gemini_ui.stopBusy('#cs-popup-center-buttons #popup-button-yes');
-                    $('.error').html("There seems to be a problem accessing the 'app_data/imports' folder.<br/>Please ensure you have given 'everyone' modify access to this folder.").show();
+                    $('.error').html("@GetResource(ResourceKeys.ImportWizardAccessProblem)").show();
                 }
             };
 
@@ -501,7 +499,7 @@
             if (fieldsetCount > 1)
                 $('#cs-popup-center-buttons #popup-button-yes').hide();
             else
-                $('#cs-popup-center-buttons #popup-button-yes').show().val('Upload').addClass('upload');
+                $('#cs-popup-center-buttons #popup-button-yes').show().val('@GetResource(ResourceKeys.Upload)').addClass('upload');
         }              
 
         $("#popup-button-yes").unbind('click');

@@ -473,4 +473,19 @@
   <item id="Subject">Betreff</item>
   <item id="Message">Nachricht</item>
 
+  <item id="FirstRowMustBeColumnHeader">Die erste Reihe in Ihrer Datei ist der Spaltenkopf und muss eine Spaltenüberschrift (z.B. Titel, Priorität, Status) haben. Es wird empfholen Excel zu benutzen, wenn Sie HTML order Mehrzeilige Daten verwenden.</item>
+  <item id="SupportedUploadFormats">Wählen Sie Ihr Projekt aus und eine Datei zum hochladen - Unterstützte Formate: Microsoft Excel und CSV (Textdateien getrennt durch Pipe-Symbole, Kommas oder Tabulatoren).</item>
+  <item id="MapImportedColumns">Ordnen Sie die importierten Spalten Gemini-Datenfelder zu</item>
+  <item id="SourceColumn">Quellspalte</item>
+  <item id="SampleData">Beispieldaten</item>
+  <item id="TargetColumn">Zielspalte</item>
+  <item id="Ignore">Ignorieren</item>
+  <item id="MapImportedColumnValues">Ordnen Sie die eingehenden Spaltendaten Gemini-Feldwerten zu</item>
+  <item id="ImportWizardResult">Import-Assistent Resultat</item>
+  <item id="ImportWizardRowsFound">REIHEN GEFUNDEN</item>
+  <item id="ImportWizardRowsImported">REIHEN IMPORTIERT</item>
+  <item id="ImportWizardRowsSkipped">REIHEN ÜBERSPRUNGEN</item>
+  <item id="ImportWizardTypeAdded">Ein Typ wurde hinzugefügt. Bitte gehen Sie auf Anpassen -> Templates -> Process, wählen Sie Ihr Projekt-Template aus und updaten Sie die "Screen"-Einstellung für den neuen Typ.</item>
+  <item id="ImportWizardAccessProblem">Wir konnten nicht auf den Ordner 'app_data/imports' zugreifen. Bitte geben Sie "Jeder" erlaubnis auf den Ordner zuzugreifen.</item>
+  
 </Resource>

@@ -544,6 +544,21 @@
                     return (input);
                 }
             },
+            masktext32: {
+                element: function (settings, original) {
+                    var input = $('<input style="width:99%;"/>');
+
+                    if (settings.width != 'none') { input.attr('width', settings.width); }
+                    if (settings.height != 'none') { input.attr('height', settings.height); }
+
+                    /* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
+                    //input[0].setAttribute('autocomplete','off');
+                    input.attr('autocomplete', 'off');
+                    $(this).append(input);
+                    input.mask('999:99');
+                    return (input);
+                }
+            },
             textarea: {
                 element : function(settings, original) {
                     var textarea = $('<textarea />');

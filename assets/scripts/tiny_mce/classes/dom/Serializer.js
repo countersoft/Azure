@@ -51,6 +51,17 @@ define("tinymce/dom/Serializer", [
 
 		htmlParser = new DomParser(settings, schema);
 
+		// Convert tabindex back to elements when serializing contents
+		htmlParser.addAttributeFilter('data-mce-tabindex', function(nodes, name) {
+			var i = nodes.length, node;
+
+			while (i--) {
+				node = nodes[i];
+				node.attr('tabindex', node.attributes.map['data-mce-tabindex']);
+				node.attr(name, null);
+			}
+		});
+
 		// Convert move data-mce-src, data-mce-href and data-mce-style into nodes or process them if needed
 		htmlParser.addAttributeFilter('src,href,style', function(nodes, name) {
 			var i = nodes.length, node, value, internalName = 'data-mce-' + name;
@@ -103,15 +114,6 @@ define("tinymce/dom/Serializer", [
 			}
 		});
 
-		// Remove expando attributes
-		htmlParser.addAttributeFilter('data-mce-expando', function(nodes, name) {
-			var i = nodes.length;
-
-			while (i--) {
-				nodes[i].attr(name, null);
-			}
-		});
-
 		htmlParser.addNodeFilter('noscript', function(nodes) {
 			var i = nodes.length, node;
 
@@ -126,10 +128,11 @@ define("tinymce/dom/Serializer", [
 
 		// Force script into CDATA sections and remove the mce- prefix also add comments around styles
 		htmlParser.addNodeFilter('script,style', function(nodes, name) {
-			var i = nodes.length, node, value;
+			var i = nodes.length, node, value, type;
 
 			function trim(value) {
 				/*jshint maxlen:255 */
+				/*eslint max-len:0 */
 				return value.replace(/(<!--\[CDATA\[|\]\]-->)/g, '\n')
 						.replace(/^[\r\n]*|[\r\n]*$/g, '')
 						.replace(/^\s*((<!--)?(\s*\/\/)?\s*<!\[CDATA\[|(<!--\s*)?\/\*\s*<!\[CDATA\[\s*\*\/|(\/\/)?\s*<!--|\/\*\s*<!--\s*\*\/)\s*[\r\n]*/gi, '')
@@ -141,9 +144,12 @@ define("tinymce/dom/Serializer", [
 				value = node.firstChild ? node.firstChild.value : '';
 
 				if (name === "script") {
-					// Remove mce- prefix from script elements and remove default text/javascript mime type (HTML5)
-					var type = (node.attr('type') || 'text/javascript').replace(/^mce\-/, '');
-					node.attr('type', type === 'text/javascript' ? null : type);
+					// Remove mce- prefix from script elements and remove default type since the user specified
+					// a script element without type attribute
+					type = node.attr('type');
+					if (type) {
+						node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
+					}
 
 					if (value.length > 0) {
 						node.firstChild.value = '// <![CDATA[\n' + trim(value) + '\n// ]]>';
@@ -210,13 +216,19 @@ define("tinymce/dom/Serializer", [
 		}
 
 		// Remove internal data attributes
-		htmlParser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style,data-mce-selected', function(nodes, name) {
-			var i = nodes.length;
+		htmlParser.addAttributeFilter(
+			'data-mce-src,data-mce-href,data-mce-style,' +
+			'data-mce-selected,data-mce-expando,' +
+			'data-mce-type,data-mce-resize',
 
-			while (i--) {
-				nodes[i].attr(name, null);
+			function(nodes, name) {
+				var i = nodes.length;
+
+				while (i--) {
+					nodes[i].attr(name, null);
+				}
 			}
-		});
+		);
 
 		// Return public methods
 		return {

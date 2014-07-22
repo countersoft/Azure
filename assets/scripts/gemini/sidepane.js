@@ -172,6 +172,12 @@
             {
                 gemini_master.currentRefreshFunction();
             }
+            /*** WIZARD ***/
+            if (gemini_wizard.active)
+            {
+                $.publish('wizard-position', ['expand']);
+            }
+            /*** WIZARD ***/
             if(finishedCallback)
             {
                 finishedCallback();
@@ -197,6 +203,12 @@
             {
                 gemini_master.currentRefreshFunction();
             }
+            /*** WIZARD ***/
+            if (gemini_wizard.active)
+            {
+                $.publish('wizard-position', ['collapse']);
+            }
+            /*** WIZARD ***/
             if (finishedCallback)
             {
                 finishedCallback();

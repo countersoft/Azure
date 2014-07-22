@@ -45,6 +45,21 @@ planner =
         return false;
     },
 
+    highlight: function (hightlight) {
+        var index;
+        for (index = 0; index < hightlight.length; ++index) {
+            $('#' + hightlight[index], '#planner-box').addClass('view-issue-highlight');
+        }
+    },
+
+    removeHighlight: function (hightlight) {
+        if (!$('#planner-box').length) return;
+        var index;
+        for (index = 0; index < hightlight.length; ++index) {
+            $('#' + hightlight[index], '#planner-box').removeClass('view-issue-highlight');
+        }
+    },
+
     initOptions: function()
     {
         if (!planner.readOnly)
@@ -335,6 +350,8 @@ planner =
             gemini_ui.visualProgressFinish('#planner');
             planner.showInfoTip();
         }
+
+        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
     },
 
     updateCell: function (markup)
@@ -346,6 +363,8 @@ planner =
         planner.normalCursor();
         gemini_ui.visualProgressFinish('#planner');
         planner.showInfoTip();
+
+        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
     },
 
     updateCellMarkup: function (markup)
@@ -383,7 +402,7 @@ planner =
         planner.allowEffects();
         planner.normalCursor();
         gemini_ui.visualProgressFinish('#planner');
-
+        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
         return false;
     },
 

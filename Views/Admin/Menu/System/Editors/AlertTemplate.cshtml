@@ -8,7 +8,7 @@
 <script src="@AssetsPath/scripts/code/mode/htmlmixed.js" type="text/javascript"></script>
 <script src="@AssetsPath/scripts/code/mode/htmlembedded.js" type="text/javascript"></script>
 
-<div style="width:890px; height: 600px;">
+<div style="width:910px; height: 635px; overflow:auto;">
     <form id="TemplateForm">
         <input id="id" name="id" type="hidden" value="@Model.Template.Entity.Id" />
         <table class="admin-data-entry" cellpadding="0" cellspacing="0">
@@ -92,10 +92,18 @@
                         tr.find("td:eq(0)").html($("#Name").val());
                         tr.find("td:eq(1)").html($("#Type option:selected").text());
 
-                        var projectsText = $("#Project option:selected").text();
-                        if (projectsText == undefined || projectsText == null || projectsText.length == 0) {
-                            projectsText = "All Projects";
+                        var projectsText = 'All Projects';
+
+                        var projects = $("#Project option:selected");
+                        if (projects && projects != undefined & projects.length > 0) {
+                            projectsText = '';
+                            $.each(projects, function (index, value) {
+                                projectsText += value.text + ', ';
+                            });
+
+                            projectsText = projectsText.trim().substring(0, projectsText.length - 2);
                         }
+
                         tr.find("td:eq(2)").html(projectsText);
                     }
                     gemini_popup.popupClose(e);
@@ -146,7 +154,7 @@
 
     function disableEnableProjectsDropDown(id)
     {
-        if (id == 2 || id == 4)
+        if (id == 4)
         {
             $('#Project', '#TemplateForm').val(0);
             $('#Project', '#TemplateForm').attr('disabled', 'disabled');

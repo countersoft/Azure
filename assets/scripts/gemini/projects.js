@@ -74,6 +74,7 @@
         $('#project-administration #ProjectId').change(function ()
         {
             gemini_popup.centerPopup("project", "settings", { projectId: $(this).val() }, null, null, 'Close', true);
+            gemini_ui.destroyHtmlEditor("#project-administration .wysiwyg-editor");
         });
 
         $(".tab", "#project-administration").first().click();

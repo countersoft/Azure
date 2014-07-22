@@ -23,7 +23,7 @@
             <div id="tabs-content" class="left">
 
                 <div id="appnav-description">
-                    <input type="text" name="Key" id="Key" placeholder="Key" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4"/>
+                    <input type="text" name="Key" id="Key" placeholder="Key" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4"/>@if (Model.Owner.HasValue()) {<div class="owner">Shared by: <span>@Model.Owner</span></div> }
                     <input type="hidden" name="Color" id="Color" value="@Model.Card.Color" />
                     <div class="swatch margin-bottom-10 clearfix">
                         <span class="swatch-color" style="background-color: #000000;">&nbsp;</span>
@@ -203,10 +203,12 @@
                 </div>
 
                 <div id="appnav-reports">
+                    <h2>@GetResource(ResourceKeys.Reports)</h2>
                     @Html.ListBox("ReportsExcelList", Model.ReportsExcelListItem, new { @class = "input-size9" })
                     <br />
                     <br /> 
-                                         
+                    
+                    <h2 style="margin-bottom:4px;">Schedule</h2>                                         
                     <div id="schedule-appnav-emails" class="margin-bottom-10"></div>
                     <input type="hidden" id="email-interval" name="EmailInterval" value="@Model.EmailInterval"/>
                     <br /> 

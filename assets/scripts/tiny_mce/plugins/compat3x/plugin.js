@@ -9,6 +9,7 @@
  */
 
 /*global tinymce:true, console:true */
+/*eslint no-console:0, new-cap:0 */
 
 /**
  * This plugin adds missing events form the 4.x API back. Not every event is
@@ -21,7 +22,8 @@
 (function(tinymce) {
 	var reported;
 
-	function noop() {}
+	function noop() {
+	}
 
 	function log(apiCall) {
 		if (!reported && window && window.console) {
@@ -38,7 +40,7 @@
 			return;
 		}
 
-		this.add = function(callback, scope) {
+		this.add = function(callback, scope, prepend) {
 			log('<target>.on' + newEventName + ".add(..)");
 
 			// Convert callback({arg1:x, arg2:x}) -> callback(arg1, arg2)
@@ -73,13 +75,14 @@
 				}
 			}
 
-			target.on(newEventName, patchedEventCallback);
+			target.on(newEventName, patchedEventCallback, prepend);
 
 			return patchedEventCallback;
 		};
 
-		// Not supported to just use add
-		this.addToTop = this.add;
+		this.addToTop = function(callback, scope) {
+			this.add(callback, scope, true);
+		};
 
 		this.remove = function(callback) {
 			return target.off(newEventName, callback);
@@ -168,7 +171,9 @@
 			onAdd: new Dispatcher(),
 			onPostRender: new Dispatcher(),
 
-			add: function(obj) { return obj; },
+			add: function(obj) {
+				return obj;
+			},
 			createButton: cmNoop,
 			createColorSplitButton: cmNoop,
 			createControl: cmNoop,

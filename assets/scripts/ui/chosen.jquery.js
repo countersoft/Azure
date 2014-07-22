@@ -799,10 +799,13 @@
 
         Chosen.prototype.search_results_mousewheel = function (evt) {
             var delta, _ref1, _ref2;
-
-            delta = -((_ref1 = evt.originalEvent) != null ? _ref1.wheelDelta : void 0) || ((_ref2 = evt.originialEvent) != null ? _ref2.detail : void 0);
+            if (evt.originalEvent) {
+                delta = -evt.originalEvent.wheelDelta || evt.originalEvent.detail;
+            }
+                        
             if (delta != null) {
                 evt.preventDefault();
+                evt.stopPropagation();
                 if (evt.type === 'DOMMouseScroll') {
                     delta = delta * 40;
                 }

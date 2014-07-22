@@ -31,7 +31,7 @@
                     <td id="server" class="field-name">Response Time
                     </td>
                     <td>
-                        <input type="text" id="Time" name="Time" class="input-field required input-size9 mask" value="@Model.FormattedTime"/>
+                        <input type="text" id="Time" name="Time" class="input-field required input-size9 mask2" value="@Model.FormattedTime3"/>
                     </td>
                 </tr>
                 <tr id="server-port">
@@ -73,6 +73,7 @@
 
           $("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
           $('.mask').mask('99:99');
+          $('.mask2').mask('999:99');
 
           $('#sla-form-container').on('ifChanged', '#Is24x7', function (e)
           {

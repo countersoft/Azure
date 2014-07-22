@@ -36,6 +36,7 @@ define("tinymce/ui/Widget", [
 			var self = this;
 
 			self._super(settings);
+			settings = self.settings;
 			self.canFocus = true;
 
 			if (settings.tooltip && Widget.tooltips !== false) {
@@ -58,10 +59,9 @@ define("tinymce/ui/Widget", [
 				self.on('mouseleave mousedown click', function() {
 					self.tooltip().hide();
 				});
-
 			}
 
-			self.aria('label', settings.tooltip);
+			self.aria('label', settings.ariaLabel || settings.tooltip);
 		},
 
 		/**
@@ -71,11 +71,9 @@ define("tinymce/ui/Widget", [
 		 * @return {tinymce.ui.Tooltip} Tooltip instance.
 		 */
 		tooltip: function() {
-			var self = this;
-
 			if (!tooltip) {
 				tooltip = new Tooltip({type: 'tooltip'});
-				tooltip.renderTo(self.getContainerElm());
+				tooltip.renderTo();
 			}
 
 			return tooltip;
@@ -135,9 +133,7 @@ define("tinymce/ui/Widget", [
 			}
 
 			if (settings.autofocus) {
-				setTimeout(function() {
-					self.focus();
-				}, 0);
+				self.focus();
 			}
 		},
 

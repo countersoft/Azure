@@ -1,8 +1,14 @@
 ﻿@model ViewIssueModel
-
+@{
+    var formUrl = Url.Action("addcomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id }));
+    if(!formUrl.HasValue())
+    {
+        formUrl = string.Concat(GeminiContext.Url, "workspace/", Model.Issue.Project.Id, "/item/addcomment?issueid=", Model.Issue.Id);
+    }
+}
 <div class="comments-wysiwyg-container" data-id="@Model.Issue.Id" data-controller="@Model.Controller">
     <h2>@Model.Issue.IssueKey</h2>
-    <form class="comments-form"  action="@Url.Action("addcomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id }))" method="post" enctype="multipart/form-data">
+    <form class="comments-form"  action="@formUrl" method="post" enctype="multipart/form-data">
         <div class='wysiwyg-container'>
             <textarea id="comments-wysiwyg-content" name="commentsWysiwygContent"></textarea>         
         </div> 
@@ -45,7 +51,32 @@
                 dataType: "json",
                 success: function (responseText, statusText, xhr, $form) {
                     if (responseText.success) {
+                        /*** WIZARD ***/
+                        if (gemini_wizard.active)
+                        {
+                            try
+                            {
+                                var wizardVal = $('#cs-popup-center-content #comments-wysiwyg-content').val();
+                                if (wizardVal && wizardVal.length)
+                                {
+                                    if (wizardVal.toLowerCase().indexOf('pause') != -1)
+                                    {
+                                        $.publish('wizard-action', ['commentpause']);
+                                    }
+                                    else if (wizardVal.toLowerCase().indexOf('resume') != -1)
+                                    {
+                                        $.publish('wizard-action', ['commentresume']);
+                                    }
+                                }
+                            }
+                            catch (err)
+                            {
+                                var x = 0;
+                            }
+                        }
+                        /*** WIZARD ***/
                         gemini_popup.popupClose();
+                        gemini_ui.destroyHtmlEditor("#cs-popup-center-content #comments-wysiwyg-content");
                         var issueId = $("#cs-popup-center-content .comments-wysiwyg-container").attr('data-id');
                         $("#cs-popup-center-content .comments-wysiwyg-container").remove();
                         
@@ -69,6 +100,7 @@
 
             $("#popup-button-no").click(function (e) {
                 gemini_popup.popupClose(e);
+                gemini_ui.destroyHtmlEditor("#cs-popup-center-content #comments-wysiwyg-content");
                 $("#cs-popup-center-content .comments-wysiwyg-container").remove();
             });
         }

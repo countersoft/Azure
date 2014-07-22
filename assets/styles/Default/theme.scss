@@ -3429,6 +3429,21 @@ div.mceDropDown
 			}
 		}
 
+        .owner
+        {
+            display:inline-block;
+            font-size:13px;
+            font-style:italic;
+            color:$color-grayscale1;
+            margin-top:8px;
+            margin-left:255px;
+            span
+            {
+                color:$color-grayscale;
+                font-weight:bold;
+            }
+        }
+
 		.receive-alerts-on
 		{
 			span

@@ -12,91 +12,111 @@ gemini_edit = {
     clickedElement: null,
     includeProjectsField: false,
     editItemRenderedCallback:null,
+    inlineEditSaveCallback: null,
+    pendingHtmlChanges: false,
     initEditing: function (elm, inlineEditing) {
-        if (!gemini_edit.editingMode) {
+        inlineEditSaveCallback = null;
+ 
+        if (!gemini_edit.editingMode)
+        {
+            window.onbeforeunload = gemini_edit.warnLoseChanges;
 
-            var paramsString = "{}";
-            if (gemini_edit.includeProjectsField) paramsString = { includeProjectsField: gemini_edit.includeProjectsField };
-
-            // looking to start editing
-            if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
-                gemini_edit.issueId = $(elm).parent().data('issue-id');
+            if (gemini_edit.hasInlineEditFieldChanged())
+            {                
+                gemini_popup.modalConfirm("Save changes?", null,
+                    function () {
+                        gemini_edit.inlineEditSaveCallback = function () { gemini_edit.initEditingFinal($('li[data-attribute-id=' + $('.attribute-header', elm).attr("data-attribute-id") + ']'), inlineEditing); };
+                        gemini_edit.saveEditingField();
+                    },
+                    function () {
+                        gemini_edit.initEditingFinal(elm, inlineEditing);
+                    });
             }
-            
-            
+            else
+                gemini_edit.initEditingFinal(elm, inlineEditing);
+        }
+        else {
+            gemini_edit.hideEditingPopup();
+        }
+    },
+    initEditingFinal: function (elm, inlineEditing)
+    {
+        var paramsString = "{}";
+        if (gemini_edit.includeProjectsField) paramsString = { includeProjectsField: gemini_edit.includeProjectsField };
 
-            if (gemini_edit.useInlineEdit) {
-                if (gemini_edit.pageType == gemini_commons.PAGE_TYPE.Item) {
-                    var attrElement = $(elm).find('.attribute-header');
+        // looking to start editing
+        if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
+            gemini_edit.issueId = $(elm).parent().data('issue-id');
+        }
 
-                    if ($(attrElement).length > 0) elm = attrElement;
-                }
+        if (gemini_edit.useInlineEdit) {
+            if (gemini_edit.pageType == gemini_commons.PAGE_TYPE.Item) {
+                var attrElement = $(elm).find('.attribute-header');
 
-                gemini_edit.pendingChanges = false;
+                if ($(attrElement).length > 0) elm = attrElement;
+            }
 
-                var url = false;
+            gemini_edit.pendingChanges = false;
+
+            var url = false;
+            if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
+                url = csVars.ProjectUrl;
+            }
+            else {
+                url = gemini_item.itemUrl;
+            }
+
+            if (inlineEditing) {
+
+                var property = '';
+
                 if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
-                    url = csVars.ProjectUrl;
+                    property = elm.closest('table').find('th').eq(elm.index()).attr('data-id');
                 }
                 else {
-                    url = gemini_item.itemUrl;
+                    property = $(elm).attr('data-attribute-id');
                 }
 
-                if (inlineEditing) {
+                if (property != "Repeat") {
 
-                    var property = '';
+                    var params = $.extend({},
+                    {
+                        id: gemini_edit.issueId,
+                        property: property
+                    }, paramsString);
 
-                    if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
-                        property = elm.closest('table').find('th').eq(elm.index()).attr('data-id');
-                    }
-                    else {
-                        property = $(elm).attr('data-attribute-id');
-                    }
-
-                    if (property != "Repeat") {
-
-                        var params = $.extend({},
-                        {
-                            id: gemini_edit.issueId,
-                            property: property
-                        }, paramsString);
-
-                        gemini_ajax.postCall("inline", 'get?viewtype=' + gemini_edit.pageType, gemini_edit.showEditingField, null, params, elm);
-                    }
-                    else {
-
-                        var params = $.extend({},
-                        {
-                            id: gemini_edit.issueId
-                        },
-                        paramsString);
-
-                        gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, setTimeout(function () { $("#Repeat_Interval").focus(); }, 200));
-                    }
+                    gemini_ajax.postCall("inline", 'get?viewtype=' + gemini_edit.pageType, gemini_edit.showEditingField, null, params, elm);
                 }
                 else {
+
                     var params = $.extend({},
                     {
                         id: gemini_edit.issueId
                     },
                     paramsString);
 
-                    gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
+                    gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, setTimeout(function () { $("#Repeat_Interval").focus(); }, 200));
                 }
             }
             else {
                 var params = $.extend({},
-                    {
-                        id: gemini_edit.issueId
-                    },
-                    paramsString);
+                {
+                    id: gemini_edit.issueId
+                },
+                paramsString);
 
-                gemini_edit.pendingChanges = false;
                 gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
             }
         }
         else {
-            gemini_edit.hideEditingPopup();
+            var params = $.extend({},
+                {
+                    id: gemini_edit.issueId
+                },
+                paramsString);
+
+            gemini_edit.pendingChanges = false;
+            gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, elm);
         }
     },
 
@@ -302,6 +322,7 @@ gemini_edit = {
                     $("#popup-button-no").click(function (e) {
                         elem.removeClass('edit-mode');
                         gemini_popup.popupClose(e);
+                        gemini_ui.destroyHtmlEditor("#cs-popup-center-content .wysiwyg-editor");
                         $("#colorbox .inline-editing").closest('form').remove();
                     });
 
@@ -310,6 +331,7 @@ gemini_edit = {
 
                         //elem.removeClass('edit-mode');
                         gemini_popup.popupClose(e);
+                        gemini_ui.destroyHtmlEditor("#cs-popup-center-content .wysiwyg-editor");
                         $("#colorbox .inline-editing").closest('form').remove();
                     });
 
@@ -411,6 +433,9 @@ gemini_edit = {
                     $(response.Result.Extra).each(function (key, value) {
                         if (this.Key == 'reload') {
                             reloading = true;
+                            gemini_edit.hideEditingField();
+                            gemini_edit.hideInlineEditField();
+
                             window.location = response.Result.RedirectUrl;
                         }                       
                         else if (this.Key == 'AssociatedHistory' && ! reloading) {
@@ -445,11 +470,23 @@ gemini_edit = {
             else {                                
                 gemini_edit.refreshFunction(response, response.Result.ItemId);
             }
+
+            if (gemini_edit.inlineEditSaveCallback)
+            {
+                gemini_edit.inlineEditSaveCallback();
+                gemini_edit.inlineEditSaveCallback = null;
+            }
+
             gemini_edit.hideEditingField(true);
             $.publish('issue-update', [response.Result.ItemId, gemini_edit.pageType]);
         }
         else
         {
+            if (gemini_edit.inlineEditSaveCallback) {
+                gemini_edit.inlineEditSaveCallback();
+                gemini_edit.inlineEditSaveCallback = null;
+            }
+
             if (response.Message && response.Message.length)
             {
                 gemini_popup.toast(response.Message, true);
@@ -485,8 +522,14 @@ gemini_edit = {
             var currentItem = (issueId != null) ? issueId : elementIssueId;
            
             var items = [currentItem];
-
+            var bulk = false;
             if ($('.checked-items:checked', $('#items-grid')).length > 0) {
+                /*** WIZARD ***/
+                if (gemini_wizard.active)
+                {
+                    bulk = $('.checked-items:checked', $('#items-grid')).length > 1;
+                }
+                /*** WIZARD ***/
                 $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
                     if (currentItem != $(value).val()) {
                         items.push($(value).val());
@@ -530,6 +573,16 @@ gemini_edit = {
                     }
                 }
             }
+
+            /*** WIZARD ***/
+            if (gemini_wizard.active)
+            {
+                if(bulk)
+                {
+                    $.publish('wizard-action', ['batchupdate']);
+                }
+            }
+            /*** WIZARD ***/
         }
     },
     hideEditingField: function (saved) {
@@ -826,7 +879,7 @@ gemini_edit = {
             params += "&includeProjectsField=" + encodeURIComponent(gemini_edit.includeProjectsField);
         }
 
-        gemini_ui.destroyHtmlEditor('.wysiwyg-editor');
+        gemini_ui.destroyHtmlEditor("#cs-popup-content .wysiwyg-editor");
         gemini_edit.triggerXHR = gemini_ajax.postCall('item', "edit?viewtype=" + gemini_edit.pageType, gemini_edit.showEditingPopup, null, params, $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent());
     },
     triggerCustomfieldChange: function (elem) {
@@ -881,9 +934,11 @@ gemini_edit = {
         }
     },
     warnLoseChanges: function () {
-        if (gemini_edit.pendingChanges) {
+        if (gemini_edit.pendingChanges || gemini_edit.pendingHtmlChanges) {
             return "Unsaved changes.";
         }
+
+        if (gemini_edit.hasInlineEditFieldChanged()) return "Unsaved changes.";
     },
 
     hideEditingPopup: function () {
@@ -904,6 +959,7 @@ gemini_edit = {
             });
         }
         else {
+            gemini_ui.destroyHtmlEditor("#cs-popup-content .wysiwyg-editor");
             // nothing to save, so dismiss
             $(gemini_edit.popupContainer).hide();
             gemini_edit.pendingChanges = false;
@@ -940,5 +996,39 @@ gemini_edit = {
             $('#cs-popup-save', '#cs-popup').val(orig);
             $('#cs-popup-save', '#cs-popup').attr('data-orig-val', '');
         }
+    },
+    hasInlineEditFieldChanged: function () {
+        var inlineEditingElement = $('.inline-editing');
+
+        if (inlineEditingElement.length > 0) {
+            var originalValue = inlineEditingElement.data('original');
+            var newValue = inlineEditingElement.val();
+
+            if (originalValue == null) originalValue = '';
+            if (newValue == null) newValue = '';
+            if (newValue instanceof Array) newValue = newValue.join("|") + '|';
+
+            if (inlineEditingElement.data('input-type') == 'attachment' && originalValue != '') {
+                //If newValue is empty then we assume that a new attachment was not uploaded. inlineEditingElement.val(); returns empty for file upload
+                if (newValue == '') newValue = originalValue;
+
+                if (inlineEditingElement.parents('form:eq(0)').find('input[type=checkbox]').is(':checked')) newValue = originalValue + "x";
+            }
+            else if (inlineEditingElement.data('input-type') == 'checkbox') {
+                if (inlineEditingElement.is(':checked'))
+                    newValue = "True";
+                else
+                    newValue = "False";
+            }
+            else if (inlineEditingElement.data('input-type') == 'combobox' && originalValue == '') {
+                if (newValue == 0) newValue = originalValue;
+            }
+
+            if (inlineEditingElement.length > 0 && originalValue != newValue) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };

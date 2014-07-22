@@ -1,0 +1,33 @@
+﻿<div id="wizard-action-container" class="hide">
+    <div id="wizard-action-box" data-action="filterprojects" data-type="itil" data-next-step="4">
+        <div class="wizard-action-header">
+            <div class="wizard-action-header-text">ITIL / ITSM</div>
+            <div class="wizard-step-bullets">
+                <div class="wizard-step-one"><div class="wizard-step-done"></div></div>
+                <div class="wizard-step-two"><div class="wizard-step-done"></div></div>
+                <div class="wizard-step-three"><div class="wizard-step-selected"></div></div>
+                <div class="wizard-step-four"></div>
+            </div>
+        </div>
+
+        <div class="wizard-action-content">
+            <div class="wizard-step-header">Cross Project Analysis</div>
+            <div class="wizard-step-text">In the search filter (top middle) find items where Priority is "High". Now click on the blue "Projects" filter (top left) and change the value to "All Projects".</div>
+        </div>
+
+    </div>
+</div><!-- end action container -->
+<script type="text/javascript">
+    gemini_wizard.initStep(true);
+    var myITILInt = setInterval(function () {
+        if ($('#instant-filter-ProjectCode select').length && $('#instant-filter-ProjectCode select').val().length)
+        {
+            var val = $('#instant-filter-ProjectCode select').val();
+            if (val[0] == '0' || val.length > 1)
+            {
+                clearInterval(myITILInt);
+                $.publish('wizard-action', ['filterprojects']);
+            }
+        }
+    }, 1000);
+</script>

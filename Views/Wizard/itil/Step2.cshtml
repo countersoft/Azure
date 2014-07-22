@@ -1,0 +1,30 @@
+﻿<div id="wizard-action-container" class="hide">
+    <div id="wizard-action-box" data-action="reportscheduled" data-type="itil" data-next-step="3">
+        <div class="wizard-action-header">
+            <div class="wizard-action-header-text">ITIL / ITSM</div>
+            <div class="wizard-step-bullets">
+                <div class="wizard-step-one"><div class="wizard-step-done"></div></div>
+                <div class="wizard-step-two"><div class="wizard-step-selected"></div></div>
+                <div class="wizard-step-three"></div>
+                <div class="wizard-step-four"></div>
+            </div>
+        </div>
+
+        <div class="wizard-action-content">
+            <div class="wizard-step-header">Scheduled Report Distribution</div>
+            <div class="wizard-step-text">Collapse the right sidebar. Click on the tool icon (bottom right). Schedule "Status Breakdown" from the Reports tab and select co-workers for distribution.</div>
+        </div>
+
+    </div>
+</div><!-- end action container -->
+<script type="text/javascript">
+    gemini_wizard.initStep(true);
+    var myITILInt = setInterval(function()
+    {
+        if (gemini_appnav.pageCard.CardData.Reports.ExcelReports.length && (gemini_appnav.pageCard.CardData.Reports.EmailGroups && gemini_appnav.pageCard.CardData.Reports.EmailGroups.length || gemini_appnav.pageCard.CardData.Reports.EmailUsers && gemini_appnav.pageCard.CardData.Reports.EmailUsers.length))
+        {
+            clearInterval(myITILInt);
+            $.publish('wizard-action', ['reportscheduled']);
+        }
+    }, 1000);
+</script>

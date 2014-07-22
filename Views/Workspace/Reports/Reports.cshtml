@@ -2,6 +2,10 @@
 
 <div id="workspace-reports-zone">
         
+    @if (GeminiContext.User.IsGlobalAdmin)
+{
+    <div id="reportFile" align="right" style="font-size: small" data-upload-text="@GetResource(ResourceKeys.Upload)"></div>
+}
     <div class="content">
         @foreach (var report in Model.Reports)
         {

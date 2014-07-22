@@ -1,3 +1,3 @@
 ﻿@model CheckBoxFieldModel
-<input type="checkbox" data-input-type="checkbox" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" @if(Model.Checked) { <text>checked='checked'</text> } class="fancy inline-editing @Model.Classes" @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>
+<input type="checkbox" data-input-type="checkbox" title="@Model.Tooltip" id="@Model.Id" data-original="@Model.Checked" name="@Model.Id" @if (Model.Checked) { <text> checked='checked' </text>   } class="fancy inline-editing @Model.Classes" @if (Model.Width > 0) { <text> style='width:@Model.Width;' </text>   } />
 <input type="hidden" name="@Model.Id" value="false" />

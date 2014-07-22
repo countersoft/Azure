@@ -1,0 +1,29 @@
+﻿@{
+    string email = string.Empty;
+    var prefix = GeminiContext.Url.IndexOf('.');
+    if(prefix != -1)
+    { 
+        email = GeminiContext.Url.Substring(0, prefix).ReplaceIgnoreCase("http://", string.Empty);
+    }
+}
+<div id="wizard-action-container" class="hide">
+    <div id="wizard-action-box" data-action="emailticket" data-type="ticketing" data-next-step="2" data-pull="1">
+        <div class="wizard-action-header">
+            <div class="wizard-action-header-text">HELP DESK &amp; TICKETING</div>
+            <div class="wizard-step-bullets">
+                <div class="wizard-step-one"><div class="wizard-step-selected"></div></div>
+                <div class="wizard-step-two"></div>
+                <div class="wizard-step-three"></div>
+            </div>
+        </div>
+
+        <div class="wizard-action-content">
+            <div class="wizard-step-header">Email to Ticket</div>
+            <div class="wizard-step-text">Send an email to <a href="mailto://@(email)@("@")ongemini.com">@(email)@("@")OnGemini.com</a>. Select the HELP workspace (left sidebar). A badge notification appears on every workspace that tracks your new ticket.</div>
+        </div>
+
+    </div>
+</div><!-- end action container -->
+<script type="text/javascript">
+    gemini_wizard.initStep(true);
+</script>

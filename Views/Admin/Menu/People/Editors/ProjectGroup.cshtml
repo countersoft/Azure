@@ -45,11 +45,19 @@
 
         if ($("#GroupForm").valid()) {
             gemini_ui.startBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
-            gemini_ajax.postCall("configure/People/ProjectGroups", "SaveData", function (response) {
-                gemini_popup.popupClose(e);
-                gemini_admin.getPage();
+            gemini_ajax.postCall("configure/People/ProjectGroups", "SaveData", function (response) {       
+   
                 gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
-                window.location.reload();
+
+                if (response.Result && !response.Result.Success)
+                    gemini_popup.toast(response.Result.Message, true);
+                else
+                {
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                    window.location.reload();
+                }
+
             }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#GroupForm").serialize(), null, true);
         }
         else {

@@ -1,0 +1,47 @@
+﻿<div class="absolute-center-is-fixed"></div>
+<div class="absolute-center-is-fixed-inner">
+    <div id="wizard-welcome-box" class="no-select">
+        <div class="wizard-welcome-header">
+            <div class="wizard-welcome-header-text">LET'S GET GOING, @GeminiContext.User.Entity.Firstname.ToUpper().ToMaxMore(15)</div>
+        </div>
+
+        <div class="wizard-three-boxes-content">
+            <div class="wizard-tag-line">SELECT YOUR PRIMARY USE CASE</div>
+
+            <div class="wizard-three-boxes">
+                <div id="wizard-selectable">
+                    <div class="wizard-project-box wizard-box" data-box="issues">
+                        <div class="wizard-box-text-header">ISSUE TRACKING</div>
+                        <div class="wizard-project-image"></div>
+                        <div class="wizard-boxes-text">Flexibility &amp; control: All you need to plug your dev team into the business</div>
+                    </div>
+
+                    <div class="wizard-help-box wizard-box" data-box="ticketing">
+                        <div class="wizard-box-text-header">HELP DESK &amp; TICKETING</div>
+                        <div class="wizard-help-image"></div>
+                        <div class="wizard-boxes-text">Email Ticketing: Intercept inbound support emails and turn them into tickets</div>
+                    </div>
+
+                    <div class="wizard-sla-box wizard-box" data-box="sla">
+                        <div class="wizard-box-text-header">SERVICE LEVEL AGREEMENT - SLA</div>
+                        <div class="wizard-sla-image"></div>
+                        <div class="wizard-boxes-text">Stop the clock: Streamline the Receive-Respond-Resolve service loop</div>
+                    </div>
+
+                    <div class="wizard-itil-box wizard-box" data-box="itil">
+                        <div class="wizard-box-text-header">ITIL COMPLIANCE</div>
+                        <div class="wizard-itil-image"></div>
+                        <div class="wizard-boxes-text">Communication: Track and manage the interaction between stakeholders</div>
+                    </div>
+
+                </div><!-- end selectable -->
+            </div><!-- end three boxes -->
+
+            <div class="wizard-disabled-btn">START</div>
+
+        </div><!-- end three-boxes-content -->
+    </div><!-- end welcome box -->
+</div>
+<script type="text/javascript">
+    gemini_wizard.initStart();
+</script>

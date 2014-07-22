@@ -1,0 +1,29 @@
+﻿<div id="wizard-action-container" class="hide">
+    <div id="wizard-action-box" data-action="reportdownloaded" data-type="itil" data-next-step="2">
+        <div class="wizard-action-header">
+            <div class="wizard-action-header-text">ITIL / ITSM</div>
+            <div class="wizard-step-bullets">
+                <div class="wizard-step-one"><div class="wizard-step-selected"></div></div>
+                <div class="wizard-step-two"></div>
+                <div class="wizard-step-three"></div>
+                <div class="wizard-step-four"></div>
+            </div>
+        </div>
+
+        <div class="wizard-action-content">
+            <div class="wizard-step-header">Simple Adhoc Reporting</div>
+            <div class="wizard-step-text">Select the ITIL workspace (left sidebar). Click on the Reports tab for this workspace (right sidebar). Click on "Status Breakdown" to view the report.</div>
+        </div>
+
+    </div>
+</div><!-- end action container -->
+<script type="text/javascript">
+    gemini_wizard.initStep(true);
+    $('body').on('click', '#side-pane .contents .report', function ()
+    {
+        setTimeout(function ()
+        {
+            $.publish('wizard-action', ['reportdownloaded']);
+        }, 2000);
+    });
+</script>

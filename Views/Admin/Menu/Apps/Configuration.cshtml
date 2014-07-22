@@ -10,34 +10,34 @@
                 <table class="data-entry-box">
                     <tbody>
                         <tr>
-                            <td>Projects</td>
+                            <td class="no-wrap">Projects</td>
                             <td>@Html.ListBox("projects", Model.AllProjects, new { @class = "input-size9" })</td>
                         </tr>
                         @if (Model.CanViewGroups != null)
                         {
                             <tr>
-                                <td>Can View</td>
+                                <td class="no-wrap">Can View</td>
                                 <td>@Html.ListBox("canViewAppGroups", Model.CanViewGroups, new { @class = "input-size9" })</td>
                             </tr>
                         }
                         @if (Model.CanCreateGroups != null)
                         {
                             <tr>
-                                <td>Can Create</td>
+                                <td class="no-wrap">Can Create</td>
                                 <td>@Html.ListBox("canCreateAppGroups", Model.CanCreateGroups, new { @class = "input-size9" })</td>
                             </tr>
                         }
                         @if (Model.CanEditGroups != null)
                         {
                             <tr>
-                                <td>Can Edit</td>
+                                <td class="no-wrap">Can Edit</td>
                                 <td>@Html.ListBox("canEditAppGroups", Model.CanEditGroups, new { @class = "input-size9" })</td>
                             </tr>
                         }
                         @if (Model.CanDeleteGroups != null)
                         {
                             <tr>
-                                <td>Can Delete</td>
+                                <td class="no-wrap">Can Delete</td>
                                 <td>@Html.ListBox("canDeleteAppGroups", Model.CanDeleteGroups, new { @class = "input-size9" })</td>
                             </tr>
                         }

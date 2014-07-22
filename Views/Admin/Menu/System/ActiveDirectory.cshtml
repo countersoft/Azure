@@ -27,6 +27,18 @@
                 <td>AD Password</td>
                 <td><input type="password" id="Password" name="Password" class="input-size9" value="@Model.Password"/></td>
             </tr>
+            <tr>
+                <td>AD Domain</td>
+                <td><input type="text" id="Domain" name="Domain" class="input-size9" value="@Model.Domain" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="ValidateEmail" name="ValidateEmail" @if (Model.ValidateEmail) { <text> checked="checked" </text>   } /> <label for="ValidateEmail">Only synchronzie users with valid email</label></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="ValidateLogon" name="ValidateLogon" @if (Model.ValidateLogon) { <text> checked="checked" </text>     } /> <label for="ValidateLogon">Only synchronzie users that have logged in at least once</label></td>
+            </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>

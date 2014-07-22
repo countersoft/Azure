@@ -1,6 +1,6 @@
 ﻿@model AttachmentFieldModel
 
-<input type="file" data-input-type="attachment" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" class="inline-editing @Model.Classes  @(Model.Required ? "required" : "")"@if(Model.Multiple) { <text>multiple='multiple'</text> } @if(Model.Width > 0) { <text>style='width:@Model.Width;'</text> }/>
+<input type="file" data-input-type="attachment" title="@Model.Tooltip" id="@Model.Id" name="@Model.Id" data-original="@Model.Value"  class="inline-editing @Model.Classes  @(Model.Required ? "required" : "")" @if (Model.Multiple) { <text> multiple='multiple' </text>  } @if (Model.Width > 0) { <text> style='width:@Model.Width;' </text>  } />
 <input type="checkbox" id="delete_@Model.Id" title="@GetResource(ResourceKeys.Delete) @Model.Value" class="hide" name="delete_@Model.Id" value="true" />
 
 @if (Model.Value.HasValue())

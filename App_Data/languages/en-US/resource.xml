@@ -472,4 +472,19 @@
   <item id="Groups">Groups</item>
   <item id="Subject">Subject</item>
   <item id="Message">Message</item>
+
+  <item id="FirstRowMustBeColumnHeader">The first row in your file must contain column headers (e.g. Title, Priority, Status). Excel is recommended where you have HTML or multi-line data.</item>
+  <item id="SupportedUploadFormats">Select a project and a file to upload - supported formats: Microsoft Excel and CSV (text files delimited by PIPE, COMMA or TAB).</item>
+  <item id="MapImportedColumns">Map imported columns to Gemini data fields</item>
+  <item id="SourceColumn">Source Column</item>
+  <item id="SampleData">Sample Data</item>
+  <item id="TargetColumn">Target Column</item>
+  <item id="Ignore">Ignore</item>
+  <item id="MapImportedColumnValues">Map incoming column values to Gemini field values</item>  
+  <item id="ImportWizardResult">Import Wizard Results</item>  
+  <item id="ImportWizardRowsFound">ROWS FOUND</item>
+  <item id="ImportWizardRowsImported">ROWS IMPORTED</item>
+  <item id="ImportWizardRowsSkipped">ROWS SKIPPED</item>
+  <item id="ImportWizardTypeAdded">A Type was added. Please go to Customize -> Templates -> Process, select your Project Template and update the 'Screen' settings for your Type.</item>
+  <item id="ImportWizardAccessProblem">There seems to be a problem accessing the 'app_data/imports' folder. Please ensure you have given 'everyone' modify access to this folder.</item>
 </Resource>

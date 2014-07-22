@@ -1,0 +1,114 @@
+﻿<div class="absolute-center-is-fixed"></div>
+<div class="absolute-center-is-fixed-inner-welldone">
+    <div id="wizard-welldone-box">
+
+        <div class="wizard-header-four-boxes">
+            <div class="wizard-welcome-header">
+                <div class="wizard-welcome-header-text">WELL DONE, @GeminiContext.User.Entity.Firstname.ToUpper().ToMaxMore(15)!</div>
+            </div>
+
+            <div class="wizard-welcome-header-feedback" style="display:none;">
+                <div class="wizard-welcome-header-text-feedback">WE'RE SAD TO SEE YOU GO...</div>
+            </div>
+        </div>
+
+        <div class="wizard-welldone-content">
+            <div class="wizard-tag-line">SO WHAT DID YOU THINK OF GEMINI?</div>
+
+            <div class="wizard-welldone1 wizard-welldone-action" data-box="contact">
+                <div class="wizard-contact-content">
+                    <div class="wizard-contact-me-icon"></div>
+                    <div class="wizard-welldone-header">CONTACT ME</div>
+                </div>
+            </div>
+            
+            <div class="wizard-welldone3 wizard-welldone-action" data-box="pricing">
+                <div class="wizard-pricing-content">
+                    <div class="wizard-pricing-box-icon"></div>
+                    <div class="wizard-welldone-header">PRICING &amp; SIGN UP</div>
+                </div>
+            </div>
+
+            <div class="wizard-welldone4 wizard-welldone-action" data-box="no-gemini">
+                <div class="wizard-no-gemini-content">
+                    <div class="wizard-no-gemini-icon"></div>
+                    <div class="wizard-welldone-header">IT'S NOT FOR ME</div>
+                </div>
+            </div>
+
+            <div class="wizard-welldone2 wizard-welldone-action" data-box="download">
+                <div class="wizard-download-gemini-content">
+                    <div class="wizard-download-gemini-icon"></div>
+                    <div class="wizard-welldone-header">START OVER</div>
+                </div>
+            </div>
+
+            <div class="wizard-download clear-both">You can also <a href="http://www.countersoft.com/gemini.zip">download and install</a> Gemini on your Windows box</div>
+        </div>
+
+        <div class='wizard-welldone-contact hide'>
+            <form class="wizard-welldone" action="contact">
+                <div class="wizard-welldone-contents">
+                    <div class="wizard-form-headers">NAME</div>
+                    <input type='text' class='wizard-welldone-input' name='firstname' value="@GeminiContext.User.Fullname">
+                    <br />
+                    <div class="wizard-form-headers">EMAIL</div>
+                    <input type='text' class='wizard-welldone-input' name='email' value="@GeminiContext.User.Entity.Email">
+                    <br />
+                    <div class="wizard-form-headers">PHONE</div>
+                    <input type='text' class='wizard-welldone-input' name='phone' placeholder='OPTIONAL'>
+                    <br />
+                    <div class='wizard-welldone-btn'>CONTACT</div>
+                </div>
+            </form>
+        </div>
+
+        <div class='wizard-welldone-download hide'>
+            <form class="wizard-welldone" action="download">
+                <div class="wizard-welldone-contents">
+                    <div class="wizard-form-headers">NAME</div>
+                    <input type='text' class='wizard-welldone-input' name='firstname' value="@GeminiContext.User.Fullname">
+                    <br />
+                    <div class="wizard-form-headers">EMAIL</div>
+                    <input type='text' class='wizard-welldone-input' name='email' value="@GeminiContext.User.Entity.Email">
+                    <br />
+                    <div class="wizard-form-headers">PHONE</div>
+                    <input type='text' class='wizard-welldone-input' name='phone' placeholder='OPTIONAL'>
+                    <br />
+                    <div class='wizard-welldone-btn'>DOWNLOAD</div>
+                </div>
+            </form>
+        </div>
+
+        <div class='wizard-welldone-pricing hide'>
+            <form class="wizard-welldone" action="pricing">
+                <div class="wizard-welldone-contents">
+                    <div class="wizard-form-headers">NAME</div>
+                    <input type='text' class='wizard-welldone-input' name='firstname' value="@GeminiContext.User.Fullname">
+                    <br />
+                    <div class="wizard-form-headers">EMAIL</div>
+                    <input type='text' class='wizard-welldone-input' name='email' value="@GeminiContext.User.Entity.Email">
+                    <br />
+                    <div class="wizard-form-headers">PHONE</div>
+                    <input type='text' class='wizard-welldone-input' name='phone' placeholder='OPTIONAL'>
+                    <br />
+                    <div class='wizard-welldone-btn'>PRICING</div>
+                </div>
+            </form>
+        </div>
+
+        <div class='wizard-welldone-no-gemini hide'>
+            <form class="wizard-feedback" action="feedback">
+                <div class="wizard-form-headers">FEEDBACK</div>
+                <textarea class='wizard-feedback-input required' name="comment" placeholder="PLEASE LET US KNOW WHY..." cols="0" rows="0"></textarea>
+                <br />
+                <div class='wizard-welldone-btn wizard-feedback-btn'>SAY GOODBYE</div>
+            </form>
+        </div>
+
+    </div><!-- end welldone box -->
+
+</div>
+<script type="text/javascript">
+    gemini_wizard.initEnd();
+</script>

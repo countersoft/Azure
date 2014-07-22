@@ -211,6 +211,7 @@ gemini_appnav =
 
                 $("#popup-button-yes", "#cs-popup-center").click(function (e)
                 {
+                    gemini_ui.startBusy('#cs-popup-center #popup-button-yes');
                     var payload = "";
 
                     if (transfered > 0) payload = "owner=" + transfered;
@@ -221,8 +222,9 @@ gemini_appnav =
                         $("#card-holder").html(response.Result.Data);
                         gemini_appnav.pageCard.Id = 0;
                         gemini_appnav.initCardActions();
+                        gemini_ui.stopBusy('#cs-popup-center #popup-button-yes');
                     },
-                    null, payload);
+                    function () { gemini_ui.stopBusy('#cs-popup-center #popup-button-yes'); }, payload);
                 });
 
             }, null);
@@ -383,6 +385,7 @@ gemini_appnav =
                     $('#appnav-toolbar-badge-changes').hide();
                     gemini_appnav.refresh();
                     $('tr.issue-highlight', '#data').removeClass('issue-highlight');
+                    planner.removeHighlight(gemini_appnav.pageCard.CardData.Badges);
                 }
             }, null, { cardId: gemini_appnav.pageCard.Id });
         });

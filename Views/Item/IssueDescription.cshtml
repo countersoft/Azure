@@ -2,6 +2,9 @@
 
 <div>
     <div class="description section-content cs-wysiwyg expanded">
+        @if(Model[ItemAttributeVisibility.Description])
+        { 
         @Html.Raw(Model.Issue.Description)
+        }
     </div>
 </div>

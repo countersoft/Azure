@@ -51,7 +51,14 @@
                                   <div class="comment-type">Email Reply</div>
                                 }
                             <div class="section-content expanded">
-                            <div class="comment" data-id="@comment.Entity.Id" data-url="@Url.Action("updatecomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id, commentid = comment.Entity.Id }))" >
+                                @{
+                                    var formUrl = Url.Action("updatecomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id, commentid = comment.Entity.Id }));
+                                    if (!formUrl.HasValue())
+                                    {
+                                        formUrl = string.Concat(GeminiContext.Url, "workspace/", Model.Issue.Project.Id, "/item/updatecomment?issueid=", Model.Issue.Id,"&commentid=",comment.Entity.Id);
+                                    }
+                                 }
+                            <div class="comment" data-id="@comment.Entity.Id" data-url="@formUrl" >
                                 @Html.Raw(comment.Entity.Comment)
 
                                 <div class="attachment">

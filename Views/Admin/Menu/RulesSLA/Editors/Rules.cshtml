@@ -267,8 +267,16 @@
         }
         else if(gemini_commons.endsWith($('#action-type option:selected').val(), 'SetCustomField'))
         {
-            value =  [$('#action-fields option:selected', '#action-parameter-container').text(), $('#parameter-values option:selected', '#action-parameter-container').val()];
-            textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#parameter-values option:selected', '#action-parameter-container').text();
+            if($('#rule-value', '#action-parameter-container').length)
+            {
+                value =  [$('#action-fields option:selected', '#action-parameter-container').text(), $('#rule-value', '#action-parameter-container').val()];
+                textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#rule-value', '#action-parameter-container').val();
+            }
+            else
+            {
+                value =  [$('#action-fields option:selected', '#action-parameter-container').text(), $('#parameter-values option:selected', '#action-parameter-container').val()];
+                textValue = $('#action-fields option:selected', '#action-parameter-container').text() + ' to ' + $('#parameter-values option:selected', '#action-parameter-container').text();
+            }
         }
         else
         {
@@ -304,7 +312,7 @@
         {
            $('#rule-value-container').html(response.Result.Html);
            gemini_ui.chosen("#rule-value-container select", null, true);
-           $('.masked').mask('99:99');
+           $('.masked').mask('999:99');
 
         }, null, $("#rule-field").serialize() , null, true);
     }

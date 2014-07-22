@@ -22,7 +22,7 @@ define("tinymce/ui/SplitButton", [
 	return MenuButton.extend({
 		Defaults: {
 			classes: "widget btn splitbtn",
-			role: "splitbutton"
+			role: "button"
 		},
 
 		/**
@@ -72,12 +72,12 @@ define("tinymce/ui/SplitButton", [
 			var icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
 
 			return (
-				'<div id="' + id + '" class="' + self.classes() + '">' +
-					'<button type="button" hidefocus tabindex="-1">' +
+				'<div id="' + id + '" class="' + self.classes() + '" role="button" tabindex="-1">' +
+					'<button type="button" hidefocus="1" tabindex="-1">' +
 						(icon ? '<i class="' + icon + '"></i>' : '') +
 						(self._text ? (icon ? ' ' : '') + self._text : '') +
 					'</button>' +
-					'<button type="button" class="' + prefix + 'open" hidefocus tabindex="-1">' +
+					'<button type="button" class="' + prefix + 'open" hidefocus="1" tabindex="-1">' +
 						//(icon ? '<i class="' + icon + '"></i>' : '') +
 						(self._menuBtnText ? (icon ? '\u00a0' : '') + self._menuBtnText : '') +
 						' <i class="' + prefix + 'caret"></i>' +
@@ -100,7 +100,7 @@ define("tinymce/ui/SplitButton", [
 				if (e.control == this) {
 					// Find clicks that is on the main button
 					while (node) {
-						if (node.nodeName == 'BUTTON' && node.className.indexOf('open') == -1) {
+						if ((e.aria && e.aria.key != 'down') || (node.nodeName == 'BUTTON' && node.className.indexOf('open') == -1)) {
 							e.stopImmediatePropagation();
 							onClickHandler.call(this, e);
 							return;

@@ -26,7 +26,7 @@ a[href^="http://"]
 {
     display:none;
 }
-#appnav-toolbar .code, #appnav-toolbar .title , #TestRunnerForm, #item-new, #zone-header-bar .user-options, #footer-messaging, #dependency-section a img, #comments-content a img
+#appnav-toolbar .code, #appnav-toolbar .title , #TestRunnerForm, #item-new, #zone-header-bar .user-options, #footer-messaging, #dependency-section a img, #comments-content a img, #zone-header-bar
 {
     display:none;
 }

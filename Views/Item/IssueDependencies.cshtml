@@ -5,67 +5,94 @@
 <div id="dependency-section">
     @if (Model.Issue.Hierarchy.Count > 0)
     {
-       <div class="label">Dependency tree:</div>
+        var parentsList = new List<int>();
+        var previousParentid = 0;
+        <div class="label">Dependency tree:</div>
         <div id="dependency-content">
             @foreach (var hierarchyItem in Model.Issue.Hierarchy)
             {
+
+                if (parentsList.Count > 0 && parentsList[parentsList.Count - 1] != hierarchyItem.Value.Entity.ParentIssueId.GetValueOrDefault())
+                {
+                    parentsList.RemoveAt(parentsList.Count - 1);
+                    @Html.Raw("</div>")
+
+                    if (parentsList.Count > 0 && !hierarchyItem.Value.Entity.HierarchyKey.Contains(string.Concat('|', parentsList[parentsList.Count - 1], '|')))
+                    {
+                        parentsList.RemoveAt(parentsList.Count - 1);
+                        @Html.Raw("</div>")
+                    }
+                }
+
                 string status = (hierarchyItem.Value.IsClosed || Model.Issue.IsClosed) ? (Model.Issue.IsClosed ? "fullyClosed" : "closed") : "open";
                 <div class="dependency @status @if(hierarchyItem.Value.Id == Model.Issue.Entity.Id){  <text>bold</text> }" data-id="@hierarchyItem.Value.Id">
+                    <span class="dependency-expandedOrcollapsed">
+                        <span class="expander fonticon-arrow-down @if(!hierarchyItem.Value.Entity.IsParent){<text>invisible</text>}" style="visibility:hidden"></span>
+                    </span>
                     @{
                         var allowDelete = false;
                         if (hierarchyItem.Value.ParentIssueId != null)
                         {
-                            var parent =  Model.Issue.Hierarchy.Find( h => h.Value.Entity.Id == hierarchyItem.Value.ParentIssueId);
+                            var parent = Model.Issue.Hierarchy.Find(h => h.Value.Entity.Id == hierarchyItem.Value.ParentIssueId);
                             if (parent != null)
                             {
                                 allowDelete = CanDoItemAction(UserAction.Delete, ItemAttributeVisibility.AssociatedHierarchy, parent.Value);
                             }
                         }
                     }
-                        @if (allowDelete && !GeminiContext.PermissionsManager.IsHelpdeskUser())
-                        {
-                        <span  class="fonticon-cross" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Dependency)"></span>
-                        }
-                        else
-                        {
-                            <span  class="fonticon-cross noshow"></span>
-                        }
-                        @for (int i = 0; i < hierarchyItem.Key; i += 2)
-                        {
-                            <span class="pad-right-20"></span>
-                        }       
-                        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy, hierarchyItem.Value) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
-                        {
-                        <span  class="fonticon-plus" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Dependency)"></span>
-                        }
-                        else
-                        {
-                            <span  class="fonticon-plus noshow"></span>
-                        }
-                        <a class="item-links" href='@Url.Action("Item", "Item", new RouteValueDictionary(new { id = GeminiContext.Card.Id, issueid = hierarchyItem.Value.Id }))'>
-                            <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value)">@hierarchyItem.Value.IssueKey</span>                           
-                            <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value) @ViewHelpers.ViewItem_SameIssue(hierarchyItem.Value, Model.Issue)"></span>
-                        </a>
-                        @hierarchyItem.Value.Title.ToMaxMore(80)
-                        @if(GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Status, hierarchyItem.Value.Project, hierarchyItem.Value) ) { <span class="status">(@hierarchyItem.Value.Status)</span> }
-                         @if (!GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.EstimatedEffort, hierarchyItem.Value.Project, hierarchyItem.Value))
-                        {
-                            hierarchyItem.Value.Entity.EstimatedHours = 0;
-                            hierarchyItem.Value.Entity.EstimatedMinutes = 0;
-                        }
+                    @if (allowDelete && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+                    {
+                        <span class="fonticon-cross" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Dependency)"></span>
+                    }
+                    else
+                    {
+                        <span class="fonticon-cross noshow"></span>
+                    }
+                    @for (int i = 0; i < hierarchyItem.Key; i += 2)
+                    {
+                        <span class="pad-right-20"></span>
+                    }
+                    @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy, hierarchyItem.Value) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+                    {
+                        <span class="fonticon-plus" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Dependency)"></span>
+                    }
+                    else
+                    {
+                        <span class="fonticon-plus noshow"></span>
+                    }
+                    <a class="item-links" href='@Url.Action("Item", "Item", new RouteValueDictionary(new { id = GeminiContext.Card.Id, issueid = hierarchyItem.Value.Id }))'>
+                        <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value)">@hierarchyItem.Value.IssueKey</span>
+                        <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value) @ViewHelpers.ViewItem_SameIssue(hierarchyItem.Value, Model.Issue)"></span>
+                    </a>
+                    @hierarchyItem.Value.Title.ToMaxMore(80)
+                    @if (GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Status, hierarchyItem.Value.Project, hierarchyItem.Value))
+                    { <span class="status">(@hierarchyItem.Value.Status)</span> }
+                    @if (!GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.EstimatedEffort, hierarchyItem.Value.Project, hierarchyItem.Value))
+                    {
+                        hierarchyItem.Value.Entity.EstimatedHours = 0;
+                        hierarchyItem.Value.Entity.EstimatedMinutes = 0;
+                    }
 
-                        @if (!GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.CalculatedTimeLogged, hierarchyItem.Value.Project, hierarchyItem.Value))
-                        {
-                            hierarchyItem.Value.Entity.LoggedHours = 0;
-                            hierarchyItem.Value.Entity.LoggedMinutes = 0;
-                        }
-                
-                        @if (hierarchyItem.Value.EstimatedHours != 0 || hierarchyItem.Value.EstimatedMinutes != 0 || @hierarchyItem.Value.LoggedHours != 0 || @hierarchyItem.Value.LoggedMinutes != 0)
-                        {
-                            <span class="time info-label-4">@GetResourceTemplate(ResourceKeys.Estimated, Resourcing.Colon)&nbsp;@hierarchyItem.Value.EstimatedEffort &nbsp; @GetResourceTemplate(ResourceKeys.Logged, Resourcing.Colon)&nbsp;@hierarchyItem.Value.TimeLogged</span> 
-                        }
+                    @if (!GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.CalculatedTimeLogged, hierarchyItem.Value.Project, hierarchyItem.Value))
+                    {
+                        hierarchyItem.Value.Entity.LoggedHours = 0;
+                        hierarchyItem.Value.Entity.LoggedMinutes = 0;
+                    }
+
+                    @if (hierarchyItem.Value.EstimatedHours != 0 || hierarchyItem.Value.EstimatedMinutes != 0 || @hierarchyItem.Value.LoggedHours != 0 || @hierarchyItem.Value.LoggedMinutes != 0)
+                    {
+                        <span class="time info-label-4">@GetResourceTemplate(ResourceKeys.Estimated, Resourcing.Colon)&nbsp;@hierarchyItem.Value.EstimatedEffort &nbsp; @GetResourceTemplate(ResourceKeys.Logged, Resourcing.Colon)&nbsp;@hierarchyItem.Value.TimeLogged</span>
+                    }
                 </div>
+                if (hierarchyItem.Value.Entity.IsParent)
+                {
+                    parentsList.Add(hierarchyItem.Value.Id);
+                    <text><div class="dependency_content expanded">
+                    </text>
+                    previousParentid = parentsList.Last();
+                }
             }
+            @Html.Raw("</div>")
 
             @foreach (var hierarchyItem in Model.Issue.Hierarchy)
             {
@@ -73,13 +100,15 @@
                 {
                     var canSeeEffort = GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.EstimatedEffort, hierarchyItem.Value.Project, hierarchyItem.Value);
                     var canSeeLogged = GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.CalculatedTimeLogged, hierarchyItem.Value.Project, hierarchyItem.Value);
-                    if(canSeeEffort || canSeeLogged)
+                    if (canSeeEffort || canSeeLogged)
                     {
-                    <div class="clearfix pad-bottom-20"></div>
-                    <span class="time-box">
-                        @if(canSeeEffort){<span class="label">@GetResource(ResourceKeys.Estimated, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.EstimatedIncludingKids</span>}
-                        @if(canSeeLogged){<span class="label">@GetResource(ResourceKeys.Logged, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.LoggedIncludingKids</span>}
-                    </span>
+                        <div class="clearfix pad-bottom-20"></div>
+                        <span class="time-box">
+                            @if (canSeeEffort)
+                            {<span class="label">@GetResource(ResourceKeys.Estimated, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.EstimatedIncludingKids</span>}
+                            @if (canSeeLogged)
+                            {<span class="label">@GetResource(ResourceKeys.Logged, Resourcing.Colon)</span><span class="data">@hierarchyItem.Value.LoggedIncludingKids</span>}
+                        </span>
                     }
                     break;
                 }

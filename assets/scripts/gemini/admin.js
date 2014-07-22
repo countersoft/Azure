@@ -122,6 +122,7 @@ gemini_admin = {
 
     getPage: function ()
     {
+        gemini_ui.destroyHtmlEditor(".wysiwyg-editor");
         gemini_admin.checkXHR();
         gemini_admin.clearPage();
 
@@ -414,8 +415,8 @@ gemini_admin = {
     EscapeAttributeDdropdown: function (guid, selector) {
         gemini_admin.hideAttributeOptionsPicker();
     },
-    attributeOptionsPicker: function (optionsTrigger, dataStoreCallback, showSectionRequired, applyCallback) {
-        
+    attributeOptionsPicker: function (optionsTrigger, dataStoreCallback, showSectionRequired, applyCallback, isReadOnly) {
+
         if (showSectionRequired)
         {
             $('#option-required', '#attribute-options-picker').show();
@@ -485,6 +486,17 @@ gemini_admin = {
                 "collision": "none"
             });
             gemini_keyboard.bindEscape("#attribute-options-picker", gemini_admin.EscapeAttributeDdropdown);
+
+            if (isReadOnly)
+            {
+                $('#attribute-options-picker #attribute-options-ProjectGroup').attr('disabled', 'disabled').trigger("chosen:updated");
+                $('#attribute-options-picker #field-required').iCheck('disable');
+            }
+            else
+            {
+                $('#attribute-options-picker #attribute-options-ProjectGroup').removeAttr('disabled').trigger("chosen:updated");
+                $('#attribute-options-picker #field-required').iCheck('enable');
+            }
         });
     }
 };

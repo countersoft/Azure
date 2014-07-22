@@ -107,7 +107,7 @@
 
         gemini_admin.attributeOptionsPicker('#screens-container #attribute-options-trigger', function (e) {
             return $(e).parent().find("input:eq(0)");
-        }, true);
+        }, true, null, $('#ReferenceId').val() > 0);
 
         $("#popup-button-yes").unbind("click").click(function (e) {
             gemini_commons.stopClick(e);

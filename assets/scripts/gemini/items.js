@@ -190,6 +190,17 @@ gemini_items = {
         }
         gemini_items.currentViewXHR = gemini_ajax.call('item', 'grid?issueid=' + gemini_items.currentViewedIssueId, function (response) {
             gemini_items.currentViewXHR = null;
+            if (tinymce.editors["comments-wysiwyg-content"])
+            {
+                gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content");
+            }
+            if (tinymce.editors["comments-wysiwyg-content2"]) {
+                gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
+            }
+            if (tinymce.editors["breeze-comments-wysiwyg-content"])
+            {
+                gemini_ui.destroyHtmlEditor("#breeze-comments-wysiwyg-content");
+            }
             $('#view-item-slider').html(response);
             var width = $('#items-grid').width() * 0.7;
             //if (width < 820) width = 820;

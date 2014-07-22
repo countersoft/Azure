@@ -38,11 +38,49 @@ gemini_reports =
             $('#workspace-reports-zone').replaceWith(response.Result.Data.Html);
             $('.content', '#workspace-reports-zone').css('height', ($('#workspace-reports-zone').height()) + 'px')
             $(".content", "#workspace-reports-zone").jScrollPane('reinitialise');
+
+            var report = $('#reportFile')[0];
+            if (report != undefined && report != null) {
+                gemini_reports.ReportFileUploader(report);
+            }
         }
     },
     
     hide: function ()
     {
         $('#workspace-reports-zone').hide('slide', { direction: 'down' }, 250);
+    },
+
+    ReportFileUploader: function (element) {
+        var template = '<li>' +
+                '<span class="qq-upload-file configure"></span>' +
+                '<span class="qq-upload-spinner"></span>' +
+                '<span class="qq-upload-size"></span>' +
+                '<a class="qq-upload-cancel" href="#">[[Cancel]]</a>' +
+                '<span class="qq-upload-failed-text">[[Failed]]</span>' +
+                '<span class="fonticon-cross"></span>' +
+            '</li>';
+
+        var attachmentUploader = new qq.FileUploader({
+            element: element,
+            action: gemini_ajax.getUrl('reports', 'upload'),
+            debug: false,
+
+            onComplete: function (_id, fileName, responseJSON) {
+                if (responseJSON.success) {
+                    gemini_reports.init();
+                    if (responseJSON.Result == undefined) {
+                        gemini_reports.init();
+                    }
+                }
+                $(".qq-upload-fail .fonticon-cross").click(function () {
+                    $(this).parent().remove();
+                });
+            },
+            taxonomy: {
+            uploadButton: "<a href='#'>" + $('#reportFile').attr('data-upload-text') + "</a>",
+            },
+            fileTemplate: template
+        });
     },
 };

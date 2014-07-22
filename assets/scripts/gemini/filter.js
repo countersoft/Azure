@@ -18,6 +18,8 @@ if (!Array.prototype.indexOf) {
     };
 }
 gemini_filter = {
+    wizardBoxAdded: false,
+    wizrdBoxFiltered: false,
     pageType: 0,
     dropZoneIndex: 0,
     rowDragIndex: 0,
@@ -354,6 +356,7 @@ gemini_filter = {
                 if(!gemini_filter.currentSelectedField) {
                     $('#instant-filter-Keywords').remove();
                     gemini_ajax.postCall('items', 'newfilterbox', function (response) {
+                        gemini_filter.wizardBoxAdded = true;
                         $('#instant-filter-fields').before(response.Result.Html);
                         gemini_ui.fancyInputs('#instant-filter-Keywords .fancy');
                         gemini_filter.filterTooltip();
@@ -391,6 +394,7 @@ gemini_filter = {
         $('#instant-filter-new-field').autocomplete({
             select: function (event, ui) {
                 gemini_ajax.postCall('items', 'newfilterbox', function (response) {
+                    gemini_filter.wizardBoxAdded = true;
                     $('#instant-filter-fields').before(response.Result.Html);
                     gemini_filter.filterTooltip();
                     gemini_ui.datePicker('#instant-filter-' + response.Result.Field + ' .datepicker', gemini_filter.dateChanged);
@@ -508,31 +512,6 @@ gemini_filter = {
         $('#tabledata .sla-timer', '#items-grid').each(function()
         {
             ids.push($(this).closest('tr').attr('data-issue-id'));
-            /*var totalMins = $(this).attr('data-sla-minutes');
-            var state = $(this).attr('data-sla-state');
-            if (state < 10)
-            {
-                totalMins -= 1;
-                var sign = totalMins >= 0 ? 1 : -1;
-                var hours = Math.floor(Math.abs(totalMins) / 60);
-                var minutes = totalMins % 60;
-                var days = Math.floor(hours / 24);
-                if (days != 0)
-                {
-                    $(this).html((days * sign) + 'd');
-                }
-                else if (hours != 0)
-                {
-                    $(this).html((hours * sign) + 'h');
-                }
-                else
-                {
-                    $(this).html(minutes + 'm');
-                }
-
-                $(this).attr('data-sla-minutes', totalMins)
-                $(this).attr('title', days+ 'd ' + hours + 'h ' + minutes + 'm');
-            }*/
         });
 
         if (ids.length)
@@ -557,6 +536,7 @@ gemini_filter = {
     {
         gemini_ajax.postCall('items', 'newfilterbox', function (response)
         {
+            gemini_filter.wizardBoxAdded = true;
             $('#instant-filter-fields').before(response.Result.Html);
             gemini_filter.filterTooltip();
             gemini_ui.datePicker('#instant-filter-' + response.Result.Field + ' .datepicker', gemini_filter.dateChanged);
@@ -697,7 +677,23 @@ gemini_filter = {
                     $('.dragHandle', row).removeClass('item-drag-handle');
                 }
 
-                gemini_ajax.postCall("items", "resequence",null,
+                gemini_ajax.postCall("items", "resequence", function ()
+                {
+                        /*** WIZARD ***/
+                        if (gemini_wizard.active)
+                        {
+                            var seqItem = $('tr.drop-zone', '#tabledata').prev();
+                            if (seqItem.attr('data-issue-id'))
+                            {
+                                seqItem = seqItem.prev();
+                                if (seqItem.attr('data-issue-id'))
+                                {
+                                    $.publish('wizard-action', ['itemsequenced']);
+                                }
+                            }
+                        }
+                        /*** WIZARD ***/
+                    },
                     function (xhr, ajaxOptions, thrownError) {
                         gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
                     },
@@ -782,6 +778,16 @@ gemini_filter = {
     
     executeFilter: function ()
     {
+        /*** WIZARD ***/
+        if (gemini_wizard.active)
+        {
+            if (gemini_filter.wizardBoxAdded)
+            {
+                $.publish('wizard-action', ['filtered']);
+            }
+        }
+        /*** WIZARD ***/
+        
         gemini_filter.needFiltering = false;
 
         if (gemini_filter.currentExecuteRequest != null) {

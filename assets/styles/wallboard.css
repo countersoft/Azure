@@ -1,3 +1,5 @@
+table.items-list td {padding-top: 5px;}
+
 table.items-list td:first-child { min-width:80px; white-space: nowrap; font-size:14px; color: gray; }
 table.items-list td:last-child { white-space: nowrap; font-size:16px; }
 
@@ -8,17 +10,42 @@ table.due-thisweek td:first-child { color:#B5712E; }
 table.due-nextweek td:first-child { color:#B5712E; }
 table.opened td:first-child {color:#B5712E;}
 
-table.closed td:first-child { color:#77AB13; }
-table.closed-recently td:first-child { color:#77AB13; }
+table.closed td:first-child { color:#5A8756; }
+table.closed-recently td:first-child { color:#5A8756; }
+table.closed-sla td:first-child { color:#5A8756; }
 
 table.opened-recently td:first-child { color: yellow; }
 
+table.items-list.breached-total-list td:first-child{padding-right: 10px;}
+table.items-list.breached-sla-list .sla-label td {font-size: 14px; font-weight:bold;}
+table.items-list.breached-sla-list .sla-value td:first-child {padding-left: 10px; padding-right: 10px;}
+
+table.items-list .breached {color: #ffffff !important;}
+table.items-list .red {color: #D42F2F !important;}
+table.items-list .amber {color: #E69C53 !important;}
+table.items-list .green {color: #5A8756 !important;}
+
+table.items-list.sla-status-breakdown-list td {font-size: 16px;}
+table.items-list.sla-status-breakdown-list td:first-child{font-size: 14px;}
+
+.count {font-size: 3.5em; text-align: center;}
 .closed-count {font-size:3.5em;margin:60px auto;text-align:center;color:#77AB13;}
 .opened-count { font-size:3.5em; margin: 60px auto; text-align:center; color:#B5712E; }
+.red-count { color: #D42F2F;}
+.amber-count { color: #E69C53;}
+.green-count { color: #5A8756;}
 
 table.workload-list { width: 100%; }
 table.workload-list td:first-child { min-width:100px; white-space: nowrap; font-size:17px; color: gray; }
 table.workload-list td:last-child { white-space: nowrap; font-size:19px; text-align: right; }
+table.items-list {width: 100%;}
 
 .b-funnel-text .t-main { font-size:20px !important; }
 .b-funnel-text span:last-child { font-size:16px; }
+
+table.average-sla-response tr td:last-child {text-align: right;}
+table.average-sla-close-time tr td:last-child {text-align: right;}
+
+.average-sla-closing-total {font-size:1.4em; margin-top:35px; color:#5A8756;}
+
+.average-sla-response-total {font-size:1.4em; margin-top:35px; color:#AC9937;}

@@ -6,9 +6,6 @@
     <item id="AffectedVersions">Affected Sprint</item>
     <item id="Component">Area</item>
     <item id="Components">Area</item>
-    <item id="Item">Story</item>
-    <item id="Items">Stories</item>
     <item id="Versions">Sprint</item>
     <item id="Version">Sprints</item>
-    <item id="ItemsFound">Stories Found</item>
 </Resource>

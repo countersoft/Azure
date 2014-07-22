@@ -72,7 +72,7 @@ gemini_add =
             if (trigger.indexOf(value) == -1) return;
         }
 
-        gemini_ui.destroyHtmlEditor('.wysiwyg-editor');
+        gemini_ui.destroyHtmlEditor('#cs-popup-add-content .wysiwyg-editor');
         
         gemini_add.newItemRenderedCallback = gemini_add.newItemRenderedCallbackOrig;
         gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
@@ -182,6 +182,7 @@ gemini_add =
                     if (responseText.success)
                     {
                         gemini_add.postIssueCreate(responseText);
+                        gemini_ui.destroyHtmlEditor("#cs-popup-add-content .wysiwyg-editor");
                     }
                     else
                     {
@@ -367,6 +368,12 @@ gemini_add =
 
     postIssueCreate: function (data)
     {
+        /*** WIZARD ***/
+        if (gemini_wizard.active)
+        {
+            $.publish('wizard-action', ['issuecreated']);
+        }
+         /*** WIZARD ***/
         gemini_add.pendingChanges = false;
         gemini_add.hide();
 
@@ -416,6 +423,7 @@ gemini_add =
         }
         else {
             // nothing to save, so dismiss
+            gemini_ui.destroyHtmlEditor("#cs-popup-add-content .wysiwyg-editor");
             $('#cs-popup-add').hide();
             gemini_add.pendingChanges = false;
             gemini_add.editingMode = false;

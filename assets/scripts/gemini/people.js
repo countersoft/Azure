@@ -120,6 +120,14 @@ gemini_people =
             $('#AssignedTo', '#instant-filter-AssignedTo').val(id);
             gemini_ui.chosenUpdate($('#AssignedTo', '#instant-filter-AssignedTo'));
             $('#AssignedTo', '#instant-filter-AssignedTo').trigger("change");
-        }        
+        }
+
+        /*** WIZARD ***/
+        if (gemini_wizard.active)
+        {
+            $.publish('wizard-action', ['people']);
+        }
+        /*** WIZARD ***/
+        
     }
 };

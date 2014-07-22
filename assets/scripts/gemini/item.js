@@ -6,6 +6,7 @@ gemini_item = {
     issueId: 0,
     triggerXHR: null,
     itemUrl: '',
+    commentWasInserted: false,
     initItem: function (projectId, projectCode, issueId, pageType, canEdit,temp_dropzone, temp_delete) {
       
         gemini_item.pageType = pageType;
@@ -88,6 +89,8 @@ gemini_item = {
 
         // Expand / collapse comments
         gemini_item.commentExpanders('#cs-sections');
+
+        gemini_item.dependencyExpanders('#dependency-content');
 
         // ATTACHMENT events
         var attachments = $('#attachmentupload-hit')[0];
@@ -319,6 +322,8 @@ gemini_item = {
         });
 
         $('#view-item').on('click', "#comments-content .toolbar .button", function (e) {
+            window.onbeforeunload = gemini_edit.warnLoseChanges;
+           
             e.preventDefault();
             if ($(".comments-wysiwyg-container").is(':visible')) {
                 $('#comments-content .cs-comment-add-close').click();
@@ -328,7 +333,9 @@ gemini_item = {
             gemini_ui.expand("#comments-section");
 
             $(".comments-wysiwyg-container").css("display", "inline-block");
-            
+
+            $("#comments-content .toolbar .button").hide();
+
             // resetting main editors input fields
             $("#comments-wysiwyg-content").val("");
             var t = $("#comments-wysiwyg-content").parents("form:eq(0)").attr("class");
@@ -336,7 +343,7 @@ gemini_item = {
 
             $("#comments-wysiwyg-content").parents("form:eq(0)").find(".option-row:eq(0) .file-upload-button").replaceWith("<input class='file-upload-button' type='file' name='comment-attachment' multiple='multiple' />");
      
-            gemini_ui.htmlEditorCommand('mceFocus', false, 'comments-wysiwyg-content');
+            gemini_ui.htmlEditorCommand('mceFocus', false, null, 'comments-wysiwyg-content');
 
             gemini_sizing.sameWidth("#comments-content .comments-wysiwyg-container .buttons input");
             gemini_item.setContentHeight();
@@ -367,7 +374,9 @@ gemini_item = {
                     gemini_ui.startBusy('#comments-content .comments-wysiwyg-container:eq(1) .cs-comment-add-save');
                 }
                  e.preventDefault();
-                $('.comments-form').submit();
+                 $('.comments-form').submit();
+
+                 gemini_edit.pendingHtmlChanges = false;
             }
         });
 
@@ -378,12 +387,15 @@ gemini_item = {
             {
                 $(this).parents(".comment").find(".comments-wysiwyg-container").before($(this).parents(".comment").data("content"));
                 $(this).parents(".comment").removeClass("comment-editing-mode");
+                gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
                 $(this).parents(".comments-wysiwyg-container").remove();
             }
             else
             {
                 $(this).parents(".comments-wysiwyg-container").css("display", "none");
             }
+            gemini_edit.pendingHtmlChanges = false;
+            $("#comments-content .toolbar .button").show();
         });
 
         if (!($("#tabledata").length))
@@ -503,22 +515,38 @@ gemini_item = {
         }, null, formData, null, true);
     },
     attachCommentsTinyMcEvents: function (issueId, textareaId) {    // Create editor for comments textarea needs to come without # for tinyMCE execCommand. It can only accept ID's no classes and Id's need to come without the #
-        gemini_ui.htmlEditor("#" + textareaId, null, gemini_item.setPendingChanges);
+        gemini_ui.htmlEditor("#" + textareaId, null,
+           function (ed) {
+          
+               if (ed.type == 'change' && !gemini_item.commentWasInserted) {
+                   gemini_edit.pendingHtmlChanges = true;
+               }
+            
+               gemini_item.commentWasInserted = false;
+           }
+
+        );
 
         var options = {
             dataType: "json",
             success: function (responseText, statusText, xhr, $form) {
                 if (responseText.success)
                 {
+                    gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content");
+                    gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
                     gemini_item.replaceContent(responseText);
                 }
                 $("#progress-indicator").addClass('hide');
                 //gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container .cs-comment-add-save');
                 $.publish('issue-update', [gemini_item.issueId, gemini_edit.pageType]);
+                gemini_edit.pendingHtmlChanges = false;
             } // post-submit callback  
             
         };
-        if (textareaId != "comments-wysiwyg-content") gemini_ui.htmlEditorCommand("mceFocus", false, textareaId);
+        if (textareaId != "comments-wysiwyg-content") {
+            gemini_ui.htmlEditorCommand("mceFocus", false, textareaId);
+
+        }
         $(".comments-form").ajaxForm(options);
     },
 
@@ -532,6 +560,8 @@ gemini_item = {
     attachCommentsEditWindowEvents: function (issueId)
     {
         $(".section-content.comments .action-button-edit").unbind('click').click(function () {
+            window.onbeforeunload = gemini_edit.warnLoseChanges;
+
             var TargetElem = $(this).parents("div:eq(0)").find(".comment");
             if (!$(TargetElem).hasClass("comment-editing-mode")) {
                 var attachments = $(".attachment", $(TargetElem)).detach();
@@ -575,6 +605,7 @@ gemini_item = {
 
                     gemini_ui.chosen("#comments-content .option-row .input-size8");
                     gemini_item.attachCommentsTinyMcEvents(issueId, "comments-wysiwyg-content" + contentIdentifier);
+                    gemini_item.commentWasInserted = true;
                     gemini_ui.htmlEditorCommand('mceInsertContent', false, comment);
                     gemini_item.setContentHeight();
                     }
@@ -751,11 +782,13 @@ gemini_item = {
             function (e) {
                 if ($(this).hasClass("open")) $(".fonticon-plus:not(.noshow)", $(this)).css("visibility", "visible");
                 if (($(this).hasClass("open") || $(this).hasClass("closed")) && !$(this).is(":first-child")) $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "visible");
+                if (($(this).hasClass("open") || $(this).hasClass("closed"))) $(".fonticon-arrow-down:not(.invisible)", $(this)).css("visibility", "visible");
                 
             },
             function (e) {        
                 $(".fonticon-plus:not(.noshow)", $(this)).css("visibility", "hidden");
                 $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "hidden");
+                $(".fonticon-arrow-down:not(.invisible)").css("visibility", "hidden");
             }
         );
 
@@ -802,6 +835,7 @@ gemini_item = {
                             function (response) {
                                 if (response.Success) {
                                     gemini_item.replaceContent(response.Result.Data);
+                                    gemini_item.dependencyExpanders('#dependency-content');
                                 }
                             }
                         );
@@ -820,7 +854,8 @@ gemini_item = {
                         gemini_ajax.jsonCall("items", "deletedependency?issueid=" + issueId + "&removeIssueId=" + id,
                             function (response) {
                                 if (response.Success) {
-                                    gemini_item.replaceContent(response.Result.Data);                                  
+                                    gemini_item.replaceContent(response.Result.Data);
+                                    gemini_item.dependencyExpanders('#dependency-content');
                                 }
                                 setTimeout(function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, 1250);                                
                             }
@@ -887,14 +922,37 @@ gemini_item = {
                                 gemini_item.replaceContent(response.Result.Data);
                                 //gemini_item.attachDependencyEvents(response.Result.Data.issueId);
                                 gemini_ui.flashContent("#dependency-section [data-id='" + response.Result.Data.childIssueId + "']");
+                                gemini_item.dependencyExpanders('#dependency-content');
                             }
                         }
                     );
                 gemini_item.hideDependencyFindItem();
             }
         });
-
     },
+
+    dependencyExpanders: function (container) {
+        $(container).on("click", "span.dependency-expandedOrcollapsed", function (e) {
+            gemini_item.dependencyExpandCollapse($(this));
+        });
+    },
+
+    dependencyExpandCollapse: function () {
+        var count = arguments.length;
+        for (var i = 0; i < count; i++) {
+            elem = $(arguments[i]).parent();
+            // toggle the icon on top of the section
+            var arrow = $("span.expander", elem);
+            arrow.toggleClass("fonticon-arrow-right").toggleClass("fonticon-arrow-down");
+
+            // toggle the icon on top of the section
+            var content = elem.next();
+            content.toggleClass("expanded").toggleClass("hide");
+            gemini_item.setContentHeight();
+        }
+        return false;
+    },
+
 
     hideDependencyFindItem: function ()
     {

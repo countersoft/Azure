@@ -294,9 +294,8 @@ tinymce.PluginManager.add('charmap', function(editor) {
 
 			for (x = 0; x < width; x++) {
 				var chr = charmap[y * width + x];
-				var id = 'g' + (y * width + x);
 
-				gridHtml += '<td title="' + chr[1] + '"><div id="' + id + '" tabIndex="-1">' +
+				gridHtml += '<td title="' + chr[1] + '"><div tabindex="-1" title="' + chr[1] + '" role="button">' +
 					(chr ? String.fromCharCode(parseInt(chr[0], 10)) : '&nbsp;') + '</div></td>';
 			}
 
@@ -310,8 +309,17 @@ tinymce.PluginManager.add('charmap', function(editor) {
 			html: gridHtml,
 			onclick: function(e) {
 				var target = e.target;
-				if (target.nodeName == 'DIV') {
-					editor.execCommand('mceInsertContent', false, target.firstChild.nodeValue);
+
+				if (target.tagName == 'TD') {
+					target = target.firstChild;
+				}
+
+				if (target.tagName == 'DIV') {
+					editor.execCommand('mceInsertContent', false, target.firstChild.data);
+
+					if (!e.ctrlKey) {
+						win.close();
+					}
 				}
 			},
 			onmouseover: function(e) {
