@@ -14,7 +14,10 @@ gemini_edit = {
     editItemRenderedCallback:null,
     inlineEditSaveCallback: null,
     pendingHtmlChanges: false,
+    inlineEditingRequestPending: false,
     initEditing: function (elm, inlineEditing) {
+        if (gemini_edit.inlineEditingRequestPending) return;
+
         inlineEditSaveCallback = null;
  
         if (!gemini_edit.editingMode)
@@ -433,6 +436,8 @@ gemini_edit = {
                     $(response.Result.Extra).each(function (key, value) {
                         if (this.Key == 'reload') {
                             reloading = true;
+                            gemini_edit.hideInlineEditingSpinner();
+
                             gemini_edit.hideEditingField();
                             gemini_edit.hideInlineEditField();
 
@@ -477,6 +482,8 @@ gemini_edit = {
                 gemini_edit.inlineEditSaveCallback = null;
             }
 
+            gemini_edit.hideInlineEditingSpinner();
+
             gemini_edit.hideEditingField(true);
             $.publish('issue-update', [response.Result.ItemId, gemini_edit.pageType]);
         }
@@ -495,6 +502,8 @@ gemini_edit = {
             {
                 gemini_popup.toast("Couldn't save changes", true);
             }
+
+            gemini_edit.hideInlineEditingSpinner();
         }
     },
     saveEditingFieldSelect: function (elem) {
@@ -508,6 +517,7 @@ gemini_edit = {
         }
     },
     saveEditingField: function (issueId) {
+        
         var elm = $('.inline-editing');    
         var form = elm.parents('form:eq(0)');
 
@@ -517,6 +527,10 @@ gemini_edit = {
         form.validate({ ignore: ".chosen-search input, .search-field input" });
    
         if (form.valid()) {
+            if (gemini_edit.inlineEditingRequestPending) return;
+
+            gemini_edit.showInlineEditingSpinner();
+
             var data = form.serialize();
           
             var currentItem = (issueId != null) ? issueId : elementIssueId;
@@ -556,7 +570,7 @@ gemini_edit = {
                                 gemini_edit.InlineEditSaveResponse(responseText);
                             },
                             error: function (e, data) {
-
+                                gemini_edit.hideInlineEditingSpinner();
                             }// post-submit callback   
 
                         };
@@ -568,7 +582,7 @@ gemini_edit = {
                         var tempData = data;
                         tempData += '&id=' + elm.attr('name') + '&itemid=' + items[i] + '&property=' + elm.attr('name');
 
-                        gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, null, tempData, elm);
+                        gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, function (response) { gemini_edit.hideInlineEditingSpinner(); }, tempData, elm);
 
                     }
                 }
@@ -586,6 +600,9 @@ gemini_edit = {
         }
     },
     hideEditingField: function (saved) {
+
+        if (gemini_edit.inlineEditingRequestPending) return;
+           
         $('.inline-edit-dropdown', '#page-content-zone').remove();
 
         if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
@@ -1030,5 +1047,20 @@ gemini_edit = {
         }
 
         return false;
+    },
+    showInlineEditingSpinner: function()
+    {
+        gemini_edit.inlineEditingRequestPending = true;
+
+        var spinner = gemini_ui.getSpinnerProgress2('inline-edit');
+        $('.inline-edit-dropdown .dropdown-options > div').hide();
+        $('.inline-edit-dropdown .dropdown-options').append(spinner.Markup);
+        eval(spinner.JS);
+    },
+    hideInlineEditingSpinner: function()
+    {
+        gemini_ui.removeSpinner('inline-edit', '.inline-edit-dropdown');
+        $('.inline-edit-dropdown .dropdown-options > div').show();
+        gemini_edit.inlineEditingRequestPending = false;
     }
 };

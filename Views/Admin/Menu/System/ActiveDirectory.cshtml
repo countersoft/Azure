@@ -4,41 +4,82 @@
 
 <div id="cs-adhoc-page">
     <form id="system-ad-form" action="" method="post" autocomplete="off">
+        <input type="hidden" id="mappings" name="mappings" />
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="SyncWithActiveDirectory" name="SyncWithActiveDirectory" @if(Model.SyncWithActiveDirectory){ <text>checked="checked"</text> } /> <label for="SyncWithActiveDirectory">Sync with Active Directory</label></td>
+                <td><input type="checkbox" class="fancy" id="SyncWithActiveDirectory" name="SyncWithActiveDirectory" @if(Model.SyncWithActiveDirectory){ <text>checked="checked"</text> } /> <label for="SyncWithActiveDirectory">Enable Active Directory integration</label></td>
+            </tr>
+            
+            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+
+            <tr>
+                <td>Connection String</td>
+                <td><input type="text" id="ConnectionString" name="ConnectionString" class="input-size9" value="@Model.ConnectionString"/></td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td><input type="text" id="Username" name="Username" class="input-size9" value="@Model.Username"/></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" id="Password" name="Password" class="input-size9" value="@Model.Password"/></td>
+            </tr>
+            <tr>
+                <td>Domain</td>
+                <td><input type="text" id="Domain" name="Domain" class="input-size9" value="@Model.Domain" /></td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="AddNewUsers" name="AddNewUsers" @if(Model.AddNewUsers){ <text>checked="checked"</text> } /> <label for="AddNewUsers">Automatically create users in Gemini from AD</label></td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="checkbox" class="fancy" id="ValidateEmail" name="ValidateEmail" @if (Model.ValidateEmail) { <text> checked="checked" </text>   } /> <label for="ValidateEmail">Ignore AD users with no email address</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="AddNewUsers" name="AddNewUsers" @if(Model.AddNewUsers){ <text>checked="checked"</text> } /> <label for="AddNewUsers">Add new users to Gemini found in Active Directory</label></td>
+                <td><input type="checkbox" class="fancy" id="ValidateLogon" name="ValidateLogon" @if (Model.ValidateLogon) { <text> checked="checked" </text>     } /> <label for="ValidateLogon">Ignore AD users who have never logged in</label></td>
             </tr>
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
-                <td>AD Connection String</td>
-                <td><input type="text" id="ConnectionString" name="ConnectionString" class="input-size9" value="@Model.ConnectionString"/></td>
+                <td colspan="2" class="bold">Map additional AD user attributes to Gemini custom fields</td>
+            </tr> 
+
+            <tr>
+                <td>Active Directory Attribute</td>
+                <td>@Html.DropDownList("ADField", Model.ADFields, new { @class = "input-size7" })</td>
+            </tr> 
+            <tr>
+                <td>Custom Field Mapping</td>
+                <td>@Html.DropDownList("CustomField", Model.CustomFields, new { @class = "input-size7" })</td>
             </tr>
             <tr>
-                <td>AD Username</td>
-                <td><input type="text" id="Username" name="Username" class="input-size9" value="@Model.Username"/></td>
+                <td></td>
+                <td><input type="button" id="mapping-add" name="mapping-add" class="button-secondary" value="Add" /></td>
             </tr>
+
             <tr>
-                <td>AD Password</td>
-                <td><input type="password" id="Password" name="Password" class="input-size9" value="@Model.Password"/></td>
+                <td class="valign-top">Existing Mappings</td>
+                <td class="admin-datatable-holder">
+                    <table id="table-admin-admapping" class="basic">
+                        <tbody>
+                            @for(int index = 0; index < Model.TranslatedMappings.Count; index++)
+                            {
+                                <tr>
+                                    <td class="hide"></td>
+                                    <td>@(Model.TranslatedMappings[index])&nbsp;<div class="action-button-delete cursor-pointer right type-mapping margin-left-30" title="Delete" data-id="@(index+1)"></div></td>
+                                </tr>
+                            }
+                            <tr id="mapping-add-row" class="hide"><td class="hide"></td><td></td></tr>
+                        </tbody>
+                    </table>
+                </td>
             </tr>
-            <tr>
-                <td>AD Domain</td>
-                <td><input type="text" id="Domain" name="Domain" class="input-size9" value="@Model.Domain" /></td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="ValidateEmail" name="ValidateEmail" @if (Model.ValidateEmail) { <text> checked="checked" </text>   } /> <label for="ValidateEmail">Only synchronzie users with valid email</label></td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="ValidateLogon" name="ValidateLogon" @if (Model.ValidateLogon) { <text> checked="checked" </text>     } /> <label for="ValidateLogon">Only synchronzie users that have logged in at least once</label></td>
-            </tr>
+
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
@@ -46,28 +87,79 @@
                     <input id="system-ad-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
                 </td>
             </tr>
-              
+            
         </table>
     </form>
+    <p id="system-email-trace" class="info-label-2 margin-top-20" style="width:745px;"></p>
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+        var mappings = [
+            @{
+                var mapIndex=1;
+                foreach(var map in Model.Mappings)
+                {
+                    <text>{ Id: @(mapIndex), ADField: '@(map.ADField)', CustomField: '@(map.CustomField)' }</text>if(map != Model.Mappings[Model.Mappings.Count - 1]){<text>,</text>}
+                    mapIndex++;
+                }
+            
+            }
+        ];
 
-        $("#system-ad-form").validate();
-        gemini_ui.fancyInputs('#system-ad-form .fancy');
-        $("#system-ad-save").click(function (e) {
-            gemini_commons.stopClick(e);
+        var mapId = @(Model.Mappings.Count);
 
-            if (!$("#system-ad-form").valid()) { return; } 
+        function addMap()
+        {
+            mapId++;
 
-            var formData = $("#system-ad-form").serialize();
-            gemini_ui.startBusy('.data-entry-box #system-ad-save');
-            gemini_ajax.postCall("configure/System/ActiveDirectory", "savedata",
-            function () {
-                gemini_popup.toast("Saved");
-                gemini_ui.stopBusy('.data-entry-box #system-ad-save');
-            }, function () { gemini_ui.stopBusy('.data-entry-box #system-ad-save'); }, formData, null, true);
+            var value = '';
+            var text = '';
+        
+            mappings.push({ Id: mapId, ADField: $('#ADField option:selected').val(), CustomField: $('#CustomField option:selected').val() });
+            var newTR = '<tr><td class="hide"></td><td>' + $('#ADField option:selected').text() + '&nbsp;->&nbsp;' + $('#CustomField option:selected').text() + '&nbsp;<div class="action-button-delete cursor-pointer right type-mapping" title="Delete" data-id="' + mapId  + '"></div></td></tr>';
+            $('#mapping-add-row').before(newTR);
+        }
+
+        $(document).ready(function () {
+            $("#system-ad-form").validate();
+            gemini_ui.fancyInputs('#system-ad-form .fancy');
+            $("#system-ad-save").click(function (e) {
+                gemini_commons.stopClick(e);
+
+                if (!$("#system-ad-form").valid()) { return; } 
+
+                $('#mappings').val(JSON.stringify(mappings));
+                var formData = $("#system-ad-form").serialize();
+                gemini_ui.startBusy('.data-entry-box #system-ad-save');
+                gemini_ajax.postCall("configure/System/ActiveDirectory", "savedata",
+                function (result) {
+                    gemini_popup.toast("Saved");
+                    gemini_ui.stopBusy('.data-entry-box #system-ad-save');
+                    if(result && result.Result && result.Result.length)
+                    {
+                        $('#system-email-trace').html(result.Result).show();
+                    }
+                    else
+                    {
+                        $('#system-email-trace').hide();
+                    }
+                }, function () { gemini_ui.stopBusy('.data-entry-box #system-ad-save'); }, formData, null, true);
+            });
+
+            $('#mapping-add').click(addMap);
+
+            $('#table-admin-admapping').on('click', 'div.type-mapping', function()
+              {
+                  var id = $(this).attr('data-id');
+                  for(var i = 0; i < mappings.length; i++)
+                  {
+                      if(mappings[i].Id == id)  
+                      {
+                        mappings.splice(i,1);
+                        $(this).parent().parent().remove();
+                        break;
+                      }
+                  }
+              });
         });
-    });
 </script>

@@ -467,4 +467,5 @@
   <item id="ImportWizardRowsSkipped">ROWS SKIPPED</item>
   <item id="ImportWizardTypeAdded">A Type was added. Please go to Customize -> Templates -> Process, select your Project Template and update the 'Screen' settings for your Type.</item>
   <item id="ImportWizardAccessProblem">There seems to be a problem accessing the 'app_data/imports' folder. Please ensure you have given 'everyone' modify access to this folder.</item>
+  <item id="DependencyTree">Dependency tree</item>
 </Resource>

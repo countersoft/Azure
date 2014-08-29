@@ -41,7 +41,7 @@
                 <tbody>
                     <tr>
                         <td class="hide"></td>
-                        <td style="width:700px;">
+                        <td style="width:710px;">
                             <select id="rule-field" name="rule-field">
                                 <option value="Comment">Comment</option>
                                 <option value="Commented">Commented</option>
@@ -66,6 +66,10 @@
                                 <option value="SLATimePassed">SLA Time Passed</option>
                                 <option value="Title">Title</option>
                                 <option value="Type">Type</option>
+                                @foreach (var cf in Model.CustomFields)
+                                {
+                                    <option value="@cf.Key">@cf.Value</option>
+                                }
                             </select>
                             &nbsp;
                             <select id="rule-operator">
@@ -81,7 +85,7 @@
                             <span id="rule-value-container">
                                 <input type="text" id="rule-value" class="input-size5 valign-top" />
                             </span>
-                            <input type="button" value=" Add " id="rule-add" />
+                            <input type="button" value=" Add " id="rule-add" class="button-secondary button-small" />
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +120,7 @@
                 <tbody>
                     <tr>
                         <td class="hide"></td>
-                        <td style="width:700px;">
+                        <td style="width:710px;">
                             <select id="action-type" name="action-type">
                                 <option value="Email">Email</option>
                                 <option value="SetField">Set Field</option>
@@ -130,7 +134,7 @@
                             <span id="action-parameter-container">
                                 <input type="text" id="action-parameter" />
                             </span>
-                            <input type="button" value=" Add " id="action-add" />
+                            <input type="button" value=" Add " id="action-add" class="button-secondary button-small" />
                         </td>
                     </tr>
                     <tr>

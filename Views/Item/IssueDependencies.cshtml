@@ -7,7 +7,7 @@
     {
         var parentsList = new List<int>();
         var previousParentid = 0;
-        <div class="label">Dependency tree:</div>
+        <div class="label">@GetResource(ResourceKeys.DependencyTree):</div>
         <div id="dependency-content">
             @foreach (var hierarchyItem in Model.Issue.Hierarchy)
             {

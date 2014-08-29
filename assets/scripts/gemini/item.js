@@ -781,7 +781,7 @@ gemini_item = {
         $("#dependency-section .dependency").hover(
             function (e) {
                 if ($(this).hasClass("open")) $(".fonticon-plus:not(.noshow)", $(this)).css("visibility", "visible");
-                if (($(this).hasClass("open") || $(this).hasClass("closed")) && !$(this).is(":first-child")) $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "visible");
+                if (($(this).hasClass("open") || $(this).hasClass("closed"))) $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "visible");
                 if (($(this).hasClass("open") || $(this).hasClass("closed"))) $(".fonticon-arrow-down:not(.invisible)", $(this)).css("visibility", "visible");
                 
             },
@@ -871,6 +871,7 @@ gemini_item = {
             gemini_item.hideDependencyFindItem();
         });
 
+        gemini_commons.inputKeyHandlerUnbind('#dependencies-find-item-container input');
 
         gemini_commons.inputKeyHandler("#dependencies-find-item-container input",
             function() {
@@ -900,14 +901,14 @@ gemini_item = {
 
         $("#dependencies-find-item").autocomplete({
             source: function (request, response) {
-                gemini_ajax.call("item", "getissuesdropdown?issueid" + issueId,
+                gemini_ajax.call("item", "getissuesdropdown?issueid=" + issueId,
                     function (data) {
                         var rows = new Array();
                         for (var i = 0; i < data.Result.Data.length; i++) {
                             rows[rows.length] = { label: data.Result.Data[i].value + " - " + data.Result.Data[i].label, value: data.Result.Data[i].value };
                         }
                         response(rows);
-                    }, null, { term: request.term, action: "dependency" });
+                    }, null, { term: request.term, itemAction: "dependency" });
             },
             minLength: 2,
             width: 200,
@@ -915,18 +916,22 @@ gemini_item = {
             matchContains: "word",
             autoFill: false,
             select: function (e, data) {
-                gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId + '&parentIssueId=' + baseIssueId + '&childIssueKey=' + data.item.value,
-                        function AddDependencyResponse(response) {
-                            if (response.Success)
-                            {
-                                gemini_item.replaceContent(response.Result.Data);
-                                //gemini_item.attachDependencyEvents(response.Result.Data.issueId);
-                                gemini_ui.flashContent("#dependency-section [data-id='" + response.Result.Data.childIssueId + "']");
-                                gemini_item.dependencyExpanders('#dependency-content');
+                if (e.key == "Enter") {
+                    $("#dependencies-find-item-container input").val(data.item.value);
+                }
+                else {
+                    gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId + '&parentIssueId=' + baseIssueId + '&childIssueKey=' + data.item.value,
+                            function AddDependencyResponse(response) {
+                                if (response.Success) {
+                                    gemini_item.replaceContent(response.Result.Data);
+                                    //gemini_item.attachDependencyEvents(response.Result.Data.issueId);
+                                    gemini_ui.flashContent("#dependency-section [data-id='" + response.Result.Data.childIssueId + "']");
+                                    gemini_item.dependencyExpanders('#dependency-content');
+                                }
                             }
-                        }
-                    );
-                gemini_item.hideDependencyFindItem();
+                        );
+                    gemini_item.hideDependencyFindItem();
+                }
             }
         });
     },
@@ -956,11 +961,17 @@ gemini_item = {
 
     hideDependencyFindItem: function ()
     {
+        var data = $("#dependencies-find-item-container input").data("autocomplete");
+        if (data) data.menu.activeMenu.hide();
+
         $("#dependencies-find-item-container").hide();
         $("#dependencies-find-item-container input").val("");
     },
 
     hideLinkFindItem: function () {
+        var data = $("#links-find-item").data("autocomplete");
+        if (data) data.menu.activeMenu.hide();
+
         $("#links-find-item-container").hide();
         $("#links-find-item").val("");
     },
@@ -1005,8 +1016,7 @@ gemini_item = {
                                     gemini_item.replaceContent(response.Result.Data);
                                     gemini_item.attachLinksEvents(response.Result.Data.issueId);
                                     gemini_ui.chosen("#links-find-item-container #linktypes");
-                                    $("#links-find-item-container #links-find-item").val("");
-                                    $("#links-find-item-container").hide();
+                                    gemini_item.hideLinkFindItem();
 
                                     gemini_ui.flashContent($(".see-also [data-id='" + response.Result.Data.linkedIssueId + "']").prev().prev());
                                 }
@@ -1029,8 +1039,11 @@ gemini_item = {
             post_link();
         });
 
+        gemini_commons.inputKeyHandlerUnbind('#links-find-item-container #links-find-item');
+
         gemini_commons.inputKeyHandler("#links-find-item-container #links-find-item",
             function() {
+                $("#links-find-item-container #links-find-item-id").val($("#links-find-item-container #links-find-item").val());
                 post_link();
             }, function() { gemini_item.hideLinkFindItem(); });
 
@@ -1067,7 +1080,7 @@ gemini_item = {
                             rows[rows.length] = { label: data.Result.Data[i].value + " - " + data.Result.Data[i].label, value: data.Result.Data[i].value };
                         }
                         response(rows);
-                    }, null, { term: request.term, action: "link" });
+                    }, null, { term: request.term, itemAction: "link" });
             },
             minLength: 2,
             width: 200,
@@ -1075,9 +1088,16 @@ gemini_item = {
             matchContains: "word",
             autoFill: false,
             select: function (e, data) {
-                $("#links-find-item-id").val(data.item.value);
-                $("#links-find-item").val(data.item.label);
-      
+                if (e.key == "Enter")
+                {
+                    $("#links-find-item").val(data.item.value);
+                }
+                else
+                {
+                    $("#links-find-item-id").val(data.item.value);
+                    $("#links-find-item").val(data.item.label);
+                }
+
                 return false;
             }
         });

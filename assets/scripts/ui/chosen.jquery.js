@@ -262,8 +262,10 @@
                 classes.push(option.classes);
             }
 
-            style = option.style.cssText !== "" ? " style=\"" + option.style + "\"" : "";
-            return "<li class=\"" + (classes.join(' ')) + "\"" + style + " data-option-array-index=\"" + option.array_index + "\">" + option.search_text + "</li>";
+            // SAAR
+            style = option.style && option.style.cssText !== "" ? " style=\"" + option.style + "\"" : "";
+            return "<li class=\"" + (classes.join(' ')) + "\"" + style + " data-option-array-index=\"" + option.array_index + "\">" + (option.search_text ? option.search_text : " <span class='invisible'>X</span>")+ "</li>";
+            // SAAR
         };
 
         AbstractChosen.prototype.result_add_group = function (group) {
@@ -437,10 +439,10 @@
 
         AbstractChosen.prototype.search_string_match = function (search_string, regex) {
             var part, parts, _i, _len;
-
+            //SAAR
             if (regex.test(search_string)) {
                 return true;
-            } else if (this.enable_split_word_search && (search_string.indexOf(" ") >= 0 || search_string.indexOf("[") === 0)) {
+            } else if (this.enable_split_word_search && search_string && (search_string.indexOf(" ") >= 0 || search_string.indexOf("[") === 0)) {
                 parts = search_string.replace(/\[|\]/g, "").split(" ");
                 if (parts.length) {
                     for (_i = 0, _len = parts.length; _i < _len; _i++) {
@@ -451,6 +453,7 @@
                     }
                 }
             }
+            //SAAR
         };
 
         AbstractChosen.prototype.choices_count = function () {
@@ -545,9 +548,11 @@
             if (!this.display_disabled_options && option.disabled) {
                 return false;
             }
-            if (option.empty) {
+            // SAAR
+            /*if (option.empty) {
                 return false;
-            }
+            }*/
+            // SAAR
             return true;
         };
 
@@ -1144,7 +1149,7 @@
                 } else {
                     //this.single_set_selected_text(item.text);
                     //SAAR
-                    this.selected_item.find("span").first().html(item.html);
+                    this.selected_item.find("span").first().html(item.html ? item.html : "");
                     //SAAR
                     if (this.allow_single_deselect) this.single_deselect_control_build();
                 }

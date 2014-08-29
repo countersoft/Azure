@@ -78,7 +78,7 @@
                             </div>
 
                             <div style="width:700px;" class='left pad-bottom-20 margin-right-20'>
-                                @if (Model.ResourceBreakdown.Count > 0)
+                                @if (Model.ResourceBreakdown != null && Model.ResourceBreakdown.Count > 0)
                                 {
                                     <h2 class="pad-bottom-10">@GetResource(ResourceKeys.Summary)</h2>
                                     <table style="width:670px;" class="default-style margin-left-20">

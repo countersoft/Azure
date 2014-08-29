@@ -27,7 +27,7 @@
                     
                 </td>
                 <td style="vertical-align:middle !important;">
-                    @Html.DropDownList("Case", new SelectList(Model.Cases, "BindingValue", "BindingText", Model.Info.CaseId.ToString()), new {@class="width-90"})
+                    @Html.DropDownList("Case", new SelectList(Model.Cases, "BindingValue", "BindingText", Model.Info.CaseId.ToString()), new {@class="input-size9"})
                     <a class="action-link right" style="line-height:28px;" target="_blank" href="@NavigationHelper.GetIssueUrl(GeminiContext,currentCase.Item)">@GetResource(ResourceKeys.View)</a>
                 </td>
             </tr>

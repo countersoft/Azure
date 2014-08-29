@@ -826,7 +826,7 @@ gemini_filter = {
                                                             gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
                                                             return;
                                                         }
-                                                        else if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown || gemini_filter.pageType == gemini_commons.PAGE_TYPE.Calendar) {
+                                                        else if (gemini_filter.pageType == gemini_commons.PAGE_TYPE.Burndown || gemini_filter.pageType == gemini_commons.PAGE_TYPE.Calendar || gemini_filter.pageType == gemini_commons.PAGE_TYPE.Custom) {
                                                             $.publish('items-grid-filter-executed', [response.Result]);
                                                             gemini_appnav.pageCard.Filter = response.Result.SavedCard.Filter;
                                                             return;

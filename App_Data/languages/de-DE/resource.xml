@@ -487,5 +487,5 @@
   <item id="ImportWizardRowsSkipped">REIHEN ÜBERSPRUNGEN</item>
   <item id="ImportWizardTypeAdded">Ein Typ wurde hinzugefügt. Bitte gehen Sie auf Anpassen -> Templates -> Process, wählen Sie Ihr Projekt-Template aus und updaten Sie die "Screen"-Einstellung für den neuen Typ.</item>
   <item id="ImportWizardAccessProblem">Wir konnten nicht auf den Ordner 'app_data/imports' zugreifen. Bitte geben Sie "Jeder" erlaubnis auf den Ordner zuzugreifen.</item>
-  
+  <item id="DependencyTree">Abhängigkeitsbaum</item>
 </Resource>
