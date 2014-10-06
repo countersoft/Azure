@@ -72,7 +72,7 @@
                 <td class="field-name">SSL Mode
                 </td>
                 <td>
-                    @Html.DropDownList("SslMode", Model.SslModes, new { @class = "input-size6 required" })
+                    @Html.DropDownList("SslMode", Model.SslModes, new { @class = "input-size6" })
                 </td>
             </tr>
         </tbody>
@@ -88,20 +88,31 @@
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
         });
         gemini_ui.chosen("#SslMode", null, true);
-        gemini_ui.setDropdownValue("#SslMode", '@(Model.SmtpServer.SslMode)');
-
+        @if (Model.SmtpServer.SslMode != null && Model.SmtpServer.SslMode != 0)
+        {
+            @: gemini_ui.setDropdownValue("#SslMode", '@(Model.SmtpServer.SslMode)');
+        }
+        
         $('option', '#EncodingType').each(function () {
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
         });
         gemini_ui.chosen("#EncodingType", null, true);
-        gemini_ui.setDropdownValue("#EncodingType", '@(Model.SmtpServer.EncodingType)');
-
+        
+        @if (Model.SmtpServer.EncodingType != null && Model.SmtpServer.EncodingType != 0)
+        {
+            @: gemini_ui.setDropdownValue("#EncodingType", '@(Model.SmtpServer.EncodingType)');
+        }
+        
         $('option', '#AuthMode').each(function () {
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
         });
         gemini_ui.chosen("#AuthMode", null, true);
-        gemini_ui.setDropdownValue("#AuthMode", '@(Model.SmtpServer.AuthMode)');
 
+        @if (Model.SmtpServer.AuthMode != null && Model.SmtpServer.AuthMode != 0)
+        {
+            @:gemini_ui.setDropdownValue("#AuthMode", '@(Model.SmtpServer.AuthMode)');
+        }
+        
         //reset validation on AuthMode Change
           $("#AuthMode").change(function() {
               if ($("#AuthMode").val() == 'None') {

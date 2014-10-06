@@ -27,7 +27,7 @@
                     }
                     <tr>
                         <td>
-                                    @if (GeminiContext.Config.EnableOpenId)
+                                    @if (GeminiContext.Config.EnableOpenId || GeminiContext.Config.EnableGoogleIntegration || GeminiContext.Config.EnableFacebookIntegration)
                                     { 
                                         <table class="signin-form" style="width:330px;margin-top:30px;">
                                             <tr>
@@ -36,14 +36,25 @@
                                                     <form action="openid?ReturnUrl=" method="post" id="openid-form" autocomplete="off">
                                                         <div id='openid-login-box' style="margin: 0 auto;">
                                                             <input type="hidden" name="action" value="verify" />
+                                                            <input type="hidden" name="returnUrl" id="returnUrl" value="@Model.ReturnUrl" />
                                                             <table>
                                                                 <tr>
-                                                                 <td><a id="openid-provider-google" class="google openid-provider-button" title="Google" onclick="gemini_account.openIdUrl('google')" ></a></td><td><a id="openid-provider-yahoo" class="yahoo openid-provider-button" title="Yahoo!" onclick="gemini_account.openIdUrl('yahoo')" ></a>  
-                                                                     @if (GeminiContext.Config.EnableFacebookIntegration)
-                                                                {
+                                                                 @if (GeminiContext.Config.EnableGoogleIntegration)
+                                                                 { 
+                                                                    <td><a id="openid-provider-google" class="google openid-provider-button" title="Google" onclick="gemini_account.openIdUrl('google')" ></a></td>
+                                                                 }
+                                                                 
+                                                                 <td>
+                                                                 @if (GeminiContext.Config.EnableOpenId)
+                                                                 {
+                                                                     <a id="openid-provider-yahoo" class="yahoo openid-provider-button" title="Yahoo!" onclick="gemini_account.openIdUrl('yahoo')" ></a>  
+                                                                 }
+                                                                 
+                                                                 @if (GeminiContext.Config.EnableFacebookIntegration)
+                                                                 {
                                                                     <a id="openid-provider-facebook" class="facebook openid-provider-button" title="Facebook"  
                                                                         href='https://www.facebook.com/dialog/oauth?client_id=@(GeminiContext.Config.FacebookAppId)&redirect_uri=@Countersoft.Foundation.Utility.Helpers.HttpHelper.GetWebsiteUrl()account/loginwait&scope=email&response_type=token'></a>
-                                                                }
+                                                                 }
                                                                 </td>
                                                                 </tr>
                                                                
@@ -51,6 +62,7 @@
                                                         </div>
         
                                                         <br class="clear-both" />
+                                                        <input type="hidden" name="site" id="site"/>
                                                         <div id="openid-inputs" class="hide">
                                                             <input id="openid-provider" name="openid-provider" class='input-field required input-size5 hide' type="text" value="<Your Account>.myopenid.com" />
                                                             <input id="openid-signin" type="submit" value="@GetResource(ResourceKeys.Login)" class='button-primary button-small' />

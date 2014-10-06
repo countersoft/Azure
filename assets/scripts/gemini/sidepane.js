@@ -183,6 +183,8 @@
                 finishedCallback();
             }
             gemini_sidepane.saveState();
+
+            if (e) $.publish('side-pane', ['open']);
         }
         else
         {

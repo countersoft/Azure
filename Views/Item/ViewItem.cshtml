@@ -63,9 +63,12 @@
                 <div class="see-also-container">@{Html.RenderPartial("_SeeAlso");}</div>
             }
         
+            @if(Model[ItemAttributeVisibility.AssociatedHierarchy])
+            {
             <div class="margin-top-20 margin-left-30">          
                 @{Html.RenderPartial("IssueDependencies");}      
             </div>
+            }
 
             <div class="margin-top-20 margin-left-30">
                 @{Html.RenderPartial("IssueAttachments");}

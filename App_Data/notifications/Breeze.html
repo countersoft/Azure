@@ -41,6 +41,19 @@
 
 <table style="width: 100%; font-family: arial; font-size: 14px; font-weight: normal; border: none; background-color: white;" cellpadding="10">
 <tbody>
+@if(Model.NewUserAdded)
+{
+	<tr>&nbsp;</tr>
+<tr>
+<td style="color: #4c4c4c;">User: @Html.Raw(Model.NewUserName)</td>
+</tr>
+<tr>
+<td style="color: #4c4c4c;">Password: @Html.Raw(Model.NewUserPassword)</td>
+</tr>
+<tr>
+	<td></td>
+</tr>
+}
 <tr>
 <td style="color: #4c4c4c;">Thanks.</td>
 </tr>

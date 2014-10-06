@@ -25,15 +25,17 @@ gemini_edit = {
             window.onbeforeunload = gemini_edit.warnLoseChanges;
 
             if (gemini_edit.hasInlineEditFieldChanged())
-            {                
-                gemini_popup.modalConfirm("Save changes?", null,
-                    function () {
-                        gemini_edit.inlineEditSaveCallback = function () { gemini_edit.initEditingFinal($('li[data-attribute-id=' + $('.attribute-header', elm).attr("data-attribute-id") + ']'), inlineEditing); };
-                        gemini_edit.saveEditingField();
-                    },
-                    function () {
-                        gemini_edit.initEditingFinal(elm, inlineEditing);
-                    });
+            {
+                gemini_commons.translateMessage("[[SaveChanges]]", ['SaveChanges'], function (message) {
+                    gemini_popup.modalConfirm(message + "?", null,
+                        function () {
+                            gemini_edit.inlineEditSaveCallback = function () { gemini_edit.initEditingFinal($('li[data-attribute-id=' + $('.attribute-header', elm).attr("data-attribute-id") + ']'), inlineEditing); };
+                            gemini_edit.saveEditingField();
+                        },
+                        function () {
+                            gemini_edit.initEditingFinal(elm, inlineEditing);
+                        });
+                });
             }
             else
                 gemini_edit.initEditingFinal(elm, inlineEditing);
@@ -966,13 +968,15 @@ gemini_edit = {
             // warn of lost changes
             //$(gemini_edit.popupContainer).hide();
             //gemini_popup.sameConfirmWidth();
-            gemini_popup.modalConfirm("Save changes?", null,
-            function () {
-                gemini_edit.saveEditing();
-            },
-            function () {
-                gemini_edit.pendingChanges = false;
-                gemini_edit.hideEditingPopup();
+            gemini_commons.translateMessage("[[SaveChanges]]", ['SaveChanges'], function (message) {
+                gemini_popup.modalConfirm(message +"?", null,
+                function () {
+                    gemini_edit.saveEditing();
+                },
+                function () {
+                    gemini_edit.pendingChanges = false;
+                    gemini_edit.hideEditingPopup();
+                });
             });
         }
         else {

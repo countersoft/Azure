@@ -684,13 +684,8 @@
 		background-color: $color-white;
 		width: 80%;
 
-		// The following two lines have been replaced with the .breaker approach
-		//height: 33px;
-		//border-bottom: 1px solid $color-grayscale1;
-
 		.base-tab
 		{
-			//margin: 0 10px 0 10px;
 			padding: 5px 10px 5px 10px;
 			font-size: 14px;
 			height: 20px;
@@ -709,9 +704,8 @@
 			color: $color-grayscale1;
 			background-color: $color-grayscale4;
 			border-top: 3px solid $color-grayscale3;
-			//border-left: 1px solid $color-grayscale3;
-			//border-right: 1px solid $color-grayscale3;
 			border-bottom: 1px solid $color-grayscale1;
+			white-space: nowrap;
 		}
 		.selected
 		{
@@ -722,6 +716,7 @@
 			border-left: 1px solid $color-grayscale1;
 			border-right: 1px solid $color-grayscale1;
 			border-bottom: 1px solid $color-white;
+			white-space: nowrap;
 		}
 		.breaker
 		{
@@ -732,8 +727,6 @@
 			display: inline-block;
 			background-color: $color-white;
 			border-top: 1px solid $color-white;
-			//border-left: 1px solid $color-white;
-			//border-right: 1px solid $color-white;
 			border-bottom: 1px solid $color-grayscale1;
 		}
 		@media all and (max-width: 1024px)

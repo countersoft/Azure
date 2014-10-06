@@ -496,6 +496,7 @@
 		outline: none;
         z-index: 9999;
 		@include disable-text-selection;
+		display:none;
 
 		span 
 		{

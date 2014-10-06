@@ -150,6 +150,8 @@ gemini_account = {
             autoClick = true;
         }
 
+        $('#site').val(site);
+
         if (value) {
             var jText = $("#openid-provider");
             jText.val(value).focus();

@@ -5,7 +5,7 @@
         <input type="hidden" name="mode" id="mode" value="projectmembers"/>
         <input type="hidden" name="PGPICKER-PROJECT" id="PGPICKER-PROJECT" value="@Model.ProjectId"/>
         <input type="hidden" name="PGPICKER-GROUP" id="PGPICKER-GROUP" value="@Model.GroupId"/>
-        @Html.ListBox("PGPICKER", Model.Users, new { @class = "input-size9" })
+        @Html.ListBox("PGPICKER", Model.Users, new { @class = "input-size9 " + @Model.Classes })
         <span id="PGPICKER-APPLY" class="fonticon-tick" style="font-size:14px;" />
         <span id="PGPICKER-CANCEL" class="fonticon-cross" style="font-size:14px;"  />
     </form>
@@ -17,6 +17,7 @@
     var anchor = "<a href='#' class='summary-line' id='summary-line-" + projectId + "'>";
     var summary = $('#summary-cell-' + projectId);
     gemini_ui.chosen("#PGPICKER", null, true);
+    gemini_ui.ajaxChosen('select.no-chosen.auto-complete-chosen', null, false, 'project/0' + '/item/get/customfield');
 
     $("#PGPICKER-CANCEL").unbind('click').click(function (e) {
         gemini_commons.stopClick(e);

@@ -489,4 +489,27 @@
   <item id="ImportWizardTypeAdded">A Type was added. Please go to Customize -> Templates -> Process, select your Project Template and update the 'Screen' settings for your Type.</item>
   <item id="ImportWizardAccessProblem">There seems to be a problem accessing the 'app_data/imports' folder. Please ensure you have given 'everyone' modify access to this folder.</item>
   <item id="DependencyTree">Dependency tree</item>
+  
+  <item id="ClearAll">Clear All</item>
+  <item id="ChooseYourTerminology">Choose your terminology</item>
+  <item id="ChooseYourViews">Choose your views</item>
+  <item id="FirstTask">First Task</item>
+  <item id="LastTask">Last Task</item>
+  <item id="SharedBy">Shared by</item>
+  <item id="Test">Test</item>
+  <item id="Key">Key</item>
+  <item id="IssueTracking">Issue Tracking</item>
+  <item id="InlineEditingOnTheGrid">Inline Editing on the Grid</item>
+  <item id="SelectItemWorkspaceTickCheckboxes">Select the ITEM workspace (left sidebar). Tick a few checkboxes and click on any field to change its value. Watch what happens when you save it.</item>
+  <item id="ManualWorkPrioritization">Manual Work Prioritization</item>
+  <item id="SelectSeqWorkspace">Select the SEQ workspace. Notice the Sequence Zone at the top of the grid. Drag-drop any item into the Zone using its handle. The Zone lets you prioritize work for everyone.</item>
+  <item id="Filtering">Filtering</item>
+  <item id="SelectTheAllWorkspace">Select the ALL workspace. Notice it has work items from different projects. Click in the "Search" box (top middle) and filter for Status "In Progress".</item>
+  <item id="UseTheSidebar">Use the Sidebar</item>
+  <item id="ClickOnThePeopleTabForThisWorkspace">Click on the People tab for this workspace (right sidebar). Notice it shows you who is doing what and when. Click on a name to filter by co-worker.</item>
+  <item id="CancelRun">Do you wish to stop and delete this Test Run?</item>
+  <item id="SaveChanges">Save Changes</item>
+  <item id="Coworkers">Co-workers</item>
+  <item id="Schedule">Schedule</item>
+  <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
 </Resource>

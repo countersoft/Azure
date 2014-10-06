@@ -98,7 +98,7 @@ gemini_appnav =
         // Scroll to active card if it is not visible on the page
         if ($('#card-holder .card.selected').length && !gemini_appnav.isOnScreen($('#card-holder .card.selected'))) {
             gemini_appnav.stopRefresh = true;
-            var top = $('#card-holder .card.selected').offset().top;
+            var top = $('#card-holder .card.selected').position().top + $('#card-holder .card.selected').height();
             var screenHeight = $(window).height();
             top = top - screenHeight + gemini_appnav.cardHeight + parseInt($('#card-scroller').css('height'));
             $("#card-holder-container", "#zone-side-bar").css("top", (gemini_appnav.originalTop - top) + 'px');
@@ -312,7 +312,7 @@ gemini_appnav =
 
     /* Check if the card is visible on the window  */
     isOnScreen: function (element) {
-        var curBottom = (element.offset().top) + (parseInt($(element).css('height'))) + (parseInt($('#card-scroller').css('height')));
+        var curBottom = (element.position().top) + (parseInt($(element).css('height'))) + (parseInt($('#card-scroller').css('height')) + $(element).height());
         var screenHeight = $(window).height();
         return (curBottom > screenHeight) ? false : true;
     },
@@ -415,24 +415,30 @@ gemini_appnav =
         $("#cs-popup-center-content").css("width", "800px");
         $("#cs-popup-center-content").css("height", "380px");
 
-        gemini_popup.centerPopup("action", 'edit', null, null, null, null, null, null,
-             function () {
-                 if (defaultTab == 'dashboard') {
-                     $('#colorbox #edit-appnav-card div[data-tab="appnav-dashboard"]').click();
-                 }
-                else if ($('#colorbox #edit-appnav-card div[data-tab="appnav-changes"]').length > 0 && gemini_appnav.pageCard.BadgeCount > 0) {
-                     $('#colorbox #edit-appnav-card div[data-tab="appnav-changes"]').click();
-                 } 
-                   else  {
-                     $('#colorbox #edit-appnav-card #tabs-left-content > div:first').click();
-                     $('#edit-appnav-card #Key').focus();
-                 }
+        gemini_commons.translateMessage("[[Add]],[[Cancel]]", ['Add', 'Cancel'], function (message) {
+            var translations = message.split(",");
+            add = translations[0];
+            cancel = translations[1];
 
-                 setTimeout(function () {
-                     $('#colorbox #edit-appnav-card #tabs-content').focus().click();
-                 }, 200);
-             }
-        );
+            gemini_popup.centerPopup("action", 'edit', null, null, add, cancel, null, null,
+                 function () {
+                     if (defaultTab == 'dashboard') {
+                         $('#colorbox #edit-appnav-card div[data-tab="appnav-dashboard"]').click();
+                     }
+                     else if ($('#colorbox #edit-appnav-card div[data-tab="appnav-changes"]').length > 0 && gemini_appnav.pageCard.BadgeCount > 0) {
+                         $('#colorbox #edit-appnav-card div[data-tab="appnav-changes"]').click();
+                     }
+                     else {
+                         $('#colorbox #edit-appnav-card #tabs-left-content > div:first').click();
+                         $('#edit-appnav-card #Key').focus();
+                     }
+
+                     setTimeout(function () {
+                         $('#colorbox #edit-appnav-card #tabs-content').focus().click();
+                     }, 200);
+                 }
+            );
+        });
     },
 
     /* Edit screen handler */
@@ -497,37 +503,49 @@ gemini_appnav =
         gemini_ui.chosen("#edit-appnav-card #Taxonomy", null, true);
 
         gemini_ui.chosen("#edit-appnav-card #InteractionGroupList", null, true);
-        gemini_ui.chosen("#edit-appnav-card #InteractionUserList", null, true);
+        if($("#edit-appnav-card #InteractionUserList").hasClass('no-chosen'))
+        {
+            gemini_ui.ajaxChosen('#edit-appnav-card #InteractionUserList', null, true, 'workspace/' + gemini_appnav.pageCard.Id + '/action/finduser');
+        }
+        else
+        {
+            gemini_ui.chosen("#edit-appnav-card #InteractionUserList", null, true);
+        }
 
         gemini_ui.chosen("#edit-appnav-card #ReportsGroupList", null, true);
-        gemini_ui.chosen("#edit-appnav-card #ReportsUserList", null, true);
+        if($("#edit-appnav-card #ReportsUserList").hasClass('no-chosen'))
+        {
+            gemini_ui.ajaxChosen('#edit-appnav-card #ReportsUserList', null, true, 'workspace/' + gemini_appnav.pageCard.Id + '/action/finduser');
+        }
+        else
+        {
+            gemini_ui.chosen("#edit-appnav-card #ReportsUserList", null, true);
+        }
         gemini_ui.chosen("#edit-appnav-card #ReportsExcelList", null, true);
 
         gemini_ui.chosen("#edit-appnav-card #EmailToListGroups", null, true);
-        gemini_ui.chosen("#edit-appnav-card #EmailToListUsers", null, true);
+        if($("#edit-appnav-card #EmailToListUsers").hasClass('no-chosen'))
+        {
+            gemini_ui.ajaxChosen('#edit-appnav-card #EmailToListUsers', null, true, 'workspace/' + gemini_appnav.pageCard.Id + '/action/finduser');
+        }
+        else
+        {
+            gemini_ui.chosen("#edit-appnav-card #EmailToListUsers", null, true);
+        }
 
         gemini_ui.chosen("#edit-appnav-card #SubscriptionGroupsList", null, true);
-        gemini_ui.chosen("#edit-appnav-card #SubscriptionUsersList", null, true);
-
-        ToggleUpdateButtons(true);
-
-        function ToggleUpdateButtons(disabled)
+        if($("#edit-appnav-card #SubscriptionUsersList").hasClass('no-chosen'))
         {
-            if (disabled)
-            {
-                $('#edit-appnav-card #send-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
-                $('#edit-appnav-card #email-badges').attr('disabled', 'disabled').removeClass('button-primary').addClass('button-secondary-disabled');
-                $('#edit-appnav-card #clear-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
-                $('#edit-appnav-card #follow-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
-            }
-            else
-            {
-                $('#edit-appnav-card #send-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
-                $('#edit-appnav-card #email-badges').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-primary');
-                $('#edit-appnav-card #clear-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
-                $('#edit-appnav-card #follow-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
-            }
+            gemini_ui.ajaxChosen('#edit-appnav-card #SubscriptionUsersList', null, true, 'workspace/' + gemini_appnav.pageCard.Id + '/action/finduser');
         }
+        else
+        {
+            gemini_ui.chosen("#edit-appnav-card #SubscriptionUsersList", null, true);
+        }
+
+        gemini_appnav.ToggleUpdateButtons(true);
+
+
 
         // Save the AppNav details
         $("#popup-button-yes").click(function (e)
@@ -542,6 +560,8 @@ gemini_appnav =
                     {
                         if (response.Result.Refresh)
                         {
+                            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                            
                             gemini_commons.refreshPage();
                             return;
                         }
@@ -625,16 +645,26 @@ gemini_appnav =
                     if (response.Success)
                     {
                         var itemNumber = $("#edit-appnav-card .updates tbody input.item-badge:checkbox:checked").length;
-                        var currentCount = $('#edit-appnav-card #appnav-changes-tab').attr('data-update-count');
-                        var newCount = currentCount - itemNumber;
-                        gemini_appnav.pageCard.BadgeCount = newCount;
+                      
+                        var newCount = response.Result.Count;
+
+                        if (gemini_appnav.pageCard.BadgeCount >= itemNumber) gemini_appnav.pageCard.BadgeCount -= itemNumber;
+                        
                         $('#edit-appnav-card #appnav-changes-tab').attr('data-update-count', newCount);
                         $('#edit-appnav-card #appnav-changes-tab span').html('(' + newCount + ')');
+
+                        $('#edit-appnav-card #appnav-changes #clear-all-items').prop('value', $('#edit-appnav-card #appnav-changes #clear-all-items').data('label') + ' (' + gemini_appnav.pageCard.BadgeCount + ')');
+
                         $("#edit-appnav-card .updates tbody input.item-badge:checkbox:checked").each(function (index, key)
                         {
                             $('#tabledata #tr-issue-' + $(key).val()).removeClass('issue-highlight');
                             $(key).parents('tr:eq(0)').remove();
                         });
+                        $("#edit-appnav-card .updates tbody").html(response.Result.BadgeList);
+
+                        gemini_ui.fancyInputs('#edit-appnav-card .updates tbody .fancy');
+
+                        gemini_appnav.attachItemsCheckboxEvents();
 
                         if (newCount == 0)
                         {
@@ -657,13 +687,43 @@ gemini_appnav =
                             $('#toggle-checkbox').iCheck('uncheck');
                         }
 
-                        ToggleUpdateButtons(true);
+                        gemini_appnav.ToggleUpdateButtons(true);
 
                         gemini_appnav.refresh();
                     }
                     gemini_ui.stopBusy2('#edit-appnav-card #clear-items');
                 }, function () { gemini_ui.stopBusy2('#edit-appnav-card #clear-items'); }, $("#edit-appnav-card #regular-form").serialize());
             }
+        });
+
+        $('#edit-appnav-card #clear-all-items').click(function () {
+            
+                gemini_ui.startBusy2('#edit-appnav-card #clear-all-items', "#progress-indicator");
+                gemini_ajax.postCall("action", "clearcount", function (response) {
+
+                    if (response.Success) {
+                        gemini_appnav.pageCard.BadgeCount = 0;
+                        var newCount = 0
+
+
+                        $('#edit-appnav-card #appnav-changes-tab').attr('data-update-count', newCount);
+                        $('#edit-appnav-card #appnav-changes-tab span').html('(' + newCount + ')');
+
+                        $("#edit-appnav-card .updates tbody input.item-badge:checkbox:checked").each(function (index, key)
+                        {
+                            $('#tabledata #tr-issue-' + $(key).val()).removeClass('issue-highlight');
+                            $(key).parents('tr:eq(0)').remove();
+                        });
+
+                        $("#edit-appnav-card #appnav-changes .updates").remove();
+                        
+                        $('#colorbox #cs-popup-center-buttons #popup-button-no').click();                        
+
+                        gemini_appnav.refresh();
+                    }
+                    gemini_ui.stopBusy2('#edit-appnav-card #clear-all-items');
+                }, function () { gemini_ui.stopBusy2('#edit-appnav-card #clear-all-items'); }, { cardId: gemini_appnav.pageCard.Id });
+            
         });
 
         $('#cancel-email-badges').click(function ()
@@ -747,26 +807,16 @@ gemini_appnav =
             {
                 gemini_ui.scrollTo('#edit-appnav-card #tabs-content', '#edit-appnav-card #clear-items');
                 $('#edit-appnav-card .updates .item-checkboxes').iCheck('check');
-                ToggleUpdateButtons();
+                gemini_appnav.ToggleUpdateButtons();
             }
             else
             {
                 $('#edit-appnav-card .updates .item-checkboxes').iCheck('uncheck');
-                ToggleUpdateButtons(true);
+                gemini_appnav.ToggleUpdateButtons(true);
             }
         });
 
-        $('#edit-appnav-card .item-checkboxes').bind('ifChanged', function ()
-        {
-            if ($("#edit-appnav-card .updates tbody input:checkbox:checked").length > 0 || $(this).is(':checked'))
-            {
-                ToggleUpdateButtons();
-            }
-            else
-            {
-                ToggleUpdateButtons(true);
-            }
-        });
+        gemini_appnav.attachItemsCheckboxEvents();
 
         $('#edit-appnav-card #tabs-left div').click(function ()
         {
@@ -911,11 +961,13 @@ gemini_appnav =
 
         var add = "Save";
 
-        gemini_commons.translateMessage("[[Add]]", ['Add'], function (message)
+        gemini_commons.translateMessage("[[Add]],[[Cancel]]", ['Add', 'Cancel'], function (message)
         {
-            add = message;
-
-            gemini_popup.centerPopup("action", 'new', null, null, add, null, null, null,
+            var translations = message.split(",");
+            add = translations[0];
+            cancel = translations[1];
+          
+            gemini_popup.centerPopup("action", 'new', null, null, add, cancel, null, null,
                 function ()
                 {
                     gemini_ui.fancyInputs('#edit-appnav-card .fancy');
@@ -996,5 +1048,31 @@ gemini_appnav =
                 }, null
             );
         });
+    },
+    attachItemsCheckboxEvents: function () {
+        $('#edit-appnav-card .item-checkboxes').unbind('ifChanged').bind('ifChanged', function () {
+            if ($("#edit-appnav-card .updates tbody input:checkbox:checked").length > 0 || $(this).is(':checked')) {
+                gemini_appnav.ToggleUpdateButtons();
+            }
+            else {
+                gemini_appnav.ToggleUpdateButtons(true);
+            }
+        });
+    },
+    ToggleUpdateButtons: function (disabled) {
+        if (disabled) {
+            $('#edit-appnav-card #send-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
+            $('#edit-appnav-card #email-badges').attr('disabled', 'disabled').removeClass('button-primary').addClass('button-secondary-disabled');
+            $('#edit-appnav-card #clear-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
+            $('#edit-appnav-card #follow-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
+            //$('#edit-appnav-card #clear-all-items').attr('disabled', 'disabled').removeClass('button-secondary').addClass('button-secondary-disabled');
+        }
+        else {
+            $('#edit-appnav-card #send-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
+            $('#edit-appnav-card #email-badges').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-primary');
+            $('#edit-appnav-card #clear-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
+            $('#edit-appnav-card #follow-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
+            //$('#edit-appnav-card #clear-all-items').removeAttr('disabled', 'disabled').removeClass('button-secondary-disabled').addClass('button-secondary');
+        }
     }
 };

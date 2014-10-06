@@ -23,4 +23,11 @@
     }
     @if (wasOptionGroup)
     { @Html.Raw("</optgroup>") }
-</select>
+</select>@if (Model.Extra.HasValue()) { <span id="@(Model.Id)_Plus" data-id="@Model.Id" data-action="@Model.Extra" class="field-extra-details no-select">[+]</span> 
+<script type="text/javascript">
+    $('.field-extra-details').click(function()
+    {
+        eval($(this).attr('data-action'));
+    });
+</script>
+}

@@ -109,9 +109,10 @@
 	load('classes/TableGrid.js');
 	load('classes/Quirks.js');
 	load('classes/CellSelection.js');
+	load('classes/Dialogs.js');
 	load('classes/Plugin.js');
 
 	writeScripts();
 })(this);
 
-// $hash: c0f59f7d4bcaff7235f7a88806ffbac5
+// $hash: 1157b1496b7c01ead3dda1bb90e52130

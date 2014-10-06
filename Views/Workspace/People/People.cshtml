@@ -27,8 +27,8 @@
                     </div>
                 }
 
-                <div class="first-date">First task @(Model.FirstDate)</div>
-                <div class="last-date">Last task @(Model.LastDate)</div>
+                <div class="first-date">@GetResource(ResourceKeys.FirstTask) @(Model.FirstDate)</div>
+                <div class="last-date">@GetResource(ResourceKeys.LastTask) @(Model.LastDate)</div>
                 <div class="estimated">@GetResource(ResourceKeys.Estimated) @(Model.EstimatedEffort)</div>
 
             </div>

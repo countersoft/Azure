@@ -37,8 +37,9 @@ gemini_people =
     {
         if (response.success)
         {
+            var height = $('#workspace-people-zone').height();
             $('#workspace-people-zone').replaceWith(response.Result.Data.Html);
-            $('.the-people', '#workspace-people-zone').css('height', ($('#workspace-people-zone').height()) + 'px')
+            $('.the-people', '#workspace-people-zone').css('height', height + 'px')
             
 
             if (gemini_people.stopEffect)
@@ -89,10 +90,31 @@ gemini_people =
             
             gemini_people.subscribedFilter = true;
         }
-               
+
+        $.unsubscribe('issue-update');
+        $.subscribe('issue-update', function (data) { gemini_people.refreshPeopleTabIfVisible(data); });
+
+        $.unsubscribe('issue-delete');
+        $.subscribe('issue-delete', function (data) { gemini_people.refreshPeopleTabIfVisible(data); });
+
+        $.unsubscribe('issue-create');
+        $.subscribe('issue-create', function (data) {
+            if (gemini_items.pageType == gemini_commons.PAGE_TYPE.Items) return; //On items page we already refresh sidebar tab when adding new item.
+
+            gemini_people.refreshPeopleTabIfVisible(data);
+        });
+
         $(".person, .footer", "#workspace-people-zone").unbind('click').bind('click', function ()
         {
             gemini_people.selectResource($(this).attr('data-id'));
+        });
+
+        $.unsubscribe('side-pane');
+        $.subscribe('side-pane', function (data) {
+            //console.log(data);
+            if ($('#side-pane .side-pane-tabs .tab.selected').data('action') != 'people') return;
+            gemini_people.refreshPeopleTabIfVisible(data);
+            
         });
     },
     
@@ -101,7 +123,11 @@ gemini_people =
         //$('#workspace-people-zone').hide('slide', { direction: 'down' }, 250);
 
         $.unsubscribe('items-grid-filter-executed.people');
-        
+
+        $.unsubscribe('issue-update');
+        $.unsubscribe('issue-delete');
+        $.unsubscribe('issue-create');
+
         gemini_people.subscribedFilter = false;
     },
 
@@ -129,5 +155,10 @@ gemini_people =
         }
         /*** WIZARD ***/
         
+    },
+    refreshPeopleTabIfVisible: function(data)
+    {
+        gemini_people.stopEffect = true;
+        gemini_sidepane.switchTab(null, $('.tab[data-action=people]', '#side-pane .side-pane-tabs'));
     }
 };

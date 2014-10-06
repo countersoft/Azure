@@ -280,6 +280,7 @@ planner =
         planner.animations = [];
         planner.post('resequence', planner.updateAllCells, args);
  
+        $.publish('issue-update', [args]);
         return false;
     },
 
@@ -288,6 +289,8 @@ planner =
     {
         planner.animations = [];
         planner.post('delete', planner.updateAllCells, args);
+        
+        $.publish('issue-delete', [args]);
         return false;
     },
 

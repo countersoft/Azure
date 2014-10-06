@@ -373,6 +373,9 @@ gemini_add =
         {
             $.publish('wizard-action', ['issuecreated']);
         }
+
+        $.publish('issue-create', [data.Result.Item.Id]);
+
          /*** WIZARD ***/
         gemini_add.pendingChanges = false;
         gemini_add.hide();
@@ -411,14 +414,17 @@ gemini_add =
             // warn of lost changes
             //$('#cs-popup-add').hide();
             //gemini_popup.sameConfirmWidth();
-            gemini_popup.modalConfirm("Save changes?", null,
-            function () {
-                gemini_add.save();
-            },
-            function () {
-                gemini_add.pendingChanges = false;
-                gemini_add.hide();
+            gemini_commons.translateMessage("[[SaveChanges]]", ['SaveChanges'], function (message) {
+            
+                gemini_popup.modalConfirm(message + "?", null,
+                function () {
+                    gemini_add.save();
+                },
+                function () {
+                    gemini_add.pendingChanges = false;
+                    gemini_add.hide();
 
+                });
             });
         }
         else {
@@ -538,10 +544,13 @@ gemini_add =
 
         var add = "Add";
 
-        gemini_commons.translateMessage("[[Add]]", ['Add'], function (message) {
-            add = message;
+        gemini_commons.translateMessage("[[Add]],[[Cancel]]", ['Add', 'Cancel'], function (message) {
+           
+            var translations = message.split(",");
+            add = translations[0];
+            cancel = translations[1];
 
-            gemini_popup.centerPopup('', 'wizard', null, null, add, null, null, null,
+            gemini_popup.centerPopup('', 'wizard', null, null, add, cancel, null, null,
                 function ()
                 {
                     $("#popup-button-no", "#cs-popup-center").click(function (e) {
@@ -575,6 +584,30 @@ gemini_add =
                 }
             );
         });
+    },
+
+    showADData: function(element)
+    {
+        $(element).addClass('auto-popup-keep');
+        if($('#reported-by-ad-details').length)
+        {
+            $('#reported-by-ad-details').remove();
+            return;
+        }
+        
+        var reportedBy = $('#' + $(element).attr('data-id'), $(element).parent()).val();
+        var project = $('#ProjectName').length ? $('#ProjectName').val() : 0;
+        var issue = $('#Id', '#inline-edit-form').length ? $('#Id', '#inline-edit-form').val() : 0;
+
+        gemini_ajax.postCall('user', 'action/addetails', function(response)
+        {
+            if(response.success)
+            {
+                var hide = "$('#reported-by-ad-details').remove()";
+                var showOn = $('#' + $(element).attr('data-id'), $(element).parent()).next();
+                $('<div id="reported-by-ad-details" class="field-extra-details-info auto-popup" style="top:' + (showOn.position().top + showOn.height() + 4) + 'px;left:' + showOn.position().left + 'px;" data-hide-func="' + hide + '">' + response.Result.Data + '</div>').insertAfter($(element));
+            }
+        }, null, { userId: reportedBy, projectId: project, issueId: issue });
     }
 };
 

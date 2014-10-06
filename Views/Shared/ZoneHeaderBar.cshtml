@@ -94,7 +94,7 @@
                             }
                             @if(ShowAddCoworkers(false))
                             {
-                                <li><a id="add-coworker">Co-workers</a></li>
+                                <li><a id="add-coworker">@GetResource(ResourceKeys.Coworkers)</a></li>
                             }
                             @if (Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser())
                             {

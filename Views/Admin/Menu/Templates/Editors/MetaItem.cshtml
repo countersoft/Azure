@@ -32,7 +32,7 @@
                     <td>
                         @*<input type="text" id="Icon" name="Icon" 
                             class="input-field required input-size9" value="@Model.Icon"/>*@
-                        @Html.DropDownList("Icon", Model.ImagesAvailable, new{@class="input-size6"})
+                        @Html.DropDownList("Icon", Model.ImagesAvailable, new{@class="input-size6 required"})
                     </td>
                 </tr>
                 
@@ -90,7 +90,10 @@
             $(this).html($(this).html().replace('&lt;','<').replace('&gt;','>'));
         });
         gemini_ui.chosen("#Icon", null, true);
-        gemini_ui.setDropdownValue("#Icon", '@(Model.Icon)');
+        @if (Model.Icon != null && Model.Icon != string.Empty)
+        {
+            @:gemini_ui.setDropdownValue("#Icon", '@(Model.Icon)');
+        }
         gemini_ui.fancyInputs('#TemplatesMetaItemContainer .fancy');
 
         $('#colorSelector', "#TemplatesMetaItemContainer").ColorPicker({

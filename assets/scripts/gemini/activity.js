@@ -21,6 +21,9 @@ gemini_activity = {
         gemini_ajax.postCall('timeline', 'fetch', function (response)
         {
             $('#activity-timeline-data', '#activity-timeline').html(response.Result.Data.Html);
+           
+            gemini_appnav.pageCard.Options['Timeline'] = response.Result.Data.SavedCard.Options['Timeline'];
+
             gemini_activity.sizeTimelanes();
         }, null, { filter: $('#filter-form').serialize() });
     },

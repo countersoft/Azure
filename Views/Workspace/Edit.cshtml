@@ -1,4 +1,7 @@
 ﻿@model AppNavCardModel
+@{
+    var selectClasses = Model.AutoCompleteUsers ? "input-size9 no-chosen auto-complete-chosen" : "input-size9";
+}
 <div id="edit-appnav-card">
     <form id="regular-form" action="#" method="post" enctype="multipart/form-data">
         <input type="hidden" value="@Model.Card.Id" name="Id" id="id"/>
@@ -23,7 +26,7 @@
             <div id="tabs-content" class="left">
 
                 <div id="appnav-description">
-                    <input type="text" name="Key" id="Key" placeholder="Key" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4"/>@if (Model.Owner.HasValue()) {<div class="owner">Shared by: <span>@Model.Owner</span></div> }
+                    <input type="text" name="Key" id="Key" placeholder="@GetResource(ResourceKeys.Key)" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4"/>@if (Model.Owner.HasValue()) {<div class="owner">@GetResource(ResourceKeys.SharedBy) <span>@Model.Owner</span></div> }
                     <input type="hidden" name="Color" id="Color" value="@Model.Card.Color" />
                     <div class="swatch margin-bottom-10 clearfix">
                         <span class="swatch-color" style="background-color: #000000;">&nbsp;</span>
@@ -96,7 +99,7 @@
                                                                                                                                                  {<text>checked="checked"</text>} /><label for="share-chat">@GetResource(ResourceKeys.EnableTeamChat)</label>
                     </div>
                     <h2>@GetResource(ResourceKeys.Users)</h2>
-                    @Html.ListBox("InteractionUserList", Model.InteractionUsers, new { @class = "input-size9" })
+                    @Html.ListBox("InteractionUserList", Model.InteractionUsers, new { @class = selectClasses })
                     <br />
                     <br />
                     <h2>@GetResource(ResourceKeys.Groups)</h2>
@@ -104,14 +107,12 @@
                 </div>
                 }
 
-                <div id="appnav-changes">
+                <div id="appnav-changes" class="margin-bottom-10">
                     <div class="margin-bottom-10">
-                    <input type="checkbox" id="changes-highlightchanges" class="fancy" name="changes-highlightchanges" @if (Model.HighlightChanges)
-                                                                                                                       {<text>checked="checked"</text>} /><label for="changes-highlightchanges">@GetResource(ResourceKeys.HighlightChanges)</label>
+                        <input type="checkbox" id="changes-highlightchanges" class="fancy" name="changes-highlightchanges" @if (Model.HighlightChanges) { <text> checked="checked" </text> } /><label for="changes-highlightchanges">@GetResource(ResourceKeys.HighlightChanges)</label>
                     </div>
                     <div class="margin-bottom-25">
-                    <input type="checkbox" id="changes-showbadgecounts" class="fancy" name="changes-showbadgecounts" @if (Model.ShowBadgeCounts)
-                                                                                                                     {<text>checked="checked"</text>} /><label for="changes-showbadgecounts">@GetResource(ResourceKeys.ShowBadgeCounts)</label>
+                        <input type="checkbox" id="changes-showbadgecounts" class="fancy" name="changes-showbadgecounts" @if (Model.ShowBadgeCounts) { <text> checked="checked" </text> } /><label for="changes-showbadgecounts">@GetResource(ResourceKeys.ShowBadgeCounts)</label>
                     </div>
 
                     @if (Model.CardItems.Items.Count() > 0)
@@ -119,40 +120,35 @@
                         <table class="updates">
                             <thead>
                                 <tr>
-                                    <td><input type="checkbox" class="fancy" id="toggle-checkbox" name="toggle-checkbox"/></td>
-                                    <td></td>                              
-                                    <td></td>    
+                                    <td><input type="checkbox" class="fancy" id="toggle-checkbox" name="toggle-checkbox" /></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.CardItems.Items)
-                                {
-                                    <tr>
-                                        <td><input type="checkbox" id="changes-@item.Id" class="item-checkboxes item-badge fancy" title="@item.Title" name="ChangedItems" value="@item.Id"/></td>
-                                        <td><a class="no-wrap" href="@item.Url" target="_blank">@item.Title</a></td>                              
-                                        <td><label title="@item.Description" for="changes-@item.Id">@item.Description.ToMaxMore(60)</label></td>    
-                                    </tr>                        
-                                }
+                                @{Html.RenderPartial("~/Views/Workspace/Notifications/_Updates.cshtml", Model.CardItems);}
                             </tbody>
                         </table>
                         <br />
-                        
+
                         <div class="margin-left-30">
-                            <input type="button" class="btn button-secondary-disabled button-small" name="clear-items" id="clear-items" value="@GetResource(ResourceKeys.Clear)"/>&nbsp;&nbsp;
-                            <input type="button" class="btn button-secondary-disabled button-small" name="send-items" id="send-items" value="@GetResource(ResourceKeys.Email)"/>&nbsp;&nbsp;
-                            <input type="button" class="btn button-secondary-disabled button-small" name="follow-items" id="follow-items" value="@GetResource(ResourceKeys.Follow)"/>
+                            <input type="button" class="btn button-secondary-disabled button-small" name="clear-items" id="clear-items" value="@GetResource(ResourceKeys.Clear)" />&nbsp;&nbsp;
+
+                            <input type="button" class="btn button-secondary-disabled button-small" name="send-items" id="send-items" value="@GetResource(ResourceKeys.Email)" />&nbsp;&nbsp;
+                            <input type="button" class="btn button-secondary-disabled button-small" name="follow-items" id="follow-items" value="@GetResource(ResourceKeys.Follow)" />
+                            <input type="button" class="btn margin-left-5 button-secondary button-small" name="clear-all-items" id="clear-all-items" data-label="@GetResource(ResourceKeys.ClearAll)" value="@GetResource(ResourceKeys.ClearAll) (@(Model.CardItems.Card.BadgeCount))" />&nbsp;&nbsp;
                         </div>
                         
                         <div class="send-items-container hide">
                             <h3>@GetResource(ResourceKeys.Groups)</h3>
                             @Html.ListBox("EmailToListGroups", Model.EmailToGroups, new { @class = "input-size9" })
                             <h3>@GetResource(ResourceKeys.Users)</h3>
-                            @Html.ListBox("EmailToListUsers", Model.EmailToUsers, new { @class = "input-size9" })
+                            @Html.ListBox("EmailToListUsers", Model.EmailToUsers, new { @class = selectClasses })
 
                             <input type="text" name="EmailSubject" id="email-subject" class="input-size9 margin-top-10 margin-bottom-10" value="@Model.EmailSubject" placeholder="@GetResource(ResourceKeys.Subject)" />
                             <textarea name="EmailMessage" id="email-message" class="input-size9 margin-bottom-10" placeholder="@GetResource(ResourceKeys.Message)">@Model.EmailMessage</textarea>
-                            <input type="button" class="btn button-primary button-small" name="email-badges" id="email-badges" value="Send"/>
-                            <input type="button" class="btn button-secondary button-small right" name="cancel-email-badges" id="cancel-email-badges" value="@GetResource(ResourceKeys.Cancel)"/>
+                            <input type="button" class="btn button-primary button-small" name="email-badges" id="email-badges" value="@GetResource(ResourceKeys.Send)" />
+                            <input type="button" class="btn button-secondary button-small right" name="cancel-email-badges" id="cancel-email-badges" value="@GetResource(ResourceKeys.Cancel)" />
                             <a id="jump-to-send-email"></a>
                         </div>
                         
@@ -193,7 +189,7 @@
                         <p class="margin-bottom-20">@GetResource(ResourceKeys.SubscribeOthers):</p>
                         <div class="margin-left-30">
                             <h2>@GetResource(ResourceKeys.Users)</h2>
-                            @Html.ListBox("SubscriptionUsersList", Model.SubscriptionUsers, new { @class = "input-size9" })
+                            @Html.ListBox("SubscriptionUsersList", Model.SubscriptionUsers, new { @class = selectClasses })
                             <br />
                             <br />  
                             <h2>@GetResource(ResourceKeys.Groups)</h2>
@@ -208,19 +204,19 @@
                     <br />
                     <br /> 
                     
-                    <h2 style="margin-bottom:4px;">Schedule</h2>                                         
+                    <h2 style="margin-bottom:4px;">@GetResource(ResourceKeys.Schedule)</h2>                                         
                     <div id="schedule-appnav-emails" class="margin-bottom-10"></div>
                     <input type="hidden" id="email-interval" name="EmailInterval" value="@Model.EmailInterval"/>
                     <br /> 
                     <h2>@GetResource(ResourceKeys.Users)</h2>
-                    @Html.ListBox("ReportsUserList", Model.ReportsUserListItem, new { @class = "input-size9" })
+                    @Html.ListBox("ReportsUserList", Model.ReportsUserListItem, new { @class = selectClasses })
                     <br />               
                     <br />
                     <h2>@GetResource(ResourceKeys.Groups)</h2>
                     @Html.ListBox("ReportsGroupList", Model.ReportsGroupListItem, new { @class = "input-size9" })
                     <br />
                     <br />
-                    <input type="button" class="btn button-secondary button-small" value="Test" id="send-report" name="send-report"/>
+                    <input type="button" class="btn button-secondary button-small" value="@GetResource(ResourceKeys.Test)" id="send-report" name="send-report" />
                 </div>
 
                 <div id="appnav-dashboard">

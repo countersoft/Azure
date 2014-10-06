@@ -23,7 +23,7 @@
                      {
                          <tr>
                              <td>Active Directory Groups</td>
-                             <td>@Html.ListBox("ADGroups", Model.ADGroupList, new {@class = "input-size9"})</td>
+                             <td>@Html.ListBox("ADGroups", Model.ADGroupList, new {@class = "input-size9 " + @Model.Classes})</td>
                          </tr>
                      }
                 }
@@ -35,6 +35,7 @@
 <script type="text/javascript">
     gemini_ui.chosen("#Interaction", null, true);
     gemini_ui.chosen("#ADGroups", null, true);
+    gemini_ui.ajaxChosen('select.no-chosen.auto-complete-chosen', null, false, 'project/0' + '/item/get/customfield');
 
     $("#GroupForm").submit(function () {
         $("#popup-button-yes").click();

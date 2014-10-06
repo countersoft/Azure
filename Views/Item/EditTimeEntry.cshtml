@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <td valign="top">@GetResourceTemplate(ResourceKeys.Comment)</td>
-                <td><textarea name="issueTimeComment" rows="3" class="time-entry-comment-box">@Model.TimeEntry.Entity.Comment</textarea></td>
+                <td><textarea name="issueTimeComment" rows="3" class="time-entry-comment-box @if(Model.IsTimeCommentRequired) {<text>required</text>}">@Model.TimeEntry.Entity.Comment</textarea></td>
             </tr>
         </table>
     </form>    
@@ -87,6 +87,8 @@
                 gemini_ajax.postCall("item", "addtimeentry?issueid=" + $(this).parents("#cs-popup-center-zone").find("#EditTimeEntryPopupContainer").attr("data-id"),
                         function (response) {
                             if (response.Success) {
+                                $.publish('issue-update', ['timeentry']);
+
                                 var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;
                                 gemini_item.replaceContent(response.Result.Data);
                                 gemini_ui.flashContent(".issue-time-entries-article [data-id='" + response.Result.Data.timeid + "']");

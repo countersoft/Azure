@@ -488,4 +488,28 @@
   <item id="ImportWizardTypeAdded">Ein Typ wurde hinzugefügt. Bitte gehen Sie auf Anpassen -> Templates -> Process, wählen Sie Ihr Projekt-Template aus und updaten Sie die "Screen"-Einstellung für den neuen Typ.</item>
   <item id="ImportWizardAccessProblem">Wir konnten nicht auf den Ordner 'app_data/imports' zugreifen. Bitte geben Sie "Jeder" erlaubnis auf den Ordner zuzugreifen.</item>
   <item id="DependencyTree">Abhängigkeitsbaum</item>
+  
+  <item id="ClearAll">Alle Zurücksetzen</item>
+  <item id="ChooseYourTerminology">Wählen Sie Ihre Terminologie</item>
+  <item id="ChooseYourViews">Wählen Sie Ihre Ansicht</item>
+  <item id="FirstTask">Erste Aufgabe</item>
+  <item id="LastTask">Letzte Aufgabe</item>
+  <item id="SharedBy">Geteilt von</item>
+  <item id="Test">Testen</item>
+  <item id="Key">Schlüssel</item>
+  <item id="IssueTracking">Issue Tracking</item>
+  <item id="InlineEditingOnTheGrid">Inline-Bearbeitung in der Tabelle</item>  
+  <item id="SelectItemWorkspaceTickCheckboxes">Wählen Sie den ITEM Arbeitsbereich aus (linke Seitenleiste). Kreuzen Sie einige Kontrollkästchen an und klicken Sie auf eines der Felder um den Wert zu ändern. Beobachten Sie was passiert.</item>
+  <item id="ManualWorkPrioritization">Manuelle Arbeitseinteilung</item>  
+  <item id="SelectSeqWorkspace">Wählen Sie den SEQ Arbeitsbereich aus. Am Anfang der Tabelle sehen Sie den Folgeablauf (Sequence Zone). Benutzen Sie den Henkel um ein Item in den Folgeablauf zu ziehen. In diesem Bereich können Sie Ihre Arbeit priorisieren.</item>
+  <item id="Filtering">Filterung</item>  
+  <item id="SelectTheAllWorkspace">Wählen Sie ALLE Arbeitsbereiche(ALL workspace) aus. Beachten Sie das Items von verschiedenen Projekten beinhaltet sind. Klicken Sie in dem Suchfeld und filtern Sie nach dem Status "In Progress".</item>
+  <item id="UseTheSidebar">Seitenleiste benutzen</item> 
+  
+  <item id="ClickOnThePeopleTabForThisWorkspace">Klicken Sie in diesen Arbeitsbereich auf den Tab "Leute" (rechte Seitenleiste). Hier sehen Sie wer was macht. Klicken Sie auf den Name um nach den Kollegen zu filtern.</item>
+  <item id="CancelRun">Möchten Sie den Durchlauf anhalten und löschen?</item>
+  <item id="SaveChanges">Änderungen speichern</item>
+  <item id="Coworkers">Arbeitskollegen</item>
+  <item id="Schedule">Planen</item>
+  <item id="SeparateAlertFollowed">Separate Email-Benachrichtigung für jedes Beobachtets Item</item>
 </Resource>

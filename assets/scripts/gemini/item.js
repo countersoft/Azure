@@ -309,6 +309,7 @@ gemini_item = {
                             function (response) {
                                 if (response.Success)
                                 {
+                                    $.publish('issue-update', ['timedelete']);
                                     //var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;
                                     gemini_item.replaceContent(response.Result.Data);
                                     //if (isCollapsed) gemini_ui.expandCollapse($('.expander', '.dependencies-article').first().parent());
@@ -535,12 +536,42 @@ gemini_item = {
                     gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content");
                     gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
                     gemini_item.replaceContent(responseText);
+                    $("#progress-indicator").addClass('hide');
+                    //gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container .cs-comment-add-save');
+                    $.publish('issue-update', [gemini_item.issueId, gemini_edit.pageType]);
+                    gemini_edit.pendingHtmlChanges = false;
                 }
-                $("#progress-indicator").addClass('hide');
-                //gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container .cs-comment-add-save');
-                $.publish('issue-update', [gemini_item.issueId, gemini_edit.pageType]);
-                gemini_edit.pendingHtmlChanges = false;
-            } // post-submit callback  
+                else
+                {
+                    if (responseText.Message && responseText.Message.length)
+                    {
+                        gemini_popup.toast(responseText.Message, true);
+                    }
+                    else
+                    {
+                        gemini_popup.toast("Couldn't save changes", true);
+                    }
+                    if ($('.comments-wysiwyg-container').length == 1) 
+                    {
+                        gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container:eq(0) .cs-comment-add-save');
+                    }
+                    else 
+                    {
+                        gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container:eq(1) .cs-comment-add-save');
+                    }
+                }
+            },
+            error: function (responseText, statusText) { // post-submit callback  
+                gemini_ui.stopBusy('#comments-content .cs-comment-add-save');
+                if (responseText.Message && responseText.Message.length)
+                {
+                    gemini_popup.toast(responseText.Message, true);
+                }
+                else
+                {
+                    gemini_popup.toast("Couldn't save changes", true);
+                }
+            }
             
         };
         if (textareaId != "comments-wysiwyg-content") {
@@ -1189,7 +1220,7 @@ gemini_item = {
         var ids = [gemini_item.issueId];
         gemini_ajax.postCall('items', 'slatime', function (response)
         {
-            if (response.Success)
+            if (response.Success && response.Result.Data.length)
             {
                 $('.sla-timer', '#touch-info-container').removeAttr('class').addClass('sla-timer').addClass('view-sla-' + response.Result.Data[0].SLAStatus).html(response.Result.Data[0].SLATimeFull).attr('data-sla-minutes', response.Result.Data[0].SLATimeMinutes).attr('data-sla-state', response.Result.Data[0].SLAStatus);
             }

@@ -89,6 +89,17 @@
                             }
                         });
                     }
+                    else 
+                    {
+                        if (responseText.Message && responseText.Message.length)
+                        {
+                            gemini_popup.toast(responseText.Message, true);
+                        }
+                        else
+                        {
+                            gemini_popup.toast("Couldn't save changes", true);
+                        }
+                    }
                     gemini_ui.stopBusy('#colorbox #popup-button-yes');
                 },
                 error: function (responseText, statusText) {

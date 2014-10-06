@@ -32,9 +32,13 @@
 
             if ($("#regular-form").valid()) {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
-                gemini_ajax.postCall("configure/template", "duplicate/" + gemini_admin.currentTemplate, function () {
+                gemini_ajax.postCall("configure/template", "duplicate/" + gemini_admin.currentTemplate, function (response) {
                     gemini_popup.toast("Saved");
                     gemini_popup.popupClose(e);
+                    if(response && response.Result && response.Result.Data && response.Result.Data.length)
+                    {
+                        gemini_admin.currentTemplate = response.Result.Data;
+                    }
                     gemini_admin.getPage();
                     gemini_ui.stopBusy('#colorbox #popup-button-yes');
                 }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize(), null, true);

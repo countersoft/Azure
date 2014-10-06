@@ -26,6 +26,25 @@
                 <td>Facebook App Id</td>
                 <td><input type="text" id="FacebookAppId" name="FacebookAppId" class="input-size9 @if(Model.EnableFacebookIntegration){<text>required</text>}" value="@Model.FacebookAppId"/></td>
             </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="checkbox" id="EnableGoogleIntegration" class="fancy" name="EnableGoogleIntegration" @if (Model.EnableGoogleIntegration)     {<text> checked="checked" </text>   } />
+                    <label for="EnableGoogleIntegration">Allow users to authenticate with Gemini using Google</label>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Google Client ID</td>
+                <td><input type="text" id="GoogleClientId" name="GoogleClientId" class="input-size9 @if (Model.EnableGoogleIntegration)    {<text>required</text>}" value="@Model.GoogleClientId" /></td>
+            </tr>
+
+            <tr>
+                <td>Google Client Secret</td>
+                <td><input type="text" id="GoogleClientSecret" name="GoogleClientSecret" class="input-size9 @if (Model.EnableGoogleIntegration)     {<text>required</text>}" value="@Model.GoogleClientSecret" /></td>
+            </tr>
+
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
@@ -133,6 +152,11 @@
 
         $('#EnableFacebookIntegration').bind('ifChanged', function () {
             $('#FacebookAppId').toggleClass('required').removeClass('error');
+        });
+
+        $('#EnableGoogleIntegration').bind('ifChanged', function () {
+            $('#GoogleClientId').toggleClass('required').removeClass('error');
+            $('#GoogleClientSecret').toggleClass('required').removeClass('error');
         });
 
         if ($('#enforce-password-policy').is(':checked')) {

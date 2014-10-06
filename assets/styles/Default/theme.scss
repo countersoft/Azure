@@ -719,6 +719,7 @@ a
 	text-align:left;
 	#dropTipText
     {
+		color: $color-white;
         font-size: 14px;
     }
 }
@@ -819,6 +820,7 @@ a
         min-height: 1px;
         width:192px;
         padding:10px;
+		border-right: 1px solid $color-grayscale2;
 
         &.exceeded
         {
@@ -1974,6 +1976,14 @@ textarea.input-size12
 **********************************/
 #view-item
 {
+	.WordSection1 
+	{
+	  .MsoListParagraph
+	  {
+		padding-left:54px;
+	  }
+	}
+
     font-size: 12px;
     .left-zone
     {
@@ -3440,10 +3450,9 @@ div.mceDropDown
         {
             display:inline-block;
             font-size:13px;
-            font-style:italic;
             color:$color-grayscale1;
             margin-top:8px;
-            margin-left:255px;
+            margin-left:10px;
             span
             {
                 color:$color-grayscale;
@@ -5231,4 +5240,36 @@ $border-color: $color-grayscale3;
 {
     @extend .view-sla;
     color: $color-grayscale2;
+}
+
+.field-extra-details
+{
+	color: $primary-color;
+	cursor:pointer;
+}
+
+.field-extra-details-info
+{
+	z-index:999;
+    max-width: 350px;
+    max-height: 200px;
+    overflow: auto;
+    overflow-x: hidden;
+    position: absolute;
+	display:block;
+    padding: 10px 20px 20px 20px;
+
+	border: 1px solid $color-grayscale3;
+    background-color: $color-grayscale4;
+    color: $color-black;
+
+	table td:first-child
+	{
+		padding-right:0px !important;
+		padding-top:5px !important;
+	}
+	table td:last-child
+	{
+		padding-top:5px !important;
+	}
 }

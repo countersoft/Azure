@@ -13,7 +13,7 @@
         {
             <div class="team-workspace" style="border-right-color:@card.Color"></div>
         }
-        if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null)
+        if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null || card.CardType == ProjectTemplatePageType.Marketing && GeminiContext.User.IsGlobalAdmin)
         {
                 @:<a href="@card.Url" target="_blank">
             }

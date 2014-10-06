@@ -1,7 +1,7 @@
 ﻿@model DatesModel
 
-<div id="release-start-date" style="display:inline-block;"><span>Start Date  </span>@Model.StartDate</div>
-<div id="release-end-date" style="display:inline-block;"><span>End Date  </span>@Model.EndDate</div>
-<div id="release-estimated-date" style="display:inline-block;"><span>Estimated Release Date  </span>@Model.EstimatedDate</div>
+<div id="release-start-date" style="display:inline-block;"><span>@GetResource(ResourceKeys.StartDate)  </span>@Model.StartDate</div>
+<div id="release-end-date" style="display:inline-block;"><span>@GetResource(ResourceKeys.EndDate)  </span>@Model.EndDate</div>
+<div id="release-estimated-date" style="display:inline-block;"><span>@GetResource(ResourceKeys.EstimatedReleaseDate) </span>@Model.EstimatedDate</div>
 
 
