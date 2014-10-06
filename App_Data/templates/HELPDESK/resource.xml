@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Resource>
+    <item id="VersionUnscheduled">Unscheduled</item>
+    <item id="FixedInVersion">Fixed In Version</item>
+    <item id="FixedInVersions">Fixed In Versions</item>
+    <item id="AffectedVersions">Affected Versions</item>
+    <item id="Component">Application Area</item>
+    <item id="Components">Application Area</item>
+    <item id="Item">Ticket</item>
+    <item id="Items">Tickets</item>
+    <item id="ItemsFound">Tickets Found</item>
+</Resource>

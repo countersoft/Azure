@@ -1,0 +1,12 @@
+﻿@model List<Pair<string, string>>
+
+<table>
+    <tbody>
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td class="no-width no-wrap"><span class="bold">@data.Key</span></td><td>&nbsp;@data.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>
