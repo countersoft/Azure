@@ -512,4 +512,6 @@
   <item id="Coworkers">Arbeitskollegen</item>
   <item id="Schedule">Planen</item>
   <item id="SeparateAlertFollowed">Separate Email-Benachrichtigung für jedes Beobachtets Item</item>
+
+  <item id="Organization">Organisation</item>
 </Resource>

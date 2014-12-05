@@ -2784,6 +2784,11 @@ textarea.input-size12
                         visibility: visible;
                     }
                 }
+                h2 
+                {
+                    display:block;
+
+                }
             }
 
 			.author-box .fonticon-persons
@@ -3429,6 +3434,54 @@ div.mceDropDown
 			width:400px;
 			height:160px;
 		}
+	}
+
+	#ProjectGroupReportContainer, #UserReportContainer
+	{
+		table
+		{
+		  width:97%;
+		  margin-left: 2px;
+
+		  td, th
+		  {
+			width: 20%;
+			word-wrap: break-word;
+			vertical-align: top;
+		  }
+
+		  th
+		  {
+			font-size:14px;
+			color:$primary-color;
+		  }
+
+		  td
+		  {
+			border: thin solid $color-grayscale2;
+			padding: 5px;
+		  }
+		}
+
+		
+		.content
+		{
+			padding: 0 0 0 10px !important;
+			margin-top: 115px;
+		}
+			
+		.header
+		{
+			padding: 15px 0 0 20px !important;
+		}
+
+		.subtitle
+		{
+			font-size:14px;
+			margin-top:15px;
+			font-weight: bold;
+			background-color: whitesmoke;
+		}		
 	}
 
 	#edit-appnav-card

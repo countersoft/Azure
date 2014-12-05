@@ -1053,6 +1053,11 @@ planner =
                 else if (action == "pin") {
                     gemini_items.pinItem(cardId, false);
                 }
+                else if (action == "time" && !$('#item-grid-context-menu a[href="#time"]').parent().hasClass('disabled')) {
+                    $("#cs-popup-center-content").css("width", "500px");
+                    $("#cs-popup-center-content").css("height", "350px");
+                    gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + cardId, { timeid: 0 });
+                }
             },
             function (before) {
                 gemini_ajax.call('', "projectpermissions?issueid=" + before.attr('id'), function (response) {
@@ -1077,8 +1082,12 @@ planner =
                         else
                             $('#planner-context-menu').disableContextMenuItems('#comment');
 
+                        if (response.Result.Data.canaddtime)
+                            $('#planner-context-menu').enableContextMenuItems('#time');
+                        else
+                            $('#planner-context-menu').disableContextMenuItems('#time');
                     }
-                }, null, null);
+                }, null, null, null, null, false);
             }
         );
 

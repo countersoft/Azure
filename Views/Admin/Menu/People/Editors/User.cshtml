@@ -59,6 +59,15 @@
                 }
             </td>
         </tr>
+        <tr>
+            <td>Organization Membership</td>
+            <td>
+                @foreach (var organization in Model.User.Organizations)
+                {
+                    <text><p>@organization.Name</p></text>
+                }
+            </td>
+        </tr>
     </table>
     </form>
 </div>

@@ -179,9 +179,10 @@ foreach (var coldata in data)
 {
     <ul id="item-grid-context-menu" class="cs-menu-context">
         <li><a href="#view">@GetResource(ResourceKeys.View)</a></li>
-        <li><a href="#comment">@GetResource(ResourceKeys.Comment)</a></li>
-        <li><a href="#edit">@GetResource(ResourceKeys.Edit)</a></li>
-        <li ><a href="#follow">@GetResource(ResourceKeys.FollowUnfollow)</a></li>
+        <li><a href="#follow">@GetResource(ResourceKeys.FollowUnfollow)</a></li>
+        <li><a href="#comment">@GetResource(ResourceKeys.Comment, Resourcing.Dotted)</a></li>
+        <li><a href="#edit">@GetResource(ResourceKeys.Edit, Resourcing.Dotted)</a></li>
+        <li><a href="#time">@GetResource(ResourceKeys.Time, Resourcing.Dotted)</a></li>
         @if (!GeminiContext.PermissionsManager.IsHelpdeskUser())
         { 
             <li class="highlight"><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>

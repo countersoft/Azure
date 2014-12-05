@@ -91,6 +91,11 @@
                     </text>
                     previousParentid = parentsList.Last();
                 }
+
+                if (hierarchyItem.Value.ParentIssueId == previousParentid && hierarchyItem == Model.Issue.Hierarchy.Last() && parentsList.Count > 1)
+                {
+                      @Html.Raw("</div>")
+                }
             }
             @Html.Raw("</div>")
 

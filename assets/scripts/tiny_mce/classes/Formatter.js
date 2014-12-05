@@ -259,6 +259,20 @@ define("tinymce/Formatter", [
 			}
 		}
 
+		/**
+		 * Unregister a specific format by name.
+		 *
+		 * @method unregister
+		 * @param {String} name Name of the format for example "bold".
+		 */
+		function unregister(name) {
+			if (name && formats[name]) {
+				delete formats[name];
+			}
+
+			return formats;
+		}
+
 		function getTextDecoration(node) {
 			var decoration;
 
@@ -1156,6 +1170,7 @@ define("tinymce/Formatter", [
 		extend(this, {
 			get: get,
 			register: register,
+			unregister: unregister,
 			apply: apply,
 			remove: remove,
 			toggle: toggle,
@@ -2040,12 +2055,12 @@ define("tinymce/Formatter", [
 							child.deleteData(0, 1);
 
 							// Fix for bug #6976
-							if (rng.startContainer == child) {
-								rng.startOffset--;
+							if (rng.startContainer == child && rng.startOffset > 0) {
+								rng.setStart(child, rng.startOffset - 1);
 							}
 
-							if (rng.endContainer == child) {
-								rng.endOffset--;
+							if (rng.endContainer == child && rng.endOffset > 0) {
+								rng.setEnd(child, rng.endOffset - 1);
 							}
 						}
 

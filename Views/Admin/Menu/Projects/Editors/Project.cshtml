@@ -78,6 +78,8 @@
         }
         
         gemini_ui.chosen("#ProjectLead", null, true);
+        gemini_ui.ajaxChosen('#ProjectLead', null, false, 'project/0' + '/item/get/customfield');
+
         gemini_ui.chosen("#Permissions", null, true);
         gemini_ui.chosen("#ProjectLabel", null, true);
         gemini_ui.chosen("#SelectedTemplate", null, true);

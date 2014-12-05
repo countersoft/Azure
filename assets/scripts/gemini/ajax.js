@@ -31,12 +31,20 @@ gemini_ajax =
         return url;
     },
 
-    call: function (controller, method, callback, badCall, params, extra, ignoreContainer) {
+    call: function (controller, method, callback, badCall, params, extra, ignoreContainer, isAsync) {
         /*if (gemini_ajaxXHR != undefined && gemini_ajaxXHR != null) {
             ajaxXHR.abort();
         }*/
 
-
+        if (typeof isAsync == "undefined" || isAsync == null)
+        {
+            isAsync = true;
+        }
+        else
+        {
+            isAsync = isAsync
+        }
+        
         var url = gemini_ajax.getUrl(controller, method, ignoreContainer);
         gemini_session.isResetSession(controller, method);
 
@@ -44,6 +52,7 @@ gemini_ajax =
                 type: "GET",
                 url: url,
                 data: params,
+                async: isAsync,
                 //dataType: "json",
                 success: function (data) {
                     if (callback != null && callback != undefined && typeof callback == 'function') {

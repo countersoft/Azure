@@ -512,4 +512,6 @@
   <item id="Coworkers">Co-workers</item>
   <item id="Schedule">Schedule</item>
   <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
+
+  <item id="Organization">Organization</item>
 </Resource>

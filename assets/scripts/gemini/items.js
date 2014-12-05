@@ -421,7 +421,8 @@ gemini_items = {
     },
 
 
-    bindContextMenu: function () {      
+    bindContextMenu: function () {
+
         $("tr[id^='tr-issue-'] td", '#tabledata').destroyContextMenu();
         $("tr[id^='tr-issue-'] td", '#tabledata').contextMenu({ menu: 'item-grid-context-menu' },
                 function (action, el, pos) {                    
@@ -448,6 +449,11 @@ gemini_items = {
                     }
                     else if (action == "follow") {
                         gemini_ajax.call("item", "addwatcher/" + issueId + "/0");
+                    }
+                    else if (action == "time" && !$('#item-grid-context-menu a[href="#time"]').parent().hasClass('disabled')) {
+                        $("#cs-popup-center-content").css("width", "500px");
+                        $("#cs-popup-center-content").css("height", "350px");
+                        gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + issueId, { timeid: 0 });
                     }
                     else if (action == "delete" && !$('#item-grid-context-menu a[href="#delete"]').parent().hasClass('disabled')) {
                         gemini_popup.modalConfirm("Delete Item "+ projectCode + "-" + issueId + "?", null,
@@ -480,9 +486,15 @@ gemini_items = {
                                 $('#item-grid-context-menu').enableContextMenuItems('#comment');
                             else
                                 $('#item-grid-context-menu').disableContextMenuItems('#comment');
+
+                            if (response.Result.Data.canaddtime) {
+                                $('#item-grid-context-menu').enableContextMenuItems('#time');
+                            }
+                            else
+                                $('#item-grid-context-menu').disableContextMenuItems('#time');
                             
                         }
-                    }, null, null);
+                    }, null, null, null, null, false);
 
                 }
             );

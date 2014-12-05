@@ -21,6 +21,7 @@
                 <th data-field="Active" data-edit-type="checkbox">Disabled?</th>
                 <th data-field="Locked" data-edit-type="checkbox">Locked?</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>        
         <tbody>
@@ -37,6 +38,8 @@
                     <td>@item.Entity.Email</td>
                     <td>@(item.Entity.Active ? string.Empty : "Yes")</td>
                     <td>@(item.Entity.Locked ? "Yes" : string.Empty)</td>
+                  
+                    <td data-edit="false" class="no-width"><a href="#" class="report">Report</a></td>
                     <td data-edit="false" class="actions" >
                         @if(!systemUsers.Contains(item.Entity.Id))
                         {
@@ -52,7 +55,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-users", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [5] }] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-users", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [6, 7] }] });
 
         $("#table-admin-users").on('click', ".actions span[data-method='edit']", function () {
 
@@ -89,5 +92,14 @@
             gemini_popup.centerPopup("configure/People/Users", "Add", null, null, null, null, null, null, null, true);
         });
 
+
+        $("#table-admin-users").on('click', ".report", function (e) {
+            $("#cs-popup-center-content").css("width", "800px");
+            $("#cs-popup-center-content").css("height", "600px");
+            gemini_commons.stopClick(e);
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/People/Users", "Editor", { id: id, mode: "report" }, null, "OK", "Close", true, false, null, true);
+        });
     });
 </script>

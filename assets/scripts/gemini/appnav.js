@@ -415,7 +415,7 @@ gemini_appnav =
         $("#cs-popup-center-content").css("width", "800px");
         $("#cs-popup-center-content").css("height", "380px");
 
-        gemini_commons.translateMessage("[[Add]],[[Cancel]]", ['Add', 'Cancel'], function (message) {
+        gemini_commons.translateMessage("[[Save]],[[Cancel]]", ['Save', 'Cancel'], function (message) {
             var translations = message.split(",");
             add = translations[0];
             cancel = translations[1];

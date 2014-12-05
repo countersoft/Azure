@@ -42,7 +42,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-customfields", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [3] }] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-customfields", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [4] }] });
         
         //Remove previous events, as the on events were firing multiple times - events getting rebound on ajax loads.
         $("#table-admin-customfields").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function (e)

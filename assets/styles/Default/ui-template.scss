@@ -992,8 +992,7 @@ table.admin-data-entry
 }
 #edit-permissions-container
 {
-	.CanOnlyViewOwnItems,
-	.ReadOnly 
+	.CanOnlyViewOwnItems, .ReadOnly, .CanOnlyViewOwnOrganizationItems, .CanOnlyDeleteOwnComment, .CanOnlyAmendOwnItems, .CanOnlyDeleteOwnItems
 	{
 		color:red;
 	}
@@ -1108,14 +1107,9 @@ table.admin-data-entry
 	#custom-field-lookup-container
 	{
 		width: 790px; 
-		height: 400px; 
+		height: 315px; 
 		overflow: hidden;
 		outline: none;
-
-		table
-		{
-			border-collapse: collapse;
-		}
 	}
 }
 

@@ -75,7 +75,10 @@ gemini_add =
         gemini_ui.destroyHtmlEditor('#cs-popup-add-content .wysiwyg-editor');
         
         gemini_add.newItemRenderedCallback = gemini_add.newItemRenderedCallbackOrig;
-        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item, gemini_add.populateAddItem, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
+
+        gemini_ui.startBusy('#cs-popup-add #cs-popup-add-save');
+
+        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item, function (response) { gemini_add.populateAddItem(response); gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save'); }, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
     },
 
     triggerCustomfieldChange: function (elem)

@@ -10,6 +10,7 @@
                 <th data-field="Description">Description</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@
                     <td>@item.Name</td>
                     <td>@item.Description</td>
                 <td data-edit="false" class="no-width">@if(item.Id != Constants.GlobalGroupEveryone && item.Id != Constants.GlobalGroupEveryoneAuthenticated){ <text><a href="#" id="members">Members</a></text> }</td>
+                <td data-edit="false" class="no-width"><a href="#" class="report">Report</a></td>
                     <td data-edit="false" class="actions">
                         <span class="action-button-edit cursor-pointer" data-method="edit" title="@GetResource(ResourceKeys.Edit)"></span>
                         @if(item.Id != Constants.GlobalGroupEveryone && item.Id != Constants.GlobalGroupEveryoneAuthenticated && item.Id != Constants.GlobalGroupAdministrators){ <text><span class="action-button-delete cursor-pointer" data-method="delete" title="@GetResource(ResourceKeys.Delete)" ></span></text> }
@@ -31,7 +33,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        gemini_admin.initDatatablesWithEdit("#table-admin-groups", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2, 3] }] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-groups", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2, 3, 4] }] });
 
         $("#table-admin-groups").off('click', "span[data-method='delete']").on('click', "span[data-method='delete']", function () {
             var item = $(this);
@@ -73,6 +75,15 @@
             var item = $(this);
             var id = item.closest("tr").data("id");
             gemini_popup.centerPopup("configure/People/ProjectGroups", "Editor", { id: id, mode: "members" }, null, "OK", "Close", true, false, null, true);
+        });
+
+        $("#table-admin-groups").on('click', ".report", function (e) {
+            $("#cs-popup-center-content").css("width", "800px");
+            $("#cs-popup-center-content").css("height", "600px");
+            gemini_commons.stopClick(e);
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/People/ProjectGroups", "Editor", { id: id, mode: "report" }, null, "", "Close", true, false, null, true);
         });
     });
 </script>

@@ -43,6 +43,12 @@
           }
           options.data[options.jsonTermKey] = val;
           options.data["cf"] = $(this).parent().parent().parent().attr('id');
+
+          if (gemini_edit.issueId && gemini_edit.issueId > 0)
+          {
+              options.data["issueid"] = gemini_edit.issueId;
+          }
+
           if(options.url.indexOf('{projectid}' != -1)) {
               options.url = options.url.replace('{projectid}', $(this).parent().parent().parent().prev().attr('data-project-id'));
           }

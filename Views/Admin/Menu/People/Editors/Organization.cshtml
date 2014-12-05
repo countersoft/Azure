@@ -1,0 +1,58 @@
+﻿@model PeopleOrganizationEditModel
+
+<div id="OrganizationContainer" style="height:600px;">
+    <form id="OrganizationForm">
+        <input id="id" name="id" type="hidden" value="@Model.Organization.Id" />
+        <table id="regular-credentials" class="admin-data-entry" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>Organization Name</td>
+                <td><input type="text" id="OrganizationName" name="OrganizationName" class="input-size9 required" value="@Model.Organization.Name"/></td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td><textarea id="OrganizationDescription" name="OrganizationDescription" rows="3" class="input-size9">@Model.Organization.Description</textarea></td>
+            </tr>
+            <tr>
+                <td>Members</td>
+                <td>@Html.ListBox("Users", Model.Members, new {@class = "input-size9 " + @Model.Classes })</td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    gemini_ui.chosen("#Users", null, true);
+    gemini_ui.ajaxChosen('select.no-chosen.auto-complete-chosen', null, false, 'project/0' + '/item/get/customfield');
+    $("#OrganizationContainer").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+    $("#OrganizationForm").submit(function () {
+        $("#popup-button-yes").click();
+        return false;
+    });
+
+    $("#popup-button-yes").unbind('click').click(function (e) {
+
+        if ($("#OrganizationForm").valid()) {
+            gemini_ui.startBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/People/Organizations", "SaveData", function (response) {       
+   
+                gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+
+                if (response.Result && !response.Result.Success)
+                    gemini_popup.toast(response.Result.Message, true);
+                else
+                {
+                    gemini_popup.popupClose(e);
+                    gemini_admin.getPage();
+                }
+
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#OrganizationForm").serialize(), null, true);
+        }
+        else {
+            $('.error:not(label)', '#cs-popup-content').first().focus();
+        }
+    });
+
+    $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

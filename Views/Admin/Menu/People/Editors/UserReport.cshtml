@@ -1,0 +1,69 @@
+﻿@model PeopleUsersReportModel
+
+<div id="UserReportContainer" class="popup-header">
+    <div class="header">
+        <div class="title">@Model.User.Fullname</div>
+        <div class="text">A complete list of groups and projects this user is assigned to. See the types of <strong>Process</strong> user can interact with and any permission restrictions.</div>
+    </div>
+    <div class="content" style="width:100%;">
+        @if (Model.ProjectPermissions.Count > 0)
+        {
+            <table class="basic">
+                <thead>
+                    <tr>
+                        <th class="align-left"></th>
+                        <th class="align-left">Create</th>
+                        <th class="align-left">Edit</th>
+                        <th class="align-left">View</th>
+                        <th class="align-left">Restrictions</th>
+                    </tr>
+                </thead>
+                <tbody>  </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="margin-top-20" style="text-align: center;color: red;">This group has no users assigned to it.</div>
+        }
+        <div id="cs-template" style="height: 470px;">
+            @foreach (var projectUser in Model.ProjectPermissions)
+            {
+                <table class="basic">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="subtitle" colspan="5">@projectUser.Key</td>
+                        </tr>
+                        @foreach (var user in projectUser.Value)
+                        {
+                            <tr>
+                                <td>@user.Project.Entity.Name</td>
+                                <td>@user.CreateTypePermissions.ToDelimited(", ").TrimEnd(' ').TrimEnd(',')</td>
+                                <td>@user.EditTypePermissions.ToDelimited(", ").TrimEnd(' ').TrimEnd(',')</td>
+                                <td>@user.ViewTypePermissions.ToDelimited(", ").TrimEnd(' ').TrimEnd(',')</td>
+                                <td class="color-red">@user.AdditionalPermissions.ToDelimited(", ").TrimEnd(' ').TrimEnd(',')</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#popup-button-no").click(function (e) {
+        $('#cs-popup-center #download-security-audit').remove();
+        gemini_popup.popupClose(e);
+    });
+
+    $('#cs-template', "#cs-popup-center").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+    $('#cs-popup-center #cs-popup-center-buttons .buttons #popup-button-no').before('<a style="margin-right:5px;margin-right: 5px;height: 23px;text-align: center;line-height: 22px;" id="download-security-audit" class="button-primary button-small button-modal" href="configure/People/Users/download?&id=@Model.User.Entity.Id" target="_blank">Export</a>');
+
+</script>
