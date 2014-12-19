@@ -382,6 +382,7 @@ gemini_ui = {
             browser_spellcheck: true,
             gecko_spellcheck: true,
             height: height,
+            entity_encoding: "raw",
             width: width,
             oninit: onInit,
             theme: "modern",
