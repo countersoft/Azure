@@ -116,14 +116,14 @@
             }
             else
             {   
-                <span class="item-small"><a href="~/account/profile" class="open-profile">@fullname</a></span><span id="user-menu" class="fonticon-dropdown dropdown">
+                <span class="item-small"><a href="#" class="open-profile">@fullname</a></span><span id="user-menu" class="fonticon-dropdown dropdown">
                     <ul class="cs-menu-dropdown align-right">
                         <li class="arrow"><div></div></li>
-                        <li><a class="open-profile" href="~/account/profile">@GetResource(ResourceKeys.Profile)</a></li>
+                        <li><a class="open-profile" href="#">@GetResource(ResourceKeys.Profile)</a></li>
                         <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=assigned">@GetResource(ResourceKeys.Assigned)</a></li>
                         <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=following">@GetResource(ResourceKeys.Following)</a></li>
                         <li><a href="http://docs.countersoft.com" target="_blank">@GetResource(ResourceKeys.Help)</a></li>
-                        <li><a href="http://www.countersoft.com/watch" target="_blank">Videos</a></li>
+                        <li><a href="http://www.countersoft.com/videos" target="_blank">Videos</a></li>
                                                                                                                            
                         @if (!GeminiContext.Config.IsWindowsAuthentication)
                         { 

@@ -136,7 +136,7 @@
             var item = $(this);
             var tr = item.closest("tr");
             var id = tr.data("id");
-            var version = $("td:first", tr).html();
+            var version = $("td:first", tr).next().html();
             var message = $(this).attr("data-message");
 
             gemini_popup.modalConfirm(message + " <span class='bold'>'" + version + "' ?</span>", null, function ()

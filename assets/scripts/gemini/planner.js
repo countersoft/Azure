@@ -354,7 +354,9 @@ planner =
             planner.showInfoTip();
         }
 
-        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        if(gemini_appnav.pageCard.CardData.HighlightChanges) {
+            planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        }
     },
 
     updateCell: function (markup)
@@ -367,7 +369,9 @@ planner =
         gemini_ui.visualProgressFinish('#planner');
         planner.showInfoTip();
 
-        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        if(gemini_appnav.pageCard.CardData.HighlightChanges) {
+            planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        }
     },
 
     updateCellMarkup: function (markup)
@@ -405,7 +409,9 @@ planner =
         planner.allowEffects();
         planner.normalCursor();
         gemini_ui.visualProgressFinish('#planner');
-        planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        if(gemini_appnav.pageCard.CardData.HighlightChanges) {
+            planner.highlight(gemini_appnav.pageCard.CardData.Badges);
+        }
         return false;
     },
 

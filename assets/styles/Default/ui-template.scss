@@ -994,7 +994,22 @@ table.admin-data-entry
 {
 	.CanOnlyViewOwnItems, .ReadOnly, .CanOnlyViewOwnOrganizationItems, .CanOnlyDeleteOwnComment, .CanOnlyAmendOwnItems, .CanOnlyDeleteOwnItems
 	{
-		color:red;
+		color:$color-red;
+		background-color: $color-error;
+		div
+		{
+			color:$color-black;
+		}
+
+	}
+
+	.ReadOnly
+	{
+		font-weight:bold;
+		div
+		{
+			font-weight:normal;
+		}
 	}
 }
 #breeze-form-container

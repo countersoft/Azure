@@ -80,7 +80,7 @@
             var item = $(this);
             var tr = item.closest("tr");
             var id = tr.data("id");
-            var component = $("td:first", tr).html();
+            var component = $("td:first", tr).next().html();
             var message = $(this).attr("data-message");
 
             gemini_popup.modalConfirm(message + " <span class='bold'>'" + component + "' ?</span>", null, function ()

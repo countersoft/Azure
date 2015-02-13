@@ -211,6 +211,10 @@ gemini_add =
 
             gemini_ui.fancyInputs('#inline-edit-form .fancy');
         }
+        else
+        {
+            gemini_add.hide();
+        }
     },
 
     show: function () {
