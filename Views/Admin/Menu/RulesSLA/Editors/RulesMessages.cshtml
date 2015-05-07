@@ -1,0 +1,27 @@
+﻿@model List<Countersoft.Gemini.Commons.System.SystemMessage>
+<div id="TimerAppsContainer" style="width:800px;text-align:center;height: 600px">
+    <div id="cs-template" class="timer-apps-messages" style="overflow: hidden; width: 800px; height: 100%; outline: none;">
+        <table id="table-admin-timeredit" class="admin-data-entry" style="text-align:left;">
+            <tbody>
+                @foreach(var data in Model)
+                {
+                    <tr>
+                        <td>
+                            @data.Created.ToLocal(GeminiContext.User.TimeZone)
+                        </td>
+                        <td>
+                            @data.Message
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {        
+        $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+        $(".timer-apps-messages").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+    });
+</script>

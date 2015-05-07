@@ -34,7 +34,7 @@
                                     voteClass = "";
                                 }
                                 <span title="@comment.Visibility" class="control-icon @voteClass" data-group="@comment.Entity.Visibility"></span>
-                                <span class="author">@if(comment.Entity.OriginatorData.HasValue()){ <text>@IssueHelper.DisplayCommentOwner(comment.Entity.OriginatorData)</text> } else { <text>@comment.Entity.Fullname</text> } </span>
+                                <span class="author">@if(comment.Entity.OriginatorType != IssueOriginatorType.Email && comment.Entity.OriginatorData.HasValue()){ <text>@IssueHelper.DisplayCommentOwner(comment.Entity.OriginatorData)</text> } else { <text>@comment.Entity.Fullname</text> } </span>
                                 <span class="dated" data-date-format="@GeminiContext.User.GeminiDateFormat" title="@comment.Entity.Created.ToString()">@comment.Entity.Created.ToString()</span>
                                 </span>
                                 @if(CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.AssociatedComments, comment.Entity.Id))
@@ -48,7 +48,7 @@
                             </span>
                             @if (comment.Entity.OriginatorType == IssueOriginatorType.Email)
                                 {
-                                  <div class="comment-type">Email Reply</div>
+                                  <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">Email Reply</div>
                                 }
                             <div class="section-content expanded">
                                 @{

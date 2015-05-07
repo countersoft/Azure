@@ -1,5 +1,5 @@
-﻿@model Countersoft.Gemini.Commons.Entity.SLA.SLAData
-<div id="SLAItemContainer" style="height: 316px;">
+﻿@model SLADataModel
+<div id="SLAItemContainer" style="height: 350px;">
 <div id="sla-form-container">
     <form id="regular-form">
         <input type="hidden" value="@Model.Id" name="Id" Id="Id" />
@@ -34,14 +34,21 @@
                         <input type="text" id="Time" name="Time" class="input-field required input-size9 mask2" value="@Model.FormattedTime3"/>
                     </td>
                 </tr>
-                <tr id="server-port">
+                <tr>
+                    <td class="field-name">Timezone
+                    </td>
+                    <td>
+                        @Html.DropDownList("Timezone", Model.TimeZones, new {@class="input-field input-size9 n247"})
+                    </td>
+                </tr>
+                <tr>
                     <td class="field-name">Day starts
                     </td>
                     <td>
                         <input type="text" id="StartOfDay" name="StartOfDay" class="input-field required input-size9 mask n247" value="@Model.StartOfDay" />
                     </td>
                 </tr>
-                <tr id="server-port">
+                <tr>
                     <td class="field-name">Day ends
                     </td>
                     <td>
@@ -60,18 +67,22 @@
         if($('#Is24x7').prop('checked'))
         {
             $('.mask.n247', '#sla-form-container').prop('disabled', 'disabled');
+            $('#Timezone', '#sla-form-container').prop('disabled', 'disabled');
+            $('#Timezone', '#sla-form-container').trigger("chosen:updated");
         }
         else
         {
             $('.mask.n247', '#sla-form-container').prop('disabled', '');
+            $('#Timezone', '#sla-form-container').prop('disabled', '');
+            $('#Timezone', '#sla-form-container').trigger("chosen:updated");
         }
     }
 
       $(document).ready(function () {
-
+          gemini_ui.chosen('#Timezone', null, true);
           gemini_ui.fancyInputs('#regular-form .fancy');
 
-          $("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+          //$("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
           $('.mask').mask('99:99');
           $('.mask2').mask('999:99');
 

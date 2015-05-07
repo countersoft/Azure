@@ -10,7 +10,8 @@
                 <th></th>
                 <th data-field="Name" data-required='true'>Name</th>           
                 <th data-field="Description" data-required='true'>Description</th>                     
-                <th>Rules</th>                
+                <th>Rules</th>
+                <th></th>
                 <th></th>            
             </tr>
         </thead>        
@@ -30,6 +31,7 @@
                         </a>
                     }
                     </td>   
+                    <td data-edit="false" class="actions"><a  href="#" id="log">Log</a></td>
                     <td data-edit="false" class="actions">
                         <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
                         <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
@@ -41,7 +43,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-rules", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,4]}] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-rules", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,4,5]}] });
         gemini_admin.initTableDnD("#table-admin-rules");
 
         $("#table-admin-rules_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
@@ -72,5 +74,11 @@
         $("#system-options-add").click(function () {
             gemini_popup.centerPopup("configure/RulesSLA/Rules", "Add", null, null, null, null, null, null, null, true);
         });
+
+        $("#table-admin-rules").off('click', "#log").on('click', "#log", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/RulesSLA/Rules", "Editor", { id: id, showlog: 1 }, null, "", "Close", true, false, null, true);
+       });
     });
 </script>

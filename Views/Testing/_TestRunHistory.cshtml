@@ -1,6 +1,6 @@
 ﻿@model HistoryInfo
 @*<div id="cs-sections" class='clearfix'>*@
-    
+    <div id="run-history-export" class="right cursor-pointer margin-bottom-15" style="margin-right:20px;"><a href="~/apps/sentry/runhistory/report/@Model.Plan.Id">Excel</a></div>
     @foreach (var run in Model.Runs)
     {
         @Html.Partial("~/views/testing/_RunDetail.cshtml", run)

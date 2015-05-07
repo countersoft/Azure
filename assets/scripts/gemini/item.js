@@ -403,8 +403,30 @@ gemini_item = {
         {
             gemini_ajax.call("item", "FilterNavigator?issueid=" + issueId, function (response) {
                 $('#filter-navigator-container').html(response);
+                if($('.item-title').position().left + $('.item-title').width() > $('#filter-navigator-container').position().left) {
+                    var top = $('#filter-navigator-container').height() + $('#filter-navigator-container').position().top;
+                    $('#filter-navigator-container').css('top',top + 'px');
+                }
             });
         }
+
+        $('#view-item').on('click', "#comments-content .email-header", function (e)
+        {
+            var commentId = $(this).attr('data-id');
+            if($('#comment-meta').attr('data-id') == commentId) {
+                $('#comment-meta').remove();
+                return;
+            }
+            var _this = $(this);
+            gemini_ajax.call("item","CommentMeta?issueId="+ issueId + "&commentId=" + commentId, function(response) {
+                    if(response.success) {
+                        $('#comment-meta').remove();
+                        _this.after(response.Result.Data);
+                        $('#comment-meta').css('left', _this.position().left + 'px');
+                    }
+                }
+            );
+        });
 
         gemini_item.initSLA();
     },
@@ -759,7 +781,7 @@ gemini_item = {
                                 gemini_item.replaceContent(response.Result.Data);
                                 gemini_item.attachWatchersEvents(response.Result.Data.issueId);
                             }
-                            gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes');
+                            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                         }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }
                     );
                 }
@@ -854,11 +876,12 @@ gemini_item = {
             gemini_add.hideProject = true;
             gemini_add.newItemRenderedCallback = function () {
 
-                var scroll = $(window).scrollTop();
+                var popup = $("#cs-popup-add");
+                /*var scroll = $(window).scrollTop();
                 var popup = $("#cs-popup-add");
                 if (scroll > popup.position().top) {
                     popup.css("top", scroll);
-                }
+                }*/
                 popup.find("form").append("<input type='hidden' value='" + gemini_item.issueId + "' name='ParentItem' id='ParentItem' />");
             };
             gemini_add.newItemCreatedCallback = function (id) {

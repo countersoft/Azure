@@ -2695,8 +2695,21 @@ textarea.input-size12
                 margin:0 0 0 15px;
                 text-transform:uppercase;
                 display:inline-block;
+				&:hover
+				{
+					background-color:$color-grayscale3;
+				}
             }
-                
+               
+			#comment-meta
+            {
+                background-color:$color-grayscale4;
+                border:1px solid $color-grayscale3;
+                padding: 3px 10px;
+                margin:0 0 0 15px;
+                position: absolute;
+            }
+
 		    .vote
 			{
 				//float:left;

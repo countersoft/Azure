@@ -1,0 +1,27 @@
+﻿@model EmailEnquiryData
+
+<div id="comment-meta" class="auto-popup" data-id="@Model.Body" data-hide-func="$('#comment-meta').remove();">
+    <div><span class="bold">@GetResource(ResourceKeys.From, Resourcing.Colon)</span><span>@if (Model.FromName.HasValue())
+                            {
+                                <text>@Model.FromName (@Model.FromEmail)</text>
+                            }
+                            else
+                            {
+                                <text>@Model.FromEmail</text>
+                            }
+         </span></div>
+    <div><span class="bold">@GetResource(ResourceKeys.To, Resourcing.Colon)</span><span>@if (Model.ToDisplayName.HasValue())
+                            {
+                                <text>@Model.ToDisplayName (@Model.ToEmail)</text>
+                            }
+                            else
+                            {
+                                <text>@Model.ToEmail</text>
+                            }
+         </span></div>
+    @if(Model.CcEmail.HasValue())
+    {
+    <div><span class="bold">Cc:</span>&nbsp;<span>@Model.CcEmail</span></div>
+    }
+    <div><span class="bold">@GetResource(ResourceKeys.Subject, Resourcing.Colon)</span>&nbsp;<span>@Model.SubjectLine</span></div>
+</div>

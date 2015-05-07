@@ -12,6 +12,7 @@
                 <th data-field="Description" data-required='true'>Description</th>
                 <th data-field="Time" data-required='true' data-edit-type="masktext32" class="centered">Response Time (hh:mm)</th>
                 <th data-field="Is24x7" data-edit-type="checkbox" class="centered">Applies 24x7</th>
+                <th data-field="TimeZone" data-edit-type="select" class="centered">Timezone</th>
                 <th data-field="Start" data-required='true' data-edit-type="masktext" class="centered">Day starts (hh:mm)</th>
                 <th data-field="End" data-required='true' data-edit-type="masktext" class="centered">Day ends (hh:mm)</th>
                 <th class="centered">Start</th>
@@ -30,6 +31,7 @@
                     <td>@item.Description</td>
                     <td class="centered">@item.FormattedTime</td>   
                     <td class="centered">@(item.Is24x7 ? "Yes" : "No")</td>
+                    <td class="centered">@(item.Is24x7 ? "" : item.TimeZoneData == null ? "" : item.TimeZoneData.DisplayName)</td>
                     <td class="centered">@(item.Is24x7 ? "" : item.StartOfDay)</td>
                     <td class="centered">@(item.Is24x7 ? "" : item.EndOfDay)</td>
                     <td class="centered" data-edit="false"><a class="edit-rules cursor-pointer" data-rule-id="@item.EntryRules.GetValueOrDefault()" data-rule-type="entry" title="@GetResource(ResourceKeys.Edit)" data-method="edit">@if(item.EntryRulesActions.Rules.Count == 0) { <text>Add</text> } else { <text>@item.EntryRulesActions.Rules.Count&nbsp;</text>@(item.EntryRulesActions.Rules.Count == 1 ? "rule" : "rules")}</a></td>
@@ -47,7 +49,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-slas", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,7,8,9,10,11]}] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-slas", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,8,9,10,11,12]}] });
         gemini_admin.initTableDnD("#table-admin-slas");
 
         $("#table-admin-slas_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");

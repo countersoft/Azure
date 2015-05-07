@@ -64,6 +64,10 @@
                         <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value)">@hierarchyItem.Value.IssueKey</span>
                         <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value) @ViewHelpers.ViewItem_SameIssue(hierarchyItem.Value, Model.Issue)"></span>
                     </a>
+                    @if (GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Type, hierarchyItem.Value.Project, hierarchyItem.Value))
+                    {
+                    <img src='@hierarchyItem.Value.TypeImage' title='@hierarchyItem.Value.Type'/>
+                    }
                     @hierarchyItem.Value.Title.ToMaxMore(80)
                     @if (GeminiContext.PermissionsManager.CanSeeAttribute(ItemAction.View, ItemAttributeVisibility.Status, hierarchyItem.Value.Project, hierarchyItem.Value))
                     { <span class="status">(@hierarchyItem.Value.Status)</span> }

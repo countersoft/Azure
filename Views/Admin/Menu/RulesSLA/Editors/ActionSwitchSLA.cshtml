@@ -1,0 +1,9 @@
+﻿@model SelectList
+@{
+    List<Pair<string, string>> data = new List<Pair<string, string>>();
+    data.Add(new Pair<string,string>("0", "kept as is"));
+    data.Add(new Pair<string,string>("1", "restarted"));
+    var listData = new SelectList(data, "Key", "Value");
+}
+@Html.DropDownList("parameter-values", Model, new { @class = "input-size5" })&nbsp;&nbsp;and clock will be&nbsp;
+@Html.DropDownList("switchsla-clock", listData, new { @class = "input-size3" })

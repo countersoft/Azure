@@ -133,6 +133,8 @@
     navigateTabs: function (e) {
         var selector;
 
+        // Don't switch tabs if we are in an input.
+        if((e.srcElement && ($(e.srcElement).is('input') || $(e.srcElement).is('textarea'))) || (e.target && ($(e.target).is('input') || $(e.target).is('textarea')))) return;
         if (e.keyCode == 37) {
             // left
             selector = $('.tab.selected', '#view-item-content-pane').prev().prev();
