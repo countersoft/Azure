@@ -395,6 +395,7 @@
   <item id="CreateWorkspace">Ново работно място </item>
   <item id="LockSync">Заключи и синхронизирай промени</item>
   <item id="EnableTeamChat">Позволи екипния чат</item>
+  <item id="EnableOthersToSequence">Allow members to sequence items</item>
   <item id="HighlightChanges">Подчертай промените</item>
   <item id="ShowBadgeCounts">Покажи брояч на партиди</item>
   <item id="SelectCharts">Избери графиките и числата, които да се покажат</item>
@@ -514,4 +515,5 @@
   <item id="SeparateAlertFollowed">Получаване на отделни е-писма за всеки следван продукт</item>
 
   <item id="Organization">Организация</item>
+  <item id="EmailReply">Email Reply</item>
 </Resource>

@@ -919,10 +919,14 @@ gemini_edit = {
         if (selectedval.length > 0)
             selectedval = selectedval.slice(0, -1); //remove trailing |
 
+        var pid = null;
+        if($('#cs-popup #ProjectName').length) {
+            pid= $('#cs-popup #ProjectName').val();
+        }
         gemini_ajax.postCall("", "cascade", gemini_edit.cascadeUpdate, null,
             {
                 fieldid: id, value: selectedval,
-                projectid: null,
+                projectid: pid,
                 issueid: $("#Id", "#cs-popup").val()
             });
     },

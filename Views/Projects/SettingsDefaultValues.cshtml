@@ -63,6 +63,67 @@
     gemini_ui.htmlEditor('#defaults-form .wysiwyg-editor');
     $("#defaults-form input[type='text']:first").focus();
 
+     $('#setting-zone').find('*[data-customfield-trigger]').change(function (index) {
+            defaultsTriggerCustomfieldChange(this);
+        });
+
+    $('#setting-zone').find('*[data-customfield-trigger]').each(function (index) {
+        if ($(this).data("customfield-trigger") == "P") {
+            defaultsTriggerCustomfieldChange(this);
+        }
+    });
+
+    function defaultsTriggerCustomfieldChange(elem) {
+
+        var trigger = $(elem).data('customfield-trigger');
+
+        if (trigger == '') return;
+
+        var id = $(elem).attr("id").replace("cf_", "");
+
+        var selectedval = "";
+        $(elem).find("option:selected").each(function (index) {
+            selectedval += $(this).val() + "|";
+        });
+        if (selectedval.length > 0)
+            selectedval = selectedval.slice(0, -1); //remove trailing |
+
+        gemini_ajax.postCall("", "cascade", defaultsCascadeUpdate, null,
+            {
+                fieldid: id, value: selectedval,
+                projectid: null,
+                issueid: 0
+            });
+    }
+     function defaultsCascadeUpdate(response) {
+        var data = response.Result.Data;
+
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+            //get preselected list
+
+            var presel = "";
+            $("#" + item.Key, "#setting-zone").find("option:selected").each(function () {
+                presel += "|" + $(this).val() + "|";
+            });
+
+            $("#" + item.Key, "#setting-zone").empty();
+            for (var j = 0; j < item.Value.length; j++) {
+                var selected = "";
+                if (item.Value[j].Selected || presel.indexOf("|" + item.Value[j].Value + "|") >= 0) {
+                    selected = " selected='selected' ";
+                }
+                $("#" + item.Key, "#setting-zone").append("<option " + selected + "value='" + item.Value[j].Value + "'>" + item.Value[j].Text + "</option>");
+            }
+            if (item.Value.length == 0) {
+                $("#" + item.Key, "#setting-zone").append("<option  value='0'>-- none --</option>");
+            }
+
+            gemini_ui.chosenUpdate($("#" + item.Key, "#setting-zone"));
+            //call update on this.
+            $("#" + item.Key, "#setting-zone").change();
+        }
+    }
     
 </script>
 

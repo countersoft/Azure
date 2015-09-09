@@ -2627,3 +2627,9 @@ div.DTCR_pointer {
 	background-color: $color-black;
 	z-index: 201;
 }
+/* TinyMCE */
+.mce-container.mce-fullscreen 
+{
+	width:90% !important;
+	margin:40px 0 0 49px !important;
+}

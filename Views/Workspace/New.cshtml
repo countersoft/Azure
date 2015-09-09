@@ -38,7 +38,7 @@
 
                     <div class="margin-top-20 margin-bottom-10">@GetResource(ResourceKeys.ChooseYourTerminology):</div>
                     <div class="margin-top-10 margin-left-20">
-                        @Html.DropDownList("Taxonomy", Model.Taxonomy, new { @class = "input-size9" })
+                        @Html.DropDownList("Taxonomy", Model.Taxonomies, new { @class = "input-size9" })
                     </div>
                     @if(!GeminiContext.PermissionsManager.IsHelpdeskUser())
                     {

@@ -28,7 +28,8 @@
             </tr>
         @foreach (var watcher in Model.Issue.Watchers)
         {
-            <tr data-id="@watcher.Entity.UserId">
+            var trData = watcher.Entity.UserId != null ? string.Concat("data-id=\"", watcher.Entity.UserId.Value,'"') : string.Concat("data-id=\"", watcher.Entity.Id, "\" data-email=\"", watcher.Entity.Email, '"');
+            <tr @Html.Raw(trData)>
                 <td>@watcher.Fullname</td>
                 <td>@watcher.Username</td>
                 <td>@watcher.Email</td>

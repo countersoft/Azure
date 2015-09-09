@@ -367,7 +367,7 @@ gemini_ui = {
         }
         return false;
     },
-    htmlEditor: function (selector, onInit, onChange, autoFocus, height, width) {
+    htmlEditor: function (selector, onInit, onChange, autoFocus, height, width, plugin) {
         if (!height)
         {
             height = 300;
@@ -376,6 +376,15 @@ gemini_ui = {
         {
             width = 571;
         }
+        var toobarPlugin = '';
+        if(plugin == null || plugin == undefined) {
+            plugin ='';
+        }
+        else {
+            plugin = ' ' + plugin;
+            toobarPlugin = ' | ' + plugin
+        }
+               
         tinymce.init({
             selector: selector,
             relative_urls: false,
@@ -394,7 +403,7 @@ gemini_ui = {
                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                "searchreplace visualblocks visualchars code fullscreen",
                "insertdatetime media nonbreaking save table directionality",
-               "emoticons template paste textcolor"
+               "emoticons template paste textcolor" + plugin
             ],
             content_css: csVars.AssetsPath + "scripts/tiny_mce/skins/lightgray/content.min.css",
             content_style: '',
@@ -410,7 +419,7 @@ gemini_ui = {
             
             toolbar_items_size: 'small',
             toolbar1: "formatselect fontselect fontsizeselect | link unlink anchor table image media | charmap emoticons",
-            toolbar2: "bold italic underline strikethrough subscript superscript | outdent indent alignleft aligncenter alignright alignjustify | bullist numlist | blockquote | forecolor backcolor",
+            toolbar2: "bold italic underline strikethrough subscript superscript | outdent indent alignleft aligncenter alignright alignjustify | bullist numlist | blockquote | forecolor backcolor" + toobarPlugin,
             setup: function (editor) {
                 if (autoFocus) {
                     editor.on('init', function (e) {

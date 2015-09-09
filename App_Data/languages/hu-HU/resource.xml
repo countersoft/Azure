@@ -395,6 +395,7 @@
   <item id="CreateWorkspace">Új munkaterület</item>
   <item id="LockSync">Változások zárolása és szinkronizációja</item>
   <item id="EnableTeamChat">Csapat chat engedélyezése</item>
+  <item id="EnableOthersToSequence">Allow members to sequence items</item>
   <item id="HighlightChanges">Változások kiemelése</item>
   <item id="ShowBadgeCounts">Jelvények darabszámának megmutatása</item>
   <item id="SelectCharts">Válaszd ki a diagramokat és számokat, amiket meg szeretnél jeleníteni</item>
@@ -514,4 +515,5 @@
   <item id="SeparateAlertFollowed">Minden követett elem változásáról egyedi emailt kérek</item>
 
  <item id="Organization">Szervezet</item>
+  <item id="EmailReply">Email Reply</item>
 </Resource>

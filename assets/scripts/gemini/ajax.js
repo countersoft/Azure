@@ -68,7 +68,7 @@ gemini_ajax =
                 error: function (xhr, ajaxOptions, thrownError) {
                     gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
                     if (badCall != null && badCall != undefined && typeof badCall == 'function') {
-                        badCall.call(this);
+                        badCall.call(this, xhr, ajaxOptions, thrownError);
                     }
                     ajaxXHR = null;
                 }
@@ -107,7 +107,7 @@ gemini_ajax =
                     gemini_ui.cursorDefault();
                     gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
                     if (badCall != null && badCall != undefined && typeof badCall == 'function') {
-                        badCall.call(this);
+                        badCall.call(this, xhr, ajaxOptions, thrownError);
                     }
                     ajaxXHR = null;
                 }
@@ -142,7 +142,7 @@ gemini_ajax =
                 error: function (xhr, ajaxOptions, thrownError) {
                     gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
                     if (badCall != null && badCall != undefined && typeof badCall == 'function') {
-                        badCall.call(this);
+                        badCall.call(this, xhr, ajaxOptions, thrownError);
                     }
                     ajaxXHR = null;
                 }

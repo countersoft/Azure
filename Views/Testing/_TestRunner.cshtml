@@ -32,6 +32,11 @@
                 </td>
             </tr>
 
+            <tr class="additional-case-data">
+                    <td>@GetResource(ResourceKeys.CaseId)</td>
+                    <td>@currentCase.Item.IssueKey</td>
+            </tr>
+
             @if(currentCase.Item.CustomFields.Any(t => string.Compare(t.Name, "Test Type", StringComparison.InvariantCultureIgnoreCase) == 0))
             {
                 var testType = currentCase.Item.CustomFields.Find(t => string.Compare(t.Name, "Test Type", StringComparison.InvariantCultureIgnoreCase) == 0);

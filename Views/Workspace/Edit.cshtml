@@ -98,6 +98,10 @@
                                                                                            {<text>disabled="disabled"</text> }  @if (Model.EnableChat)
                                                                                                                                                  {<text>checked="checked"</text>} /><label for="share-chat">@GetResource(ResourceKeys.EnableTeamChat)</label>
                     </div>
+                    <div class="margin-bottom-10">
+                    <input type="checkbox" id="share-sequence" class="fancy" name="share-sequence" @if (Model.EnableOthersToSequence) 
+                                                                                                   {<text>checked="checked"</text>} /><label for="share-sequence">@GetResource(ResourceKeys.EnableOthersToSequence)</label>
+                    </div>
                     <h2>@GetResource(ResourceKeys.Users)</h2>
                     @Html.ListBox("InteractionUserList", Model.InteractionUsers, new { @class = selectClasses })
                     <br />
@@ -131,7 +135,7 @@
                         </table>
                         <br />
 
-                        <div class="margin-left-30">
+                        <div id="ws-buttons" class="margin-left-30">
                             <input type="button" class="btn button-secondary-disabled button-small" name="clear-items" id="clear-items" value="@GetResource(ResourceKeys.Clear)" />&nbsp;&nbsp;
 
                             <input type="button" class="btn button-secondary-disabled button-small" name="send-items" id="send-items" value="@GetResource(ResourceKeys.Email)" />&nbsp;&nbsp;

@@ -336,6 +336,10 @@ planner =
         if (markup == 'error') {
             planner.updateError();
         }
+        else if(markup.indexOf('ERROR-PLANNER: ') != -1) {
+            gemini_popup.toast(markup.replace('ERROR-PLANNER: ',''), true);
+            planner.updateError();
+        }
         else {
 
             var values = markup.split('\t');

@@ -96,6 +96,9 @@ gemini_filter = {
             $('.instant-filter-caption', parent.parent()).html(next.html());
         }
     },
+    populateCaptionFromFollowersText: function(parent, emails) {
+        $('.instant-filter-caption', parent.parent()).html(emails);
+    },
     populateCaptionFromChecks: function (parent) {
         var data = '';
         var checked = parent.find('input[type="checkbox"]:checked');
@@ -280,6 +283,17 @@ gemini_filter = {
             }
         });
 
+        // Email Followers Text search
+        $('#filter-form').on('keydown', '#instant-filter-AssociatedWatchers #AssociatedWatchers-email', function (e) {
+            var code = e.keyCode || e.which;
+            if (code == $.ui.keyCode.ENTER) {
+                e.preventDefault();
+                gemini_filter.populateCaptionFromFollowersText($(this).parent(), $(this).val());
+                gemini_filter.executeFilter();
+                return false;
+            }
+        });
+
         $('#filter-form').on('keyup', '.instant-filter-box .instant-filter-dropdown[data-field-type="text"] input[type="text"]', function (e) {
 
             var _this = $(this);
@@ -324,6 +338,14 @@ gemini_filter = {
                 }
                 gemini_filter.executeFilter();
             }
+            gemini_filter.populateCaptionFromText(_this.parent());
+        });
+
+        $('#filter-form').on('keyup', '#instant-filter-AssociatedWatchers #AssociatedWatchers-email', function (e) {
+
+            var _this = $(this);
+            var val = _this.val();
+            gemini_filter.needFiltering = true;
             gemini_filter.populateCaptionFromText(_this.parent());
         });
 
@@ -866,6 +888,9 @@ gemini_filter = {
                                                     gemini_filter.currentExecuteRequest = null;
                                                     $('#contents').toggleClass('cursor-busy');
                                                     $('#items-grid').css('opacity', '1');
+                                                    if(xhr.status == 500) {
+                                                        gemini_popup.toast('There was an error executing your filter', true);
+                                                    }
                                                 }, data);
        
     },

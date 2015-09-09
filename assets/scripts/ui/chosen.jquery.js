@@ -656,7 +656,12 @@
             //SAAR
             var dd_top = this.container.height();
             var dd_width = $(this.form_field).outerWidth() /*- get_side_border_padding(this.dropdown)*/;
-            
+            if(dd_width== 0) {
+                dd_width = this.dropdown.width(); 
+            }
+            if(dd_width== 0) {
+                dd_width=250;
+            }
             this.dropdown.css({
                 "width": dd_width + "px",
                 "top": dd_top + "px"

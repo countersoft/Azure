@@ -395,6 +395,7 @@
   <item id="CreateWorkspace">Spatiu de Lucru Nou</item>
   <item id="LockSync">Lock and sync changes</item>
   <item id="EnableTeamChat">Activeaza Chat Echipa</item>
+  <item id="EnableOthersToSequence">Allow members to sequence items</item>
   <item id="HighlightChanges">Subliniaza Schimbari</item>
   <item id="ShowBadgeCounts">Afiseaza Numaratori Badge</item>
   <item id="SelectCharts">Selecteaza graficele si numerele pe care doresti sa le afisezi</item>
@@ -514,4 +515,5 @@
   <item id="SeparateAlertFollowed">Primeste alerte email separate pentru fiecare articol urmarit</item>
 
  <item id="Organization">Organizatie</item>
+  <item id="EmailReply">Email Reply</item>
 </Resource>
