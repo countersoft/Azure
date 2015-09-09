@@ -1,0 +1,66 @@
+﻿@model BreezeCannedResponsesEditModel
+<div id="BreezeCannedResponseItemContainer" style="width:800px;height:470px;">
+    <form id="regular-form">
+    <input type="hidden" value="@Model.Responses.Id" name="Id" id="Id" />
+    <table id="table-admin-breezematchexpression" class="admin-data-entry">
+        <tbody>
+            <tr>
+                <td class="field-name">Name
+                </td>
+                <td>
+                    <input type="text" id="Name" name="Name" 
+                               class="input-field required input-size9" value="@Model.Responses.Name"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top">Associated Projects
+                </td>
+                <td>
+                    <p class="pad-bottom-10">(leave empty to associate this response with all projects)</p>
+                    @Html.ListBox("Project", Model.Projects, new { @class = "input-size9" })
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name" valign="top">Response
+                </td>
+                <td>
+                    <textarea id="Response" name="Response" class="required">@Model.Responses.Response</textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#popup-button-yes").click(function (e) {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy('#colorbox #popup-button-yes');
+                gemini_ajax.postCall("configure/Breeze/CannedResponse", "SaveData", function (responseId) {
+                    gemini_popup.toast("Saved");
+                    $.publish('canned-response-added', [responseId]);
+                    gemini_ui.destroyHtmlEditor('#BreezeCannedResponseItemContainer #Response');
+                    gemini_popup.popupClose(e);
+                    @if(!Model.NoAdmin)
+                    {
+                        <text>gemini_admin.getPage();</text>
+                    }
+                    gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
+            }
+            else {
+                $('.error:not(label)', '#cs-popup-content').first().focus();
+            }
+        });
+
+        $("#popup-button-no").click(function (e) { 
+            gemini_ui.destroyHtmlEditor('#BreezeCannedResponseItemContainer #Response');
+            gemini_popup.popupClose(e); 
+        });
+        gemini_ui.chosen("#Project", null, true);
+        setTimeout( function() {
+            gemini_ui.htmlEditor('#BreezeCannedResponseItemContainer #Response');
+        }, 100);
+    });
+</script>
