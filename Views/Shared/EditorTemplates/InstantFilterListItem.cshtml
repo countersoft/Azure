@@ -1,6 +1,7 @@
 ﻿@model InstantItemFilterPicklist
 <div id="instant-filter-@(Model.Name)" data-field-name="@Model.Name" data-field-desc="@Model.Caption" class="instant-filter-box @if(Model.AllowRemove){<text>dynamic</text>} left"><div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Caption)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>@if(Model.AllowRemove){<span class="fonticon-cross"></span>}
 <div class="instant-filter-dropdown auto-popup hide" data-field-type="select">
+@if(Model.AllowNotFilter){<div><input type="checkbox" id="not_@Model.Name" name="not_@Model.Name" class="notfilter fancy" @if(Model.NotFilter){<text>checked="checked"</text>} data-text="@GetResource(ResourceKeys.NotFilter)" /><label for="not_@Model.Name">@GetResource(ResourceKeys.NotFilter)</label></div>}
 <select id="@Model.Name" name="@Model.Name" class="no-chosen @if(Model.AutoComplete) { <text>auto-complete-chosen</text> }" @if(Model.Multiple){ <text>multiple="multiple"</text> }>
     @{
         bool wasOptGroup = false;

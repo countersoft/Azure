@@ -1,0 +1,45 @@
+﻿@model PeopleReportsEditorModel
+
+<div id="edit-permission" style="height: 600px; min-width: 800px;">
+    <div id="edit-permissions-container">
+        <form id="add-permission-form" name="add-permission-form">
+             @Html.Hidden("PermissionId", Model.Permission.Id)
+            @Html.Hidden("name", Model.Permission.Name)
+            @Html.Hidden("filename", Model.Permission.Filename)
+            <table id="table-edit-permission" class="admin-data-entry" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td valign="top" class="field-name bold">Name</td>
+                    <td>@Model.Permission.Name</td>
+                </tr>
+                <tr>
+                    <td valign="top" class="field-name bold">Groups</td>
+                    <td>@Html.ListBox("AssignedGroups", Model.ProjectGroups, new { @class = "input-size9" })</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $("#add-permission-form").validate();
+    gemini_ui.chosen("select", null, true);
+
+    $("#edit-permissions-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+    $("#popup-button-yes").click(function (e) {
+
+        if ($("#add-permission-form").valid())
+        {
+            gemini_ui.startBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/People/Reports", "SaveData", function () {
+                gemini_popup.popupClose(e);
+                gemini_admin.getPage();
+                gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#add-permission-form").serialize(), null, true);
+        }
+    });
+
+    $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+</script>

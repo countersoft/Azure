@@ -76,7 +76,7 @@
   <item id="ShowSLA">SLA-Bereich zeigen</item>
   <item id="FilterNoType">Alle Items</item>
   <item id="FilterIncludeClosed">Geschlossene Items einbeziehen</item>
-  <item id="FilterOpenIssues">Öffnen</item>
+  <item id="FilterOpenIssues">Offen</item>
   <item id="FilterClosedIssues">Geschlossen</item>
   <item id="FilterLateIssues">Spät</item>
   <item id="FilterRecentlyCreatedIssues">Neulich erstellt</item>
@@ -516,4 +516,6 @@
 
   <item id="Organization">Organisation</item>
   <item id="EmailReply">Email Reply</item>
+
+  <item id="NotFilter">Nicht</item>
 </Resource>

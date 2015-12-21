@@ -100,6 +100,8 @@ gemini_item = {
             gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').parent().parent().attr('title'));
         }
 
+        gemini_item.attachmentPreview();
+
         // This is only used for the drag and drop area as we apply above fileuploader to + sign the drag area can't expand to full screen because of + parent's div size
         var uploadArea = $('#phantom-fileuploader')[0];
         if (uploadArea != undefined && uploadArea != null) {
@@ -682,6 +684,7 @@ gemini_item = {
 
                 $(".action-add", '#item-attachments').replaceWith($(".action-add", $(attachments)));
                 $("#phantom-fileuploader", '#item-attachments').replaceWith($("#phantom-fileuploader", $(attachments)));
+                gemini_item.attachmentPreview();
             }
             else if (this.Key == "AssociatedHistory") {
                 gemini_item.replaceContentContainer('history', this.Value);
@@ -1269,6 +1272,43 @@ gemini_item = {
             }
         }
     },
+
+    attachmentPreview: function()
+    {
+        $("#item-attachments .image-preview").hoverIntent({
+            interval: 250,
+            over: function () {
+                var width = $(this).width();
+                var visible = $('#attachment-preview', $(this)).is(':visible');
+                $('#attachment-preview img').attr('src','');
+                $('#attachment-preview img').attr('src',$('a', this).first().attr('href'));
+                $('#attachment-preview').show();
+                $('#attachment-preview').position({
+                    "my": "left top",
+                    "at": "left bottom",
+                    "of": $(this),
+                    "offset": "0 0",
+                    "collision": "none"
+                });
+            },
+            out: function (e) {
+                var id = $(e.relatedTarget).attr('id');
+                if(id=='attachment-preview-img' || id=='attachment-preview') return;
+                $('#attachment-preview').hide();
+            }
+        });
+
+        $("#item-attachments #attachment-preview").hoverIntent({
+            interval: 0,
+            over: function () {
+                var x = 0;
+            },
+            out: function (e) {
+                $('#attachment-preview').hide();
+            }
+        });
+    },
+
     slaInterval: null,
     initSLA: function ()
     {

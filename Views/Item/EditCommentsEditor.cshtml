@@ -28,7 +28,8 @@
                     <input type="button" value="@GetResourceTemplate(ResourceKeys.Cancel)" class="button-secondary button-popup cs-comment-add-close right">
                     <input type="submit" value="@GetResourceTemplate(ResourceKeys.Add)" class="button-primary button-popup cs-comment-add-save right">                                
             </div>
-        </div>  
+        </div>
+        <input type="hidden" name="items" id="items" />
     </form>
 </div>
 
@@ -36,6 +37,16 @@
     
     $(document).ready(function () {
         if ($("#cs-popup-center .comments-wysiwyg-container").attr("data-controller") == "items") {
+
+            if ($('.checked-items:checked', $('#items-grid')).length > 0) {
+                var checked_items = new Array();
+                var index = 0;
+                $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
+                    checked_items[index++] = $(value).val();
+                });
+                $('#items','.comments-form').val(checked_items);
+            }
+
             setTimeout(function () {
                 gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "",true);
             }, 25);
@@ -80,14 +91,18 @@
                         var issueId = $("#cs-popup-center-content .comments-wysiwyg-container").attr('data-id');
                         $("#cs-popup-center-content .comments-wysiwyg-container").remove();
                         
-                        var url = csVars.ProjectUrl + 'items/' + issueId + '/refreshrow';
-                        var pageType = '@((int)Model.PageType)';
-                        gemini_ajax.call('items', 'refreshrow?issueid=' + issueId + '&viewtype=' + pageType, function (response) {
-                            if (response.success) {
-                                gemini_items.refreshRow(response, issueId, true);
-                                $('#tr-issue-' + issueId, '#data').addClass('view-issue-highlight');                               
-                            }
-                        });
+                        if ($('.checked-items:checked', $('#items-grid')).length > 0) {
+                            gemini_filter.getFilteredItemsCurrentPage();
+                        }
+                        else {
+                            var pageType = '@((int)Model.PageType)';
+                            gemini_ajax.call('items', 'refreshrow?issueid=' + issueId + '&viewtype=' + pageType, function (response) {
+                                if (response.success) {
+                                    gemini_items.refreshRow(response, issueId, true);
+                                    $('#tr-issue-' + issueId, '#data').addClass('view-issue-highlight');                               
+                                }
+                            });
+                        }
                     }
                     else 
                     {

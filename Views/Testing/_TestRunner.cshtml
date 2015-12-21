@@ -109,7 +109,7 @@
                 <td class="no-wrap">
                     @GetResource(ResourceKeys.ExpectedResults)
                 </td>
-                <td>@Html.Raw(x.ExpectedResults)</td>
+                <td id="expected-@(x.StepId)">@Html.Raw(x.ExpectedResults)</td>
             </tr>
             <tr>
                 <td class="no-wrap">

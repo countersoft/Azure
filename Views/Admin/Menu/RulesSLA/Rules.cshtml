@@ -10,6 +10,7 @@
                 <th></th>
                 <th data-field="Name" data-required='true'>Name</th>           
                 <th data-field="Description" data-required='true'>Description</th>                     
+                <th data-field="Enabled" data-edit-type="checkbox">Enabled</th>                     
                 <th>Rules</th>
                 <th></th>
                 <th></th>            
@@ -22,6 +23,7 @@
                     <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
                     <td>@item.Name</td>
                     <td>@item.Description</td>
+                    <td>@(item.Enabled ? "Yes":"No")</td>
                     <td data-edit="false">@if (item.Rules.Count == 0 && item.Actions.Count == 0)
                     { <a class="rule-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit">Add</a>  } 
                     else
@@ -43,7 +45,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        gemini_admin.initDatatablesWithEdit("#table-admin-rules", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,4,5]}] });
+        gemini_admin.initDatatablesWithEdit("#table-admin-rules", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0,5,6]}] });
         gemini_admin.initTableDnD("#table-admin-rules");
 
         $("#table-admin-rules_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");

@@ -516,4 +516,6 @@
 
  <item id="Organization">Szervezet</item>
   <item id="EmailReply">Email Reply</item>
+
+  <item id="NotFilter">Not</item>
 </Resource>

@@ -448,7 +448,18 @@ gemini_items = {
              
                     }
                     else if (action == "follow") {
-                        gemini_ajax.call("item", "addwatcher/" + issueId + "/0");
+                        if ($('.checked-items:checked', $('#items-grid')).length > 0) {
+                            var checked_items = new Array();
+                            var index = 0;
+                            $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
+                                checked_items[index++] = $(value).val();
+                            });
+                            gemini_ajax.postCall("item", "addwatchers", function(response) { gemini_popup.toast(response.Result.Data); }, null, { items: checked_items });
+                           
+                        }
+                        else {
+                            gemini_ajax.call("item", "addwatcher/" + issueId + "/0");
+                        }
                     }
                     else if (action == "time" && !$('#item-grid-context-menu a[href="#time"]').parent().hasClass('disabled')) {
                         $("#cs-popup-center-content").css("width", "500px");

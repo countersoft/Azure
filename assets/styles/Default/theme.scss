@@ -3262,6 +3262,15 @@ textarea.input-size12
 
 /****** View Item Popups **********/
 
+#attachment-preview
+{
+	position:absolute;
+	z-index:999;
+	border:3px solid #c4c4c4;
+	@include rounded(3px);
+	margin: 5px;
+}
+
 /** Context menu for description tinymc*/
 div.mceDropDown
 {

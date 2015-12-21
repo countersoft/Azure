@@ -515,4 +515,6 @@
 
   <item id="Organization">Organization</item>
   <item id="EmailReply">Email Reply</item>
+
+  <item id="NotFilter">Not</item>
 </Resource>

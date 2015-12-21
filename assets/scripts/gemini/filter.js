@@ -59,14 +59,29 @@ gemini_filter = {
             }
         });
     },
+    populateNotCaption: function(parent, checked) {
+        var data = $('.instant-filter-caption', parent).html();
+        var notText = $('#not_ProjectCode').attr('data-text') + ' ';
+        if(checked) {
+            $('.instant-filter-caption', parent).html(notText + data);
+        } else {
+            $('.instant-filter-caption', parent).html(data.substring(notText.length));
+        }
+    },
     populateCaptionFromSelect: function(parent) {
         var data = '';
+        var notText = $('#not_ProjectCode').attr('data-text') + ' ';
         $('option:selected', parent).each(function () {
             data += $(this).text() + ', ';
         });
         data = data.replace(new RegExp(String.fromCharCode(160), 'g'), '');
         data = data.replace(new RegExp(', $', 'g'), '');
-        $('.instant-filter-caption', parent).html(data);
+        if($('.notfilter',parent).is(':checked')) {
+            $('.instant-filter-caption', parent).html(notText + data);
+        }
+        else {
+            $('.instant-filter-caption', parent).html(data);
+        }
     },
     populateCaptionFromCustom: function (parent) {
         var data = '';
@@ -270,6 +285,28 @@ gemini_filter = {
             gemini_filter.populateCaptionFromChecks(_this.parent().parent());
             gemini_filter.executeFilter();
             gemini_filter.suspendICheck = false;
+        });
+
+        // NOT filter
+        $('#filter-form').on('ifChanged', '.instant-filter-box .notfilter', function (e) {
+            gemini_filter.populateNotCaption($(this).parent().parent().parent().parent(), $(this).is(':checked'));
+            if($(this).attr('id') == 'not_ProjectCode') {
+                gemini_ajax.postCall('items', 'filteredprojectchanged', function (response) {
+                    $('.dynamic', '#filter-form').remove();
+                    $('#instant-filter-fields').before(response.Result.Html);
+                    gemini_filter.filterTooltip();
+                    gemini_ui.datePicker('#filter-form .datepicker', gemini_filter.dateChanged);
+                    gemini_ui.fancyInputs('#filter-form .fancy');
+                    gemini_filter.fields = [];
+                    $(response.Result.Fields).each(function () {
+                        gemini_filter.fields.push({ value: this.Key, label: this.Value });
+                    });
+                    gemini_filter.executeFilter();
+                }, null, { filter: $('#filter-form').serialize() });
+            }
+            else {
+                gemini_filter.executeFilter();
+            }
         });
                 
         // Text search
@@ -489,8 +526,11 @@ gemini_filter = {
         if (gemini_appnav.pageCard.Id == 0 || gemini_appnav.pageCard.Locked)
         {
             if (gemini_appnav.pageCard.Id == 0) $('#filter-form #ShowSequenced').iCheck('uncheck');
-            $('#filter-form #ShowSequenced').attr('disabled', 'disabled');
-            $('#filter-form .instant-filter-dropdown label[for="ShowSequenced"]').addClass('color-grayscale2');
+            if($('#filter-form #ShowSequenced:checked').length == 0) {
+                // Only disable if we are not showing the sequence zone
+                $('#filter-form #ShowSequenced').attr('disabled', 'disabled');
+                $('#filter-form .instant-filter-dropdown label[for="ShowSequenced"]').addClass('color-grayscale2');
+            }
         }
 
         if (gemini_appnav.pageCard.Filter && gemini_appnav.pageCard.Filter.ShowSLA)

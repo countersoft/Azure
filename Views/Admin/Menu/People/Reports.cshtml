@@ -1,0 +1,63 @@
+﻿@model PeopleReportsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;For each report specify which <strong>Groups</strong> can view it.</p>
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-permissionset" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Name" data-required='true'>Name
+
+                </th>
+                <th data-field="Description">Filename</th>   
+                <th data-field="Projects">Groups</th>   
+                <th></th>             
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (var item in Model.Permissions)
+            {
+                <tr data-id="@item.Id" data-name="@item.Filename" data-friendlyname="@item.Name">
+                    <td>@item.Name</td>
+                    <td>@item.Filename</td>
+                    <td data-edit="false">@item.GroupNames</td>
+                    <td data-edit="false" class="actions">
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatables("#table-admin-permissionset", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [3] }] });
+
+        $("#table-admin-permissionset").off('click', "span[data-method='delete']").on('click',"span[data-method='delete']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            var name = item.closest("tr").data("name");
+            var friendlyNanme = item.closest("tr").data("friendlyname");
+
+            gemini_popup.modalConfirm("Delete " + friendlyNanme + "?", null, function () {
+                gemini_ui.startBusy('#colorbox2 #modal-confirm #modal-button-yes');
+                gemini_ajax.call("configure/People/Reports", "Delete", function (delResponse) {
+                    if (delResponse.Success) {
+                        gemini_admin.removeRow(item);
+                        gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                    }
+                }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id, name: name }, null, true);
+            });
+        });
+        
+        $("#table-admin-permissionset").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            var name = item.closest("tr").data("name");
+            var friendlyNanme = item.closest("tr").data("friendlyname");
+            gemini_popup.centerPopup("configure/People/Reports", "Editor", { id: id, name: name, friendlyNanme: friendlyNanme}, null, null, null, null, null, null, true);
+        });
+    });
+</script>

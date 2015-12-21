@@ -32,7 +32,7 @@
                             </td>
                             <td class="data">@attachment.Entity.Created.ToShortDateString()</td>
                             <td class="data">@attachment.Entity.Size</td>
-                            <td>
+                            <td class="@(attachment.IsImage ? "image-preview":"")">
                                 <a href='@(GeminiContext.Url)project/@Model.Issue.Project.Id/item/attachment?issueid=@(Model.Issue.Entity.Id)&fileid=@(attachment.Entity.Id)'>@attachment.Entity.ShortFileName</a>
                                 @if (canDelete)
                                 {<span class="thumbnail-close-image" data-id="@attachment.Entity.Id" title="@GetResource(ResourceKeys.Delete) @GetResource(ResourceKeys.Attachments)"><a href="#"><span class="fonticon-cross middle"></span></a></span>}
@@ -42,5 +42,6 @@
             </tbody>
         </table>
     }
+    <div class="hide" id="attachment-preview"><img id="attachment-preview-img" /></div>
     <div class="clearfix @if(Model.Issue.Attachments.Count == 0){<text>margin-bottom-60</text>}"></div>
 </div>
