@@ -32,7 +32,7 @@
           if (this.timer) {
             clearTimeout(this.timer);
           }
-          if ((val.length < options.minTermLength || val.length > options.minTermLength) && !select.next('.chosen-container').find('.no-results').is(':visible')) {
+          if ((val.length < options.minTermLength || val.length > options.minTermLength) && /*!select.next('.chosen-container').find('.no-results').is(':visible') &&*/ select.next('.chosen-container').find('li.active-result').length != 0) {
             return false;
           }
           msg = val.length < options.minTermLength ? options.keepTypingMsg : options.lookingForMsg + (" '" + val + "'");
@@ -114,14 +114,18 @@
                 }
               }
             });
-
+              
             $(selected_data).each(function () {
-                $(this).remove();
-                $(this).appendTo(select);
+                if($(this)[0].value != 0 )  {
+                    $(this).remove();
+                    $(this).appendTo(select);
+                }
             });
-
+              
             if (nbItems || update) {
                 gemini_ui.chosenUpdate(select);
+                select.data().chosen.search_field.val(untrimmed_val);
+                select.data().chosen.search_field_scale();
             } else {
               select.data().chosen.no_results_clear();
               select.data().chosen.no_results(field.val());

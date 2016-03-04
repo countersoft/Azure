@@ -44,6 +44,7 @@
                         @if(!systemUsers.Contains(item.Id))
                         {
                             <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                            <span class="fonticon-persons action-button-base cursor-pointer" style="color:black;" title="Merge" data-method="merge"></span>
                             <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>        
                         }
                     </td>
@@ -62,6 +63,14 @@
             var item = $(this);
             var id = item.closest("tr").data("id");
             gemini_popup.centerPopup("configure/People/Users", "Editor", { id: id }, null, null, null, null, null, null, true);
+            
+        });
+
+        $("#table-admin-users").on('click', ".actions span[data-method='merge']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/People/Users", "Editor", { id: id, mode: 'merge' }, null, null, null, null, null, null, true);
             
         });
 

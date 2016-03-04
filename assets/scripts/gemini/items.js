@@ -466,6 +466,18 @@ gemini_items = {
                         $("#cs-popup-center-content").css("height", "350px");
                         gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + issueId, { timeid: 0 });
                     }
+                    else if (action == "sequencemenu" && !$('#item-grid-context-menu a[href="#sequencemenu"]').parent().hasClass('disabled')) {
+                        gemini_ajax.postCall("items", "resequence", function ()
+                        {
+                            gemini_filter.getFilteredItemsCurrentPage();                    
+                        },
+                        function (xhr, ajaxOptions, thrownError) {
+                        gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
+                        },
+                        {
+                            issueId: issueId, afterIssueId: 0, newIndex: -2,  oldIndex: 0
+                        });
+                    }
                     else if (action == "delete" && !$('#item-grid-context-menu a[href="#delete"]').parent().hasClass('disabled')) {
                         gemini_popup.modalConfirm("Delete Item "+ projectCode + "-" + issueId + "?", null,
                             function () {
@@ -503,6 +515,13 @@ gemini_items = {
                             }
                             else
                                 $('#item-grid-context-menu').disableContextMenuItems('#time');
+
+                            if ($('#ShowSequenced', '#filter-form').is(':checked') && !$(before).parent().hasClass('sequenced-issue') && response.Result.Data.cansequence) {
+                                $('#item-grid-context-menu').enableContextMenuItems('#sequencemenu');
+                            }
+                            else {
+                                $('#item-grid-context-menu').disableContextMenuItems('#sequencemenu');
+                            }
                             
                         }
                     }, null, null, null, null, false);

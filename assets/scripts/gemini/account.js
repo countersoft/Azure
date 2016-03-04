@@ -90,7 +90,7 @@ gemini_account = {
             }, null, null, null, true);
         });
 
-        $('.avatar-option').unbind('ifClicked').bind('ifClicked', function (e) {
+        $('.avatar-option').unbind('ifChecked').bind('ifChecked', function (e) {
             if ($(this).attr('id') == 'option-upload') {
                 $('#upload-avatar').removeClass('invisible');
                

@@ -36,6 +36,7 @@
                     <td data-edit="false" class="actions"><a  href="#" id="log">Log</a></td>
                     <td data-edit="false" class="actions">
                         <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-copy cursor-pointer" title="@GetResource(ResourceKeys.Copy)" data-method="copy"></span>
                         <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
                     </td>
                 </tr>
@@ -71,6 +72,22 @@
             var item = $(this);
             var id = item.closest("tr").data("id");
             gemini_popup.centerPopup("configure/RulesSLA/Rules", "Editor", { id: id }, null, null, null, null, null, null, true);
+        });
+
+        $("#table-admin-rules").off('click', ".actions span[data-method='copy']").on('click', ".actions span[data-method='copy']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_ajax.postCall("configure/RulesSLA/Rules", "Editor", function(response) {
+                if(response.Result.Html == '') {
+                    gemini_admin.getPage();
+                    gemini_popup.toast('Copied');
+                }
+                else {
+                    gemini_popup.toast('Errors occured', true);
+                }
+            }, function () {
+                gemini_popup.toast('Errors occured', true);
+            }, {id: id, mode: 'copy'}, null, true);
         });
         
         $("#system-options-add").click(function () {
