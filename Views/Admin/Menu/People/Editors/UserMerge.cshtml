@@ -1,0 +1,99 @@
+﻿@model PeopleUsersMergeModel
+
+<div id="GlobalGroupContainer" style="height:300px;">
+    <form id="regular-form">
+        <input type="hidden" name="mode" id="mode" value="merge" />
+    @Html.HiddenFor(g => g.User.Entity.Id)
+    <table id="user-editor" class="width-100 admin-data-entry" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="field-name">User</td>
+            <td>
+                @Html.DropDownList("Users", Model.MergeWith, new { @class = Model.AutoCompleteClass })
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name">Merge To</td>
+            <td>
+                @Model.User.Entity.Fullname
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="mergegroups" id="mergegroups" /><label for="mergegroups">Merge group membership</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="mergeorg" id="mergeorg" /><label for="mergeorg">Merge organization membership</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="mergeworkspaces" id="mergeworkspaces" /><label for="mergeworkspaces">Merge workspaces</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="mergenotifications" id="mergenotifications" /><label for="mergenotifications">Merge notifications</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="mergereports" id="mergereports" /><label for="mergereports">Merge report subscriptions</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="field-name"></td>
+            <td>
+                <input type="checkbox" class="fancy" name="disableuser" id="disableuser" /><label for="disableuser">Disable merged user</label>
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+
+    @if(Model.AutoCompleteClass == null)
+    {
+        <text>gemini_ui.chosen("#Users", null, true);</text>
+    }
+    else
+    {
+        <text>gemini_ui.ajaxChosen('#Users.no-chosen.auto-complete-chosen', null, false, 'project/0' + '/item/get/customfield');</text>
+    }
+    gemini_ui.fancyInputs('#regular-form .fancy');
+    $("#popup-button-yes").click(function (e) {
+
+
+        if ($("#regular-form").valid()) {
+            gemini_ui.startBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+            gemini_ajax.postCall("configure/People/Users", "SaveData", function (response) {
+                if(response.Result=='DUPE') {
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                    $('#Username').addClass('error');
+                    $('#Username').focus();
+                    gemini_popup.toast("Username already exists", true);
+                    return;
+                }
+                gemini_popup.toast("Saved");
+                gemini_popup.popupClose(e);
+                gemini_admin.getSubTab("Users");
+                gemini_ui.stopBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
+            }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, $("#regular-form").serialize(), null, true);
+
+        }
+        else {
+            $('.error:not(label)', '#cs-popup-content').first().focus();
+        }
+
+    });
+
+
+    $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+</script>
