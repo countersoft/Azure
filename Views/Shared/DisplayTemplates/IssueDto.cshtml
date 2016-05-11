@@ -185,6 +185,7 @@ foreach (var coldata in data)
         <li><a href="#time">@GetResource(ResourceKeys.Time, Resourcing.Dotted)</a></li>
         @if (!GeminiContext.PermissionsManager.IsHelpdeskUser())
         { 
+            <li><a href="#sequencemenu">@GetResource(ResourceKeys.Sequence, Resourcing.Dotted)</a></li>
             <li class="highlight"><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>
         }
     </ul>

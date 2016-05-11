@@ -28,22 +28,23 @@
             @{
                 var systemUsers = new[] {Constants.AnonymousUserId};
             }
-            @foreach (UserDto item in Model.Users)
+            @foreach (var item in Model.Users)
             {
-                <tr data-id="@item.Entity.Id">
+                <tr data-id="@item.Id">
                     @*<td data-edit="false">@item.Fullname</td>*@
-                    <td>@item.Entity.Firstname</td>
-                    <td>@item.Entity.Surname</td>
-                    <td>@item.Entity.Username</td>
-                    <td>@item.Entity.Email</td>
-                    <td>@(item.Entity.Active ? string.Empty : "Yes")</td>
-                    <td>@(item.Entity.Locked ? "Yes" : string.Empty)</td>
+                    <td>@item.Firstname</td>
+                    <td>@item.Surname</td>
+                    <td>@item.Username</td>
+                    <td>@item.Email</td>
+                    <td>@(item.Active ? string.Empty : "Yes")</td>
+                    <td>@(item.Locked ? "Yes" : string.Empty)</td>
                   
                     <td data-edit="false" class="no-width"><a href="#" class="report">Report</a></td>
                     <td data-edit="false" class="actions" >
-                        @if(!systemUsers.Contains(item.Entity.Id))
+                        @if(!systemUsers.Contains(item.Id))
                         {
                             <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                            <span class="fonticon-persons action-button-base cursor-pointer" style="color:black;" title="Merge" data-method="merge"></span>
                             <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>        
                         }
                     </td>
@@ -62,6 +63,14 @@
             var item = $(this);
             var id = item.closest("tr").data("id");
             gemini_popup.centerPopup("configure/People/Users", "Editor", { id: id }, null, null, null, null, null, null, true);
+            
+        });
+
+        $("#table-admin-users").on('click', ".actions span[data-method='merge']", function () {
+
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/People/Users", "Editor", { id: id, mode: 'merge' }, null, null, null, null, null, null, true);
             
         });
 

@@ -50,6 +50,10 @@
                                 {
                                   <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">Email Reply</div>
                                 }
+                            else if (comment.Entity.OriginatorType == IssueOriginatorType.Breeze)
+                            {
+                                <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">Email</div>
+                            }
                             <div class="section-content expanded">
                                 @{
                                     var formUrl = Url.Action("updatecomment", "AjaxItem", new RouteValueDictionary(new { id = Model.Issue.Project.Id, issueid = Model.Issue.Id, commentid = comment.Entity.Id }));

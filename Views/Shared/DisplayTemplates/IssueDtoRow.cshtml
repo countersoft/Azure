@@ -52,6 +52,12 @@ if (allowSequencing && showSequencing)
 {
 <span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
 }
+if(showSLA && (issue.IsInSLA || issue.Entity.SLAStatus.HasValue))
+{ 
+<div @if(issue.Entity.SLAStatus.HasValue) {<text>class="sla-@issue.Entity.SLAStatus.Value"</text>} else if(issue.IsInSLA) {<text>class="sla-3"</text>} title="@issue.SLATimeLeftFull">
+<span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
+</div>
+}
 <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
 </td>

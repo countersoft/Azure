@@ -7,11 +7,13 @@ gemini_item = {
     triggerXHR: null,
     itemUrl: '',
     commentWasInserted: false,
+    issueProjectId: null,
     initItem: function (projectId, projectCode, issueId, pageType, canEdit,temp_dropzone, temp_delete) {
       
         gemini_item.pageType = pageType;
 
         gemini_item.issueId = issueId;
+        gemini_item.issueProjectId = projectId;
         gemini_item.itemUrl = "project/" + projectId + "/"; //Need this because view item.
 
         gemini_item.setToolbarsLocation();
@@ -97,6 +99,8 @@ gemini_item = {
         if (attachments != undefined && attachments != null) {
             gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').parent().parent().attr('title'));
         }
+
+        gemini_item.attachmentPreview();
 
         // This is only used for the drag and drop area as we apply above fileuploader to + sign the drag area can't expand to full screen because of + parent's div size
         var uploadArea = $('#phantom-fileuploader')[0];
@@ -680,6 +684,7 @@ gemini_item = {
 
                 $(".action-add", '#item-attachments').replaceWith($(".action-add", $(attachments)));
                 $("#phantom-fileuploader", '#item-attachments').replaceWith($("#phantom-fileuploader", $(attachments)));
+                gemini_item.attachmentPreview();
             }
             else if (this.Key == "AssociatedHistory") {
                 gemini_item.replaceContentContainer('history', this.Value);
@@ -770,20 +775,36 @@ gemini_item = {
 
         $("#watchers-content .action-button-delete").unbind('click').click(function (e) {
             var id = $(this).parents("tr:eq(0)").attr("data-id");
-
-            gemini_commons.translateMessage("[[Remove]] " + $(this).parents("tr:eq(0)").find("td:eq(0)").html() + "?", ['Remove'], function (message) {
+            var email = $(this).parents("tr:eq(0)").attr("data-email");
+            var html = $(this).parents("tr:eq(0)").find("td:eq(0)").html();
+            if(html == null || html == undefined || html.length == 0) {
+                html = $(this).parents("tr:eq(0)").find("td:eq(2)").html()
+            }
+            gemini_commons.translateMessage("[[Remove]] " + html + "?", ['Remove'], function (message) {
                 gemini_popup.modalConfirm(message, null, function () {
                     gemini_ui.startBusy('#colorbox2 #modal-confirm #modal-button-yes');
-                    gemini_ajax.jsonCall("item", "deletewatcher?issueid=" + issueId + "&userid=" + id,
-                        function (response) {
-                            if (response.Success)
-                            {
-                                gemini_item.replaceContent(response.Result.Data);
-                                gemini_item.attachWatchersEvents(response.Result.Data.issueId);
-                            }
-                            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                        }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }
-                    );
+                    if(email != null && email != undefined && email.length) {
+                        gemini_ajax.postCall('item', "deletewatcher?issueid=" + issueId , function (response) {
+                                    if (response.Success) {
+                                    
+                                        gemini_item.replaceContent(response.Result.Data);
+                                        gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                                    }
+                                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                            }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }, { email: email });
+                    }
+                    else {
+                        gemini_ajax.jsonCall("item", "deletewatcher?issueid=" + issueId + "&userid=" + id,
+                            function (response) {
+                                if (response.Success)
+                                {
+                                    gemini_item.replaceContent(response.Result.Data);
+                                    gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                                }
+                                gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                            }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }
+                        );
+                    }
                 }
                 );
             });
@@ -827,6 +848,24 @@ gemini_item = {
             }
         });
 
+
+        $("#watchers-find-item").bind("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.ENTER) {
+                var email = $(this).val();
+                if(gemini_commons.isEmail(email)) {
+                    gemini_ajax.postCall("item", "addwatcher/" + issueId, function (response) {
+                            if (response.Success)
+                            {
+                                gemini_item.replaceContent(response.Result.Data);
+                                gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                                gemini_ui.flashContent("#watchers-content [data-id='" + response.Result.Data.userId + "']");
+                            }
+                           
+                        }, null, {email: email});
+                }
+            }
+        });
+        
     },
 
     attachDependencyEvents: function (issueId) {
@@ -874,6 +913,7 @@ gemini_item = {
             gemini_commons.stopClick(e);
             gemini_add.hidePlan = true;
             gemini_add.hideProject = true;
+            firstTimeDepend = true;
             gemini_add.newItemRenderedCallback = function () {
 
                 var popup = $("#cs-popup-add");
@@ -883,6 +923,12 @@ gemini_item = {
                     popup.css("top", scroll);
                 }*/
                 popup.find("form").append("<input type='hidden' value='" + gemini_item.issueId + "' name='ParentItem' id='ParentItem' />");
+                if(firstTimeDepend && $('#ProjectName', popup).val() != gemini_item.issueProjectId) {
+                    $('#ProjectName', popup).val(gemini_item.issueProjectId);
+                    gemini_ui.chosenUpdate($('#ProjectName', popup));
+                    firstTimeDepend=false;
+                    setTimeout(function() { $('#ProjectName', popup).change();}, 500);
+                }
             };
             gemini_add.newItemCreatedCallback = function (id) {
                 gemini_ajax.jsonCall("items", "renderdependencies?issueid=" + issueId,
@@ -1226,6 +1272,43 @@ gemini_item = {
             }
         }
     },
+
+    attachmentPreview: function()
+    {
+        $("#item-attachments .image-preview").hoverIntent({
+            interval: 250,
+            over: function () {
+                var width = $(this).width();
+                var visible = $('#attachment-preview', $(this)).is(':visible');
+                $('#attachment-preview img').attr('src','');
+                $('#attachment-preview img').attr('src',$('a', this).first().attr('href'));
+                $('#attachment-preview').show();
+                $('#attachment-preview').position({
+                    "my": "left top",
+                    "at": "left bottom",
+                    "of": $(this),
+                    "offset": "0 0",
+                    "collision": "none"
+                });
+            },
+            out: function (e) {
+                var id = $(e.relatedTarget).attr('id');
+                if(id=='attachment-preview-img' || id=='attachment-preview') return;
+                $('#attachment-preview').hide();
+            }
+        });
+
+        $("#item-attachments #attachment-preview").hoverIntent({
+            interval: 0,
+            over: function () {
+                var x = 0;
+            },
+            out: function (e) {
+                $('#attachment-preview').hide();
+            }
+        });
+    },
+
     slaInterval: null,
     initSLA: function ()
     {

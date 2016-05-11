@@ -17,11 +17,11 @@
         <div class="pad-bottom-10">
             @if (Model.ReferenceWorkflows.Count() > 1)
             {
-                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span> or use an existing workflow: @Html.DropDownList("ReferenceId", Model.ReferenceWorkflows, new {@class = "input-size5", style = "position:absolute; z-index:10;"})</text>
+                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span> or use an existing workflow: @Html.DropDownList("ReferenceId", Model.ReferenceWorkflows, new {@class = "input-size5", style = "position:absolute; z-index:10;"})<div class="right"><input type="checkbox" id="allowall" name="allowall" @if(Model.AllowAll){<text>checked="checked"</text>} /><label for="allowall">Allow any status transition</label></div></text>
             }
             else
             {
-                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span>.</text>
+                <text>Drag-drop to define your workflow for <span class="bold">@Model.Process</span>.<div class="right"><input type="checkbox" id="allowall" name="allowall" @if(Model.AllowAll){<text>checked="checked"</text>} /><label for="allowall">Allow any status transition</label></div></text>
             }            
         </div>
         <div>
@@ -106,7 +106,7 @@
                     $('#attribute-options-picker').hide();
                     gemini_popup.popupClose(e);
                     gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
-                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'workflow', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val() }, null, true);
+                }, function () { gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary'); }, { id: $('#type-id').val(), mode: 'workflow', data: JSON.stringify(data), ReferenceId: $('#ReferenceId').val(), allowall: $('#allowall').is(':checked') }, null, true);
         });
 
         $("#popup-button-no").unbind("click").click(function (e) {
@@ -308,6 +308,14 @@
             jsPlumb.setRenderMode(renderMode);
             jsPlumbDemo.init();
         });
+
+        $('#allowall').change(function(){
+            if($('#allowall').is(':checked')) {
+                hidePlumb();
+            } else {
+                showPlumb();
+            }
+        });
     });
 
     $('#ReferenceId').change(function (e) {
@@ -342,4 +350,15 @@
     }
 
     setTimeout(jsPlumb.repaintEverything, 100);
+    @if(Model.AllowAll) 
+    {
+    <text>setTimeout(hidePlumb, 200);</text>
+    }
+
+    function hidePlumb(){
+        $('._jsPlumb_connector, ._jsPlumb_overlay , ._jsPlumb_endpoint').hide();
+    }
+    function showPlumb(){
+        $('._jsPlumb_connector, ._jsPlumb_overlay , ._jsPlumb_endpoint').show();
+    }
 </script>

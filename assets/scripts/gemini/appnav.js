@@ -641,7 +641,6 @@ gemini_appnav =
                 gemini_ui.startBusy2('#edit-appnav-card #clear-items', "#progress-indicator");
                 gemini_ajax.postCall("action", "clearitems", function (response)
                 {
-
                     if (response.Success)
                     {
                         var itemNumber = $("#edit-appnav-card .updates tbody input.item-badge:checkbox:checked").length;
@@ -674,7 +673,8 @@ gemini_appnav =
                                 closeAppNav = true;
                             }
 
-                            $('#edit-appnav-card #appnav-changes').empty();
+                            $('.updates','#edit-appnav-card #appnav-changes').empty();
+                            $('#ws-buttons','#edit-appnav-card #appnav-changes').empty();
 
                             if (closeAppNav)
                             {

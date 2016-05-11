@@ -22,7 +22,7 @@
             {
                 <tr data-id="@item.Entity.Id" id="@item.Entity.Id">
                     <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
-                    <td data-edit="false" class="no-width"><img src="@item.FullImagePath" class="valign-text-bottom"/></td>
+                    <td data-edit="false" class="no-width"><img src="@item.FullImagePath" class="valign-text-bottom"  alt="@item.Entity.Label" title="@item.Entity.Label"/></td>
                     <td>@item.Entity.Label</td>
                     <td>@item.Entity.Comment</td>
                     <td>@item.Entity.Color</td>

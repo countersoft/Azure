@@ -82,7 +82,14 @@
 
         if ($("#regular-form").valid()) {
             gemini_ui.startBusy('#cs-popup-center-zone #cs-popup-center-buttons .button-primary');
-            gemini_ajax.postCall("configure/People/Users", "SaveData", function () {
+            gemini_ajax.postCall("configure/People/Users", "SaveData", function (response) {
+                if(response.Result=='DUPE') {
+                    gemini_ui.stopBusy('#colorbox #cs-popup-center-buttons .button-primary');
+                    $('#Username').addClass('error');
+                    $('#Username').focus();
+                    gemini_popup.toast("Username already exists", true);
+                    return;
+                }
                 gemini_popup.toast("Saved");
                 var tr = $("tr[data-id=@(Model.User.Entity.Id)]");
                 if (tr) {

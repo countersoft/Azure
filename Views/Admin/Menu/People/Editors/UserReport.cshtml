@@ -6,6 +6,10 @@
         <div class="text">A complete list of groups and projects this user is assigned to. See the types of <strong>Process</strong> user can interact with and any permission restrictions.</div>
     </div>
     <div class="content" style="width:100%;">
+        @if(!Model.User.Entity.Active)
+        {
+        <p class="bold margin-bottom-20">The user is inactive thus cannot login. The table below shows the permissions if the user is activated.</p>
+        }
         @if (Model.ProjectPermissions.Count > 0)
         {
             <table class="basic">

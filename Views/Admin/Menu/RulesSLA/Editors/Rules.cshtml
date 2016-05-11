@@ -32,6 +32,13 @@
                             <textarea id="Description" name="Description" class="input-field required input-size9" rows="3">@Model.Description</textarea>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="field-name">
+                        </td>
+                        <td>
+                            <input type="checkbox" id="Enabled" name="Enabled" class="fancy" @if (Model.Enabled) {<text>checked="checked"</text> } /><label for="Enabled">Enabled</label>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         }
@@ -47,13 +54,20 @@
                                 <option value="Commented">Commented</option>
                                 <option value="CommentSource">Comment Source</option>
                                 <option value="CommentSourceType">Comment Source Type</option>
+                                <option value="Component">Component</option>
                                 <option value="CreatedDate">Created Date</option>
                                 <option value="Description">Description</option>
                                 <option value="DueDate">Due Date</option>
                                 <option value="EmailsCount">Emails Count</option>
+                                <option value="EstimatedTime">Estimated Time</option>
+                                <option value="ExcessTime">Excess Time</option>
                                 <option value="Issue">Issue</option>
+                                <option value="LoggedTime">Logged Time</option>
                                 <option value="Priority">Priority</option>
                                 <option value="Project">Project</option>
+                                <option value="ProjectLabel">Project Label</option>
+                                <option value="RemainingTime">Remaining Time</option>
+                                <option value="ReportedBy">Reported By</option>
                                 <option value="Resolution">Resolution</option>
                                 <option value="Resource">Resource</option>
                                 <option value="RevisedDate">Revised Date</option>
@@ -69,6 +83,7 @@
                                 <option value="Title">Title</option>
                                 <option value="Type">Type</option>
                                 <option value="User">User's Group</option>
+                                <option value="Version">Version</option>
                                 <option value="Organization">User's Organization</option>
                                 @foreach (var cf in Model.CustomFields)
                                 {

@@ -396,6 +396,7 @@
   <item id="CreateWorkspace">New Workspace</item>
   <item id="LockSync">Lock and sync changes</item>
   <item id="EnableTeamChat">Enable team chat</item>
+  <item id="EnableOthersToSequence">Allow members to sequence items</item>
   <item id="HighlightChanges">Highlight changes</item>
   <item id="ShowBadgeCounts">Show badge counts</item>
   <item id="SelectCharts">Select the charts and numbers you would like to show</item>
@@ -514,4 +515,8 @@
   <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
 
   <item id="Organization">Organization</item>
+  <item id="EmailReply">Email Reply</item>
+
+  <item id="NotFilter">Not</item>
+  <item id="Sequence">Sequence</item>
 </Resource>

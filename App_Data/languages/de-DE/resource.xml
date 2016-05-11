@@ -76,7 +76,7 @@
   <item id="ShowSLA">SLA-Bereich zeigen</item>
   <item id="FilterNoType">Alle Items</item>
   <item id="FilterIncludeClosed">Geschlossene Items einbeziehen</item>
-  <item id="FilterOpenIssues">Öffnen</item>
+  <item id="FilterOpenIssues">Offen</item>
   <item id="FilterClosedIssues">Geschlossen</item>
   <item id="FilterLateIssues">Spät</item>
   <item id="FilterRecentlyCreatedIssues">Neulich erstellt</item>
@@ -395,6 +395,7 @@
   <item id="CreateWorkspace">Neuer Arbeitsbereich</item>
   <item id="LockSync">Sichern und Änderung synchronisieren</item>
   <item id="EnableTeamChat">Team Chat aktivieren</item>
+  <item id="EnableOthersToSequence">Allow members to sequence items</item>
   <item id="HighlightChanges">Änderungen markieren</item>
   <item id="ShowBadgeCounts">Badge-Nummer anzeigen </item>
   <item id="SelectCharts">Wählen Sie die Charts und Nummern zum anzeigen aus</item>
@@ -514,4 +515,8 @@
   <item id="SeparateAlertFollowed">Separate Email-Benachrichtigung für jedes Beobachtets Item</item>
 
   <item id="Organization">Organisation</item>
+  <item id="EmailReply">Email Reply</item>
+
+  <item id="NotFilter">Nicht</item>
+  <item id="Sequence">Sequence</item>
 </Resource>

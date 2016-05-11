@@ -1,0 +1,68 @@
+﻿@using Countersoft.Gemini.Commons.Breeze
+@model BreezeCannedResponsesModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Canned Responses allow you to pre-define reply content. Associate <strong>Canned Responses</strong> to any <strong>Project.</strong></p>
+@if (!GeminiApp.LicenseSummary.HasBreeze())
+{
+    <p id="tab-help-message"><strong>&#187;</strong>&nbsp;@Html.Raw(AppConstants.SalesMessageBreeze)</p>
+}
+
+<div class="admin-datatable-holder">
+    <table id="table-admin-cannedresponse" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Name" data-required='true'>Name</th>                
+                <th>Projects</th>                
+                <th></th>            
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (BreezeCannedResponseDto item in Model.Responses)
+            {
+                <tr data-id="@item.Entity.Id" id="@item.Entity.Id">
+                    <td>@item.Entity.Name</td>                
+                    <td>@item.AssociatedProjects</td>   
+                    <td data-edit="false" class="actions" >
+                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-cannedresponse", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2]}] });
+        gemini_admin.initTableDnD("#table-admin-cannedresponse");
+
+        $("#table-admin-cannedresponse_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#table-admin-cannedresponse").off('click', ".actions span[data-method='delete']").on('click',".actions span[data-method='delete']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_ajax.call("configure/Breeze/CannedResponse", "DeleteMessage", function (response) {
+                gemini_popup.modalConfirm(response.Result, null, function () {
+                    gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                    gemini_ajax.call("configure/Breeze/CannedResponse", "Delete", function (delResponse) {
+                        if (delResponse.Success) {
+                            gemini_admin.removeRow(item);
+                            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                        }
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
+                });
+            },
+                null, { id: id }, null, true);
+        });
+
+        $("#table-admin-cannedresponse").off('click', ".actions span[data-method='edit']").on('click',".actions span[data-method='edit']", function () {
+            var item = $(this);
+            var id = item.closest("tr").data("id");
+            gemini_popup.centerPopup("configure/Breeze/CannedResponse", "Editor", { id: id }, null, null, null, null, null, null, true);
+        });
+
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/Breeze/CannedResponse", "Add", null, null, null, null, null, null, null, true);
+        });
+    });
+</script>
