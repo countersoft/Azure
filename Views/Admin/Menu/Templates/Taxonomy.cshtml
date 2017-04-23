@@ -1,0 +1,145 @@
+﻿@model Countersoft.Gemini.Models.Admin.TemplateTaxonomyModel
+
+@{Html.RenderPartial( "~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates );}
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide language taxonomy options.</p>
+@{
+    var hasLanguageTemplateValues = Model.Overrides.Any( m => m.Value.Overide.HasValue() ) && Model.SelectedLanguage != null;
+
+    var isEditingDefaultTemplate = Model.SelectedLanguage == null;
+    var templateLanguageKey = Model.SelectedTemplate.TemplateKey;
+}
+<div id="cs-adhoc-page">
+    <form id="template-taxonomy-form" action="" method="post" autocomplete="off">
+        <div id="language-picker">
+            <h2>Language:&nbsp;</h2>
+            @Html.DropDownList( "Language", Model.Languages, new { @class = "input-size9" } )
+        </div>
+    </form>
+    <div class="admin-datatable-holder">
+        <table id="taxonomy-text-table" class="basic row-hover">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Original Default (en-US)</th>
+                    <th data-field="Template_@(templateLanguageKey)">Template Default Value</th>
+                    @if ( hasLanguageTemplateValues )
+                    {
+                        templateLanguageKey += "_" + Model.SelectedLanguage.Entity.Id;
+                        <th>Translation Default (@Model.SelectedLanguage.Code)</th>
+                        <th data-field="Override">Template Translation (@Model.SelectedLanguage.Code)</th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ( var translation in Model.Overrides )
+                {
+                    var fullKey = translation.Key + "_" + templateLanguageKey;
+                    <tr data-id="@fullKey" id="@fullKey">
+                        <td data-edit="false">@translation.Key</td>
+                        <td data-edit="false">@translation.Value.English</td>
+
+                        <td data-edit="@isEditingDefaultTemplate.ToString().ToLowerInvariant()">@translation.Value.TemplateDefault</td>
+                        @if ( hasLanguageTemplateValues )
+                        {
+                            <td data-edit="false">@translation.Value.Translation</td>
+                            <td data-edit="true" class="editable">@translation.Value.Overide</td>
+                        }
+                        <td data-edit="false" class="actions">
+                            <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@if ( Model.SelectedLanguage == null )
+{
+    @Html.DropDownList( "TaxonomyKey", Model.Keys, new { @class = "input-size9", style = "display: none;" } )
+}
+<script type="text/javascript">
+    $( document ).ready( function () {
+
+        gemini_admin.initDatatablesWithEdit( "#taxonomy-text-table", false, null,
+            { bPaginate: true, "aoColumnDefs": [{ "bSortable": true, "aTargets": [0, 1] }] }
+        );
+
+        $( "#template-taxonomy-form #Language" )
+            .change( function () {
+                var language = $( this ).val();
+                gemini_ajax.call( "configure/tab/Templates/Taxonomy", "",
+                function ( response ) {
+                    gemini_popup.toast( "Loaded" );
+                    gemini_admin.renderPage( response );
+                }, function () { },
+                {
+                    action: 'load-language',
+                    language: language,
+                    Template: gemini_admin.currentTemplate
+                }, null, true );
+            } );
+
+        @if ( Model.SelectedLanguage == null )
+        {
+            //Show the add key option for default template file
+        <text>
+
+        $( "#taxonomy-text-table_wrapper" ).prepend( "<div id='add-button-container' style='padding-left: 5px'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>" );
+        $( "#TaxonomyKey" ).prependTo( "#add-button-container" ).show();
+
+        </text>
+        }
+
+        $( "#configure-page-content" )
+            .off( 'click', '#system-options-add' )
+            .on( 'click',
+                '#system-options-add',
+                function () {
+                    var key = $( "#TaxonomyKey" ).val();
+                    gemini_ajax.postCall( "configure/Templates/Taxonomy", "savedata",
+                        function ( response ) {
+                            if ( response.Result === "OK" ) {
+                                gemini_admin.getPage();
+                            }
+
+                        }, function () { },
+                        { action: 'add-key', template: gemini_admin.currentTemplate, key: key }, null, true );
+                } );
+
+        $( "#taxonomy-text-table" ).off( 'click', "span[data-method='delete']" ).on( 'click', "span[data-method='delete']", function ( e ) {
+            var item = $( this );
+            var id = item.closest( "tr" ).data( "id" );
+
+            gemini_ajax.call("configure/Templates/Taxonomy",
+                "DeleteMessage",
+                function(response) {
+                    gemini_popup.modalConfirm(response.Result, null, function() {
+                            gemini_ui.startBusy('#colorbox2 #modal-confirm #modal-button-yes');
+                            gemini_ajax.call("configure/Templates/Taxonomy", "Delete",
+                                function(delResponse) {
+                                    if ( delResponse.Success ) {
+                                        @if ( Model.SelectedLanguage != null ) //don't remove the row, just clear the value (as still in main template)
+                                        {
+                                            @:item.closest('tr').find('td.editable').html('');
+                                        } else
+                                        {
+                                            //Remove the row as it is the main template.
+                                            @:gemini_admin.removeRow( item );
+                                        }
+                                    }
+                                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                                },
+                                function() {
+                                     gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                                },
+                                { id: 0, code: id }, null, true);
+                        });
+                }, null,
+                { id: 0, key: id, Template: gemini_admin.currentTemplate },
+                null, true
+            );
+        } );
+    } );
+</script>

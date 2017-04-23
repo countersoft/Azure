@@ -1,0 +1,38 @@
+﻿@model LanguageTranslationModel
+
+<table id="language-text-table" class="basic row-hover">
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>English</th>
+        <th data-field="Translation_@Model.LanguageDto.Entity.Id">Translation</th>
+        @if ( Model.LanguageDto.PreInstalled )
+        {
+            <th data-field="Override_@Model.LanguageDto.Entity.Id" style="width: 200px">Override</th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+        @foreach ( var translation in Model.Translations )
+        {
+            <tr data-id="@translation.Key" id="@translation.Key">
+                <td data-edit="false" >@translation.Key</td>
+                <td data-edit="false" >@translation.Value.English</td>
+                <td data-edit="@((!Model.LanguageDto.PreInstalled).ToString().ToLower())" >@translation.Value.Translation</td>
+                @if ( Model.LanguageDto.PreInstalled )
+                {
+                    <td>@translation.Value.Overide</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function() {
+        gemini_admin.initDatatablesWithEdit( "#language-text-table", false, null, 
+            { bPaginate: true, "aoColumnDefs": [{ "bSortable": true, "aTargets": [0, 1] }] }
+        );
+    });
+</script>
