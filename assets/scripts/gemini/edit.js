@@ -538,6 +538,7 @@ gemini_edit = {
             var currentItem = (issueId != null) ? issueId : elementIssueId;
            
             var items = [currentItem];
+            var selectedItems = [];
             var bulk = false;
             if ($('.checked-items:checked', $('#items-grid')).length > 0) {
                 /*** WIZARD ***/
@@ -550,6 +551,7 @@ gemini_edit = {
                     if (currentItem != $(value).val()) {
                         items.push($(value).val());
                     }
+                    selectedItems.push($(value).val());
                 });
             }
       
@@ -584,7 +586,19 @@ gemini_edit = {
                         var tempData = data;
                         tempData += '&id=' + elm.attr('name') + '&itemid=' + items[i] + '&property=' + elm.attr('name');
 
-                        gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, gemini_edit.InlineEditSaveResponse, function (response) { gemini_edit.hideInlineEditingSpinner(); }, tempData, elm);
+                        gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, function(response) {
+                            gemini_edit.InlineEditSaveResponse(response);
+                            try {
+                                if (selectedItems.indexOf(''+response.Result.ItemId) != -1) {
+                                    $('.checked-items.fancy', '#tr-issue-' + response.Result.ItemId).iCheck('check');
+                                    $('.checked-items.fancy', '#tr-issue-' + response.Result.ItemId).prop('checked', true);
+                                }
+                            }
+                            catch(err) {
+                                err=err;
+                            }
+                            
+                        }, function (response) { gemini_edit.hideInlineEditingSpinner(); }, tempData, elm);
 
                     }
                 }

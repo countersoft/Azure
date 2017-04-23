@@ -60,11 +60,15 @@
                     <td class="field-name">Use SSL
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if(Model.Mailbox.UseSsl)
-                                                                         {
-                                                                             @: checked="checked" 
-                                                                         }/>
+                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if ( Model.Mailbox.UseSsl )
+                                                                                       {
+                                                                                           @: checked="checked" 
+                                                                                       }/>
                     </td>
+                </tr>
+                <tr id="ssl-protocol">
+                    <td>SSL Protocol</td>
+                    <td>@Html.DropDownList( "SslMode", Model.SslProtocol, new { @class = "input-size5" } )</td>
                 </tr>
                 <tr id="auth-mode">
                     <td class="field-name">Authentication Mode
@@ -85,7 +89,7 @@
                     </td>
                     <td>
                         <input type="password" id="Password" name="Password" 
-                               class="input-field required input-size9" value="@Model.Mailbox.Password"/>
+                               class="input-field required input-size9" value="@Constants.NoChange"/>
                     </td>
                 </tr>
                 <tr id="domain">
@@ -300,8 +304,7 @@
           gemini_ui.chosen("#SubjectNotLikeExpressions", null, true);
           gemini_ui.chosen("#TruncateExpressions", null, true);
           gemini_ui.chosen("#ReplaceExpressions", null, true);
-
-
+          gemini_ui.chosen( "#SslMode", null, true );
 
           //reset validation on AuthMode Change
           $("#AuthMode").on('change', function () {
@@ -313,7 +316,9 @@
                   $("#Username").addClass('required');
                   $("#Password").addClass('required');
               }
-          });
+          } );
+
+          
 
           $("#popup-button-yes").click(function (e) {
               if ($("#regular-form").valid()) {  
@@ -368,7 +373,8 @@
         if ($('#MailboxType').val() == "IMAP") {
             $("#imap-folder").show();
             $("#server-port").show();
-            $("#use-ssl").show();
+            $( "#use-ssl" ).show();
+            $( "#ssl-protocol" ).show();
             $("#server").html("Server");
             $("#auth-mode").show();
             $('#ImapFolder').attr('class', 'input-field required input-size9');
@@ -379,7 +385,8 @@
             if ($('#MailboxType').val() == "Exchange") {
                 $("#domain").show();
                 $("#exchange-version").show();
-                $("#server-port").hide();
+                $( "#server-port" ).hide();
+                $( "#ssl-protocol" ).hide();
                 $("#use-ssl").hide();
                 $("#server").html("Exchange Web Service URL");
                 $("#auth-mode").hide();
@@ -390,7 +397,8 @@
                 $("#domain").hide();
                 $("#exchange-version").hide();
                 $("#server-port").show();
-                $("#use-ssl").show();
+                $( "#use-ssl" ).show();
+                $( "#ssl-protocol" ).show();
                 $("#server").html("Server");
                 $("#auth-mode").show();
                 $("#exchange-version").hide();

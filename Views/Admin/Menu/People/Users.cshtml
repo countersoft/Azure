@@ -20,6 +20,13 @@
                 <th data-field="Email" data-required='true' data-email='true'>Email</th>                
                 <th data-field="Active" data-edit-type="checkbox">Disabled?</th>
                 <th data-field="Locked" data-edit-type="checkbox">Locked?</th>
+                @*ADFS - B.E. - BEGIN ui*@
+                @if (GeminiApp.Config.ADFSEnabledByAdmin)
+                {
+                    <th data-field="ADFSSID" data-required='false'>ADFS SID</th>
+                    <th data-field="LockUserValuesFromADSync" data-required='false' data-edit-type="checkbox">Lock user data</th>
+                }
+                @*ADFS - B.E. - END*@
                 <th></th>
                 <th></th>
             </tr>
@@ -38,7 +45,14 @@
                     <td>@item.Email</td>
                     <td>@(item.Active ? string.Empty : "Yes")</td>
                     <td>@(item.Locked ? "Yes" : string.Empty)</td>
-                  
+
+                    @*ADFS - B.E. - BEGIN ui*@
+                    @if (GeminiApp.Config.ADFSEnabledByAdmin)
+                    {
+                        <td>@item.ADFSSID</td>
+                        <td>@(item.LockUserValuesFromADSync ? "Yes" : string.Empty)</td>
+                    }
+                    @*ADFS - B.E. - END*@
                     <td data-edit="false" class="no-width"><a href="#" class="report">Report</a></td>
                     <td data-edit="false" class="actions" >
                         @if(!systemUsers.Contains(item.Id))
@@ -55,6 +69,7 @@
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function () {
         gemini_admin.initDatatablesWithEdit("#table-admin-users", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [6, 7] }] });
 

@@ -17,7 +17,7 @@
                     <td>Custom Field Name
                     </td>
                     <td>
-                        <input type="text" id="Name" name="Name" 
+                        <input type="text" id="Name" name="Name"
                                class="input-field required input-size9" value="@Model.CustomField.Name"/>
                     </td>
                 </tr>
@@ -27,14 +27,20 @@
                     <td>
                         <input type="text" id="ScreenLabel" name="ScreenLabel" 
                            class="input-field required input-size9" value="@Model.CustomField.ScreenLabel"/>
+                        @Html.Partial( "Translation/TranslationEditor",
+                            new TranslationItemModel( Model.CustomField,
+                                TranslationConstants.GetKey( TranslatableEntities.CustomField, "Label", Model.CustomField.Id ) ) )
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="All">
                     <td>Screen Tooltip
                     </td>
                     <td>
-                        <input type="text" id="ScreenTooltip" name="ScreenTooltip" 
-                           class="input-field required input-size9" value="@Model.CustomField.ScreenTooltip"/>
+                        <input type="text" id="ScreenTooltip" name="ScreenTooltip"
+                               class="input-field required input-size9" value="@Model.CustomField.ScreenTooltip"/>
+                        @Html.Partial( "Translation/TranslationEditor",
+                            new TranslationItemModel( Model.CustomField,
+                                TranslationConstants.GetKey( TranslatableEntities.CustomField, "Tooltip", Model.CustomField.Id ) ) )
                     </td>
                 </tr>
                 <tr data-custom="true" data-shown="@Constants.CUSTOM_FIELD_TYPE_LIST|@Constants.CUSTOM_FIELD_TYPE_COMPONENT|@Constants.CUSTOM_FIELD_TYPE_VERSION|@Constants.CUSTOM_FIELD_TYPE_USER">

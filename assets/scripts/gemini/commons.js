@@ -169,6 +169,15 @@ gemini_commons = {
     htmlDecode: function(value) {
         return $('<div/>').html(value).text();
     },
+    urlEncode: function(value) {
+        return encodeURI(value);
+    },
+    urlDecode: function (value) {
+        return decodeURI(value);
+    },
+    urlParameterEncode: function(value) {
+        return value.replace(/\&/g, "%26");
+    },
     PAGE_TYPE: {
         Custom: 0,
         Items: 1,

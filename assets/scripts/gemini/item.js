@@ -311,12 +311,13 @@ gemini_item = {
                          gemini_ui.startBusy('#modal-confirm #modal-button-yes');
                          gemini_ajax.call("item", "deletetimeentry?issueid=" + issueId +"&timeid=" + id,
                             function (response) {
-                                if (response.Success)
-                                {
+                                if (response.Success) {
                                     $.publish('issue-update', ['timedelete']);
                                     //var isCollapsed = $('.dependencies-article .fonticon-arrow-right').length;
                                     gemini_item.replaceContent(response.Result.Data);
                                     //if (isCollapsed) gemini_ui.expandCollapse($('.expander', '.dependencies-article').first().parent());
+                                } else {
+                                    gemini_popup.toast(response.Message, true);
                                 }
                                 gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                             }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }
@@ -1107,32 +1108,41 @@ gemini_item = {
             if ($("#links-find-item-container #links-find-item").val() != "") {
 
                 if ($("#links-find-item-container #links-find-item-id").val() == '') {
-                    $("#links-find-item-container #links-find-item-id").val($("#links-find-item-container #links-find-item").val());
+                    $("#links-find-item-container #links-find-item-id")
+                        .val($("#links-find-item-container #links-find-item").val());
                 }
 
-                gemini_ajax.jsonCall("item", "addlink?issueid=" + issueId + '&linkIssueKey=' + $("#links-find-item-container #links-find-item-id").val() + '&linktype=' + $("#links-find-item-container #linktypes").val(),
-                            function AddLinkResponse(response) {
-                                if (response.Success) {
-                                    gemini_item.replaceContent(response.Result.Data);
-                                    gemini_item.attachLinksEvents(response.Result.Data.issueId);
-                                    gemini_ui.chosen("#links-find-item-container #linktypes");
-                                    gemini_item.hideLinkFindItem();
+                var linkIssueKey = gemini_commons
+                    .urlParameterEncode($("#links-find-item-container #links-find-item-id").val());
+                gemini_ajax.jsonCall("item",
+                    "addlink?issueid=" +
+                    issueId +
+                    '&linkIssueKey=' +
+                    linkIssueKey +
+                    '&linktype=' +
+                    $("#links-find-item-container #linktypes").val(),
+                    function AddLinkResponse(response) {
+                        if (response.Success) {
+                            gemini_item.replaceContent(response.Result.Data);
+                            gemini_item.attachLinksEvents(response.Result.Data.issueId);
+                            gemini_ui.chosen("#links-find-item-container #linktypes");
+                            gemini_item.hideLinkFindItem();
 
-                                    gemini_ui.flashContent($(".see-also [data-id='" + response.Result.Data.linkedIssueId + "']").prev().prev());
-                                }
-                                else {
-                                    if (response.Result.Data.Message) {
-                                        gemini_popup.toast(response.Result.Data.Message);
-                                    }
-                                    else if (response.Message) {
-                                        gemini_popup.toast(response.Message);
-                                    }
-                                }
+                            gemini_ui.flashContent($(".see-also [data-id='" + response.Result.Data.linkedIssueId + "']")
+                                .prev()
+                                .prev());
+                        } else {
+                            if (response.Result.Data.Message) {
+                                gemini_popup.toast(response.Result.Data.Message);
+                            } else if (response.Message) {
+                                gemini_popup.toast(response.Message);
                             }
-                        );
-            }
-            else
+                        }
+                    }
+                );
+            } else {
                 $("#links-find-item-container form").valid();
+            }
         }
 
         $("#links-find-item-container .fonticon-tick").unbind('click').click(function () {
@@ -1275,7 +1285,7 @@ gemini_item = {
 
     attachmentPreview: function()
     {
-        $("#item-attachments .image-preview").hoverIntent({
+        $("#item-attachments .image-preview, #comments-content .comment-wrapper .image-preview").hoverIntent({
             interval: 250,
             over: function () {
                 var width = $(this).width();
@@ -1328,7 +1338,16 @@ gemini_item = {
         {
             if (response.Success && response.Result.Data.length)
             {
-                $('.sla-timer', '#touch-info-container').removeAttr('class').addClass('sla-timer').addClass('view-sla-' + response.Result.Data[0].SLAStatus).html(response.Result.Data[0].SLATimeFull).attr('data-sla-minutes', response.Result.Data[0].SLATimeMinutes).attr('data-sla-state', response.Result.Data[0].SLAStatus);
+                $( '.sla-timer', '#touch-info-container' )
+                    .removeAttr( 'class' )
+                    .addClass( 'sla-timer' ).addClass( 'view-sla-' + response.Result.Data[0].SLAStatus )
+                    .html( response.Result.Data[0].SLATimeFull )
+                    .attr( 'data-sla-minutes', response.Result.Data[0].SLATimeMinutes )
+                    .attr( 'data-sla-state', response.Result.Data[0].SLAStatus );
+                $( '.sla-out-of-hours', '#touch-info-container' )
+                    .removeAttr( 'class' )
+                    .addClass( 'sla-out-of-hours' )
+                    .addClass( 'view-sla-' + response.Result.Data[0].SLAStatus );
             }
         }, null, { ids: ids });
         /*var totalMins = $('.sla-timer').attr('data-sla-minutes');

@@ -28,6 +28,23 @@
                 <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.User.Entity.Username" autocomplete="off" />
             </td>
         </tr>
+        @*ADFS - B.E. - BEGIN ui*@
+        @if (GeminiApp.Config.ADFSEnabledByAdmin)
+        {
+            <tr>
+                <td class="field-name">ADFS SID</td>
+                <td>
+                    <input type="text" id="ADFSSID" name="ADFSSID" class="input-field input-size9" value="@Model.User.Entity.ADFSSID" />
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">Lock user data</td>
+                <td>
+                    <input type="checkbox" id="LockUserValuesFromADSync" name="LockUserValuesFromADSync" class="fancy" @if (Model.User.Entity.LockUserValuesFromADSync) { <text> checked="checked" </text> } />
+                </td>
+            </tr>
+        }
+        @*ADFS - B.E. - END*@
         @if (!GeminiContext.Config.IsWindowsAuthentication)                                                                                                                               
         { 
         <tr>
@@ -73,7 +90,8 @@
 </div>
 <script type="text/javascript">
 
-
+    gemini_ui.fancyInputs('#LockUserValuesFromADSync.fancy');
+    
     $("#regular-form").validate({ rules: { confirmpassword: { required: false, equalTo: "#regular-password" } } });
     gemini_ui.chosen("#Groups", null, true);
 

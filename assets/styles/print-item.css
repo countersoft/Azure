@@ -79,7 +79,7 @@ a[href^="http://"]
     position:relative;
     padding-top:10px;
 }
-#view-item .contents-pane .content
+#view-item .contents-pane .tab-content
 {
     display: block !important;
 }

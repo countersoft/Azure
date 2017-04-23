@@ -1,4 +1,4 @@
-@import "../mixin", "_theme", "theme-mixin"; 
+﻿@import "../mixin", "_theme", "theme-mixin"; 
 
 /**********************************
     Misc.
@@ -1602,6 +1602,12 @@ textarea.input-size12
 .info-label-4
 {
     @include info-label-4;
+}
+
+.ui-shaded {
+    background-color: $color-grayscale2;
+    padding: 3px;
+    
 }
 
 #planner-control-box
@@ -5238,6 +5244,11 @@ $border-color: $color-grayscale3;
 	width:60px;
 }
 
+
+
+/************************************************************
+*  SLA View and Admin
+*************************************************************/
 .sla 
 {
     color: $color-red; 
@@ -5261,17 +5272,17 @@ $border-color: $color-grayscale3;
     color:$color-white;
 }
 
-.sla-1 
+.sla-1, .sla-101
 {
     @extend .sla;
 }
-.sla-2 
+.sla-2 , .sla-102
 {
     @extend .sla;
     color: #e69c53;
     border-color:#e69c53;
 }
-.sla-3
+.sla-3, .sla-103
 {
     @extend .sla;
     color: #5a8756;
@@ -5283,34 +5294,62 @@ $border-color: $color-grayscale3;
     color: $color-grayscale2;
     border-color:$color-grayscale2;
 }
+.sla-100
+{
+    @extend .sla-0;
+    border-style: dashed;
+    border-color: darkred;
+}
+.sla-101, .sla-102, .sla-103 {
+    /*Out of hours*/
+    @extend .sla;
+    border-style: dashed;
+}
 
 .view-sla 
 {
     color: $color-red; 
     font-weight:bold;
+    &.sla-out-of-hours {
+        visibility: hidden;
+    }
 }
 
-.view-sla-0
+.view-sla-0,
+.view-sla-100
+{
+    @extend .view-sla; 
+}
+
+.view-sla-1,
+.view-sla-101
 {
     @extend .view-sla;
 }
 
-.view-sla-1
-{
-    @extend .view-sla;
-}
-
-.view-sla-2
+.view-sla-2,
+.view-sla-102
 {
     @extend .view-sla;
     color: #e69c53;
 }
 
-.view-sla-3
+.view-sla-3,
+.view-sla-103
 {
     @extend .view-sla;
     color: #5a8756;
 }
+
+.view-sla-100,
+.view-sla-101,
+.view-sla-102,
+.view-sla-103 {
+    &.sla-out-of-hours {
+        visibility: visible;
+    }
+}
+
 
 .view-sla-998, .view-sla-10, .view-sla-999
 {

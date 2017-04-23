@@ -43,9 +43,9 @@
                     gemini_ajax.call("configure/Projects/Labels", "Delete", function (delResponse) {
                         if (delResponse.Success) {
                             gemini_admin.removeRow(item);
-                            gemini_ui.stopBusy('#colorbox #modal-confirm #modal-button-yes');
+                            gemini_ui.stopBusy( '#colorbox2 #modal-confirm #modal-button-yes' );
                         }
-                    }, function () { gemini_ui.stopBusy('#colorbox #modal-confirm #modal-button-yes'); }, { id: id }, null, true);
+                    }, function () { gemini_ui.stopBusy( '#colorbox2 #modal-confirm #modal-button-yes' ); }, { id: id }, null, true );
                 });
             },
                 null, { id: id }, null, true);

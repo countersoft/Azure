@@ -818,6 +818,18 @@ gemini_ui = {
                 }
             });
         }
-    }
+    },
+
+    /*translateItem: function ( object ) {
+        
+        //NOTE: this is part of a later plan to inject html around a display item to be able to edit the translation.
+        
+        var key = object.data( 'translation-key' );
+        if ( key === undefined ) return;
+
+        var label = $( '<label id="translation_' + key + '">' + object.val() + '</label><i class="icon icon-globe">T</i>' );
+        object.after( label );
+        object.remove();
+    }*/
 };
 

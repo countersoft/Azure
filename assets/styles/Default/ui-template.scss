@@ -831,7 +831,8 @@
 		padding:10px 6px 6px 12px;
 	}
 
-	#template-picker
+	#template-picker, 
+    #language-picker
 	{
 		@include border;
 		@include rounded(5px);
@@ -846,17 +847,23 @@
 			color: $theme-color;
 			float:left;
 			line-height:30px;
+            min-width: 100px;
 		}
+
+        .chosen-container-single{
+            margin-bottom: 5px;
+        }
 
 		a.export
 		{
 			font-size: 12px;
 		}
 	}
-	
+
 	@media all and(max-width:1024px)
 	{
-		#template-picker
+		#template-picker,
+        #language-picker
 		{
 			display:inline-block;
 		}
@@ -968,6 +975,63 @@ table.admin-data-entry
 		vertical-align: top;
 		padding: 5px 5px 5px 12px;
 	}
+
+    ul.day-list {
+        max-width: 480px;
+        li {
+            display: inline-block;
+            min-width: 140px;
+            &.date-list {
+                border: 1px solid $color-grayscale2;
+                @include rounded(3px);
+                padding: 3px;
+                margin: 3px;
+            }
+
+            span.action-button-delete {
+                float:right;
+            }
+
+            hr {
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+    .sub-form {
+        border-collapse: collapse;
+        th, td {
+            padding: 5px;
+            vertical-align: middle;
+        }
+
+        th{
+            background-color: $color-grayscale4
+        }
+        .highlighted{
+            text-shadow:none;
+        }
+    }
+}
+
+.translation-widget-item {
+    display: inline-block;
+    vertical-align: top;
+    .translation-icon {
+        cursor: pointer;
+    }
+}
+
+.translation-widget-details {
+    display: none;
+}
+
+#configure-page-content table.dataTable.row-hover {
+    tr:hover {
+        td{
+            background-color: $color-grayscale3;
+        }
+    }
 }
 
 #system-email-trace

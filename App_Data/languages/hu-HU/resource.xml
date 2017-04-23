@@ -519,4 +519,5 @@
 
   <item id="NotFilter">Not</item>
   <item id="Sequence">Sequence</item>
+  <item id="TrackedProgress">Tracked Progress</item>
 </Resource>

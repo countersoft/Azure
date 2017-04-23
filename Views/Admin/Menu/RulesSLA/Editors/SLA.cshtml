@@ -42,6 +42,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="field-name">
+                        Calendar
+                    </td>
+                    <td>
+                        @Html.DropDownList( "Calendar", Model.Calendars, new {@class = "input-field input-size9 n247"} )
+                    </td>
+                </tr>
+                <tr>
                     <td class="field-name">Day starts
                     </td>
                     <td>
@@ -67,22 +75,22 @@
         if($('#Is24x7').prop('checked'))
         {
             $('.mask.n247', '#sla-form-container').prop('disabled', 'disabled');
-            $('#Timezone', '#sla-form-container').prop('disabled', 'disabled');
-            $('#Timezone', '#sla-form-container').trigger("chosen:updated");
+            $( '#Timezone', '#sla-form-container' ).prop( 'disabled', 'disabled' ).trigger( "chosen:updated" );
+            $( '#Calendar', '#sla-form-container' ).prop( 'disabled', 'disabled' ).trigger( "chosen:updated" );
         }
-        else
-        {
+        else {
             $('.mask.n247', '#sla-form-container').prop('disabled', '');
-            $('#Timezone', '#sla-form-container').prop('disabled', '');
-            $('#Timezone', '#sla-form-container').trigger("chosen:updated");
+            $( '#Timezone', '#sla-form-container' ).prop( 'disabled', '' ).trigger( "chosen:updated" );
+            $( '#Calendar', '#sla-form-container' ).prop( 'disabled', '' ).trigger( "chosen:updated" );
         }
     }
 
       $(document).ready(function () {
           gemini_ui.chosen('#Timezone', null, true);
+          gemini_ui.chosen('#Calendar', null, true);
           gemini_ui.fancyInputs('#regular-form .fancy');
 
-          //$("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+          $("#sla-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
           $('.mask').mask('99:99');
           $('.mask2').mask('999:99');
 
