@@ -1,0 +1,31 @@
+﻿@model Countersoft.Gemini.Models.Admin.SystemTranslationsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide language translation options.</p>
+
+<div id="cs-adhoc-page">
+    <form id="system-languages-form" action="" method="post" autocomplete="off">
+        <div id="language-picker">
+            <h2>Language:&nbsp;</h2>
+            @Html.DropDownList( "Language", Model.Languages, new { @class = "input-size9" } )
+        </div>
+    </form>
+    <div id="languge-table" class="admin-datatable-holder"></div>
+</div>
+
+<script type="text/javascript">
+    $( document ).ready( function () {
+
+        $("#system-languages-form #Language")
+            .change(function() {
+                var language = $(this).val();
+                gemini_popup.toast( "Loading..." );
+                gemini_ajax.postCall( "configure/System/Translations", "savedata",
+                function ( response ) {
+                    gemini_popup.toast( "Loaded" );
+                    $( "#languge-table" ).html( response.Result );
+                    
+                }, function () { },
+                { action: 'load-language', language: language }, null, true );
+            });
+    }); 
+</script>

@@ -1,0 +1,41 @@
+﻿@model Countersoft.Gemini.Models.Admin.SystemLanguagesModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide language translation options.</p>
+
+<div id="cs-adhoc-page" class="admin-datatable-holder">
+    <form id="system-languages-form" action="" method="post" autocomplete="off">
+        <table id="language-table" class="basic row-hover">
+            <thead>
+                <tr>
+                    <th>Language</th>
+                    <th>Code</th>
+                    <th>Pre-installed</th>
+                    <th data-field="Active" data-edit-type='checkbox'>Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ( var language in Model.Languages )
+                {
+                    <tr data-id="@language.Entity.Id" id="@language.Entity.Id">
+                        <td data-edit="false">@language.Entity.Name</td>
+                        <td data-edit="false">@language.Code</td>
+                        <td data-edit="false">@(language.Entity.PreInstalled ? GetResource(ResourceKeys.Yes) : string.Empty)</td>
+                        <td data-edit="true">@(language.Entity.Active ? "Active" : string.Empty) </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+    <div id="languge-table" class="admin-datatable-holder"></div>
+</div>
+
+<script type="text/javascript">
+    $( document ).ready( function () {
+        gemini_admin.initDatatablesWithEdit( "#language-table", false, null,
+            { bPaginate: true, "aoColumnDefs": [{ "bSortable": true, "aTargets": [0, 1] }] }
+        );
+
+        gemini_admin.currentTable.fnFilter('Active');
+
+    }); 
+</script>

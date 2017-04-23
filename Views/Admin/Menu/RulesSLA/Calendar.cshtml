@@ -1,0 +1,128 @@
+﻿@model CalendarAdminModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;<strong>Working Day Calendars</strong> allow you to set non working days for use in SLA.</p>
+<div class="admin-datatable-holder">
+    <table id="table-admin-calendar" class="basic">
+        <thead>
+            <tr>
+                <th data-field="Name" data-required='true'>Name</th>
+                <th data-field="Description" data-required='true'>Description</th>
+                <th data-required='true'>Working Week Days</th>
+                <th>SLAs Using Calendar</th>
+                <th data-field="DateSample" data-required='true'>Non Working Days</th>
+                <th></th>
+            </tr>
+        </thead>        
+        <tbody>
+            @foreach (var item in Model.Calendars)
+            {
+                if ( item.Id == 0 ) {
+                    continue; //comment this out to see the default calendar. (an important UI feature!)
+                }
+
+                string calendarSummary = GetResource( ResourceKeys.None );
+                var allowInlineEdit = (item.Id > 0).ToString().ToLowerInvariant();
+                if ( item.NonWorkingDays.Any( d => d >= DateTime.Today ) )
+                {
+                    calendarSummary = item.NonWorkingDays
+                        .Where( d => d >= DateTime.Today )
+                        .Take( 3 )
+                        .Select( d => d.ToShortDateString() )
+                        .Aggregate( ( s, s1 ) => s += ", " + s1 );
+                }
+
+                string slaSummary = GetResource( ResourceKeys.None );
+                var calendarId = item.Entity.Id;
+                var slas = Model.SLAs.Where( s => s.Entity.CalendarId == calendarId ).ToList();
+                if ( slas.Any() )
+                {
+                    slaSummary = slas
+                        .Select( s => s.Name )
+                        .Aggregate( ( s, s1 ) => s += ", " + s1 );
+                }
+
+                <tr data-id="@item.Id" id="@item.Id">
+                    <td data-edit="@(allowInlineEdit)">@item.Name</td>
+                    <td data-edit="@(allowInlineEdit)">@item.Entity.Description</td>
+                    <td data-edit="false">
+                        <table>
+                            <tr>
+                                @foreach ( DayOfWeek day in Model.DaysOfWeek )
+                                {
+                                    <td data-edit="false"><span class="@(item.Entity.WorkingDays.Contains( day ) ? "ui-shaded" : "")"> @day.ToString().Substring( 0, 2 )</span></td>
+                                }
+                            </tr>
+                        </table>
+                    </td>
+                    <td>@slaSummary</td>
+                    <td data-edit="false">@calendarSummary</td>
+                    <td data-edit="false" class="actions">
+                        @if ( item.Id > 0 )
+                        {
+                            <span class="action-button-edit cursor-pointer" title="@GetResource( ResourceKeys.Edit )" data-method="edit"></span>
+                            <span class="action-button-copy cursor-pointer" title="@GetResource( ResourceKeys.Copy )" data-method="copy"></span>
+                            <span class="action-button-delete cursor-pointer" title="@GetResource( ResourceKeys.Delete )" data-method="delete"></span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>    
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        gemini_admin.initDatatablesWithEdit("#table-admin-calendar", true, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [2,3,4]}] });
+
+        $("#table-admin-calendar_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
+
+        $("#table-admin-calendar")
+            .off('click', ".actions span[data-method='delete']")
+            .on('click', ".actions span[data-method='delete']", function () {
+                var item = $(this);
+                var id = item.closest("tr").data("id");
+                gemini_ajax.call("configure/RulesSLA/Calendar", "DeleteMessage", function (response) {
+                    gemini_popup.modalConfirm(response.Result, null, function () {
+                        gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                        gemini_ajax.call("configure/RulesSLA/Calendar", "Delete", function (delResponse) {
+                            if (delResponse.Success) {
+                                gemini_admin.removeRow(item);
+                                gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                            }
+                        }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
+                    });
+                },
+                null, { id: id }, null, true);
+            });
+        
+        $("#table-admin-calendar")
+            .off('click', ".actions span[data-method='edit']")
+            .on('click', ".actions span[data-method='edit']", function () {
+                var item = $(this);
+                var id = item.closest("tr").data("id");
+                gemini_popup.centerPopup("configure/RulesSLA/Calendar", "Editor", { id: id }, null, null, null, null, null, null, true);
+            });
+
+        $("#table-admin-calendar")
+            .off('click', ".actions span[data-method='copy']")
+            .on('click', ".actions span[data-method='copy']", function () {
+                var item = $(this);
+                var id = item.closest("tr").data("id");
+                gemini_ajax.postCall("configure/RulesSLA/Calendar", "Editor", function(response) {
+                    if(response.Result.Html == 'OK') {
+                        gemini_admin.getPage();
+                        gemini_popup.toast('Copied');
+                    }
+                    else {
+                        gemini_popup.toast('Errors occured', true);
+                    }
+                }, function () {
+                    gemini_popup.toast('Errors occured', true);
+                }, {id: id, mode: 'copy'}, null, true);
+            });
+        
+        $("#system-options-add").click(function () {
+            gemini_popup.centerPopup("configure/RulesSLA/Calendar", "Add", null, null, null, null, null, null, null, true);
+        });
+
+    });
+</script>

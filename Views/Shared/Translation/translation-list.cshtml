@@ -1,0 +1,127 @@
+﻿@model TranslationsModel
+
+<form id="form_@Model.TranslationKey">
+
+
+    <table class="sub-form">
+        <tbody>
+        @foreach ( var translationContent in Model.TranslationContentDtos )
+        {
+            <tr data-language="@translationContent.LanguageCode">
+                <th>@translationContent.LanguageName</th>
+                <td class="editable">@translationContent.Entity.Content</td>
+                <td>
+                    <span class="action-button-delete cursor-pointer" title="Delete" data-method="delete"></span>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td>@Html.DropDownList( "Language", Model.Languages, new {@class = "input-size5"} )</td>
+            <td colspan="2" class="no-wrap">
+                <input type="text" id="translation-text" name="translation" class="required"/>
+                <button class="btn-primary button-primary">+</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+<script>
+
+    gemini_ui.chosen( "#form_@Model.TranslationKey #Language" );
+    var controller = "configure/" + gemini_admin.currentTab + "/Translation";
+
+    var clickFunction = function ( e ) {
+        var cellClicked = $( this );
+        var language = cellClicked.closest( "tr" ).data( "language" );
+        var initialValue = cellClicked.html();
+        gemini_ajax.call( controller,
+            "getproperty",
+            function ( response ) {
+                var tb = $( '<input type="text" name="value" id="translationValue" value="' + response + '"></input>' );
+                tb.on('blur', function () {
+                    cellClicked.html( initialValue ).on( 'click', clickFunction );
+                } );
+                gemini_commons.inputKeyHandler(tb,
+                    function ( value ) {
+                        var newValue = tb.val();
+                        gemini_ajax.call(controller,
+                            "saveproperty",
+                            function ( response ) {
+                                cellClicked.empty().html( response ).on( 'click', clickFunction );
+                            },
+                            function(badResponse){},
+                            { id: '@Model.TranslationKey', property: language, value: newValue },
+                            null, true, false
+                            );
+                    });
+                cellClicked.off( 'click' ).empty().append( tb );
+                tb.focus();
+            },
+            function ( badResponse ) { },
+            { id: '@Model.TranslationKey', property: language },
+            null,
+            true,
+            false );
+    }
+
+    /*
+    value:12323
+id:CF_10063_LAB
+property:de-DE*/
+
+    $( "td.editable" ).on( 'click', clickFunction );
+
+    $("#form_@Model.TranslationKey button")
+        .click(function(e) {
+
+            var form = $("#form_@Model.TranslationKey");
+            form.validate({ ignore: ".ignorefield" });
+            e.preventDefault();
+            if (form.valid()) {
+                var newValue = $("#translation-text").val();
+                var data = $("#form_@Model.TranslationKey" ).serialize();
+                gemini_ajax.postCall(controller, "saveproperty", function(response) {
+                    
+                    if (response === newValue) {
+                        gemini_ajax.call( "system", "getbykey",
+                            function ( response ) {
+                                if ( response.success ) {
+                                    $( "#@(Model.TranslationKey)_content" )
+                                        .html( response.Result.Data )
+                                        .show();
+                                    item.data( "expanded", true );
+                                }
+                            }, function () { },
+                            { key: '@Model.TranslationKey' },
+                            null,
+                            true
+                            );
+                    }
+
+                }, function(response) {},
+                {
+                    id: '@Model.TranslationKey',
+                    value: newValue,
+                    property: $("#Language").val()
+                }, null, true);
+                console.log(data);
+            }
+            
+        } );
+
+    $( ".action-button-delete" ).click( function () {
+        var row = $(this).closest("tr");
+        var language = row.data( "language" );
+
+        gemini_ajax.call( controller,
+            "saveproperty",
+            function ( response ) {
+                row.remove();
+            },
+            function ( badResponse ) { },
+            { id: '@Model.TranslationKey', property: language, value: '' },
+            null, true, false
+            );
+    });
+</script>

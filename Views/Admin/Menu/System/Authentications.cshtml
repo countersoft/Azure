@@ -1,0 +1,102 @@
+﻿@*ADFS - B.E. - BEGIN ui*@
+@model Countersoft.Gemini.Models.Admin.SystemAuthenticationsModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set authentication parameters</p>
+
+<div id="cs-adhoc-page">
+    <form id="authentications-form" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tr>
+                <td>Enable ADFS</td>
+                <td><input type="checkbox" class="fancy" id="ADFSEnabled" name="ADFSEnabled" @if (Model.ADFSEnabledByAdmin) { <text> checked="checked" </text> } /></td>
+            </tr>
+            @if (Model.ADFSEnabledByAdmin)
+            {
+                <tr id="ADFSFederationMetadata-row">
+                    <td id="ADFSFederationMetadata-label">Federation metadata URL</td>
+                    <td><input type="text" id="ADFSFederationMetadata" name="ADFSFederationMetadata" class="input-size9" value="@Model.ADFSFederationMetadata" /></td>
+                </tr>
+                <tr id="ADFSLog-row">
+                    <td id="ADFSLog-label">Log errors</td>
+                    <td><input type="checkbox" id="ADFSLog" name="ADFSLog" class="fancy" @if (Model.ADFSLog) { <text> checked="checked" </text>  } /></td>
+                </tr>
+            }
+            else
+            {
+                <tr id="ADFSFederationMetadata-row">
+                    <td id="ADFSFederationMetadata-label">Federation metadata URL</td>
+                    <td><input type="text" id="ADFSFederationMetadata" name="ADFSFederationMetadata" class="input-size9" disabled="disabled" value="@Model.ADFSFederationMetadata" />
+                        @*<input type="hidden" name="ADFSFederationMetadata" value="@Model.ADFSFederationMetadata">*@</td>
+                </tr>
+                <tr id="ADFSLog-row">
+                    <td id="ADFSLog-label">Log errors</td>
+                    <td><input type="checkbox" id="ADFSLog" name="ADFSLog" class="fancy" disabled="disabled" @if (Model.ADFSLog) { <text> checked="checked" </text>     } /></td>
+                </tr>
+            }
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <input id="authentications-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#authentications-form").validate();
+
+        gemini_ui.fancyInputs('#ADFSEnabled.fancy');
+        gemini_ui.fancyInputs('#ADFSLog.fancy');
+
+        $("#authentications-save").click(function (e) {
+            gemini_commons.stopClick(e);
+
+            if (!$("#authentications-form").valid()) { return; }
+
+            var formData = $("#authentications-form").serialize();
+            gemini_ui.startBusy('#cs-adhoc-page .data-entry-box #authentications-save');
+
+            gemini_ajax.postCall("configure/System/Authentications", "savedata",
+            function (response) {
+
+                if (response.Result == 'FMDERROR') {
+                    gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #authentications-save');
+                    $('#ADFSFederationMetadata').addClass('error');
+                    $('#ADFSFederationMetadata').focus();
+                    gemini_popup.toast("Invadid federation metadata URL", true);
+                    return;
+                }
+
+                if (response.Result == 'SSLERROR') {
+                    gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #authentications-save');
+                    $('#ADFSFederationMetadata').addClass('error');
+                    $('#ADFSFederationMetadata').focus();
+                    gemini_popup.toast("Protocol must be https in the gemini site url!", true);
+                    return;
+                }
+
+                gemini_popup.toast("Saved");
+                gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #authentications-save');
+                gemini_admin.saveFinished("#authentications-save");
+
+            }, function () { gemini_ui.stopBusy('#cs-adhoc-page .data-entry-box #authentications-save'); }, formData, null, true);
+        });
+
+        $('#ADFSEnabled').bind('ifChanged', function () {
+
+            if (!$('#ADFSEnabled').is(':checked')) {
+                $('#ADFSFederationMetadata').prop("disabled", true).focus();
+                $('#ADFSLog').parent().addClass("disabled");
+                $('#ADFSLog').attr('disabled', 'disabled');
+            }
+            else {
+                $('#ADFSFederationMetadata').prop("disabled", false).focus();
+                $('#ADFSLog').parent().removeClass("disabled");
+                $('#ADFSLog').removeAttr('disabled');
+            }
+        });
+    });
+</script>

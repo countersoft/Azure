@@ -1,0 +1,47 @@
+﻿@model InputTranslationsModel
+
+@{
+    if ( Model.Types.Any( t => t.Text == EnumHelper.FromCamel( TranslatableEntities.CustomField.ToString() ) ) )
+    {
+        Html.RenderPartial( "~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates );
+    }
+}
+
+<div id="cs-adhoc-page" class="admin-datatable-holder">
+
+    <form id="item-translation-form" action="" method="post" autocomplete="off">
+        <div id="language-picker">
+            <h2>Type:&nbsp;</h2>
+            @Html.DropDownList( "Type", Model.Types, new {@class = "input-size5"} )
+            <br/>
+            <h2>Languages:&nbsp;</h2>
+            @Html.ListBox( "Languages", Model.Languages, new {@class = "input-size9"} )
+            <span class="button button-primary btn-primary" id="load-form">@GetResource( ResourceKeys.Show )</span>
+        </div>
+        
+    </form>
+    <div id="editor">
+        
+    </div>
+</div>
+
+
+<script>
+    var path = "configure/" + gemini_admin.currentTab + "/" + gemini_admin.currentSubTab + "/";
+    $("#load-form")
+        .click( function ( e ) {
+            gemini_commons.stopClick( e );
+            gemini_ajax.call(path,
+                "editor",
+                function ( response ) {
+                    if (response.success) {
+                        $("#editor").html(response.Result.Html);
+
+                    }
+                },
+                function(response) {},
+                $( "#item-translation-form" ).serialize() + "&template=" + gemini_admin.currentTemplate,
+                null,
+                true);
+        });
+</script>

@@ -1,0 +1,49 @@
+﻿@using Countersoft.Foundation.Commons.Core
+@model InputTranslationsDataModel
+
+<table id="field-translation-table" class="basic dataTable row-hover">
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Field Type</th>
+        <th data-field="default">Default</th>
+        @foreach ( var language in Model.Languages )
+        {
+            <th data-field="@language.Code">@language.Code</th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @foreach ( var item in Model.DataItems )
+    {
+        var tcs = Model.Details.ContainsKey(item.Key) ? Model.Details[item.Key] : null;
+        <tr data-id="@item.Key" id="@item.Key">
+            <td data-edit="false">@item.Key</td>
+            <td data-edit="false">@item.FieldName</td>
+            <td data-edit="false">@item.FieldValue</td>
+            @foreach ( var language in Model.Languages )
+            {
+                PairBag<string, string> tc;
+                <td>
+                    @if ( tcs != null && (tc = tcs.SingleOrDefault( t => t.First == language.Code )) != null )
+                    {
+                        @tc.Second
+                    }</td>
+            }
+        </tr>
+    }
+    @if ( Model.DataItems.Count == 0 )
+    {
+        @*<tr>
+            <td>@GetResource( ResourceKeys.None )</td>
+        </tr>*@
+    }
+    </tbody>
+</table>
+
+<script>
+    
+    gemini_admin.initDatatablesWithEdit( "#field-translation-table", false, null,
+            { bPaginate: true, "aoColumnDefs": [{ "bSortable": true, "aTargets": [0, 1, 2, 3] }] } );
+
+</script>

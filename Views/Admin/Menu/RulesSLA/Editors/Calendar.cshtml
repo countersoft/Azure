@@ -1,0 +1,170 @@
+﻿@model CalendarModel
+<div id="SLAItemContainer" style="height: 350px;">
+    <div id="sla-form-container">
+        <form id="regular-form" enctype="multipart/form-data" action="@Model.Path" method="post">
+            <input type="hidden" value="@Model.WorkingDayCalendar.Id" name="Id" Id="Id"/>
+            <table id="table-admin-calendar" class="admin-data-entry">
+                <tbody>
+                <tr>
+                    <td class="field-name">
+                        Name
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name"
+                               class="input-field required input-size9" value="@Model.WorkingDayCalendar.Name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Description
+                    </td>
+                    <td>
+                        <textarea id="Description" name="Description" class="input-field required input-size9" rows="4">@Model.WorkingDayCalendar.Description</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Working Week Days
+                    </td>
+                    <td>
+                        <ul class="day-list">
+                            @foreach ( var day in Enum.GetValues( typeof( DayOfWeek ) ) )
+                            {
+                                <li>
+                                    <input type="checkbox" id="@day" name="DayOfWeek" class="fancy" value="@day" @(Model.WorkingDayCalendar.WorkingDays.Contains( (DayOfWeek)day ) ? "checked" : "")/>
+                                    <label for="@day">@day</label>
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">Non Working Days</td>
+                    <td>
+                        <div id="date-scroll">
+                            <ul class="day-list">
+                                @*Shown by JS on the form below - single place of adding the dates.*@
+                            </ul>
+                            <input type="text" name="new-date" id="new-date" class="datepicker"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">CSV Dates Import</td>
+                    <td>
+
+                        @if ( Model.WorkingDayCalendar.Id > 0 )
+                        {
+                            <input type="checkbox" class="fancy" name="append-dates" id="append-dates" checked="checked"/>
+                            <label for="append-dates">Append dates to list</label>
+                            <br />
+                        }
+                        <input type="file" id="csv-import" name="csv-import"/>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type="text/javascript">
+    $( document )
+        .ready( function () {
+            gemini_ui.fancyInputs( '#regular-form .fancy' );
+
+            var currentDates = [
+                @Html.Raw( Model.WorkingDayCalendar.NonWorkingDays.Any() ?
+                    Model.WorkingDayCalendar.NonWorkingDays
+                        .OrderBy(s=>s.Date).Select(s=> "'" + s.ToString( "yyyy/M/d" ) + "'" ).Aggregate((s,s1)=> s+="," + s1) :
+                    "")
+            ];
+            refreshDates();
+
+            gemini_ui.datePicker( '#regular-form .datepicker', addDate );
+            $( "#sla-form-container" ).jScrollPane( { autoReinitialise: true } );
+
+            $( "#date-scroll ul" ).on( 'click', 'span.action-button-delete', removeDate );
+
+
+            function addDateToForm( theDate ) {
+                var newDate = new Date( theDate );
+                var codedDate = newDate.getFullYear() + '/' + ( newDate.getMonth() + 1 ) + '/' + newDate.getDate();
+
+                $( "#date-scroll ul" )
+                    .append( '<li class="date-list">' +
+                        newDate.toDateString() +
+                        '<input type="hidden" name="dates" value="' +
+                        codedDate +
+                        '" /> <span class="action-button-delete cursor-pointer" title="@GetResource( ResourceKeys.Delete )" data-method="delete" data-coded-date="'
+                    + codedDate + '"></span></li>' );
+            }
+
+            function refreshDates() {
+                $( "#date-scroll ul li" ).remove(); //empty the box
+
+                for ( var i = 0; i < currentDates.length; i++ ) {
+                    addDateToForm( currentDates[i] );
+                }
+                $( "#date-scroll ul" ).append( '<li style="width:100%"><hr/></li>' );
+            }
+
+            function getCodedDate( theDate ) {
+                var newDate = new Date( theDate );
+                var codedDate = newDate.getFullYear() + '/' + ( newDate.getMonth() + 1 ) + '/' + newDate.getDate();
+                return codedDate;
+            }
+
+            function addDate( theDate ) {
+
+                var codedDate = getCodedDate( theDate );
+
+                $( '#regular-form .datepicker' ).val( '' );
+                if ( currentDates.indexOf( codedDate ) >= 0 ) {
+                    return; //already has this date in the list
+                }
+
+                currentDates.push( codedDate );
+                addDateToForm( theDate );
+            }
+
+            function removeDate() {
+
+                var codedDate = $( this ).data( 'coded-date' );
+                currentDates = _.filter( currentDates,
+                    function ( dt ) {
+                        return dt !== codedDate;
+                    } );
+                $( this ).closest( 'li' ).remove();
+            }
+
+            $( "#popup-button-yes" ).click( function ( e ) {
+                if ( $( "#regular-form" ).valid() ) {
+                    gemini_ui.startBusy( '#colorbox #popup-button-yes' );
+
+                    var options = {
+                        dataType: "json",
+                        success: function(response) {
+                            gemini_popup.popupClose(e);
+                            gemini_admin.getPage();
+
+                            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                        },
+                        error: function(error) {
+                            gemini_ui.stopBusy('#colorbox #popup-button-yes');
+                        }
+                    };
+                    $( "#regular-form", "#sla-form-container" ).ajaxForm( options );
+                    $("#regular-form", "#sla-form-container").submit();
+                } else {
+                    $( '.error:not(label)', '#cs-popup-content' ).first().focus();
+                }
+            } );
+
+            $( "#popup-button-no" ).click( function ( e ) {
+                gemini_popup.popupClose( e );
+            } );
+
+        } );
+</script>

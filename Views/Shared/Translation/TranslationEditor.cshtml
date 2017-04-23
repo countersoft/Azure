@@ -1,0 +1,49 @@
+﻿@model TranslationItemModel
+
+
+@if ( Model.Entity.Id != 0 )
+{
+    //Cannot do translation if it has not been saved first.
+
+    <span class="translation-widget-item" id="page-options-box">
+        <span class="translation-icon" id="@(Model.TranslationKey)_icon" data-key="@Model.TranslationKey">
+            <span class="control-icon gear" title="Translation"></span>        
+        </span>
+    </span>
+    <div class="translation-widget-details" id="@(Model.TranslationKey)_content">
+    </div>
+
+    <script>
+        $( "#@(Model.TranslationKey)_icon" )
+        .click( function () {
+            var item = $( this );
+            var key = item.data( "key" );
+            var expanded = item.data( "expanded" );
+                
+            if (expanded) {
+                $( "#@(Model.TranslationKey)_content" ).slideUp();
+                item.data( "expanded", false );
+            } else {
+                gemini_ajax.call("system",
+                    "getbykey",
+                    function(response) {
+                        if (response.success) {
+                            $( "#@(Model.TranslationKey)_content" )
+                                .html( response.Result.Data )
+                                .slideDown();
+                            item.data("expanded", true);
+                        }
+                    }, function(){},
+                    { key: key },
+                    null,
+                    true
+                    );
+            }
+
+        });
+    </script>
+}
+<style>
+
+
+</style>
