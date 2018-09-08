@@ -168,6 +168,13 @@ gemini_account = {
         $('#Labels').change(function () {
             var labelId = $(this).val();
 
+            if (labelId == 0) {
+                $('#projects-filter-link').attr('href', csVars.Url + 'workspace/0/items?projects=0');
+            }
+            else {
+                $('#projects-filter-link').attr('href', csVars.Url + 'workspace/0/items?projectlabel=L_' + labelId);
+            }
+
             gemini_ajax.jsonCall("dashboard", "getprojectsforlabel", function (response) {
                 if (response.success) {
                     $('#workload .right-zone .projects').replaceWith(response.Result.Html);

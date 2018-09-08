@@ -7,6 +7,7 @@
             @if(Model.CanManageComponents){<span data-tab="components" class="tab normal">@GetResource(ResourceKeys.Components)</span>}
             @if(Model.CanManageVersions){<span class="breaker">&nbsp;</span><span data-tab="versions" class="tab normal">@GetResource(ResourceKeys.Versions)</span>}
             @if(Model.CanManageDefaults){<span class="breaker">&nbsp;</span><span data-tab="defaults" class="tab normal">@GetResource(ResourceKeys.Defaults)</span>}
+            @if (Model.CanManageDefaults) {<span class="breaker">&nbsp;</span><span data-tab="templatedcontent" class="tab normal">@GetResource(ResourceKeys.TemplatedContent)</span>}
             @if(Model.CanManageDefaults && Model.HasCustomFieldDataPerProject)
             {
                 <span class="breaker">&nbsp;</span>

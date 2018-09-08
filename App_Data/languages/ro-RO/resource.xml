@@ -34,7 +34,18 @@
 <item id="EmailMeMyChanges">Trimite-mi schimbarile prin email</item>
 <item id="Surname">Nume</item>
 <item id="Firstname">Prenume</item>
-<item id="Open">Deschis</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+
+  <item id="Open">Deschis</item>
 <item id="Page">Pagina</item>
 <item id="Of">A</item>
 <item id="Change">Schimba</item>
@@ -71,7 +82,14 @@
 <item id="FollowedBy">Urmarit de</item>
 <item id="GroupDependencies">Grup Dependente</item>
 <item id="Grouped">Grupat</item>
+<!--B.E. - GDO - BEGIN-->
+<item id="GroupDependenciesOpen">Exclude closed items</item>
+<item id="GroupedOpen">Grouped (Open)</item>
+<!--B.E. - GDO - END-->
 <item id="ShowSequence">Articole secventiale</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
 <item id="NoZone">Ascunde Zone</item>
 <item id="ShowSLA">Afiseaza zona SLA</item>
 <item id="FilterNoType">Toate Articolele</item>
@@ -226,6 +244,7 @@
 <item id="FileName">Denumire Fisier</item>
 <item id="FileSize">Marime Fisier</item>
 <item id="Upload">Incarca</item>
+  <item id="Maximum">Maxim</item>
 
  <!-- general Terms -->
 <item id="Created">Creat</item>
@@ -283,6 +302,9 @@
 <item id="AdditionalInformation">Informatii Aditionale</item>
 <item id="Comments">Comentarii</item>
 <item id="Attachments">Atasamente</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
 <item id="Dependencies">Dependinte</item>
 <item id="Timeline">Timp</item>
 <item id="Calendar">Calendar</item>
@@ -513,12 +535,15 @@
   <item id="Coworkers">Angajati</item>
   <item id="Schedule">Programare</item>
   <item id="SeparateAlertFollowed">Primeste alerte email separate pentru fiecare articol urmarit</item>
+  
+  <item id="DefaultOrganization">Organizație implicită</item>
+  <item id="Organization">Organizatie</item>
+  <item id="EmailReply">E-mail Răspuns</item>
 
- <item id="Organization">Organizatie</item>
-  <item id="EmailReply">Email Reply</item>
-
-  <item id="NotFilter">Not</item>
-  <item id="Sequence">Sequence</item>
-  <item id="TrackedProgress">Tracked Progress</item>
   <item id="OutOfHours">Out Of Hours</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="NotFilter">Nu</item>
+  <item id="Sequence">Secvenţă</item>
+  <item id="TrackedProgress">Progresul pe senile</item>
+  <item id="SlaBreachDate">încălcare Data</item>
 </Resource>

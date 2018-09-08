@@ -27,8 +27,9 @@
                     }
                     <tr>
                         <td>
-                                    @if (GeminiContext.Config.EnableOpenId || GeminiContext.Config.EnableGoogleIntegration || GeminiContext.Config.EnableFacebookIntegration)
-                                    { 
+                                    @if (GeminiContext.Config.EnableOpenId || GeminiContext.Config.EnableGoogleIntegration || GeminiContext.Config.EnableFacebookIntegration
+                                        || GeminiContext.Config.EnableAuth0Integration )
+                                    {
                                         <table class="signin-form" style="width:330px;margin-top:30px;">
                                             <tr>
                                                 <td align="center" class="regular no-wrap">
@@ -36,7 +37,7 @@
                                                     <form action="openid?ReturnUrl=" method="post" id="openid-form" autocomplete="off">
                                                         <div id='openid-login-box' style="margin: 0 auto;">
                                                             <input type="hidden" name="action" value="verify" />
-                                                            <input type="hidden" name="returnUrl" id="returnUrl" value="@Model.ReturnUrl" />
+                                                            <input type="hidden" name="returnUrl" id="returnUrl0" value="@Model.ReturnUrl" />
                                                             <table>
                                                                 <tr>
                                                                  @if (GeminiContext.Config.EnableGoogleIntegration)
@@ -44,18 +45,24 @@
                                                                     <td><a id="openid-provider-google" class="google openid-provider-button" title="Google" onclick="gemini_account.openIdUrl('google')" ></a></td>
                                                                  }
                                                                  
-                                                                 <td>
-                                                                 @if (GeminiContext.Config.EnableOpenId)
-                                                                 {
-                                                                     <a id="openid-provider-yahoo" class="yahoo openid-provider-button" title="Yahoo!" onclick="gemini_account.openIdUrl('yahoo')" ></a>  
-                                                                 }
-                                                                 
-                                                                 @if (GeminiContext.Config.EnableFacebookIntegration)
-                                                                 {
-                                                                    <a id="openid-provider-facebook" class="facebook openid-provider-button" title="Facebook"  
-                                                                        href='https://www.facebook.com/dialog/oauth?client_id=@(GeminiContext.Config.FacebookAppId)&redirect_uri=@Countersoft.Foundation.Utility.Helpers.HttpHelper.GetWebsiteUrl()account/loginwait&scope=email&response_type=token'></a>
-                                                                 }
-                                                                </td>
+                                                                    <td>
+                                                                        @if (GeminiContext.Config.EnableOpenId)
+                                                                        {
+                                                                            <a id="openid-provider-yahoo" class="yahoo openid-provider-button" title="Yahoo!" onclick="gemini_account.openIdUrl('yahoo')"></a>
+                                                                        }
+
+                                                                        @if (GeminiContext.Config.EnableFacebookIntegration)
+                                                                        {
+                                                                            <a id="openid-provider-facebook" class="facebook openid-provider-button" title="Facebook"
+                                                                               href='https://www.facebook.com/dialog/oauth?client_id=@(GeminiContext.Config.FacebookAppId)&redirect_uri=@Countersoft.Foundation.Utility.Helpers.HttpHelper.GetWebsiteUrl()account/loginwait&scope=email&response_type=token'></a>
+                                                                        }
+                                                                        
+                                                                        @if (GeminiContext.Config.EnableAuth0Integration)
+                                                                        {
+                                                                            <a id="openid-provider-auth0" class="auth0 openid-provider-button" title="Auth0" onclick="webAuth.authorize();"></a>
+                                                                        }    
+                                                                    </td>
+                                                                
                                                                 </tr>
                                                                
                                                             </table>                    
@@ -142,17 +149,6 @@
                                                 </td>
                                             </tr>
                                         </table>
-                    
-                                        <!--<div class='help-box'><span>@GetResource(ResourceKeys.Help, Resourcing.Lower)</span></div>
-
-                                        <div class='hide help-popup'><h3>Forgot your password?</h3>
-                                            Enter your email address below to reset your password:
-                                            <div class="margin-top-10">
-                                                <form action="forgot-password" method="post" id="forgot-password-form">
-                                                    <input type="text" id="email" name="email" class="input-field required email input-size5" />&nbsp;&nbsp;<input id="forgot-password" name='forgot-password' type="submit" value='@GetResource(ResourceKeys.Reset)' class='button-primary button-small' />
-                                                </form>
-                                            </div>
-                                        </div>-->
                                     </td>
                                 </tr>                                
                             </table>                
@@ -170,4 +166,26 @@
 {
     gemini_account.initLogin();
     gemini_session.clearSessionTimeOut();
+}
+
+@if(GeminiContext.Config.EnableAuth0Integration)
+{
+<script src="https://cdn.auth0.com/js/auth0/8.7/auth0.min.js"></script>
+<script type="text/javascript">
+    var webAuth = new auth0.WebAuth({
+
+        domain: '@GeminiContext.Config.Auth0Domain',
+
+        clientID: '@GeminiContext.Config.Auth0ClientId',
+
+        redirectUri: '@GeminiContext.Config.Url' + 'account/auth0Login',
+        //audience: 'https://' + @GeminiContext.Config.Auth0Domain' + '/userinfo',
+        responseType: 'code',
+        scope: 'openid profile email'
+    });
+
+    function signin() {
+        webAuth.authorize();
+    }
+</script>
 }

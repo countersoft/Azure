@@ -3,13 +3,13 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-<div id="cs-template" >
-    <div id="page-documents" >
-    
+<div id="cs-template">
+    <div id="page-documents">
+
         <div id="folders" class="left">
             <div id="tree">&nbsp;</div>
         </div>
-    
+
         <div id="files">
             <div id="vertLine"></div>
             <div id="filelist-container"></div>
@@ -18,26 +18,29 @@
     </div>
 </div>
 
-@if(!Model.ReadOnly)
+@if (!Model.ReadOnly)
 {
-<ul id="document-folder-context-menu" class="cs-menu-context">
-    <li><a href="#edit">@GetResource(ResourceKeys.Rename)</a></li>
-    <li><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted )</a></li>
-    <li class="separator"></li>
-    <li class="highlight"><a href="#new">@GetResource(ResourceKeys.New, Resourcing.Dotted)</a></li>
-</ul>
+    <ul id="document-folder-context-menu" class="cs-menu-context">
+        <li><a href="#edit">@GetResource(ResourceKeys.Rename)</a></li>
+        <li><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>
+        <li class="separator"></li>
+        <li class="highlight"><a href="#new">@GetResource(ResourceKeys.New, Resourcing.Dotted)</a></li>
+    </ul>
 
 
-<div id="DocumentFolderRenamer">
-    @Html.TextBox("NewName")
-    @Html.Hidden("NodeId")
-    @Html.Hidden("ParentNodeId")
-</div>
+    <div id="DocumentFolderRenamer">
+        @Html.TextBox("NewName")
+        @Html.Hidden("NodeId")
+        @Html.Hidden("ParentNodeId")
+    </div>
 }
 
 @section DocumentReady
 {
-    
-    gemini_documents.init('@GetResource(ResourceKeys.Upload)', '@GetResource(ResourceKeys.DropZoneText)', '@GetResource(ResourceKeys.Delete)', @(Model.ReadOnly.ToJSBool()));
+
+    @{
+        var dropZoneText = String.Format("{0} - {1} {2}", GetResource(ResourceKeys.DropZoneText), Model.MaxFileUpload.ToFileSize(), GetResource(ResourceKeys.Maximum));
+    }
+    gemini_documents.init('@GetResource(ResourceKeys.Upload)', '@dropZoneText', '@GetResource(ResourceKeys.Delete)', @(Model.ReadOnly.ToJSBool()));
 
 }

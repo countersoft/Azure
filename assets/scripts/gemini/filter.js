@@ -549,7 +549,10 @@ gemini_filter = {
                 gemini_filter.stopSLATimer();
             }
         });
-        
+
+        //B.E. - SSO - BEGIN
+        gemini_filter.initFilterOptions();
+        //B.E. - SSO - END
     },
 
     slaTimerHandle: null,
@@ -932,7 +935,6 @@ gemini_filter = {
                                                         gemini_popup.toast('There was an error executing your filter', true);
                                                     }
                                                 }, data);
-       
     },
     refreshFilterCard: function () {
         var endPoint = 'items/executefilter';
@@ -1032,6 +1034,60 @@ gemini_filter = {
                     });               
             }
         });
+    },
+
+    //B.E. - SSO - BEGIN
+    initFilterOptions: function () {
+        
+        gemini_filter.initGroupDependenciesOpen();
+
+        $('#filter-form').on('ifChanged', '#GroupDependencies', function (e) {
+            gemini_filter.initGroupDependenciesOpen();
+        });
+
+        gemini_filter.initSequencedOpen();
+
+        $('#filter-form').on('ifChanged', '#ShowSequenced', function (e) {
+            gemini_filter.initSequencedOpen();
+        });
+
+    },
+
+    initGroupDependenciesOpen: function () {
+
+        if (!$('#GroupDependencies').is(':checked')) {
+            $('#GroupDependenciesOpen').attr('disabled', 'disabled');
+            $('#GroupDependenciesOpen').addClass("disabled");
+            $('#GroupDependenciesOpen').parent().addClass("disabled");
+            $('#filter-form .instant-filter-dropdown label[for="GroupDependenciesOpen"]').addClass('color-grayscale2');
+            $('#GroupDependenciesOpen').prop('checked', false);
+            $('#GroupDependenciesOpen').parent().removeClass('checked');
+        }
+        else {
+            $('#GroupDependenciesOpen').removeAttr('disabled');
+            $('#GroupDependenciesOpen').parent().removeClass("disabled");
+            $('#GroupDependenciesOpen').removeClass("disabled");
+            $('#filter-form .instant-filter-dropdown label[for="GroupDependenciesOpen"]').removeClass('color-grayscale2');
+        }
+    },
+
+    initSequencedOpen: function () {
+        if (!$('#ShowSequenced').is(':checked')) {
+            $('#SequencedOpen').attr('disabled', 'disabled');
+            $('#SequencedOpen').addClass("disabled");
+            $('#SequencedOpen').parent().addClass("disabled");
+            $('#filter-form .instant-filter-dropdown label[for="SequencedOpen"]').addClass('color-grayscale2');
+            $('#SequencedOpen').prop('checked', false);
+            $('#SequencedOpen').parent().removeClass('checked');
+        }
+        else {
+            $('#SequencedOpen').removeAttr('disabled');
+            $('#SequencedOpen').parent().removeClass("disabled");
+            $('#SequencedOpen').removeClass("disabled");
+            $('#filter-form .instant-filter-dropdown label[for="SequencedOpen"]').removeClass('color-grayscale2');
+        }
     }
+    //B.E. - SSO - END
+
 };
 

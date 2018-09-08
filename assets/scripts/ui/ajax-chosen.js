@@ -43,6 +43,16 @@
           }
           options.data[options.jsonTermKey] = val;
           options.data["cf"] = $(this).parent().parent().parent().attr('id');
+          var dependentOnField = $(this).closest("td").find("select").data("dependent");
+          if (dependentOnField != undefined) {
+              var parentValue;
+              if ($("#inline-edit-form #cf_" + dependentOnField)[0] != undefined) {
+                    parentValue = $("#inline-edit-form #cf_" + dependentOnField).val();
+                } else {
+                    parentValue = 'not-on-form';
+              }
+              options.data["parentValue"] = parentValue;
+            }
 
           if (gemini_edit.issueId && gemini_edit.issueId > 0)
           {

@@ -88,8 +88,8 @@
                                 <li><a id="add-item-dropdown">@GetResource(ResourceKeys.Item)</a></li>
                             }
                             @if (GeminiContext.Config.Sandbox || admin){<li><a id="add-project">@GetResource(ResourceKeys.Project)</a></li>}
-                            @if(Model.AllProjects.Count > 0)
-                            { 
+                            @if (Model.AllProjects.Count > 0 && !Model.NoPortalWorkspaceMgmt)
+                            {
                                 <li><a id="add-workspace">@GetResource(ResourceKeys.Workspace)</a></li>
                             }
                             @if(ShowAddCoworkers(false))

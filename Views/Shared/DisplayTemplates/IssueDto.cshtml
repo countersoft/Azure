@@ -102,7 +102,7 @@ else if(showSLA)
 @Html.Raw(coldata.FormattedData)
 @if (firstCol)
 {
-    if (itemsModel.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+    if ((itemsModel.GroupDependencies /*B.E. - GDO - BEGIN*/ || itemsModel.GroupDependenciesOpen)/*B.E. - GDO - END*/ && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
     {
 <span class='parent fonticon-arrow-down expander'></span>
     }
@@ -154,7 +154,7 @@ foreach (var coldata in data)
 @Html.Raw(coldata.FormattedData)
 @if (firstCol)
 {
-    if (Model.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+    if ((Model.GroupDependencies /*B.E. - GDO - BEGIN*/ || Model.GroupDependenciesOpen)/*B.E. - GDO - END*/ && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
     {
 <span class='parent fonticon-arrow-down expander'></span>
     }

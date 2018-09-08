@@ -36,7 +36,8 @@
         IsFireFox: @Url.IsFireFox().ToJSBool(),
         FirstDayOfWeek: @((int)GeminiContext.User.CultureInfo.DateTimeFormat.FirstDayOfWeek),
         Licensed: @((GeminiApp.GeminiLicense.LicenseType == Rhino.Licensing.LicenseType.Standard && !GeminiApp.GeminiLicense.InvalidInstance).ToJSBool()),
-        DontUseInlineEdit: @GeminiContext.Config.NoInlineEdit.ToJSBool()
+        DontUseInlineEdit: @GeminiContext.Config.NoInlineEdit.ToJSBool(),
+        MaxFileSize: @Model.MaxFileUpload
     };
     </script>
     <script type="text/javascript">

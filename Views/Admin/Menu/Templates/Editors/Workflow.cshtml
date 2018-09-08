@@ -17,7 +17,7 @@
         <div class="pad-bottom-10">
             @if (Model.ReferenceWorkflows.Count() > 1)
             {
-                <text>Drag-drop to define your workflow for <span class="bold" title="@Model.Process">@Model.Process.ToMaxMore(16)</span> or use an existing workflow: @Html.DropDownList("ReferenceId", Model.ReferenceWorkflows, new {@class = "input-size5", style = "position:absolute; z-index:10;"})<div class="right"><input type="checkbox" id="allowall" name="allowall" @if(Model.AllowAll){<text>checked="checked"</text>} /><label for="allowall">Allow any status transition</label></div></text>
+                <text>Drag-drop to define your workflow for <span class="bold" title="@Model.Process">@Model.Process.ToMaxMore(10)</span> or use an existing workflow: @Html.DropDownList("ReferenceId", Model.ReferenceWorkflows, new {@class = "input-size5", style = "position:absolute; z-index:10;"})<div class="right"><input type="checkbox" id="allowall" name="allowall" @if(Model.AllowAll){<text>checked="checked"</text>} /><label for="allowall">Allow any status transition</label></div></text>
             }
             else
             {

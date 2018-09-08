@@ -2001,7 +2001,10 @@ textarea.input-size12
     .right-zone
     {
         float: left;
-        width: 73%;
+        width: 75%;
+        padding-right: 35px; //width of the tool bars on RHS plus a little space
+        border-collapse: collapse; /*Stops padding/margin pushing it down, 25% + 75% is a true 100%  */
+        box-sizing: border-box;
 
         @media all and (min-width:1600px) 
         {
@@ -3464,7 +3467,9 @@ div.mceDropDown
 		}
 	}
 
-	#ProjectGroupReportContainer, #UserReportContainer
+	#ProjectGroupReportContainer, 
+    #UserReportContainer,
+    #OrganizationMembershipContainer
 	{
 		table
 		{
@@ -4528,6 +4533,9 @@ div.mceDropDown
     padding: 0;
     font-family: Arial, Helvetica, Univers, Corbel, sans-serif;
 
+    #tabledata_wrapper{
+        overflow-x: auto;
+    }
 
     #tabledata 
     {
@@ -4663,6 +4671,10 @@ div.mceDropDown
 		border-left:1px solid $color-grayscale3;
 		position:relative;
 		height: 32px;
+        ul {
+            list-style-type: disc;
+            margin-left: 25px;
+        }
 
 		&.edit-enabled:hover
 		{
@@ -4910,6 +4922,12 @@ $border-color: $color-grayscale3;
         background: url($theme-base-path + 'images/design/base/facebook.gif') no-repeat scroll center center $color-white;
     }
 
+    //Auth0 - B.E. - BEGIN
+    .auth0
+    {
+        background: url($theme-base-path + 'images/design/base/auth0.png') no-repeat scroll center center $color-white;
+    }
+    //Auth0 - B.E. - END
 
     #preferences
     {

@@ -8,20 +8,23 @@
             <tr>
                 <th data-field="Name" data-required='true'>Organization</th>
                 <th data-field="Description">Description</th>
+                <th data-field="Description">Membership Count</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.Organizations)
             {
-                <tr data-id="@item.Id">
-                    <td>@item.Name</td>
-                    <td>@item.Description</td>
-                    <td data-edit="false" class="actions">
-                        <span class="action-button-edit cursor-pointer" data-method="edit" title="@GetResource(ResourceKeys.Edit)"></span>
-                        <span class="action-button-delete cursor-pointer" data-method="delete" title="@GetResource(ResourceKeys.Delete)" ></span>
-                    </td>
-                </tr>
+            <tr data-id="@item.Id">
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td data-edit="false" class="no-width"><a href="#" id="members">@item.Members.Count - Members</a></td>
+                
+                <td data-edit="false" class="actions">
+                    <span class="action-button-edit cursor-pointer" data-method="edit" title="@GetResource(ResourceKeys.Edit)"></span>
+                    <span class="action-button-delete cursor-pointer" data-method="delete" title="@GetResource(ResourceKeys.Delete)"></span>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -44,7 +47,7 @@
                             gemini_admin.removeRow(item);
                             gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                         }
-                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id }, null, true);
+                    }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: id, newOrg: $('#new-organization').val() }, null, true);
                 });
 
             },

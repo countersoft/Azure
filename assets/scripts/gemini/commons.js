@@ -156,9 +156,15 @@ gemini_commons = {
         gemini_ajax.postCall("resources", "get",
             function (response)
             {
-                $(response.Result.Data).each(function (i, e)
-                {
-                    message = message.replace("[[" + e.Key + "]]", e.Value);
+                $(response.Result.Data).each(function (i, e) {
+                    if (Array.isArray(message)) {
+                        $(message).each(function(index, msg) {
+                            message[index] = msg.replace("[[" + e.Key + "]]", e.Value);        
+                        });
+                    } else {
+                        message = message.replace("[[" + e.Key + "]]", e.Value);    
+                    }
+                    
                 });
                 callback(message, callbackData);
             }, null, { keys: JSON.stringify(keys) }, null, true);
@@ -176,7 +182,7 @@ gemini_commons = {
         return decodeURI(value);
     },
     urlParameterEncode: function(value) {
-        return value.replace(/\&/g, "%26");
+        return encodeURIComponent(value);
     },
     PAGE_TYPE: {
         Custom: 0,

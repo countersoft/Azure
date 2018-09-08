@@ -5,7 +5,11 @@
     <div id="action-overlay">
         @if (Model.DisplayPageActions)
         {
-            if (IsAuthenticated && Model.CanPinPage)
+            if (IsAuthenticated && Model.CanPinPage
+                //B.E. - Disable workspace management - BEGIN
+                && !Model.NoPortalWorkspaceMgmt
+                //B.E. - Disable workspace management - BEGIN
+                )
             {
                 if (Model.CardAlreadyPinned)
                 {

@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Изпратете емайл с промените</item>
   <item id="Surname">Фамилия</item>
   <item id="Firstname">Име</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+
   <item id="Open">Отворен</item>
   <item id="Page">Страница</item>
   <item id="Of">от</item>
@@ -71,7 +82,14 @@
   <item id="FollowedBy">Следено от</item>
   <item id="GroupDependencies">Групи зависимости</item>
   <item id="Grouped">Групирани</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Exclude closed items</item>
+  <item id="GroupedOpen">Grouped (Open)</item>
+  <!--B.E. - GDO - END-->
   <item id="ShowSequence">Серия задачи</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
   <item id="NoZone">Скриване на зони</item>
   <item id="ShowSLA">Покажи SLA зони</item>
   <item id="FilterNoType">&lt; Всички задачи &gt;</item>
@@ -226,6 +244,7 @@
   <item id="FileName">Име на файл</item>
   <item id="FileSize">Размер на файл</item>
   <item id="Upload">Прикачен</item>
+  <item id="Maximum">максимален</item>
 
   <!-- general Terms -->
   <item id="Created">Създаване</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">Допълнителна информация</item>
   <item id="Comments">Коментари</item>
   <item id="Attachments">Прикачени файлове</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
   <item id="Dependencies">Зависимости</item>
   <item id="Timeline">Време</item>
   <item id="Calendar">Календар</item>
@@ -514,11 +536,13 @@
   <item id="Schedule">График</item>
   <item id="SeparateAlertFollowed">Получаване на отделни е-писма за всеки следван продукт</item>
 
+  <item id="DefaultOrganization">Организация по подразбиране</item>
   <item id="Organization">Организация</item>
-  <item id="EmailReply">Email Reply</item>
+  <item id="EmailReply">Email отговор</item>
   
-  <item id="NotFilter">Not</item>
-  <item id="Sequence">Sequence</item>
-  <item id="TrackedProgress">Tracked Progress</item>
-  <item id="OutOfHours">Out Of Hours</item>
+  <item id="NotFilter">Не</item>
+  <item id="Sequence">последователност</item>
+  <item id="TrackedProgress">Проследен Прогрес</item>
+  <item id="SlaBreachDate">Нарушение Дата</item>
+  <item id="TemplatedContent">Templated Content</item>
 </Resource>

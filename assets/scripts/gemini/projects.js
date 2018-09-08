@@ -53,23 +53,31 @@
             });
 
             $(this).addClass("selected");
+
+            switch ($(this).attr("data-tab")) {
+                case "components":
+                    gemini_projects.settingsComponents(projectId);
+                    break;
+                case "versions":
+                    gemini_projects.settingsVersions(projectId);
+                    break;
+                case "templatedcontent":
+                    gemini_projects.settingsTemplatedContent(projectId);
+                    break;
+                case "cflookup":
+                    gemini_projects.settingsCFLookup(projectId, 0);
+                    break;
+                case "defaults":
+                    gemini_projects.settingsDefaults(projectId, 0);
+                    break;
+            }
             
-            if ($(this).attr("data-tab") == "components")
-            {
-                gemini_projects.settingsComponents(projectId);
-            }
-            else if ($(this).attr("data-tab") == "versions")
-            {
-                gemini_projects.settingsVersions(projectId);
-            }
-            else if ($(this).attr("data-tab") == "defaults") {
-                gemini_projects.settingsDefaults(projectId, 0);
-            }
-            else if ($(this).attr("data-tab") == "cflookup") {
-                gemini_projects.settingsCFLookup(projectId, 0);
-            }
         });
         
+        $.subscribe("templated-response-added", function () {
+            gemini_projects.settingsTemplatedContent(projectId);
+        });
+
         gemini_ui.chosen('#project-administration #ProjectId');
         $('#project-administration #ProjectId').change(function ()
         {
@@ -102,6 +110,15 @@
         gemini_ajax.jsonCall("project/" + projectId + "/settings", "versions", function (response)
         {
             gemini_ui.destroyHtmlEditor('#defaults-form .wysiwyg-editor');
+            $("#setting-zone", "#project-administration").html(response.Result.Html);
+            gemini_sizing.stretchWindow();
+        }, null, null, null, true);
+    },
+
+    settingsTemplatedContent: function (projectId) {
+        gemini_ajax.jsonCall("project/" + projectId + "/settings", "templatedcontent", function (response)
+        {
+            $("#setting-zone", "#project-administration").empty();
             $("#setting-zone", "#project-administration").html(response.Result.Html);
             gemini_sizing.stretchWindow();
         }, null, null, null, true);

@@ -14,6 +14,10 @@
             $('#@Model.Id-delete-icon').hide();
             $('#delete_@Model.Id').prop('checked', true);
             $('#delete_@Model.Id').trigger('change');
-        });        
+        });
     </script>
 }
+
+<script>
+    gemini_ui.validateFileSize($("#@Model.Id"), csVars.MaxFileSize);
+</script>

@@ -1,19 +1,34 @@
 ﻿@model InstantItemFilterModel
-<div id="instant-filter-options" data-field-name="@Model.Options" data-field-desc="@Model.Options" class="instant-filter-box left"><div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Options)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>
-<div class="instant-filter-dropdown auto-popup hide" data-field-type="custom">
-<input class="fancy" type="checkbox" id="IncludeClosedItems" name="IncludeClosedItems" @if(Model.IncludeClosedItems) {<text>checked="checked"</text>} />
-@Html.LabelFor(m => m.IncludeClosedItems, GetResource(ResourceKeys.FilterIncludeClosed), new { title = string.Concat('+', GetResource(ResourceKeys.Closed)) })<br />
-<input class="fancy" type="checkbox" id="GroupDependencies" name="GroupDependencies" @if(Model.GroupDependencies) {<text>checked="checked"</text>} />
-@Html.LabelFor(m => m.GroupDependencies, GetResource(ResourceKeys.GroupDependencies), new { title = GetResource(ResourceKeys.Grouped) })<br />
-<div class="border-bottom margin-top-10 margin-bottom-15"></div> 
-<input class="fancy" type="radio" id="None" name="Sequence" value="None" @if (!Model.ShowSequenced && !Model.ShowSLA) { <text> checked="checked" </text>  } />
-<label for="None" title="@GetResource(ResourceKeys.NoZone)">@GetResource(ResourceKeys.NoZone)</label><br />
-@if(Model[ItemAttributeVisibility.SLA])
-{ 
-<input class="fancy" type="radio" id="ShowSLA" name="Sequence" value="ShowSLA" @if (Model.ShowSLA) { <text> checked="checked" </text>  } />
-@Html.LabelFor(m => m.ShowSLA, GetResource(ResourceKeys.ShowSLA), new { title = GetResource(ResourceKeys.ShowSLA) })<br />
-}
-<input class="fancy" type="radio" id="ShowSequenced" name="Sequence" value="ShowSequenced" @if (Model.ShowSequenced) { <text> checked="checked" </text> } />
-@Html.LabelFor(m => m.ShowSequenced, GetResource(ResourceKeys.ShowSequence), new { title = GetResource(ResourceKeys.ShowSequence) })<br />
-</div>
+<div id="instant-filter-options" data-field-name="@Model.Options" data-field-desc="@Model.Options" class="instant-filter-box left">
+    <div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Options)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>
+    <div class="instant-filter-dropdown auto-popup hide" data-field-type="custom">
+        <input class="fancy" type="checkbox" id="IncludeClosedItems" name="IncludeClosedItems" @if (Model.IncludeClosedItems) { <text> checked="checked" </text> } />
+        @Html.LabelFor(m => m.IncludeClosedItems, GetResource(ResourceKeys.FilterIncludeClosed), new { title = string.Concat('+', GetResource(ResourceKeys.Closed)) })<br />
+        @*B.E. - GDO - BEGIN*@<div class="border-bottom margin-top-10 margin-bottom-15"></div> @*B.E. - GDO - END*@
+        <input class="fancy" type="checkbox" id="GroupDependencies" name="GroupDependencies" @if (Model.GroupDependencies) { <text> checked="checked" </text> } />
+        @Html.LabelFor(m => m.GroupDependencies, GetResource(ResourceKeys.GroupDependencies), new { title = GetResource(ResourceKeys.Grouped) })<br />
+        @*B.E. - GDO - BEGIN*@
+        &emsp;&emsp; <input class="fancy" type="checkbox" id="GroupDependenciesOpen" name="GroupDependenciesOpen" @if (Model.GroupDependenciesOpen) { <text> checked="checked" </text>   } />
+        @Html.LabelFor(m => m.GroupDependenciesOpen, GetResource(ResourceKeys.GroupDependenciesOpen), new { title = GetResource(ResourceKeys.GroupedOpen) })<br />
+        @*B.E. - GDO - END*@
+        <div class="border-bottom margin-top-10 margin-bottom-15"></div>
+
+        <input class="fancy" type="radio" id="ShowSequenced" name="Sequence" value="ShowSequenced" @if (Model.ShowSequenced) { <text> checked="checked" </text>  } />
+        @Html.LabelFor(m => m.ShowSequenced, GetResource(ResourceKeys.ShowSequence), new { title = GetResource(ResourceKeys.ShowSequence) })<br />
+        
+         @*B.E. - SSO - BEGIN*@
+        &emsp;&emsp; <input class="fancy" type="checkbox" id="SequencedOpen" name="SequencedOpen" @if (Model.SequencedOpen) { <text> checked="checked" </text>       } />
+        @Html.LabelFor(m => m.SequencedOpen, GetResource(ResourceKeys.SequencedOpen), new { title = GetResource(ResourceKeys.SequencedOpen) })<br />
+        @*B.E. - SSO - END*@
+
+        @if (Model[ItemAttributeVisibility.SLA])
+        {
+            <input class="fancy" type="radio" id="ShowSLA" name="Sequence" value="ShowSLA" @if (Model.ShowSLA) { <text> checked="checked" </text>    } />
+            @Html.LabelFor(m => m.ShowSLA, GetResource(ResourceKeys.ShowSLA), new { title = GetResource(ResourceKeys.ShowSLA) })<br />
+        }
+        
+        <input class="fancy" type="radio" id="None" name="Sequence" value="None" @if (!Model.ShowSequenced && !Model.ShowSLA) { <text> checked="checked" </text>    } />
+        <label for="None" title="@GetResource(ResourceKeys.NoZone)">@GetResource(ResourceKeys.NoZone)</label><br />
+
+    </div>
 </div>

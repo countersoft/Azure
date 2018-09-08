@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Meine Änderungen mir zumailen</item>
   <item id="Surname">Nachname</item>
   <item id="Firstname">Vorname</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+  
   <item id="Open">Offen</item>
   <item id="Page">Seite</item>
   <item id="Of">Von</item>
@@ -71,7 +82,14 @@
   <item id="FollowedBy">Beobachtet von</item>
   <item id="GroupDependencies">Abhängigkeiten Gruppieren</item>
   <item id="Grouped">Gruppiert</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Exclude closed items</item>
+  <item id="GroupedOpen">Grouped (Open)</item>
+  <!--B.E. - GDO - END-->
   <item id="ShowSequence">Aufeinanderfolgende Items</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
   <item id="NoZone">Bereiche verstecken</item>
   <item id="ShowSLA">SLA-Bereich zeigen</item>
   <item id="FilterNoType">Alle Items</item>
@@ -226,6 +244,7 @@
   <item id="FileName">Dateiname</item>
   <item id="FileSize">Dateigröße</item>
   <item id="Upload">Hochladen</item>
+  <item id="Maximum">maximal</item>
 
   <!-- general Terms -->
   <item id="Created">Erstellt</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">Zusätzliche Informationen</item>
   <item id="Comments">Kommentare</item>
   <item id="Attachments">Anhänge</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+
   <item id="Dependencies">Abhängigkeiten</item>
   <item id="Timeline">Zeitleiste</item>
   <item id="Calendar">Kalender</item>
@@ -514,11 +536,14 @@
   <item id="Schedule">Planen</item>
   <item id="SeparateAlertFollowed">Separate Email-Benachrichtigung für jedes Beobachtets Item</item>
 
+  <item id="DefaultOrganization">Standard Organisation</item>
   <item id="Organization">Organisation</item>
-  <item id="EmailReply">Email Reply</item>
+  <item id="EmailReply">E-Mail-Antwort</item>
 
   <item id="NotFilter">Nicht</item>
-  <item id="Sequence">Sequence</item>
-  <item id="TrackedProgress">Tracked Progress</item>
   <item id="OutOfHours">Out Of Hours</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="Sequence">Sequenz</item>
+  <item id="TrackedProgress">Verfolgte Fortschritte</item>
+  <item id="SlaBreachDate">Bruchdatum</item>
 </Resource>

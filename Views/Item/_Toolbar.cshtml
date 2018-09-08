@@ -33,7 +33,7 @@
 
         @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedAttachments))
         {
-            <div class="wrapper" title="@GetResource(ResourceKeys.Attachments)"><div class="action attachment"><span id="attachmentupload-hit"></span></div></div>
+            <div class="wrapper" title="@GetResource(ResourceKeys.Attachments)"><div class="action attachment"><span id="attachmentupload-hit" data-max-file="@Model.MaxFileUpload"></span></div></div>
         }
         
         @if (@Model.HasUserVoted == null && @Model.CanUserVote)

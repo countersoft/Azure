@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Emailt kérek a változásokról</item>
   <item id="Surname">Vezetéknév</item>
   <item id="Firstname">Keresztnév</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+  
   <item id="Open">Megnyit</item>
   <item id="Page">Oldal</item>
   <item id="Of">/</item>
@@ -69,9 +80,16 @@
   <item id="CreatedTimestamp">Létrehozás időbélyege</item>
   <item id="ReportedBy">Bejelentő</item>
   <item id="FollowedBy">Követi</item>
-  <item id="GroupDependencies">Csoportosított függőségek</item>
-  <item id="Grouped">Csoportosított</item>
+  <item id="GroupDependencies">Csoportosított függőségek (Mind)</item>
+  <item id="Grouped">Csoportosított (Mind)</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Lezárt elemek kizárása</item>
+  <item id="GroupedOpen">Csoportosított (Nyitottak)</item>
+  <!--B.E. - GDO - END-->
   <item id="ShowSequence">Zóna sorrendek mutatása</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Lezárt elemek kizárása</item>
+  <!--B.E. - SSO - END-->
   <item id="NoZone">Zónák elrejtése</item>
   <item id="ShowSLA">SLA zóna mutatása</item>
   <item id="FilterNoType">Minden elem</item>
@@ -226,6 +244,7 @@
   <item id="FileName">Fájl név</item>
   <item id="FileSize">Fájl méret</item>
   <item id="Upload">Feltöltés</item>
+  <item id="Maximum">Maximális</item>
 
   <!-- general Terms -->
   <item id="Created">Létrehozva</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">További részletek</item>
   <item id="Comments">Kommentek</item>
   <item id="Attachments">Csatolmányok</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
   <item id="Dependencies">Függőségek</item>
   <item id="Timeline">Idővonal</item>
   <item id="Calendar">Naptár</item>
@@ -514,10 +536,13 @@
   <item id="Schedule">Ütemezés</item>
   <item id="SeparateAlertFollowed">Minden követett elem változásáról egyedi emailt kérek</item>
 
- <item id="Organization">Szervezet</item>
-  <item id="EmailReply">Email Reply</item>
+  <item id="DefaultOrganization">Alapértelmezett szervezet</item>
+  <item id="Organization">Szervezet</item>
+  <item id="EmailReply">E-mail Válasz</item>
 
-  <item id="NotFilter">Not</item>
-  <item id="Sequence">Sequence</item>
-  <item id="TrackedProgress">Tracked Progress</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="NotFilter">Nem</item>
+  <item id="Sequence">Sorrend</item>
+  <item id="TrackedProgress">Lánctalpas haladás</item>
+  <item id="SlaBreachDate">Breach dátuma</item>
 </Resource>

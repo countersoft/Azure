@@ -1,0 +1,164 @@
+﻿@model TemplatedContentViewModel
+<table class="width-100">
+    <tr>
+        <td class="valign-top pad-right-20">
+            <div id="cs-admin" class="left width-100">
+                <div id="templatedcontent-container" class="admin-datatable-holder width-100">
+                    <table id="project-admin-templatedcontent" class="basic width-100">
+                        <thead>
+                        <tr>
+                            <th data-field="Name" data-required='true'>Name</th>
+                            <th data-field="Projects">Projects</th>
+                            <th data-field="Areas" data-edit-type="select">Areas</th>
+                            <th data-field="Groups" data-edit-type="select">Groups</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.TemplatedContent)
+                        {
+                            <tr data-id="@item.Template.Id" id="@item.Template.Id">
+                                <td>@item.Template.Name</td>
+                                <td data-edit="false">@item.ProjectDisplay</td>
+                                <td data-edit="false">@item.AreaDisplay</td>
+                                <td data-edit="false">@item.GroupDisplay</td>
+                                <td data-edit="false" class="actions">
+                                    @if (Model.IsAdmin || !item.Template.IsAllProjects())
+                                    {
+                                        <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
+                                        <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <div id="templated-content-add-container"></div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        gemini_admin.initDatatables("#project-admin-templatedcontent",
+            {
+                "aaSorting": [[0, "desc"]],
+                fnDrawCallback: function (value, y) {
+                gemini_ui.inlineEdit("#project-admin-templatedcontent td:not([data-edit='false'])", "project/" + @Model.ProjectId + "/settings/templatedcontent/getproperty", "project/" + @Model.ProjectId + "/settings/templatedcontent/setproperty");
+                }
+            });
+
+        $("#project-admin-templatedcontent_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='submit' value='Add' class='button-primary'></div>");
+
+
+        function showEditor(templatedContentId) {
+            var action = templatedContentId > 0 ? "edit" : "add";
+
+
+            gemini_ajax.jsonCall("project/@Model.ProjectId/settings/templatedcontent",
+                action,
+                function (response) {
+                    if (response.success) {
+                        var container = '#templated-content-add-container ';
+
+                        $("#templatedcontent-container").slideUp();
+                        var html = $(response.Result.Html).find('form')
+                            .append('<input type="button" id="project-admin-save" class="button-primary margin-top-10" value="Save" />')
+                            .append('<input type="button" id="project-admin-cancel" class="button-secondary margin-10" value="Cancel" />');
+
+                        $("#templated-content-add-container").html(html).slideDown();
+
+                        //Project admin area
+                        $("#project-admin-cancel").unbind("click").click(function () {
+                            $("#templated-content-add-container").slideUp();
+                            $("#templatedcontent-container").slideDown();
+                            //gemini_ui.destroyHtmlEditor(container + '#regular-form #response');
+                        });
+
+                        $("#project-admin-save").unbind("click").click(function() {
+                            gemini_ui.startBusy("#project-admin-save");
+                            gemini_ajax.postCall("project/@Model.ProjectId/settings/templatedcontent", "save", function (response) {
+
+                                if (response.success) {
+                                    gemini_popup.toast("Saved");
+                                }
+
+                                gemini_ui.destroyHtmlEditor('#regular-form #response');
+                                gemini_ui.stopBusy(+ '#popup-button-yes');
+                                //close this form and return to the other screen
+                                gemini_projects.settingsTemplatedContent(@Model.ProjectId);
+                                //$("#templated-content-add-container").slideUp();
+                                //$("#templatedcontent-container").slideDown();
+                                
+
+                            }, function () {
+                                alert("There was an error");
+                                gemini_ui.stopBusy(container + '#popup-button-yes');
+                            }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
+                        });
+
+                        gemini_ui.chosen(container + "#Project", null, true);
+                        gemini_ui.chosen(container + "#Area", null, true);
+                        gemini_ui.chosen(container + "#Group", null, true);
+                        setTimeout(function () {
+                            gemini_ui.destroyHtmlEditor(container + '#regular-form #response');
+                            gemini_ui.htmlEditor(container + '#regular-form #response');
+                        }, 100);
+
+                    } else {
+                        $("#templated-content-add-container").html('<em>Error</em>');
+
+                    }
+                    if (action === "add") {
+                        gemini_ui.stopBusy('#add-button-container #system-options-add');    
+                    }
+                }, function(){},
+                {
+                    projectId: @Model.ProjectId,
+                    templatedContentId: templatedContentId
+                }, null, true);
+
+
+        }
+
+        $("#project-admin-templatedcontent_wrapper #system-options-add").click(function ()
+        {
+            gemini_ui.startBusy('#add-button-container #system-options-add');
+
+            showEditor(0);
+        });
+
+        $(".action-button-edit", "#project-admin-templatedcontent").unbind("click").click(function() {
+            var itemId = $(this).closest("tr").data("id");
+            showEditor(itemId);
+        });
+
+        $(".action-button-delete", "#project-admin-templatedcontent").unbind("click").click(function() {
+            var tr = $(this).closest("tr");
+            var name = tr.children('td').eq(0).text();
+            gemini_popup.modalConfirm("@GetResource(ResourceKeys.Delete): " + name,
+                {},
+                function() {
+                    var itemId = tr.data("id");
+                    gemini_ajax.jsonCall("project/@Model.ProjectId/settings/templatedcontent",
+                        "delete",
+                        function(response) {
+                            if (response.success) {
+                                //tr.remove();
+                                $.publish('templated-response-added', 0);
+                            }
+                        }, function(e) {
+                        }, {projectId: @Model.ProjectId, templatedContentId: itemId }, null, true);
+                },
+                null);
+
+
+            
+        });
+
+
+    });
+</script>

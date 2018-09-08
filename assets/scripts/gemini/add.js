@@ -78,7 +78,13 @@ gemini_add =
 
         gemini_ui.startBusy('#cs-popup-add #cs-popup-add-save');
 
-        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item, function (response) { gemini_add.populateAddItem(response); gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save'); }, null, $('#inline-edit-form').serialize(), $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
+        gemini_edit.triggerXHR = gemini_ajax.postCall(gemini_add.addUrl + 'item', 'edit?viewtype=' + gemini_commons.PAGE_TYPE.Item,
+            function(response) {
+                gemini_add.populateAddItem(response);
+                gemini_ui.stopBusy('#cs-popup-add #cs-popup-add-save');
+            }, null,
+            $('#inline-edit-form').serialize(),
+            $('[data-attribute-id="' + $(elem).attr('id') + '"]').parent().parent(), true);
     },
 
     triggerCustomfieldChange: function (elem)
@@ -98,14 +104,17 @@ gemini_add =
 
         gemini_ajax.postCall("", "cascade", gemini_add.cascadeUpdate, null,
             {
-                fieldid: id, value: selectedval,
+                fieldid: id,
+                value: selectedval,
                 projectid: $("#ProjectName", "#cs-popup-add").find("option:selected").val(),
                 issueid: $("#id", "#cs-popup-add").val()
+            },
+            {
+                parentValue: selectedval
             });
     },
 
-    cascadeUpdate: function (response)
-    {
+    cascadeUpdate: function (response, extra) {
         var data = response.Result.Data;
         
         for (var i = 0; i < data.length; i++) {
@@ -117,7 +126,7 @@ gemini_add =
                 presel += "|" + $(this).val() + "|";
             });
 
-            $("#" + item.Key, '#cs-popup-add').empty();
+            $("#" + item.Key, '#cs-popup-add').empty().data("parent-value", extra.parentValue );
             for (var j = 0; j < item.Value.length; j++) {
                 var selected = "";
                 if (item.Value[j].Selected || presel.indexOf("|" + item.Value[j].Value + "|") >= 0) {
@@ -132,13 +141,14 @@ gemini_add =
         }
     },
 
-    populateAddItem: function (response)
-    {
+    populateAddItem: function (response) {
         if (response.success == null || (response.success != null && response.success)) {
 
             $('#full-item').html(response);
             $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' });
-            setTimeout(function () { $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' }); }, 500);
+            setTimeout(function() {
+                $('#cs-popup-add-content').data('jsp').reinitialise({ contentWidth: '700px' });
+            }, 2000);
             $(".checked-select", '#cs-popup-add-content').jScrollPane({});
 
             gemini_ui.datePicker('#cs-popup-add-content .datepicker');
@@ -171,7 +181,14 @@ gemini_add =
                 }
             });*/
             //$('.chosen-results', '#cs-popup-add-content').jScrollPane({});
-            gemini_ui.htmlEditor('.wysiwyg-editor', /*gemini_edit.onHtmlEditorInit*/null, gemini_add.setPendingChanges);
+
+            //Create Description Templated Content plugin for TinyMCE
+
+            var projectId = $("#ProjectName").val();
+            gemini_ui.templatedContentPlugin( gemini_ui.templateContentAreas.Description, projectId, 0, function (area) {
+                gemini_ui.htmlEditor('.wysiwyg-editor', null, gemini_add.setPendingChanges,
+                    undefined, undefined, undefined, 'templatedcontent_' + gemini_ui.templateContentAreas.Description);
+            }, true);
             gemini_ui.userAutocomplete('#cs-popup-add-content .user-autocomplete');
 
             // Mark descriptions for textareas as vertical-align top
@@ -240,7 +257,7 @@ gemini_add =
         $('#cs-popup-add').css("height", availableHeight+40);
         $('#cs-popup-add').css("width", "820px");
 
-        var contentHeight = availableHeight + 40 - $('#cs-popup-add-buttons').height() - 60;
+        var contentHeight = availableHeight - 30 - $('#cs-popup-add-buttons').height() ;
         /*$("#cs-popup-add-content").jScrollPane({ contentWidth: '700px' });
 
         //Hack alert

@@ -367,6 +367,87 @@ gemini_ui = {
         }
         return false;
     },
+    getTemplatedContent: function (editor, projectId, id, issueId) {
+        gemini_ajax.call("item", "gettemplatedcontent/" + projectId + "/" + id,
+            function (data) {
+                editor.insertContent(data);
+            }, null,
+            { issueId: issueId }
+        );
+    },
+    templateContentAreas: {
+        Description: 1,
+        Comment: 2,
+        Breeze: 4
+    },
+    templatedContentPlugin: function (area, projectId, issueId, callback, isUsedInPopup) {
+        gemini_ajax.call("item", "gettemplatedcontentlist/" + projectId, function (response) {
+            //data function.
+                tinymce.PluginManager.add('templatedcontent_' + area, function (editor, url) {
+                    // Add a button that opens a window
+                    editor.addButton('templatedcontent_' + area, function () {
+                        return {
+                            type: 'listbox',
+                            text: ' ',
+                            classes: 'templated-content-control', 
+                            icon: 'template',
+                            tooltip: 'Templated Content',
+                            values: response.Result.Data,
+                            fixedWidth: false,
+                            onRenderMenu: function (a, b, c, d) {
+                            },
+                            onclick: function (e) {
+                                if (e.control.settings.value) {
+                                    if (e.control.settings.value > 0) {
+                                        gemini_ui.getTemplatedContent(editor, projectId, e.control.settings.value, issueId);
+                                    }
+                                    else {
+                                        if (area === 1 || isUsedInPopup) {
+                                            //Description - this will be in a popup already
+                                            gemini_popup.popupsPopup(
+                                                "project/" + projectId + "/settings/templatedcontent",
+                                                "Add",
+                                                {
+                                                    currentArea: area,
+                                                    issueId: issueId,
+                                                    IsInPopup: isUsedInPopup
+                                                },
+                                                null,
+                                                function() {
+                                                    $.subscribe('templated-response-added', function (_, id) {
+                                                        gemini_ui.getTemplatedContent(editor, projectId, id, issueId);
+                                                    });    
+                                                });
+
+                                        } else {
+                                            var projId = projectId === 0 ? gemini_item.issueProjectId : projectId;
+                                            gemini_popup.centerPopup("project/" + projId + "/settings/templatedcontent", "Add",
+                                                { currentArea: area, issueId: issueId, IsInPopup: false },
+                                                null, null, null, null, null,
+                                                function () {
+                                                $.subscribe('templated-response-added', function (_, id) {
+                                                    gemini_ui.getTemplatedContent(editor, projectId, id, issueId);
+                                                });
+                                                }, true);    
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        };
+                    });
+                });
+
+                if (callback != undefined) callback(area);
+
+            }, null,
+            {
+                area: area,
+                projectId: projectId,
+                issueId: issueId
+            });   
+    },
+
     htmlEditor: function (selector, onInit, onChange, autoFocus, height, width, plugin) {
         if (!height)
         {
@@ -384,7 +465,6 @@ gemini_ui = {
             plugin = ' ' + plugin;
             toobarPlugin = ' | ' + plugin
         }
-               
         tinymce.init({
             selector: selector,
             relative_urls: false,
@@ -418,8 +498,8 @@ gemini_ui = {
             },
             
             toolbar_items_size: 'small',
-            toolbar1: "formatselect fontselect fontsizeselect | link unlink anchor table image media | charmap emoticons",
-            toolbar2: "bold italic underline strikethrough subscript superscript | outdent indent alignleft aligncenter alignright alignjustify | bullist numlist | blockquote | forecolor backcolor" + toobarPlugin,
+            toolbar1: "formatselect fontselect fontsizeselect | link unlink anchor table image media | charmap emoticons | fullscreen",
+            toolbar2: "bold italic underline strikethrough subscript superscript | outdent indent alignleft aligncenter alignright alignjustify | bullist numlist | blockquote | forecolor backcolor " + toobarPlugin,
             setup: function (editor) {
                 if (autoFocus) {
                     editor.on('init', function (e) {
@@ -508,11 +588,19 @@ gemini_ui = {
     },
     chosen: function (selector, topmostContainer, fix_popup) {
         if (fix_popup == null || fix_popup == undefined) fix_popup = false;
-        $(selector).chosen({ stay_open: true, topmost_container: topmostContainer, fix_popup: fix_popup, display_selected_options: false });
+        $(selector).chosen({
+            stay_open: true, topmost_container: topmostContainer,
+            fix_popup: fix_popup, display_selected_options: false
+        });
     },
     ajaxChosen: function (selector, topmostContainer, fix_popup, projectUrl, data) {
-        if (fix_popup == null || fix_popup == undefined) fix_popup = false;
-        if (projectUrl == null || projectUrl == undefined || projectUrl.length == 0) projectUrl = 'project/{projectid}' + '/item/get/customfield';
+        if (fix_popup == null || fix_popup == undefined) {
+            fix_popup = false;
+        }
+        if (projectUrl == null || projectUrl == undefined || projectUrl.length == 0) {
+            projectUrl = 'project/{projectid}' + '/item/get/customfield';
+        }
+        
         method = 'GET';
         if (data != null) method = 'POST';
         $(selector).each(function () {
@@ -819,6 +907,32 @@ gemini_ui = {
             });
         }
     },
+
+    validateFileSize: function (fileInput, maxSize) {
+        var uploadField = $(fileInput);
+        if (maxSize === undefined) maxSize = uploadField.data("max-file");
+        if (maxSize === undefined) maxSize = 40 * 1024 * 1024; //bytes
+        uploadField[0].onchange = function () {
+            var filesToUploadSize = 0;
+            var fileNamesToUpload = '';
+            for (var i = 0; i < this.files.length; i++) {
+                filesToUploadSize += this.files[i].size; //Note file upload control all gets sent as one, so is cumulative file size
+                fileNamesToUpload += this.files[i].name + ", ";
+            }
+            if (filesToUploadSize > maxSize) {
+                this.value = "";
+                gemini_commons.translateMessage("[[AttachmentsSizeExceeded]]",
+                    ["AttachmentsSizeExceeded"],
+                    function (message) {
+                        message = message.replace("{file}", fileNamesToUpload);
+                        message = message.replace("{sizeLimit}", maxSize / 1024 / 1024 + " Mb");
+                        gemini_popup.toast(message, true);
+                    });
+
+            };
+        };
+        
+    }
 
     /*translateItem: function ( object ) {
         

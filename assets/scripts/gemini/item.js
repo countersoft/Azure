@@ -97,7 +97,7 @@ gemini_item = {
         // ATTACHMENT events
         var attachments = $('#attachmentupload-hit')[0];
         if (attachments != undefined && attachments != null) {
-            gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').parent().parent().attr('title'));
+            gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').parent().parent().attr('title'), csVars.MaxFileSize);
         }
 
         gemini_item.attachmentPreview();
@@ -105,7 +105,7 @@ gemini_item = {
         // This is only used for the drag and drop area as we apply above fileuploader to + sign the drag area can't expand to full screen because of + parent's div size
         var uploadArea = $('#phantom-fileuploader')[0];
         if (uploadArea != undefined && uploadArea != null) {
-            gemini_item.AttachmentFileUploader(uploadArea, issueId, temp_dropzone);
+            gemini_item.AttachmentFileUploader(uploadArea, issueId, temp_dropzone, '', csVars.MaxFileSize);
         }
         
         $('#view-item').on('click', "#item-attachments span.thumbnail-close-image", function (e) {
@@ -231,8 +231,11 @@ gemini_item = {
         // COMMENTS events
         // initialize tinyMC editor for comments
         gemini_item.attachCommentsEditWindowEvents(issueId);
-        gemini_item.attachCommentsTinyMcEvents(issueId, "comments-wysiwyg-content");
-      
+        //NEED PRoject ID here.
+        gemini_ui.templatedContentPlugin(gemini_ui.templateContentAreas.Comment, gemini_item.issueProjectId, issueId, function(area) {
+            gemini_item.attachCommentsTinyMcEvents(issueId, "comments-wysiwyg-content");
+        });
+        
 
         $('#view-item').on('click', ".section-content.comments span.delete", function (e) {
             e.preventDefault();
@@ -347,7 +350,9 @@ gemini_item = {
             var t = $("#comments-wysiwyg-content").parents("form:eq(0)").attr("class");
             var s = $("#comments-wysiwyg-content").parents("form:eq(0)").find(".option-row:eq(0) .file-upload-button").val();
 
-            $("#comments-wysiwyg-content").parents("form:eq(0)").find(".option-row:eq(0) .file-upload-button").replaceWith("<input class='file-upload-button' type='file' name='comment-attachment' multiple='multiple' />");
+            var form = $("#comments-wysiwyg-content").parents("form:eq(0)");
+            form.find(".option-row:eq(0) .file-upload-button").replaceWith("<input class='file-upload-button' type='file' name='comment-attachment' multiple='multiple' />");
+            gemini_ui.validateFileSize(form.find(".file-upload-button"), csVars.MaxFileSize);
      
             gemini_ui.htmlEditorCommand('mceFocus', false, null, 'comments-wysiwyg-content');
 
@@ -450,9 +455,14 @@ gemini_item = {
         }
     },
 
-    AttachmentFileUploader: function (element, issueId, temp_dropzone, inputTitle)
-    {
-
+    AttachmentFileUploader: function (element, issueId, temp_dropzone, inputTitle, maxUploadBytes) {
+        
+        if (maxUploadBytes === undefined) {
+            maxUploadBytes = csVars.MaxFileSize;
+            if (maxUploadBytes === undefined || maxUploadBytes === 0) {
+                maxUploadBytes = 40 * 1024 * 1024;
+            }
+        }
         var template = '<li>' +
                 '<span class="qq-upload-file"></span>' +
                 '<span class="qq-upload-spinner"></span>' +
@@ -461,14 +471,26 @@ gemini_item = {
                 '<span class="qq-upload-failed-text">[[Failed]]</span>' +
                 '<span class="fonticon-cross"></span>' +
             '</li>';
-        
 
-        gemini_commons.translateMessage(template, ['Cancel', 'Failed'], function (message) {
+        var messages = [];
+        messages.push(template);
+        messages.push("<a href='#'>[[Attachments]]</a>");
+        messages.push("[[AttachmentSizeExceeded]]");
+
+        gemini_commons.translateMessage(messages, ['Cancel', 'Failed', 'Attachments', 'AttachmentSizeExceeded'], function (message) {
             gemini_item.attachmentUploader = new qq.FileUploader({
                 element: element,
                 action: gemini_ajax.getUrl(gemini_item.itemUrl + "Item", "UploadAttachment?issueid=" + issueId, true),
                 debug: false,
-
+                sizeLimit: maxUploadBytes,
+                showMessage: function (message) { gemini_popup.toast(message, true); },
+                messages: {
+                    typeError: "{file} has invalid extension. Only {extensions} are allowed.",
+                    sizeError: messages[2],
+                    minSizeError: "{file} is too small, minimum file size is {minSizeLimit}.",
+                    emptyError: "{file} is empty, please select files again without it.",
+                    onLeave: "The files are being uploaded, if you leave now the upload will be cancelled."
+                },
                 onComplete: function (_id, fileName, responseJSON) {
                     if (responseJSON.success) {
                         if (responseJSON.Result == undefined) {
@@ -485,10 +507,10 @@ gemini_item = {
                     });
                 },
                 taxonomy: {
-                    uploadButton: "<a href='#'>Attachments</a>",
+                    uploadButton: message[1],
                     dropZone: temp_dropzone
                 },
-                fileTemplate: message
+                fileTemplate: message[0]
             });
             $('input[type="file"]', element).attr('title', inputTitle ? inputTitle : '');
         });
@@ -551,9 +573,8 @@ gemini_item = {
                }
             
                gemini_item.commentWasInserted = false;
-           }
-
-        );
+           },
+           undefined, undefined, undefined, 'templatedcontent_2' );
 
         var options = {
             dataType: "json",
@@ -656,6 +677,8 @@ gemini_item = {
                 gemini_commons.translateMessage(editor, ['Update', 'Attachments', 'Visibility', 'Cancel'], function (message) {
                     TargetElem.html(message);
                     TargetElem.append(attachments);
+                    gemini_ui.validateFileSize(TargetElem.find(".file-upload-button"), csVars.MaxFileSize );
+
                     TargetElem.find(".comments-wysiwyg-container").css("display", "inline-block");
                     TargetElem.find(".comment-extra-options .option-row:eq(1)").append(visibility);
                     if (TargetElem.find(".comments-wysiwyg-container .option-row:eq(1) select").length == 0)
@@ -695,7 +718,9 @@ gemini_item = {
                 // applies styling to select
                 gemini_ui.chosen("#comments-content .option-row .input-size8");
                 gemini_item.attachCommentsEditWindowEvents(response.issueId);
-                gemini_item.attachCommentsTinyMcEvents(response.issueId, "comments-wysiwyg-content");
+                gemini_ui.templatedContentPlugin(4, 0, response.issueId, function (area) {
+                    gemini_item.attachCommentsTinyMcEvents(response.issueId, "comments-wysiwyg-content");
+                }, false);
                 // Attaches hover event to image to display X button
                 $("#comments-wysiwyg-content").val("");
                 $("#comments-section").click();
@@ -977,6 +1002,7 @@ gemini_item = {
         gemini_commons.inputKeyHandler("#dependencies-find-item-container input",
             function() {
                 gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId + '&parentIssueId=' + baseIssueId + '&childIssueKey=' + $("#dependencies-find-item-container input").val(),
+                                            '&childIssueKey=' + gemini_commons.urlParameterEncode($("#dependencies-find-item-container input").val()),
                     function AddDependencyResponse(response) {
                         if (response.Result.Data.success) {
 
@@ -1021,7 +1047,9 @@ gemini_item = {
                     $("#dependencies-find-item-container input").val(data.item.value);
                 }
                 else {
-                    gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId + '&parentIssueId=' + baseIssueId + '&childIssueKey=' + data.item.value,
+                    gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId +
+                                    '&parentIssueId=' + baseIssueId +
+                                    '&childIssueKey=' + gemini_commons.urlParameterEncode(data.item.value),
                             function AddDependencyResponse(response) {
                                 if (response.Success) {
                                     gemini_item.replaceContent(response.Result.Data);
@@ -1347,7 +1375,10 @@ gemini_item = {
                 $( '.sla-out-of-hours', '#touch-info-container' )
                     .removeAttr( 'class' )
                     .addClass( 'sla-out-of-hours' )
-                    .addClass( 'view-sla-' + response.Result.Data[0].SLAStatus );
+                    .addClass('view-sla-' + response.Result.Data[0].SLAStatus);
+                $('#breach-date', '#touch-info-container')
+                    .removeAttr('class')
+                    .addClass('view-sla-' + response.Result.Data[0].SLAStatus);
             }
         }, null, { ids: ids });
         /*var totalMins = $('.sla-timer').attr('data-sla-minutes');

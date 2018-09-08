@@ -92,6 +92,68 @@ gemini_popup = {
     origActionText: null,
     origCancelText: null,
 
+    popupsPopup: function (controller, method, params, extra, successCallback, error) {
+        var html = '<div id="cs-popup-popup-center" style="max-width: 1000px">' +
+                        '<div id= "cs-popup-center-zone" >' +
+                            '<div id="cs-popup-center-content" class="pad-10">' +
+                            '</div>' +
+                        '<div id= "cs-popup-center-buttons" class="margin-top-20" > ' +
+                            '<div id= "server-validation-error" class="hide left margin-top-15 margin-left-15" ></div > ' +
+                            '<div class="buttons right" > ' +
+                                '<input id= "popup-button-yes" type= "button" class="button-primary button-small button-modal" value= "Save" />' +
+                                '<input id= "popup-button-no" type= "button" class="button-secondary button-small button-modal" value= "Cancel" />' +
+                            '</div > ' +
+                        '</div > ' +
+                    '</div > ' +
+                '</div >';
+
+        gemini_ajax.call(controller, method, function (response) {
+            $("#cs-popup-popup-center").remove(); //clear out any previous popup and all events.
+            var popup = $(html);
+            if (response.Success) {
+                popup.css("display", "inline-block");
+                $("body").append(popup);
+                var responseHtml;
+                if (response.Result == undefined)
+                    responseHtml = response;
+                else
+                    responseHtml = response.Result.Html;
+
+                var content = popup.find("#cs-popup-center-content");
+                var buttons = popup.find("#cs-popup-center-buttons");
+
+                content.html(responseHtml);
+                buttons.css("top", "auto");
+
+                var height = content.height() + buttons.height() + 50;
+                var width = content.width() + 20;
+
+                buttons.css("top", buttons.position().top + "px");
+                popup.css("display", "block"); //ensure the div stays this width if content inside is changed
+
+
+                var params = {
+                    inline: true,
+                    href: "#cs-popup-popup-center",
+                    transition: "none",
+                    width: Math.max(width, 300) + "px",
+                    height: Math.max(height, 80) + "px",
+                    overlayClose: false,
+                    escKey: false,
+                    opacity: '0.8'
+                };
+                
+                $.colorbox2(params);
+                gemini_keyboard.bindEscape("#colorbox2 #popup-button-no");
+                
+                content.find("input[type='text']:first").focus();
+                content.find("input[type='text']:first").click();
+                if (successCallback != null && successCallback != undefined) successCallback(response);
+            }
+        }, null, params, extra, true);
+
+    },
+
     centerPopup: function (controller, method, params, extra, actionButtonText, cancelButtonText, hideActionButton, hideCancelButton, successCallback, ignoreContainer) {
         if (!actionButtonText)
         {
@@ -122,7 +184,6 @@ gemini_popup = {
 
         if (hideActionButton) $("#popup-button-yes", "#cs-popup-center").hide();
         if (hideCancelButton) $("#popup-button-no", "#cs-popup-center").hide();
-
         gemini_ajax.call(controller, method, function (response) {
             if (response.Success) {
                 gemini_popup.showCenterPopup(response);
@@ -134,8 +195,7 @@ gemini_popup = {
         
     },
 
-    showCenterPopup: function (response)
-    {
+    showCenterPopup: function (response) {
         if (response.success) {
             $("#cs-popup-center").css("display", "inline-block"); //get width correctly and needs to be BEFORE we insert the data
 
@@ -191,6 +251,20 @@ gemini_popup = {
             gemini_popup.centerPendingChanges = false;
     },
 
+    popup2Close: function (e, extra) {
+        if (e) {
+            gemini_commons.stopClick(e);
+        }
+
+       
+        $.colorbox2.close();
+        
+        gemini_keyboard.unbindEscape("#colorbox2 #popup-button-no");
+
+        $('#cs-popup-popup-center').remove();
+        //Unbind all events to the buttons
+
+    },
     popupClose: function (e, extra) {
         if (e) {
             gemini_commons.stopClick(e);

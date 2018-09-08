@@ -1,0 +1,114 @@
+﻿@using Countersoft.Foundation.Web.Mvc.Extensions
+@model SystemTemplatedContentsEditModel
+<div id="SystemTemplatedContentItemContainer" style="width:800px;height:470px; max-width: 800px;">
+    <form id="regular-form">
+        <input type="hidden" value="@Model.TemplatedContent.Id" name="Id" id="Id"/>
+        <table id="project-admin-templatedcontent" class="admin-data-entry width-100">
+            <tbody>
+                <tr>
+                    <td class="field-name">
+                        Name
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name"
+                               class="input-field required input-size9" value="@Model.TemplatedContent.Name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name" valign="top">
+                        Associated Projects
+                    </td>
+                    <td>
+                        <p class="pad-bottom-10">(leave empty to associate this response with all projects)</p>
+                        @Html.ListBox( "Project", Model.Projects, new { @class = "input-size9" } )
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name" valign="top">
+                        Associated Areas
+                    </td>
+                    <td>
+                        <p class="pad-bottom-10">(leave empty to hide template)</p>
+                        @Html.ListBox( "Area", Model.Areas, new { @class = "input-size9" } )
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name" valign="top">
+                        Groups can View
+                    </td>
+                    <td>
+                        @Html.ListBox( "Group", Model.Groups, new { @class = "input-size9" } )
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name" valign="top">
+                        Response
+                    </td>
+                    <td>
+                        <textarea id="response" name="response" class="required">@Model.TemplatedContent.Response</textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var container = '@( (Model.CurrentArea.GetValueOrDefault() == 1 || Model.IsInPopup ? "#cs-popup-popup-center " : "#cs-popup-center ") )';
+
+        function closeForm() {
+            @if (Model.IsInPopup || Model.CurrentArea == 1)
+            {
+                //description is in the 2nd popup
+                @:gemini_popup.popup2Close();
+            }
+            else
+            {
+                @:gemini_popup.popupClose();
+            }
+            $.unsubscribe('templated-response-added');
+        }
+
+        var saveFunction = function (e) {
+            if ($("#regular-form").valid()) {
+                gemini_ui.startBusy(container + '#popup-button-yes');
+                gemini_ajax.postCall("project/@Model.ProjectId/settings/templatedcontent", "save", function (response) {
+
+                    if (response.success) {
+                        gemini_popup.toast("Saved");
+                        var responseId = response.Result.Data.Id;
+                        $.publish('templated-response-added', [responseId]);
+                        $("#templated-content-add-container").empty().hide();
+                    }
+                    gemini_ui.destroyHtmlEditor('#regular-form #response');
+                    gemini_ui.stopBusy(container + '#popup-button-yes');
+                    closeForm();
+
+
+                }, function () {
+                    alert("There was an error");
+                    gemini_ui.stopBusy(container + '#popup-button-yes');
+                }, $("#regular-form").serialize() + gemini_admin.getFormTemplateId(), null, true);
+            }
+            else {
+                $('.error:not(label)', '#regular-form').first().focus();
+            }
+        }
+
+        $(container + "#popup-button-yes").click(saveFunction);
+        $(container + "#popup-button-no").click(function () {
+            closeForm();
+            gemini_ui.destroyHtmlEditor(container + "#cs-popup-center-content .wysiwyg-editor"); //destroy description editor
+            gemini_ui.destroyHtmlEditor(container + '#regular-form #response');
+        });
+
+        gemini_ui.chosen(container + "#Project", null, true);
+        gemini_ui.chosen(container + "#Area", null, true);
+        gemini_ui.chosen(container + "#Group", null, true);
+        setTimeout(function () {
+            gemini_ui.destroyHtmlEditor(container + '#regular-form #response');
+            gemini_ui.htmlEditor(container + '#regular-form #response');
+        }, 100);
+    });
+</script>

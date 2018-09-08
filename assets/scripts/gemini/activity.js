@@ -227,7 +227,13 @@ gemini_activity = {
         */
         /*$("#calendar-control-box .fc-button").removeClass("fc-state-active");*/
 
-        $("#calendar-" + viewname.toLowerCase()).addClass(viewname.toLowerCase() + "-selected");
+        $( "#calendar-" + viewname.toLowerCase() ).addClass( viewname.toLowerCase() + "-selected" );
+        if (viewname !== curview) { //update the options to the global card
+            var options = jQuery.parseJSON( gemini_commons.htmlDecode( gemini_appnav.pageCard.Options['Calendar'] ) );
+            options.CurrentView = viewname;
+            gemini_appnav.pageCard.Options['Calendar'] = gemini_commons.htmlEncode( JSON.stringify( options ) );
+        }
+        
     },
 
     amendSource: function (checked, index) {

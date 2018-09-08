@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Değişikliklerimi bana e-posta ile gönder</item>
   <item id="Surname">Soyisim</item>
   <item id="Firstname">İsim</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+
   <item id="Open">Aç</item>
   <item id="Page">Sayfa</item>
   <item id="Of">/</item>
@@ -71,7 +82,14 @@
   <item id="FollowedBy">İzleyen</item>
   <item id="GroupDependencies">Grup Bağımlılıkları</item>
   <item id="Grouped">Gruplanmış</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Exclude closed items</item>
+  <item id="GroupedOpen">Grouped (Open)</item>
+  <!--B.E. - GDO - END-->
   <item id="ShowSequence">Sıralı Kayıtlar</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
   <item id="NoZone">Hide zones</item>
   <item id="ShowSLA">Show SLA zone</item>
   <item id="FilterNoType">Tüm Kayıtlar</item>
@@ -226,6 +244,7 @@
   <item id="FileName">Dosya Adı</item>
   <item id="FileSize">Dosya Boyutu</item>
   <item id="Upload">Yükle</item>
+  <item id="Maximum">Maksimum</item>
 
   <!-- general Terms -->
   <item id="Created">Oluşturan</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">İlave Bilgi</item>
   <item id="Comments">Yorumlar</item>
   <item id="Attachments">Ekler</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
   <item id="Dependencies">Bağımlılıklar</item>
   <item id="Timeline">Zaman Çizelgesi</item>
   <item id="Calendar">Takvim</item>
@@ -511,12 +533,15 @@
   <item id="Coworkers">Co-workers</item>
   <item id="Schedule">Schedule</item>
   <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
-
-  <item id="Organization">Organization</item>
+  
+  <item id="DefaultOrganization">Varsayılan organizasyon</item>
+  <item id="Organization">Organizasyon</item>
   <item id="EmailReply">Email Reply</item>
 
   <item id="NotFilter">Not</item>
   <item id="Sequence">Sequence</item>
   <item id="TrackedProgress">Tracked Progress</item>
   <item id="OutOfHours">Out Of Hours</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="SlaBreachDate">Breach Date</item>
 </Resource>

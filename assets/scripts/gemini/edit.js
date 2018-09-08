@@ -268,30 +268,29 @@ gemini_edit = {
             $('.inline-editing').closest('form').parent().text(value);
         }
     },
-    showEditingField: function (response, elem)
-    {
+    showEditingField: function (response, elem) {
         gemini_edit.hideEditingField();
         gemini_edit.hideInlineEditField();
 
-        if (response.Success)
-        {
+        if (response.Success) {
             //Setting up new elements size and classes
             var resHtml = response.Result.Html;
             while (resHtml.charAt(0) == '\r') {
                 resHtml = resHtml.replace("\r\n", "");
             }
             var parsedHtml = $(resHtml);
-            
-            var firstInlineElement = false;        
-            
+
+            var firstInlineElement = false;
+
             //Removing unecessary classes, which determine the height and width as we need to set it manually
-            parsedHtml.each(function (index, value) {               
+            parsedHtml.each(function(index, value) {
                 if ($(value).hasClass('inline-editing')) {
-                    $(value).removeClass('input-tall').attr('class', $(value).attr('class').replace(/\binput-size\d+\b/g, ''));
+                    $(value).removeClass('input-tall')
+                        .attr('class', $(value).attr('class').replace(/\binput-size\d+\b/g, ''));
                     if (!firstInlineElement) firstInlineElement = $(value);
                 }
             });
-           
+
             //If input is subchild of another element, then try again here
             if (!firstInlineElement) firstInlineElement = parsedHtml.find('.inline-editing');
 
@@ -306,32 +305,40 @@ gemini_edit = {
                 var url = false;
                 if (gemini_edit.pageType != gemini_commons.PAGE_TYPE.Item) {
                     url = csVars.ProjectUrl;
-                }
-                else {
+                } else {
                     url = gemini_item.itemUrl;
                 }
 
-                var formText = '<form method="post" action="' + gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) + '" enctype="multipart/form-data"><div class="left"></div></form>';
-           
+                var formText = '<form method="post" action="' +
+                    gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) +
+                    '" enctype="multipart/form-data"><div class="left"></div></form>';
+
                 //Create overlay for elements
                 if (firstInlineElement.is('textarea')) {
                     $("#cs-popup-center-content").css("width", "800px");
                     $("#cs-popup-center-content").css("height", "600px");
-                    var newContent = '<form action="' + gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) + '">' + '<h2 class="margin-bottom-10">' + response.Result.IssueKey + ' ' + response.Result.Property + '</h2>';
+                    var newContent = '<form action="' +
+                        gemini_ajax.getUrl('inline', 'save?viewtype=' + gemini_edit.pageType) +
+                        '">' +
+                        '<h2 class="margin-bottom-10">' +
+                        response.Result.IssueKey +
+                        ' ' +
+                        response.Result.Property +
+                        '</h2>';
                     newContent += response.Result.Html + '</form>';
                     response.Result.Html = newContent;
-                 
+
                     gemini_popup.showCenterPopup(response);
                     $("#colorbox .inline-editing").css('width', '100%');
 
-                    $("#popup-button-no").click(function (e) {
+                    $("#popup-button-no").click(function(e) {
                         elem.removeClass('edit-mode');
                         gemini_popup.popupClose(e);
                         gemini_ui.destroyHtmlEditor("#cs-popup-center-content .wysiwyg-editor");
                         $("#colorbox .inline-editing").closest('form').remove();
                     });
 
-                    $("#popup-button-yes").click(function (e) {
+                    $("#popup-button-yes").click(function(e) {
                         gemini_edit.saveEditingField(gemini_edit.issueId);
 
                         //elem.removeClass('edit-mode');
@@ -341,29 +348,34 @@ gemini_edit = {
                     });
 
                     setTimeout(function () {
-                        gemini_ui.htmlEditor("#colorbox .inline-editing", null, "", true, 530, 800);
+                        //Load html editor with the templated content plugin.
+                        gemini_ui.templatedContentPlugin(1, 0, gemini_edit.issueId, function (area) {
+                            gemini_ui.htmlEditor("#colorbox .inline-editing", null, "", true, 530, 800, "templatedcontent_1");
+                        }, true);
                         //tinyMCE.execCommand('mceFocus', false, 'DescriptionWysiwygTextarea');
                     }, 50);
 
                 }
                 else {
-                    
+
                     //$(elem).append('<div class="inline-edit-dropdown"> ' + formText + '</div>');
                     $('#page-content-zone').append('<div class="inline-edit-dropdown"> ' + formText + '</div>');
 
                     $('.inline-edit-dropdown form > div', '#page-content-zone').html(parsedHtml);
-                  
-                    $('.inline-edit-dropdown', '#page-content-zone').append('<div class="dropdown-options right"><div class="fonticon-tick margin-right-10"></div><div class="fonticon-cross"></div></div>');
-                   
+
+                    $('.inline-edit-dropdown', '#page-content-zone').append(
+                        '<div class="dropdown-options right"><div class="fonticon-tick margin-right-10"></div><div class="fonticon-cross"></div></div>');
+
                     var inputs = $('.inline-edit-dropdown form .inline-editing', '#page-content-zone').length;
 
                     if (inputs == 1) {
-                        $('.inline-edit-dropdown form .inline-editing', '#page-content-zone').css('width', '270px').addClass('left');
+                        $('.inline-edit-dropdown form .inline-editing', '#page-content-zone').css('width', '270px')
+                            .addClass('left');
+                    } else {
+                        $('.inline-edit-dropdown form .inline-editing', '#page-content-zone')
+                            .css('width', (100 / inputs) + 'px');
                     }
-                    else {
-                        $('.inline-edit-dropdown form .inline-editing', '#page-content-zone').css('width', (100 / inputs) + 'px');
-                    }
-                   
+
                     var pageWidth = $(window).width();
                     var elementWidth = 350;
                     var elementLeft = $(elem).position().left;
@@ -390,12 +402,12 @@ gemini_edit = {
                         "offset": "0 0",
                         "collision": "none"
                     });
-                  
-                    $('#page-content-zone .inline-edit-dropdown .fonticon-cross').unbind('click').click(function () {
+
+                    $('#page-content-zone .inline-edit-dropdown .fonticon-cross').unbind('click').click(function() {
                         gemini_edit.hideEditingField();
                     });
 
-                    $('#page-content-zone .inline-edit-dropdown .fonticon-tick').unbind('click').click(function () {                      
+                    $('#page-content-zone .inline-edit-dropdown .fonticon-tick').unbind('click').click(function() {
                         gemini_edit.saveEditingField();
                     });
 
@@ -403,26 +415,26 @@ gemini_edit = {
 
                 //Assigning events to input/select and textboxes.
                 var currentInput;
-                
+
                 if ($('.inline-edit-dropdown form  input:not(:hidden)', '#page-content-zone').length > 0) {
                     var input = $('.inline-edit-dropdown form  input:not(:hidden)', '#page-content-zone');
                     currentInput = input;
                     gemini_edit.applyFieldFunctionality(input);
                 }
-                
+
                 if ($('.inline-edit-dropdown form  select', '#page-content-zone').length > 0) {
                     var select = $('.inline-edit-dropdown form  select', '#page-content-zone');
                     currentInput = select;
                     gemini_edit.applyFieldFunctionality(select);
                 }
-                  
+
                 if ($('.inline-edit-dropdown form  textarea', '#page-content-zone').length > 0) {
                     var textarea = $('.inline-edit-dropdown form  textarea', '#page-content-zone');
                     currentInput = textarea;
                     gemini_edit.applyFieldFunctionality(textarea);
                 }
-              
-                firstInlineElement.focus();          
+
+                firstInlineElement.focus();
 
             }
         }
@@ -924,7 +936,7 @@ gemini_edit = {
 
         if (trigger == '') return;
 
-        var id = $(elem).attr("id").replace("cf_", "");
+        var customFieldId = $(elem).attr("id").replace("cf_", "");
 
         var selectedval = "";
         $(elem).find("option:selected").each(function (index) {
@@ -933,14 +945,15 @@ gemini_edit = {
         if (selectedval.length > 0)
             selectedval = selectedval.slice(0, -1); //remove trailing |
 
-        var pid = null;
+        var projectId = null;
         if($('#cs-popup #ProjectName').length) {
-            pid= $('#cs-popup #ProjectName').val();
+            projectId= $('#cs-popup #ProjectName').val();
         }
         gemini_ajax.postCall("", "cascade", gemini_edit.cascadeUpdate, null,
             {
-                fieldid: id, value: selectedval,
-                projectid: pid,
+                fieldid: customFieldId,
+                value: selectedval,
+                projectid: projectId,
                 issueid: $("#Id", "#cs-popup").val()
             });
     },

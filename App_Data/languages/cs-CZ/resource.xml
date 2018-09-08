@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Přijímat emailem mé změny</item>
   <item id="Surname">Příjmení</item>
   <item id="Firstname">Jméno</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+  
   <item id="Open">Otevřeno</item>
   <item id="Page">Stránka</item>
   <item id="Of">z</item>
@@ -71,7 +82,14 @@
   <item id="FollowedBy">Sledovaný kým</item>
   <item id="GroupDependencies">Seskupit závislosti</item>
   <item id="Grouped">Seskupené</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Exclude closed items</item>
+  <item id="GroupedOpen">Grouped (Open)</item>
+  <!--B.E. - GDO - END-->
   <item id="ShowSequence">Oddělené položky</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
   <item id="NoZone">Hide zones</item>
   <item id="ShowSLA">Show SLA zone</item>
   <item id="FilterNoType">Všechny položky</item>
@@ -226,6 +244,7 @@
   <item id="FileName">Název souboru</item>
   <item id="FileSize">Velikost souboru</item>
   <item id="Upload">Nahrát</item>
+  <item id="Maximum">Maximum</item>
 
   <!-- general Terms -->
   <item id="Created">Vytvořeno</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">Další informace</item>
   <item id="Comments">Komentáře</item>
   <item id="Attachments">Přílohy</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
   <item id="Dependencies">Závislosti</item>
   <item id="Timeline">Časová osa</item>
   <item id="Calendar">Kalendář</item>
@@ -514,11 +536,14 @@
   <item id="Schedule">Schedule</item>
   <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
 
-  <item id="Organization">Organization</item>
+  <item id="DefaultOrganization">Výchozí organizace</item>
+  <item id="Organization">Organizace</item>
   <item id="EmailReply">Email Reply</item>
 
   <item id="NotFilter">Not</item>
   <item id="Sequence">Sequence</item>
   <item id="TrackedProgress">Tracked Progress</item>
   <item id="OutOfHours">Out Of Hours</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="SlaBreachDate">Breach Date</item>
 </Resource>

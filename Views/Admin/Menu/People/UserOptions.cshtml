@@ -44,7 +44,30 @@
                 <td>Google Client Secret</td>
                 <td><input type="text" id="GoogleClientSecret" name="GoogleClientSecret" class="input-size9 @if (Model.EnableGoogleIntegration)     {<text>required</text>}" value="@Model.GoogleClientSecret" /></td>
             </tr>
+            @*Auth0 - B.E. - BEGIN*@
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="checkbox" id="EnableAuth0Integration" class="fancy" name="EnableAuth0Integration" @if (Model.EnableAuth0Integration) { <text> checked="checked" </text>    } />
+                    <label for="EnableAuth0Integration">Allow users to authenticate with Gemini using Auth0</label>
+                </td>
+            </tr>
 
+            <tr>
+                <td>Auth0 Client ID</td>
+                <td><input type="text" id="Auth0ClientId" name="Auth0ClientId" class="input-size9 @if (Model.EnableAuth0Integration)    {<text>required</text>}" value="@Model.Auth0ClientId" /></td>
+            </tr>
+
+            <tr>
+                <td>Auth0 Client Secret</td>
+                <td><input type="text" id="Auth0ClientSecretId" name="Auth0ClientSecretId" class="input-size9 @if (Model.EnableAuth0Integration)     {<text>required</text>}" value="@Model.Auth0ClientSecretId" /></td>
+            </tr>
+
+            <tr>
+                <td>Auth0 Domain</td>
+                <td><input type="text" id="Auth0Domain" name="Auth0Domain" class="input-size9 @if (Model.EnableAuth0Integration)     {<text>required</text>}" value="@Model.Auth0Domain" /></td>
+            </tr>
+            @*Auth0 - B.E. - END*@
             <tr><td colspan="2"><div class="divider"></div></td></tr>  
 
             <tr>
@@ -106,7 +129,7 @@
                 <td valign="top">Browser Session Timeout</td>
                 <td>
                     <div class="wysiwyg-container wysiwyg-height1">
-                        <input type="text" id="session-timeout" name="SessionTimeOut" class="input-size2 digits" value="@Model.SessionTimeOut"/>
+                        <input type="text" id="session-timeout" name="SessionTimeOut" class="input-size2 digits" value="@Model.SessionTimeOut" @*Browser session time out per site - B.E. - BEGIN*@ @if (Model.SessionTimeOutComesFromWebConfig) { <text> disabled="disabled" </text>  } @*Browser session time out per site - B.E. END*@ />
                         <label for="session-timeout">minutes&nbsp;&nbsp;(0 will disable this feature)</label>
                     </div>
                 </td>
@@ -116,8 +139,18 @@
 
             <tr>
                 <td>Customer Portal User Group</td>
-                <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })</td>
+                <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })
+                </td>
             </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                @*B.E. - Disable workspace management - BEGIN*@
+                <div style="vertical-align: middle; padding-top: 5px"><input type="checkbox" id="NoPortalWorkspaceMgmt" class="fancy" name="NoPortalWorkspaceMgmt" @if (Model.NoPortalWorkspaceMgmt) { <text> checked="checked" </text>       } /> <label for="NoPortalWorkspaceMgmt">Disable Portal User Workspace Management</label></div>
+                @*B.E. - Disable workspace management - END*@
+            </td>
+        </tr>
 
             <tr>
                 <td>Customer Portal Welcome Title</td>
@@ -158,6 +191,13 @@
             $('#GoogleClientId').toggleClass('required').removeClass('error');
             $('#GoogleClientSecret').toggleClass('required').removeClass('error');
         });
+        //Auth0 - B.E. - BEGIN
+        $('#EnableAuth0Integration').bind('ifChanged', function () {
+            $('#Auth0ClientId').toggleClass('required').removeClass('error');
+            $('#Auth0ClientSecretId').toggleClass('required').removeClass('error');
+            $('#Auth0Domain').toggleClass('required').removeClass('error');
+        });
+        //Auth0 - B.E. - END
 
         if ($('#enforce-password-policy').is(':checked')) {
             $('#PasswordPolicyOptions').show();

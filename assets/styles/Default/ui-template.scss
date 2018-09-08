@@ -551,7 +551,8 @@
 	}
 }
 
-#cs-popup-center
+#cs-popup-center,
+#cs-popup-popup-center
 {
 	top:0px;
 	background-color: $color-white;
@@ -566,7 +567,6 @@
 
 		#cs-popup-center-content
 		{
-			
 			outline:none;
 		}
 
@@ -1898,20 +1898,24 @@ table.admin-data-entry
 /************************************************************
 *  Rich Text
 *************************************************************/
-div.wysiwyg-container
-{
-	table
-	{
-		td
-		{
-			padding:0 !important;
-		}
-		td:first-child
-		{
-			min-width:0 !important;
-		}
+div.wysiwyg-container {
+    table {
+        td {
+            padding: 0 !important;
+        }
 
-	}
+        td:first-child {
+            min-width: 0 !important;
+        }
+    }
+
+    .mce-templated-content-control
+    {
+        //Text for TemplatedContent
+        .mce-txt {
+            display: none;
+        }
+    }
 }
 .wysiwyg-height1
 {

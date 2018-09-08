@@ -14,7 +14,9 @@
         </div> 
         <div class="comment-extra-options">
             <div class="option-row">
-                    <span class="left comment-label">@GetResource(ResourceKeys.Attachments)</span>  <input type="file" class="file-upload-button" name="comment-attachment"/>
+                <span class="left comment-label">@GetResource(ResourceKeys.Attachments)</span>  
+                <input type="file" class="file-upload-button" name="comment-attachment"/>
+                (@Model.MaxFileUpload.ToFileSize() @GetResource(ResourceKeys.Maximum))
             </div>
             @if (Model.CanUserSeeCommentVisibility)
             {
@@ -36,7 +38,8 @@
 <script type="text/javascript">
     
     $(document).ready(function () {
-        if ($("#cs-popup-center .comments-wysiwyg-container").attr("data-controller") == "items") {
+        //Check if it is in the popup comment creator (eg from the grid)
+        if ($("#cs-popup-center .comments-wysiwyg-container").attr("data-controller") == "items") { 
 
             if ($('.checked-items:checked', $('#items-grid')).length > 0) {
                 var checked_items = new Array();
@@ -48,7 +51,10 @@
             }
 
             setTimeout(function () {
-                gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "",true);
+                var issueId = $("#cs-popup-center-content .comments-wysiwyg-container").attr('data-id');
+                gemini_ui.templatedContentPlugin(gemini_ui.templateContentAreas.Comment, @Model.Issue.Project.Id, issueId, function (area) {
+                    gemini_ui.htmlEditor("#comments-wysiwyg-content", null, "", true, 0, 0, "templatedcontent_" + gemini_ui.templateContentAreas.Comment);
+                }, true);
             }, 25);
 
             gemini_ui.chosen("#cs-popup-center-content .comments-wysiwyg-container .option-row .input-size8", null, true);
@@ -129,6 +135,8 @@
                 gemini_ui.destroyHtmlEditor("#cs-popup-center-content #comments-wysiwyg-content");
                 $("#cs-popup-center-content .comments-wysiwyg-container").remove();
             });
+
+            gemini_ui.validateFileSize($("#cs-popup-center-content .comments-form .file-upload-button"), @Model.MaxFileUpload);
         }
 
     });

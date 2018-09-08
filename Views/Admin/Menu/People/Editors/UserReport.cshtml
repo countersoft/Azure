@@ -10,6 +10,12 @@
         {
         <p class="bold margin-bottom-20">The user is inactive thus cannot login. The table below shows the permissions if the user is activated.</p>
         }
+        
+        @if (Model.User.Organizations.Any())
+        {
+            <p class="bold margin-bottom-20">The user belongs to these Organizations: @Model.User.Organizations.Select(u=>u.Name).Aggregate((s1,s2)=> s1+= ", " + s2)</p>
+        }
+
         @if (Model.ProjectPermissions.Count > 0)
         {
             <table class="basic">

@@ -1,0 +1,49 @@
+﻿@model PeopleOrganizationMembershipModel
+
+<div id="OrganizationMembershipContainer" class="popup-header">
+    <div class="header">
+        <div class="title">@Model.Organization.Name</div>
+        <div class="text">A complete list of users in the organization</div>
+    </div>
+    <div class="content" style="width: 100%;">
+        <div id="cs-template" style="height: 470px;"> 
+        @if (Model.MembershipData.Count > 0)
+        {
+            <table class="basic">
+                <thead>
+                <tr>
+                    <th class="align-left subtitle">User</th>
+                    <th class="align-left subtitle">Email</th>
+                    <th class="align-left subtitle">Other Organization</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+                @foreach (var orgMember in Model.MembershipData)
+                {
+                    <tr>
+                        <td>@orgMember.Key.Fullname</td>
+                        <td>@orgMember.Key.Entity.Email</td>
+                        <td>@orgMember.Value</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="margin-top-20" style="text-align: center; color: red;">This group has no users assigned to it.</div>
+        }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#popup-button-no").click(function (e) {
+        gemini_popup.popupClose(e);
+    });
+
+    $('#cs-template', "#cs-popup-center").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+
+</script>

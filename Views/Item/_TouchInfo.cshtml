@@ -1,6 +1,10 @@
 ﻿@model ViewIssueModel
 
-@if(Model.Issue.SLA != null && Model[ItemAttributeVisibility.SLA])
+@{
+    var DateFormatString = "dd-MMM-yyyy HH:mm";
+}
+
+@if (Model.Issue.SLA != null && Model[ItemAttributeVisibility.SLA])
 {
     <div class="margin-bottom-20">
         <div class="touch-info bold">
@@ -13,7 +17,19 @@
                         data-sla-minutes="@Model.Issue.SLATimeLeftMinutes" 
                         data-sla-state="@Model.Issue.Entity.SLAStatus">@(Model.Issue.SLATimeLeftFull)</span>
             <span class="view-sla-@Model.Issue.SlaStatusCode sla-out-of-hours">(@GetResource( ResourceKeys.OutOfHours ))</span>
-        </div>    
+        </div>
+        <div class="touch-info bold">
+            <span class="box">
+                <span class="label"></span>
+            </span>
+            @if ( Model.SlaBreachDate != null )
+            {
+                <span class="">@GetResourceTemplate( ResourceKeys.SlaBreachDate )</span>
+                <span id="breach-date" class="view-sla-@Model.Issue.Entity.SLAStatus">
+                    @Model.SlaBreachDate.Value.ToString( DateFormatString )
+                </span>
+            }
+        </div>
     </div>
 }
 
@@ -21,30 +37,30 @@
 {
     if (Model[ItemAttributeVisibility.Source])
     {
-        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @GetResourceTemplate(ResourceKeys.From, Resourcing.Lower) @Html.Raw(Model.SourceLink)</div>
+        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString( DateFormatString ) &rarr; @GetResourceTemplate(ResourceKeys.From, Resourcing.Lower) @Html.Raw(Model.SourceLink)</div>
     }         
 }
 else
 {
     if (Model[ItemAttributeVisibility.DateCreated])
     { 
-        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString("dd-MMM-yyyy HH:mm") &rarr; @Model.Issue.Reporter @if(Model.Issue.Entity.ReportedBy != Model.Issue.Entity.Creator){<text>(via @(Model.Issue.Creator))</text>} </div>
+        <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Created)</span></span> @Model.Issue.Created.ToString( DateFormatString ) &rarr; @Model.Issue.Reporter @if(Model.Issue.Entity.ReportedBy != Model.Issue.Entity.Creator){<text>(via @(Model.Issue.Creator))</text>} </div>
     }
 }
 
 @if (Model[ItemAttributeVisibility.DateRevised])
 {
-    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Revised)</span></span> @Model.Issue.Revised.ToString("dd-MMM-yyyy HH:mm") @if (Model[ItemAttributeVisibility.AssociatedHistory]){ <text>&rarr;</text> @Model.Issue.Reviser }</div>
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Revised)</span></span> @Model.Issue.Revised.ToString( DateFormatString ) @if (Model[ItemAttributeVisibility.AssociatedHistory]){ <text>&rarr;</text> @Model.Issue.Reviser }</div>
 }
 
 @if (Model[ItemAttributeVisibility.ClosedDate])
 {
-    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ClosedDate)</span></span> @(Model.Issue.ClosedDate == null ? "" : Model.Issue.ClosedDate.Value.ToString("dd-MMM-yyyy HH:mm"))</div>
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ClosedDate)</span></span> @(Model.Issue.ClosedDate == null ? "" : Model.Issue.ClosedDate.Value.ToString( DateFormatString ))</div>
 }
                                                                                                                                                                                                             
 @if (Model[ItemAttributeVisibility.ResolvedDate])
 {
-    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ResolvedDate)</span></span> @(Model.Issue.ResolvedDate == null ? "" : Model.Issue.ResolvedDate.Value.ToString("dd-MMM-yyyy HH:mm"))</div>
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ResolvedDate)</span></span> @(Model.Issue.ResolvedDate == null ? "" : Model.Issue.ResolvedDate.Value.ToString( DateFormatString ))</div>
 }
                                                                                                                                                                                                             
 @if (Model[ItemAttributeVisibility.Elapsed])

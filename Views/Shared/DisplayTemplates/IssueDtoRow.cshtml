@@ -86,7 +86,7 @@ for (int i = 0; i < hierarchy.DependancySpacing[issue.Entity.Id] - 2; i++)
 @Html.Raw(coldata.FormattedData)
 @if(firstCol)
 {
-if(hierarchy == null && Model.GroupDependencies && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
+    if (hierarchy == null && (Model.GroupDependencies /*B.E. - GDO - BEGIN*/ || Model.GroupDependenciesOpen)/*B.E. - GDO - END*/  && issue.Entity.IsParent && !issue.Entity.ParentIssueId.HasValue)
 {
 <span class='parent fonticon-arrow-down expander'></span>
 }

@@ -34,6 +34,17 @@
   <item id="EmailMeMyChanges">Email me my changes</item>
   <item id="Surname">Surname</item>
   <item id="Firstname">Firstname</item>
+
+  <item id="TryOpenId">Please try logging in using openid</item>
+  <item id="AccountLockedError">Account is locked. Please contact your Gemini administrator and close the browser.</item>
+  <item id="PasswordRuleNew">Password must be new and not previously used</item>
+  <item id="PasswordRuleLength">Password must be {0} characters long</item>
+  <item id="PasswordRuleUpper">Password must contain one upper case letter</item>
+  <item id="PasswordRuleLower">Password must contain one lower case letter</item>
+  <item id="PasswordRuleNumber">Password must contain one number</item>
+  <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
+  <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+
   <item id="Open">Open</item>
   <item id="Page">Page</item>
   <item id="Of">Of</item>
@@ -69,10 +80,17 @@
   <item id="CreatedTimestamp">Created Timestamp</item>
   <item id="ReportedBy">Reported By</item>
   <item id="FollowedBy">Followed By</item>
-  <item id="GroupDependencies">Grouped Dependencies</item>
-  <item id="Grouped">Grouped</item>
+  <item id="GroupDependencies">Grouped Dependencies (All)</item>
+  <item id="Grouped">Grouped (All)</item>
+  <!--B.E. - GDO - BEGIN-->
+  <item id="GroupDependenciesOpen">Exclude closed items</item>
+  <item id="GroupedOpen">Grouped (Open)</item>
+  <!--B.E. - GDO - END-->
   <item id="NoZone">Hide zones</item>
   <item id="ShowSequence">Show Sequenced zone</item>
+  <!--B.E. - SSO - BEGIN-->
+  <item id="SequencedOpen">Exclude closed items</item>
+  <!--B.E. - SSO - END-->
   <item id="ShowSLA">Show SLA zone</item>
   <item id="FilterNoType">All Items</item>
   <item id="FilterIncludeClosed">Closed Items</item>
@@ -226,7 +244,8 @@
   <item id="FileName">File Name</item>
   <item id="FileSize">File Size</item>
   <item id="Upload">Upload</item>
-
+  <item id="Maximum">Maximum</item>
+  
   <!-- general Terms -->
   <item id="Created">Created</item>
   <item id="Revised">Revised</item>
@@ -283,6 +302,9 @@
   <item id="AdditionalInformation">Additional Information</item>
   <item id="Comments">Comments</item>
   <item id="Attachments">Attachments</item>
+  <item id="AttachmentSizeExceeded">{file} is too large, maximum file size is {sizeLimit}.</item>
+  <item id="AttachmentsSizeExceeded">file(s) are too large, maximum combined file size is {sizeLimit}.</item>
+  
   <item id="Dependencies">Dependencies</item>
   <item id="Timeline">Timeline</item>
   <item id="Calendar">Calendar</item>
@@ -513,6 +535,7 @@
   <item id="Schedule">Schedule</item>
   <item id="SeparateAlertFollowed">Receive separate email alert for every followed item</item>
 
+  <item id="DefaultOrganization">Default Organization</item>
   <item id="Organization">Organization</item>
   <item id="EmailReply">Email Reply</item>
 
@@ -520,4 +543,6 @@
   <item id="Sequence">Sequence</item>
   <item id="TrackedProgress">Tracked Progress</item>
   <item id="OutOfHours">Out Of Hours</item>
+  <item id="TemplatedContent">Templated Content</item>
+  <item id="SlaBreachDate">Breach Date</item>
 </Resource>
