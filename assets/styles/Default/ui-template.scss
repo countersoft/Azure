@@ -831,6 +831,17 @@
 		padding:10px 6px 6px 12px;
 	}
 
+    
+    .accordion {
+        h2 {
+            margin: 10px 0 20px;
+            cursor: pointer;
+        }
+        > div {
+            margin-bottom: 20px;
+        }
+    }
+
 	#template-picker, 
     #language-picker
 	{

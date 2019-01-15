@@ -1,16 +1,16 @@
 ﻿@using Countersoft.Gemini.Infrastructure.Helpers;
 
-@if (HttpContext.Current.IsDebuggingEnabled || Url.IsOpera())
+@if ( HttpContext.Current.IsDebuggingEnabled || Url.IsOpera() )
 {
     /* Core Javascript Libraries */
-    <script type="text/javascript" src="@AssetsPath/scripts/core/jquery.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/core/moment.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/core/underscore.js"></script> 
-     <script type="text/javascript" src="@AssetsPath/scripts/core/modernizr.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/core/jquery.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/core/moment.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/core/underscore.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/core/modernizr.js"></script>
 
     /* JQuery Extensions */
-    <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.form.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.validate.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.form.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.validate.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.utils.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/extensions/jquery.mousewheel.js"></script>
     <script type="text/javascript" src='@AssetsPath/scripts/extensions/jquery.dataTables.js'></script>
@@ -21,27 +21,28 @@
     <script type="text/javascript" src='@AssetsPath/scripts/extensions/jquery.events.js'></script>
     <script type="text/javascript" src='@AssetsPath/scripts/extensions/jquery.maskedinput.js'></script>
     <script type="text/javascript" src='@AssetsPath/scripts/extensions/jquery.scrollto.js'></script>
-    
+
     /* Ui Libraries */
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery-ui.js"></script>
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/raphael-min.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.icheck.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/raphael-min.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.icheck.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.fixedheadertable.js"></script>
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/highcharts.src.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/exporting.src.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/spin.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/fullcalendar.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/highcharts.src.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/exporting.src.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/spin.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/fullcalendar.js"></script>
     <script type="text/javascript" src='@AssetsPath/scripts/ui/jquery.contextMenu.js'></script>
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.dynatree.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.datepicker.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.dynatree.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.datepicker.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.jscrollpane.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.colorbox.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.colorbox2.js"></script>
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/fileuploader.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.ui.nestedSortable.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/csTabs.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.slider.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce/jquery.tinymce.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/fileuploader.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.ui.nestedSortable.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/csTabs.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.slider.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce_485/tinymce.min.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce_485/jquery.tinymce.min.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/chosen.jquery.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/ajax-chosen.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/ui/ui.multiselect.js"></script>
@@ -50,19 +51,19 @@
     <script type="text/javascript" src="@AssetsPath/scripts/ui/jquery.form.js"></script>
     <script type="text/javascript" src='@AssetsPath/scripts/ui/mousetrap.js'></script>
     <script type="text/javascript" src="@AssetsPath/styles/default/JSColors.js"></script>
-    
+
     <script type="text/javascript" src='@AssetsPath/scripts/ui/jquery-cron.js'></script>
     <script type="text/javascript" src='@AssetsPath/scripts/ui/jquery-gentleSelect.js'></script>
-    
+
     /* Home Grown  */
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/master.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/sidepane.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/logo.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/account.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/commons.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/documents.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/items.js"></script> 
-    <script type="text/javascript" src="@AssetsPath/scripts/gemini/item.js"></script> 
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/master.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/sidepane.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/logo.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/account.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/commons.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/documents.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/items.js"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/gemini/item.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/gemini/ajax.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/gemini/appnav.js"></script>
     <script type="text/javascript" src="@AssetsPath/scripts/gemini/pdf.js"></script>
@@ -93,6 +94,9 @@
 }
 else
 {
+
     <script type="text/javascript" src="@AssetsPath/all.min.js?@BuildNumber"></script>
-    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce/jquery.tinymce.min.js?@BuildNumber"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce_485/tinymce.min.js?@BuildNumber"></script>
+    <script type="text/javascript" src="@AssetsPath/scripts/tiny_mce_485/jquery.tinymce.min.js?@BuildNumber"></script>
+    
 }

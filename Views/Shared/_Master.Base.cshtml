@@ -27,7 +27,7 @@
     var csVars = {
         Url: "@GeminiContext.Url",
         ProjectUrl: "project/@GeminiContext.Project.Entity.Id/",
-        WorkspaceUrl: "workspace/@Model.CurrentPageCard.Id/",
+        WorkspaceUrl: "workspace/@(Model.CurrentPageCard.UrlId )/",
         ProjectId: @GeminiContext.Project.Entity.Id,
         AssetsPath: "@AssetsPath/",
         IEVersion: @Url.GetInternetExplorerVersion(),
@@ -43,25 +43,25 @@
     <script type="text/javascript">
     $(document).ready(function () {
 
-        @if (DeviceContext.IsMobile)
+            @if (DeviceContext.IsMobile)
             {
                 <text>
         $(".dropdown").click(function()
         {
             $(this).find("ul.inner").toggleClass("show");
-        });
+                });
         </text>
             }
 
-        @if (DeviceContext.IsDesktop)
+            @if (DeviceContext.IsDesktop)
             {
                 <text>
         </text>
             }
 
-        gemini_session.init(@GeminiApp.Config.SessionTimeOut);
+            gemini_session.init(@GeminiApp.Config.SessionTimeOut);
 
-        @if (Model.HasCurrentPageCard)
+            @if (Model.HasCurrentPageCard)
             {
                 @:gemini_appnav.pageCard = @Html.Raw(Model.CurrentPageCard.ToJson());
                         @:gemini_appnav.previousCards = @Html.Raw(Model.SavedCards.Select(x => x.Id).ToJson());

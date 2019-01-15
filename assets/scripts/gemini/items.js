@@ -442,7 +442,7 @@ gemini_items = {
                         gemini_edit.initEditing(el);
                     }
                     else if (action == "comment" && !$('#item-grid-context-menu a[href="#comment"]').parent().hasClass('disabled')) {
-                        $("#cs-popup-center-content").css("width", "600px");
+                        $("#cs-popup-center-content").css("width", "650px");
                         $("#cs-popup-center-content").css("height", "475px");
                         gemini_popup.centerPopup("item/editcommenteditor", "popup?issueid=" + issueId);
              

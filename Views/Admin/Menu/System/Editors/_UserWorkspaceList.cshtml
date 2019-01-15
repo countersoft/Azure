@@ -1,0 +1,70 @@
+﻿@using ServiceStack.Common
+@model SystemAppNavModel
+
+@{
+    Layout = null;
+}
+<form name="move-workspace" id="move-workspace-form" style="margin-top: 10px;">
+    <input type="hidden" name="mode" value="moveworkspace"/>
+    <div class="admin-datatable-holder">
+        <table id="table-admin-workspaces" class="basic">
+            <thead>
+            <tr>
+                <th class="centered"></th>
+                <th data-field="Key" data-required='true'>Key</th>
+                <th data-field="Title" data-required='true'>Title</th>
+                <th data-field="Shared" data-required='true'>From Shared</th>
+                <th data-field="Alerts" data-required='true'>Alerts</th>
+                <th data-field="Reports" data-required='true'>Reports</th>
+                <th data-field="Badge" data-required='true'>Badge</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (NavigationCard item in Model.OwnedWorkspaces)
+            {
+                <tr data-id="@item.Id" id="wsrow@(item.Id)">
+                    <td data-edit="false" class="centered actions">
+                        <input type="checkbox" name="userWorkspace" value="@item.Id"/>
+                    </td>
+                    <td>@item.Key</td>
+                    <td>@item.Title</td>
+                    <td>@item.OriginatorCardId.HasValue.ToYesNo()</td>
+                    <td>
+                        @if (item.CardData.Alerts != null && item.CardData.Alerts.Any())
+                        {
+                            @item.CardData.Alerts.Any().ToYesNo()
+                        }
+                    </td>
+                    <td>
+                        @if (item.CardData.Reports != null && item.CardData.Reports.ExcelReports != null && item.CardData.Reports.ExcelReports.Any())
+                        {
+                         @item.CardData.Reports.ExcelReports.Aggregate((s1,s2)=>s1+=", " + s2).Replace("##summary##", "Summary").SplitCamelCase()
+                        }
+                    </td>
+                    <td> <span style="background-color: @item.Color; padding: 5px; width: 20px; text-align: center; display: block; color: white">@item.BadgeCountLabel</span></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    @Html.DropDownList("NewOwnerId", Model.ActiveUsers, new {@class = "input-size9"})
+    <input type="button" class="button button-primary" value="Move Workspaces" id="move-workspaces"/>
+</form>
+
+<script>
+    gemini_admin.initDatatables/*WithEdit*/("#table-admin-workspaces", false, null, { "aoColumnDefs": [{ "bSortable": false, "aTargets": [0, 1, 2, 3] }] });
+
+    $("#NewOwnerId").chosen();
+
+    $("#move-workspaces").click(function(e) {
+        var data = $("#move-workspace-form").serialize();
+        gemini_ajax.postCall("configure/System/AppNav", "savedata", function() {
+            $('#table-admin-workspaces input[name="userWorkspace"]:checked').each(function () {
+                var id = "#wsrow" + this.value;
+                $(id).remove();
+            });
+        }, function () {}, data, null, true);
+
+    });
+</script>

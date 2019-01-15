@@ -15,6 +15,10 @@
                 <td>External Url</td>
                 <td><input type="text" id="url" name="url" class="input-size9 required" /></td>
             </tr>
+            <tr>
+                <td>New Window</td>
+                <td><input type="checkbox" id="newwin" name="newwin" class="" /></td>
+            </tr>
         </table>
     </form>
 </div>
@@ -33,7 +37,8 @@
             gemini_popup.popupClose(e);
             gemini_admin.getPage();
             gemini_ui.stopBusy('#colorbox #popup-button-yes');
-        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); }, $("#appnav-form").serialize() + "&mode=add");
+        }, function () { gemini_ui.stopBusy('#colorbox #popup-button-yes'); },
+            $("#appnav-form").serialize() + "&mode=add", null, true);
     });
 
     $("#popup-button-no").unbind('click').click(function (e) { gemini_popup.popupClose(e); });

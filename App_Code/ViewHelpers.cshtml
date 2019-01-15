@@ -4,7 +4,7 @@
 
 @helper CardSystem(NavigationCard card)
 {
-    if (card.CardType == ProjectTemplatePageType.Marketing)
+    if (card.CardType == ProjectTemplatePageType.Marketing || card.IsGenerated )
     {
 @:system
     }

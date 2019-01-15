@@ -455,7 +455,7 @@ gemini_ui = {
         }
         if (!width)
         {
-            width = 571;
+            width = 650;
         }
         var toobarPlugin = '';
         if(plugin == null || plugin == undefined) {
@@ -485,7 +485,7 @@ gemini_ui = {
                "insertdatetime media nonbreaking save table directionality",
                "emoticons template paste textcolor" + plugin
             ],
-            content_css: csVars.AssetsPath + "scripts/tiny_mce/skins/lightgray/content.min.css",
+            content_css: csVars.AssetsPath + "scripts/tiny_mce_485/skins/lightgray/content.min.css",
             content_style: '',
             menu: {
                 file: { },

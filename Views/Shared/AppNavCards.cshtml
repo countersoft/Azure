@@ -15,7 +15,7 @@
         }
         if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null || card.CardType == ProjectTemplatePageType.Marketing && GeminiContext.User.IsGlobalAdmin)
         {
-                @:<a href="@card.Url" target="_blank">
+                @:<a href="@card.Url"  @(card.NewWindow ? "target=_blank" : string.Empty ) >
             }
         else
         {

@@ -10,7 +10,7 @@
         @foreach (var report in Model.Reports)
         {
             <div class="report">
-                <a href="~/workspace/@Model.CurrentPageCard.Id/Items/prepareexportxlsx?template=@(report.Template)">@(report.Name)</a>
+                <a href="~/workspace/@Model.CurrentPageCard.UrlId/Items/prepareexportxlsx?template=@(report.Template)">@(report.Name)</a>
             </div>
         }
     </div>

@@ -42,7 +42,7 @@
                 }
                         
                 loop++;
-                <li data-id="@item2.Label" class="tab @if(tabName == item2.Label){<text>selected</text>}" ><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.Id)/@(item2.Url)">@item2.Label</a></li>
+                <li data-id="@item2.Label" class="tab @if(tabName == item2.Label){<text>selected</text>}" ><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.UrlId)/@(item2.Url)">@item2.Label</a></li>
             }
             @if(tabName.HasValue() && tabName != dashboard && Model.ProjectMenu.Find(m => m.Label == tabName) == null)
             {
@@ -62,7 +62,7 @@
                                 
                         if (!item2.IsDivider)
                         {
-                            <li data-id="@item2.Label" @if(i<loop){<text>class="hide"</text>}><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.Id)/@(item2.Url)">@item2.Label</a></li>
+                            <li data-id="@item2.Label" @if(i<loop){<text>class="hide"</text>}><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.UrlId)/@(item2.Url)">@item2.Label</a></li>
                         }
                     }
 
