@@ -526,4 +526,7 @@
   <item id="OutOfHours">Out Of Hours</item>
   <item id="TemplatedContent">Templated Content</item>
   <item id="SlaBreachDate">Breach Date</item>
+  <item id="AnotherUserModified">En annan person har ändrat den här artikeln</item>
+  <item id="ReviewAndClickSend">Granska ändringarna och skicka igen</item>
+  <item id="NowViewing">Visar nu</item>
 </Resource>

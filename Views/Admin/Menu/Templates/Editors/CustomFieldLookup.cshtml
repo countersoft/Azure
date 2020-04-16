@@ -96,7 +96,10 @@
 
         @if(Model.CascadingParentLookupData != null)
         {
-            <text>gemini_ui.chosen("#custom-field-lookup #parentkey", null, true);</text>
+            <text>
+            gemini_ui.chosen("#custom-field-lookup #parentkey", null, true);
+            $("#custom-field-lookup-container").css("height", "350px"); //make space for extra drop down
+            </text>
         }
 
 
@@ -148,7 +151,7 @@
         
         gemini_admin.initDatatables("#custom-field-lookup-table", { "aoColumnDefs": [{ "bSortable": false, "aTargets": [option_column] }] });
 
-        $(".action-button-delete", "#custom-field-lookup-container").click(function () {
+        $("#custom-field-lookup-container").on('click', '.action-button-delete', function () {
 
             gemini_ajax.postCall("configure/Templates/CustomFields", 'Delete', 
                 function (response) {
@@ -209,7 +212,7 @@
         });
         setTimeout(function() { 
             $('#add-customfield-property-description').focus();
-            jscrollPaneApi = $("#custom-field-lookup-container").jScrollPane({ });
+            jscrollPaneApi = $("#custom-field-lookup-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
         }, 250);
     });
 </script>

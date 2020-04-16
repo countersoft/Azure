@@ -75,7 +75,7 @@
                 <th>@GetResource(ResourceKeys.ActualResults)</th>
                 <th>@GetResource(ResourceKeys.Attachments)</th>
                 <th>@GetResource(ResourceKeys.Status)</th>
-                <th class="no-width no-wrap">@GetResource(ResourceKeys.Revised)</th>
+                <th class="no-width no-wrap">@GetResource(ResourceKeys.Date)</th>
 
             </tr>
             <tbody class="grid">
@@ -102,7 +102,7 @@
                                 }
                             }
                         </td>
-                           <td class="minor no-wrap valign-top">@step.Revised</td>
+                           <td class="minor no-wrap valign-top">@step.TestDate.ToLocal(GeminiApp.UserContext().User.TimeZone)</td>
                     </tr>
                 }
             </tbody>

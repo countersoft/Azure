@@ -15,6 +15,7 @@
                 <th data-field="Name" data-required='true'>Name</th>                
                 <th data-field="Description" data-required='true'>Description</th>                
                 <th data-field="Color" data-edit-type='color'>Color</th>
+                <th data-field="Enabled" data-edit-type="checkbox">Active?</th>
                 <th></th>            
             </tr>
         </thead>        
@@ -23,10 +24,12 @@
             {
                 <tr data-id="@item.Id" id="@item.Id">
                     <td data-edit="false" class="no-width"><span class='dragHandle fonticon-drag-handle'></span></td>
-                    <td>@item.Name</td>                
-                    <td>@item.Description</td>   
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
                     <td>@item.Color</td>
-                    <td data-edit="false" class="actions" >
+                    <td>@(item.Enabled ? "Yes" : "No")</td>
+
+                    <td data-edit="false" class="actions">
                         <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
                         <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>
                     </td>

@@ -662,282 +662,268 @@
 		@include cs-menu(12px, 160px);
 	}
 }
-#cs-admin
-{
-	.dragHandle
-	{
-		cursor:n-resize;
-	}
-	.highlight-hover td
-	{
-		background-color:$color-hover !important;
-	}
+#cs-admin {
+    .dragHandle {
+        cursor: n-resize;
+    }
 
-	#tab-help-message
-	{
-		margin: 0 0 20px 0;
-		font-size: 13px;
-	}
+    .highlight-hover td {
+        background-color: $color-hover !important;
+    }
 
-	#tabs-top
-	{
-		background-color: $color-white;
-		width: 80%;
+    #tab-help-message {
+        margin: 0 0 20px 0;
+        font-size: 13px;
+    }
 
-		.base-tab
-		{
-			padding: 5px 10px 5px 10px;
-			font-size: 14px;
-			height: 20px;
-			display: inline-block;
-			text-align: center;
-			font-weight: bold;
+    #tabs-top {
+        background-color: $color-white;
+        width: 80%;
 
-			&:hover
-			{
-				cursor: pointer;
-			}
-		}
-		.normal
-		{
-			@extend .base-tab; 
-			color: $color-grayscale1;
-			background-color: $color-grayscale4;
-			border-top: 3px solid $color-grayscale3;
-			border-bottom: 1px solid $color-grayscale1;
-			white-space: nowrap;
-		}
-		.selected
-		{
-			@extend .base-tab; 
-			color: $color-grayscale;
-			background-color: $color-white;
-			border-top: 3px solid $theme-color;
-			border-left: 1px solid $color-grayscale1;
-			border-right: 1px solid $color-grayscale1;
-			border-bottom: 1px solid $color-white;
-			white-space: nowrap;
-		}
-		.breaker
-		{
-			width: 25px;
-			height: 20px;
-			font-size: 14px;
-			padding: 5px 0px 5px 0px;
-			display: inline-block;
-			background-color: $color-white;
-			border-top: 1px solid $color-white;
-			border-bottom: 1px solid $color-grayscale1;
-		}
-		@media all and (max-width: 1024px)
-		{
-			.breaker{
-						width: 13px;
-					}
-		}
-	}
-        
+        .base-tab {
+            padding: 5px 10px 5px 10px;
+            font-size: 14px;
+            height: 20px;
+            display: inline-block;
+            text-align: center;
+            font-weight: bold;
 
-	#tabs-left
-	{
-		margin: 33px 0 20px 0;
-		padding: 20px 0 20px 0;
-		text-align: right;
-		width: 19%;
-		max-width: 300px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
 
-		background-color: $color-grayscale4;
-		border-top: 1px solid $color-grayscale3;
-		border-bottom: 1px solid $color-grayscale3;
-		border-left: 1px solid $color-grayscale3;
-		border-right: 1px solid $color-grayscale1;
+        .normal {
+            @extend .base-tab;
+            color: $color-grayscale1;
+            background-color: $color-grayscale4;
+            border-top: 3px solid $color-grayscale3;
+            border-bottom: 1px solid $color-grayscale1;
+            white-space: nowrap;
+        }
 
-		.base-tab
-		{
-			margin: 0 -1px 20px 0px;
-			padding: 10px 0px 5px 30px;
-			font-size: 14px;
-			height: 20px;
-			display: block;
-			text-align: left;
-			vertical-align: center;
-			font-weight: bold;
-			white-space: nowrap;
+        .selected {
+            @extend .base-tab;
+            color: $color-grayscale;
+            background-color: $color-white;
+            border-top: 3px solid $theme-color;
+            border-left: 1px solid $color-grayscale1;
+            border-right: 1px solid $color-grayscale1;
+            border-bottom: 1px solid $color-white;
+            white-space: nowrap;
+        }
 
-			&:hover
-			{
-				cursor: pointer;
-			}
-		}
-		.normal
-		{
-			@extend .base-tab; 
-			color: $color-grayscale;
-			background-color: transparent;
-			border-top: 1px solid transparent;
-			border-left: 1px solid transparent;
-			border-bottom: 1px solid transparent;
-			border-right: 1px solid transparent;
-		}
-		.system
-		{
-			color: $color-grayscale1;
-		}
-		.selected
-		{
-			@extend .base-tab; 
-			color: $theme-color;
-			background-color: $color-white;
-			border-top: 1px solid $color-grayscale1;
-			border-left: 1px solid $color-grayscale1;
-			border-bottom: 1px solid $color-grayscale1;
-			border-right: 1px solid $color-white;
-			z-index:3;
-		}
-		div:first-child
-		{
-			margin-top: 30px !important;
-		}
+        .breaker {
+            width: 25px;
+            height: 20px;
+            font-size: 14px;
+            padding: 5px 0px 5px 0px;
+            display: inline-block;
+            background-color: $color-white;
+            border-top: 1px solid $color-white;
+            border-bottom: 1px solid $color-grayscale1;
+        }
 
-		.help
-		{
-			color: $color-grayscale;
-			font-size: 11px;
-			font-size: 11px;
-			font-weight: normal;
-			border-top: 1px solid $color-grayscale3;
-			margin: 30px 10px 50px 10px;
-			padding: 20px 0 0 0;
-			text-align: left;
-			white-space: wrap;
-			line-height: 18px;
-		}
-	}
+        @media all and (max-width: 1024px) {
+            .breaker {
+                width: 13px;
+            }
+        }
+    }
 
-	.centered
-	{
-		text-align: center;
-	}
 
-	.search-choice {
-		width:150px;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow:hidden;
-		border-radius:6px;
-	}
+    #tabs-left {
+        margin: 33px 0 20px 0;
+        padding: 20px 0 20px 0;
+        text-align: right;
+        width: 19%;
+        max-width: 300px;
+        background-color: $color-grayscale4;
+        border-top: 1px solid $color-grayscale3;
+        border-bottom: 1px solid $color-grayscale3;
+        border-left: 1px solid $color-grayscale3;
+        border-right: 1px solid $color-grayscale1;
 
-	.menu-bar {
-		padding:10px 6px 6px 12px;
-	}
+        .base-tab {
+            margin: 0 -1px 20px 0px;
+            padding: 10px 0px 5px 30px;
+            font-size: 14px;
+            height: 20px;
+            display: block;
+            text-align: left;
+            vertical-align: center;
+            font-weight: bold;
+            white-space: nowrap;
 
-    
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .normal {
+            @extend .base-tab;
+            color: $color-grayscale;
+            background-color: transparent;
+            border-top: 1px solid transparent;
+            border-left: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            border-right: 1px solid transparent;
+        }
+
+        .system {
+            color: $color-grayscale1;
+        }
+
+        .selected {
+            @extend .base-tab;
+            color: $theme-color;
+            background-color: $color-white;
+            border-top: 1px solid $color-grayscale1;
+            border-left: 1px solid $color-grayscale1;
+            border-bottom: 1px solid $color-grayscale1;
+            border-right: 1px solid $color-white;
+            z-index: 3;
+        }
+
+        div:first-child {
+            margin-top: 30px !important;
+        }
+
+        .help {
+            color: $color-grayscale;
+            font-size: 11px;
+            font-size: 11px;
+            font-weight: normal;
+            border-top: 1px solid $color-grayscale3;
+            margin: 30px 10px 50px 10px;
+            padding: 20px 0 0 0;
+            text-align: left;
+            white-space: wrap;
+            line-height: 18px;
+        }
+    }
+
+    .centered {
+        text-align: center;
+    }
+
+    .search-choice {
+        width: 150px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        border-radius: 6px;
+    }
+
+    .menu-bar {
+        padding: 10px 6px 6px 12px;
+    }
+
+
     .accordion {
-        h2 {
+
+        span.fonticon-arrow-right,
+        span.fonticon-arrow-down {
+            margin: 10px;
+            float: left;
+        }
+
+        > h2 {
+            background-color: $color-grayscale4;
+            padding: 5px;
+            font-size: 16px;
             margin: 10px 0 20px;
             cursor: pointer;
         }
+
         > div {
             margin-bottom: 20px;
         }
     }
 
-	#template-picker, 
-    #language-picker
-	{
-		@include border;
-		@include rounded(5px);
-		@include box-inset-shadow();
-		background-color: $color-grayscale4;
-		padding: 10px;
-		margin-bottom: 15px;
+    #template-picker,
+    #language-picker {
+        @include border;
+        @include rounded(5px);
+        @include box-inset-shadow();
+        background-color: $color-grayscale4;
+        padding: 10px;
+        margin-bottom: 15px;
 
-		h2
-		{
-			font-size: 16px;
-			color: $theme-color;
-			float:left;
-			line-height:30px;
+        h2 {
+            font-size: 16px;
+            color: $theme-color;
+            float: left;
+            line-height: 30px;
             min-width: 100px;
-		}
+        }
 
-        .chosen-container-single{
+        .chosen-container-single {
             margin-bottom: 5px;
         }
 
-		a.export
-		{
-			font-size: 12px;
-		}
-	}
+        a.export {
+            font-size: 12px;
+        }
+    }
 
-	@media all and(max-width:1024px)
-	{
-		#template-picker,
-        #language-picker
-		{
-			display:inline-block;
-		}
-	}
-	ul.menu
-	{
-		margin-top: 10px;
+    @media all and(max-width:1024px) {
+        #template-picker,
+        #language-picker {
+            display: inline-block;
+        }
+    }
 
-		li
-		{
-			padding: 10px;
-			@include border;
-			background-color: $color-grayscale4;
-			margin-bottom: 10px;
+    ul.menu {
+        margin-top: 10px;
 
-			.fonticon-drag-handle
-			{
-				font-size: 11px;
-				vertical-align: top;
-			}
+        li {
+            padding: 10px;
+            @include border;
+            background-color: $color-grayscale4;
+            margin-bottom: 10px;
 
-			.input[type=checkbox]
-			{
-				padding: 0;
-				margin: 0;
-			}
+            .fonticon-drag-handle {
+                font-size: 11px;
+                vertical-align: top;
+            }
 
-			label
-			{
-				font-size: 17px;
-			}
+            .input[type=checkbox] {
+                padding: 0;
+                margin: 0;
+            }
 
-			.options
-			{
-				.break-option
-				{
-					padding: 0;
-					margin: 0 !important;
-					vertical-align: text-bottom;
-				}
+            label {
+                font-size: 17px;
+            }
 
-				label
-				{
-					font-size: 11px;
-					color: $color-grayscale1;
-				}
-			}
-		}
+            .options {
+                .break-option {
+                    padding: 0;
+                    margin: 0 !important;
+                    vertical-align: text-bottom;
+                }
 
-		.highlight
-		{
-			background-color: $color-hover !important;
-		}
-	}
+                label {
+                    font-size: 11px;
+                    color: $color-grayscale1;
+                }
+            }
+        }
 
-	#system-options-add {
-		margin-top: 7px;
-		margin-left: 7px;
-	}
-	
-	#add-button-container{
-		float:left;
-	}
+        .highlight {
+            background-color: $color-hover !important;
+        }
+    }
+
+    #system-options-add {
+        margin-top: 7px;
+        margin-left: 7px;
+    }
+
+    #add-button-container {
+        float: left;
+    }
 }
 td.mceFirst{
 	min-width: 0px;
@@ -1197,7 +1183,7 @@ table.admin-data-entry
 	#custom-field-lookup-container
 	{
 		width: 790px; 
-		height: 315px; 
+		height: 400px; 
 		overflow: hidden;
 		outline: none;
 	}

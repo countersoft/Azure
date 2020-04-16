@@ -932,6 +932,39 @@ gemini_ui = {
             };
         };
         
+    },
+
+    csAccordion: function(selector, selectedTab) {
+        var openClass = "fonticon-arrow-down";
+        var closedClass = "fonticon-arrow-right";
+
+        if (selector === undefined) selector = '.accordion';
+
+
+        $(selector + " > div").hide();
+        $(selector + " > h2").before('<span class="' + closedClass + '"></span>');
+        if (selectedTab === undefined) {
+            $(selector + " div:first").show();
+            $(selector + " > span:first").removeClass(closedClass).addClass(openClass);
+        } else if (isNaN(selectedTab)) {
+            $(selectedTab).show();
+            $(selectedTab).find(" > span:first").removeClass(closedClass).addClass(openClass);
+        } else {
+            selectedTab--;
+            $(selector + " > div:eq( " + selectedTab + ")").show();
+            $(selector + " > span:eq( " + selectedTab + ")").removeClass(closedClass).addClass(openClass);
+        }
+
+
+        $(selector + " > h2").click(function () {
+            $(selector + " > div").slideUp();
+            $(selector + " > span").removeClass(openClass).addClass(closedClass);
+
+
+            $(this).prev('span')
+                .removeClass(closedClass).addClass(openClass);
+            $(this).next('div').slideDown();
+        });
     }
 
     /*translateItem: function ( object ) {

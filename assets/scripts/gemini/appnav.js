@@ -108,9 +108,11 @@ gemini_appnav =
     /* Periodic card refresh setup */
     refreshTimer: function ()
     {
-        var interval = 10000; // Every 10 seconds
-
-        setInterval(gemini_appnav.refresh, interval);
+        var interval = csVars.AjaxPollInterval;
+        if (interval === undefined) interval = 10000; // Every 10 seconds
+        if (interval > 0) { //0 setting disables
+            setInterval(gemini_appnav.refresh, interval);
+        }
     },
     
     /* Periodic card refresh */

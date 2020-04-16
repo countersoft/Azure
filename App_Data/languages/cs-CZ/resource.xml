@@ -546,4 +546,9 @@
   <item id="OutOfHours">Out Of Hours</item>
   <item id="TemplatedContent">Templated Content</item>
   <item id="SlaBreachDate">Breach Date</item>
+
+  <item id="AnotherUserModified">Tuto položku změnila jiná osoba</item>
+  <item id="ReviewAndClickSend">Zkontrolujte změny a znovu odešlete</item>
+  <item id="NowViewing">Nyní se dívám</item>
+
 </Resource>

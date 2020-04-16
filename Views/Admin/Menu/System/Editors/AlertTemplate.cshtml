@@ -29,6 +29,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="no-wrap">Language</td>
+                <td>
+                    <p class="pad-bottom-10">(change language to duplicate template into selected language)</p>
+                    @Html.DropDownList( "Language", Model.Languages, new { @class = "input-size9" } )
+                </td>
+            </tr>
+            <tr>
                 <td class="no-wrap">Subject</td>
                 <td>
                     <p class="pad-bottom-10">(leave empty to use the system default subject)</p>
@@ -51,6 +58,7 @@
 
     gemini_ui.chosen("#Project", null, true);
     gemini_ui.chosen("#Type", null, true);
+    gemini_ui.chosen("#Language", null, true);
 
     var editor;
     

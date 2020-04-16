@@ -439,6 +439,8 @@ gemini_item = {
         });
 
         gemini_item.initSLA();
+
+        gemini_item.registerViewing();
     },
 
     deleteComment: function (response)
@@ -1397,5 +1399,61 @@ gemini_item = {
             $('.sla-timer').attr('data-sla-minutes', totalMins)
             //$(this).html(hours + 'h ' + minutes + 'm');
         }*/
+    },
+
+    viewingInterval: null,
+
+    registerViewing: function() {
+        var ids = [gemini_item.issueId];
+        gemini_ajax.postCall('item', 'viewing', function (response) {
+            if (response.Success) {
+                gemini_item.updateViewerDetails(response.Result.Data);
+            }
+        }, null, { issueIds: ids, viewing: true });
+
+        window.addEventListener('beforeunload', function (event) {
+            var ids = [gemini_item.issueId];
+
+            gemini_ajax.postCall('item', 'viewing', function (response) {
+                
+            }, null, { issueIds: ids, viewing: false });
+            clearInterval(gemini_item.viewingInterval);
+        });
+
+        if (gemini_item.viewingInterval) {
+            clearInterval(gemini_item.viewingInterval);
+        }
+        gemini_item.viewingInterval = setInterval(gemini_item.getViewers, 20 * 1000);
+    },
+    currentViewers: [],
+    getViewers: function () {
+        var ids = [gemini_item.issueId];
+        gemini_ajax.postCall('item', 'getviewing', function (response) {
+            if (response.Result.Data.html !== "") {
+                gemini_item.updateViewerDetails(response.Result.Data);
+            } else {
+                //if no permissions to view those watching, stop polling
+                clearInterval(gemini_item.viewingInterval);
+            }
+        }, null, { issueIds: ids });
+    },
+    updateViewerDetails: function(viewerResponseData) {
+        $("#viewing-container").html(viewerResponseData.html);
+        var needAlert = false;
+        var currentUsers = [];
+        $.each(viewerResponseData.users, function (index, item) {
+            var userId = item.UserDto.BaseEntity.Id;
+            if (gemini_item.currentViewers.indexOf(userId) === -1) {
+                needAlert = true && viewerResponseData.currentUser !== userId;
+                if (needAlert) {
+                    gemini_popup.toast("<span class='fonticon-person'></span> '" + item.UserDto.Fullname + "' " + translations.nowviewing);
+                }
+                
+            }
+            currentUsers.push(item.UserDto.BaseEntity.Id);
+        });
+        gemini_item.currentViewers = currentUsers;
+        
     }
+
 };

@@ -4,7 +4,7 @@
 
 <p id="tab-help-message"><strong>&#187;</strong>&nbsp;Set system-wide language taxonomy options.</p>
 @{
-    var hasLanguageTemplateValues = Model.Overrides.Any( m => m.Value.Overide.HasValue() ) && Model.SelectedLanguage != null;
+    var hasLanguageTemplateValues = Model.SelectedLanguage != null;
 
     var isEditingDefaultTemplate = Model.SelectedLanguage == null;
     var templateLanguageKey = Model.SelectedTemplate.TemplateKey;
@@ -97,16 +97,20 @@
             .on( 'click',
                 '#system-options-add',
                 function () {
-                    var key = $( "#TaxonomyKey" ).val();
-                    gemini_ajax.postCall( "configure/Templates/Taxonomy", "savedata",
-                        function ( response ) {
-                            if ( response.Result === "OK" ) {
-                                gemini_admin.getPage();
-                            }
+            var key = $("#TaxonomyKey").val();
+                    if (key == 0) {
+                        gemini_popup.toast("Must select word key", true);
+                        return;
+                    }
+            gemini_ajax.postCall( "configure/Templates/Taxonomy", "savedata",
+                function ( response ) {
+                if ( response.Result === "OK" ) {
+                    gemini_admin.getPage();
+                }
 
-                        }, function () { },
+            }, function () { },
                         { action: 'add-key', template: gemini_admin.currentTemplate, key: key }, null, true );
-                } );
+                });
 
         $( "#taxonomy-text-table" ).off( 'click', "span[data-method='delete']" ).on( 'click', "span[data-method='delete']", function ( e ) {
             var item = $( this );

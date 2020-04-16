@@ -122,7 +122,7 @@
                                     {
                                         <tr>
                                             <td class="hide"></td>
-                                            <td>@(Model.RulesParameters[ruleIndex])&nbsp;<div class="action-button-delete cursor-pointer right type-rule" title="Delete" data-id="@(++ruleIndex)"></div></td>
+                                            <td>@(Model.RulesParameters[ruleIndex].Replace("|", ", "))&nbsp;<div class="action-button-delete cursor-pointer right type-rule" title="Delete" data-id="@(++ruleIndex)"></div></td>
                                         </tr>
                                     }
                                     <tr id="rule-add-row" class="hide"><td class="hide"></td><td></td></tr>
@@ -149,6 +149,7 @@
                                 <option value="StopClock">Stop Clock</option>
                                 <option value="PauseClock">Pause Clock</option>
                                 <option value="ResumeClock">Resume Clock</option>
+                                <option value="ResetClock">Reset Clock</option>
                             </select>
                             &nbsp;
                             <span id="action-parameter-container">
@@ -195,7 +196,7 @@
             ruleIndex=1;
             foreach(var rule in Model.Rules)
             {
-                <text>{ Id: @(ruleIndex), Field: '@(rule.Field)', Value: '@(rule.Value)', Operator: '@(rule.Operator)' }@if(rule != Model.Rules[Model.Rules.Count - 1]){<text>,</text>}</text>
+                <text>{ Id: @(ruleIndex), Field: '@(rule.Field)', Value: '@Html.Raw(rule.Value)', Operator: '@(rule.Operator)' }@if(rule != Model.Rules[Model.Rules.Count - 1]){<text>,</text>}</text>
                 ruleIndex++;
             }
             
@@ -231,7 +232,7 @@
 
             _.each($('select option:selected', '#rule-value-container'), function(e)
             {
-                value +=$(e).val() + ',';
+                value +=$(e).val() + '|';
                 text +=$(e).text() + ', ';
             });
 

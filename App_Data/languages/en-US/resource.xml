@@ -545,4 +545,8 @@
   <item id="OutOfHours">Out Of Hours</item>
   <item id="TemplatedContent">Templated Content</item>
   <item id="SlaBreachDate">Breach Date</item>
+
+  <item id="AnotherUserModified">Another person has modified this</item>
+  <item id="ReviewAndClickSend">Review changes and resend</item>
+  <item id="NowViewing">Now viewing</item>
 </Resource>

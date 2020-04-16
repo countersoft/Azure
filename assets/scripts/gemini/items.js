@@ -342,7 +342,7 @@ gemini_items = {
 
         if ($('#tabledata', '#data').length != 0)
         {
-            if ($('#tabledata', '#data').position().left + $('#tabledata', '#data').width() >= $('#side-pane').position().left)
+            if ($('#side-pane').length && $('#tabledata', '#data').position().left + $('#tabledata', '#data').width() >= $('#side-pane').position().left)
             {
                 $('#tabledata', '#data').css('padding-right', ($('#side-pane').width() + 20) + 'px');
             }

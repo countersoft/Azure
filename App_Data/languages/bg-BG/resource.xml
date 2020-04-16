@@ -545,4 +545,9 @@
   <item id="TrackedProgress">Проследен Прогрес</item>
   <item id="SlaBreachDate">Нарушение Дата</item>
   <item id="TemplatedContent">Templated Content</item>
+
+
+  <item id="AnotherUserModified">Друг човек е променил този елемент</item>
+  <item id="ReviewAndClickSend">Прегледайте промените и изпратете отново</item>
+  <item id="NowViewing">Сега гледаме</item>
 </Resource>

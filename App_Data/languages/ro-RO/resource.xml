@@ -546,4 +546,7 @@
   <item id="Sequence">Secvenţă</item>
   <item id="TrackedProgress">Progresul pe senile</item>
   <item id="SlaBreachDate">încălcare Data</item>
+  <item id="AnotherUserModified">O altă persoană a modificat acest articol</item>
+  <item id="ReviewAndClickSend">Examinați modificările și trimiteți din nou</item>
+  <item id="NowViewing">Acum vizionarea</item>
 </Resource>

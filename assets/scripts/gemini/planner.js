@@ -1147,6 +1147,7 @@ planner =
         var li = $(_that).parent();
         var ul = li.parent();
         var cellId = parseInt(ul.attr("id").replace('cell_', ''));
+        var issueId = $(_that).attr('id');
         var container = ul.find("li");
         var dropIndex = parseInt(container.index(li));
         gemini_ajax.postCall('board', 'celldetails', function (response) {
@@ -1165,6 +1166,6 @@ planner =
             gemini_add.postData = $.parseJSON(response);
 
             gemini_commons.showAddItem();
-        }, null, { changes: planner.scrapeData(), cellId: cellId, filter: $('#filter-form').serialize() });
+        }, null, { changes: planner.scrapeData(), cellId: cellId, filter: $('#filter-form').serialize(), issueId: issueId });
     }
 };

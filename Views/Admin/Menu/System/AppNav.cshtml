@@ -2,38 +2,38 @@
 
 <p id="tab-help-message"><strong>&#187;</strong>&nbsp;Define your own custom <strong>Workspace</strong> cards for all users. Set default <strong>Workspace View</strong> for users and <strong>take ownership</strong> of users' workspaces.</p>
 
-<div class="accordion" id="cs-adhoc-page">
+<div class="accordion admin-datatable-holder" id="cs-adhoc-page">
     <h2>Custom Cards</h2>
     <div class="admin-datatable-holder">
         <table id="table-admin-appnav" class="basic">
             <thead>
-            <tr>
-                <th data-field="Key" data-required='true'>Line 1</th>
-                <th data-field="Title" data-required='true'>Line 2</th>
-                <th data-field="Url" data-required='true'>Url</th>
-                <th data-field="Color" data-edit-type="color" class="centered">Color</th>
-                <th data-field="VisibleToAnonymousUser" data-edit-type='checkbox' class="centered">For Anonymous Users</th>
-                <th data-field="VisibleToAuthenticatedUser" data-edit-type='checkbox' class="centered">For Authenticated Users</th>
-                <th data-field="NewWindow" data-edit-type='checkbox' class="centered">New Window</th>
-                <th class="centered"></th>
-            </tr>
+                <tr>
+                    <th data-field="Key" data-required='true'>Line 1</th>
+                    <th data-field="Title" data-required='true'>Line 2</th>
+                    <th data-field="Url" data-required='true'>Url</th>
+                    <th data-field="Color" data-edit-type="color" class="centered">Color</th>
+                    <th data-field="VisibleToAnonymousUser" data-edit-type='checkbox' class="centered">For Anonymous Users</th>
+                    <th data-field="VisibleToAuthenticatedUser" data-edit-type='checkbox' class="centered">For Authenticated Users</th>
+                    <th data-field="NewWindow" data-edit-type='checkbox' class="centered">New Window</th>
+                    <th class="centered"></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach ( NavigationCard item in Model.SystemCards )
-            {
-                <tr data-id="@item.Id">
-                    <td>@item.Key</td>
-                    <td>@item.Title</td>
-                    <td>@item.Url</td>
-                    <td class="centered">@item.Color</td>
-                    <td class="centered">@item.VisibleToAnonymousUser.ToYesNo()</td>
-                    <td class="centered">@item.VisibleToAuthenticatedUser.ToYesNo()</td>
-                    <td class="centered">
-                        @item.NewWindow.ToYesNo()
-                    </td>
-                    <td data-edit="false" class="centered actions"><span title="@GetResource(ResourceKeys.Delete)" class="cursor-pointer action-button-delete"></span></td>
-                </tr>
-            }
+                @foreach ( NavigationCard item in Model.SystemCards )
+                {
+                    <tr data-id="@item.Id">
+                        <td>@item.Key</td>
+                        <td>@item.Title</td>
+                        <td>@item.Url</td>
+                        <td class="centered">@item.Color</td>
+                        <td class="centered">@item.VisibleToAnonymousUser.ToYesNo()</td>
+                        <td class="centered">@item.VisibleToAuthenticatedUser.ToYesNo()</td>
+                        <td class="centered">
+                            @item.NewWindow.ToYesNo()
+                        </td>
+                        <td data-edit="false" class="centered actions"><span title="@GetResource(ResourceKeys.Delete)" class="cursor-pointer action-button-delete"></span></td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -56,50 +56,50 @@
     <h2>Workspace Ownership</h2>
     <div>
         <label for="UserId">From User:</label>
-        @Html.DropDownList("UserId", Model.AllUsers, new {@class = "input-size9"})
+        @Html.DropDownList( "UserId", Model.AllUsers, new { @class = "input-size9" } )
         <div id="user-workspace-panel" class="admin-datatable-holder">
 
         </div>
     </div>
 </div>
 
-    
-    
-    
 
-    <br />
-    <br />
 
-    
-    <br />
-    
-    @*
-        <h2>Default Landing Page</h2>
-        <br/>
 
-        <div id="cs-adhoc-page">
-            <form id="system-appnav-form" action="" method="post" autocomplete="off">
-                <table class="data-entry-box">
-                    <tr>
-                        <td>Project</td>
-                        <td>@Html.DropDownList("Project", Model.Projects, new { @class = "input-size9" })</td>
-                    </tr>
-                    <tr>
-                        <td>Page</td>
-                        <td>@Html.DropDownList("Page", Model.Pages, new { @class = "input-size9" })</td>
-                    </tr>
-                    <tr><td colspan="2"><div class="divider"></div></td></tr>
 
-                    <tr>
-                        <td colspan="2" align="right">
-                            <input id="system-appnav-landing" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
-                        </td>
-                    </tr>
+<br />
+<br />
 
-                </table>
-            </form>
-        </div>
-    *@
+
+<br />
+
+@*
+    <h2>Default Landing Page</h2>
+    <br/>
+
+    <div id="cs-adhoc-page">
+        <form id="system-appnav-form" action="" method="post" autocomplete="off">
+            <table class="data-entry-box">
+                <tr>
+                    <td>Project</td>
+                    <td>@Html.DropDownList("Project", Model.Projects, new { @class = "input-size9" })</td>
+                </tr>
+                <tr>
+                    <td>Page</td>
+                    <td>@Html.DropDownList("Page", Model.Pages, new { @class = "input-size9" })</td>
+                </tr>
+                <tr><td colspan="2"><div class="divider"></div></td></tr>
+
+                <tr>
+                    <td colspan="2" align="right">
+                        <input id="system-appnav-landing" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+*@
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -173,31 +173,21 @@
             });
         });
 
-        $("#UserId").change(function() {
+        $("#UserId").change(function () {
             var userid = $(this).val();
             gemini_ajax.jsonCall('configure/System/AppNav',
                 "add",
-                function(response) {
+                function (response) {
                     $("#user-workspace-panel").html(response.Result.Html);
                 },
-                function(response) {
+                function (response) {
                     console.log(response);
                 },
                 { mode: 'userworkspace', userid: userid },
                 null,
                 true);
         });
+
+        gemini_ui.csAccordion('.accordion');
     });
-</script>
-
-<script>
-    $(function () {
-        $(".accordion > div").hide();
-        $(".accordion div:first").show();
-
-        $(".accordion h2").click(function () {
-            $(".accordion > div").slideUp();
-            $(this).next('div').slideDown();
-        });
-    } );
 </script>

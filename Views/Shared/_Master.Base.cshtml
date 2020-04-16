@@ -37,7 +37,8 @@
         FirstDayOfWeek: @((int)GeminiContext.User.CultureInfo.DateTimeFormat.FirstDayOfWeek),
         Licensed: @((GeminiApp.GeminiLicense.LicenseType == Rhino.Licensing.LicenseType.Standard && !GeminiApp.GeminiLicense.InvalidInstance).ToJSBool()),
         DontUseInlineEdit: @GeminiContext.Config.NoInlineEdit.ToJSBool(),
-        MaxFileSize: @Model.MaxFileUpload
+        MaxFileSize: @Model.MaxFileUpload,
+        AjaxPollInterval: @GeminiApp.Config.AjaxPollInterval
     };
     </script>
     <script type="text/javascript">

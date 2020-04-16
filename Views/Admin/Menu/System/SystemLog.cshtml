@@ -3,59 +3,119 @@
 
 <p id="tab-help-message"><strong>&#187;</strong>&nbsp;System reported and diagnostic messages appear here.</p>
 
-<div class="admin-datatable-holder">
-    <div class="margin-bottom-20"><input type="button" class="button-primary" value="Delete" id="truncate" /> </div>
+<div class="admin-datatable-holder" id="cs-adhoc-page">
 
-    <div class="margin-bottom-20"><input type="checkbox" class="fancy" id="DebugMode" name="DebugMode" @if(Model.DebugMode){ <text>checked="checked"</text> } /> <label style="font-size:14px;line-height:12px;" for="DebugMode">Enable diagnostic output</label></div>
-    
-    <table id="table-admin-log" class="basic">
-        <thead>
-            <tr>
-                <th>Dated</th>
-                <th class="hide">DatedSort</th>
-                <th>Entry</th>
-                <th>User</th>
-            </tr>
-        </thead>        
-        <tbody>
-            @foreach (SystemMessage item in Model.Messages)
-            {
-                <tr data-id="@item.Id">
-                    <td data-edit="false" class="no-width no-wrap valign-top">@item.Created</td>
-                    <td data-edit="false" class="hide">@(item.Created.Ticks/1000000)</td>
-                    <td data-edit="false">@item.Message</td>
-                    <td data-edit="false" class="no-width no-wrap valign-top">@item.Username</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+    <div class="accordion">
+
+        <h2>Options</h2>
+        <div>
+
+            <table class="data-entry-box">
+                <tbody>
+                    <tr>
+                        <td>Delete Log</td>
+                        <td><input type="button" class="button-primary" value="Delete" id="truncate" /></td>
+                    </tr>
+                    <tr>
+                        <td>Diagnostics</td>
+                        <td>
+                            <input type="checkbox" class="fancy" id="DebugMode" name="DebugMode" @if ( Model.DebugMode ) { <text> checked="checked" </text> } />
+                            <label style="font-size: 14px; line-height: 12px;" for="DebugMode">Enable diagnostic output</label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h2>Filter</h2>
+        <div>
+
+            <form id="system-logfilter-form" action="" method="post" autocomplete="off">
+                
+                <table class="data-entry-box">
+                    <tbody>
+                        <tr>
+                            <td>Message Source:</td>
+                            <td>@Html.DropDownList( "Source", Model.Sources, new { @class = "input-size9" } )</td>
+                        </tr>
+                    <tr>
+                        <td>Message Date:</td>
+                        <td>
+                            <input type="text" name="from-date" class="datepicker" data-date-format="@Model.DateFormat" />
+                            &nbsp;&nbsp;-&nbsp;&nbsp;<input type="text" name="to-date" class="datepicker" data-date-format="@Model.DateFormat" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Keyword:</td>
+                        <td><input type="text" name="keyword" class="input-size8"/></td>
+                    </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="button" class="button button-primary" value="Filter" id="filter-button" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </form>
+            
+        </div>
+
+
+        <h2>Logs</h2>
+        <div id="log-data">
+
+            @Html.Partial( "~/Views/Admin/Menu/System/_SystemLogData.cshtml", Model )
+
+        </div>
+    </div>
+
+
+
+
+
+
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var selectedTab = 3;
+        gemini_ui.csAccordion(".accordion", selectedTab);
 
-        gemini_admin.initDatatables("#table-admin-log", { "aoColumnDefs": [{ "iDataSort": 1, "aTargets": [0] }], "aaSorting": [[0, "desc"]] });
+        gemini_ui.datePicker('.accordion .datepicker' );
+        
+        $("#filter-button").click(function () {
+            var filter = $("#system-logfilter-form").serialize();
+            filter = filter + "&mode=filter";
+            //postCall: function (controller, method, callback, badCall, params, extra, ignoreContainer) {
+            gemini_ajax.postCall("configure/System/SystemLog",
+                "Editor",
+                function(response) {
+
+                    if (response.success) {
+                        $("#log-data").html(response.Result.Html).prev().click();
+                    }
+                },
+                null,
+                filter, null, true);
+        });
 
         gemini_ui.fancyInputs('#configure-page-content .fancy');
 
         $("#DebugMode").on('ifChanged', function (e) {
-            gemini_ajax.postCall("configure/System/SystemLog", "savedata", function ()
-            {
+            gemini_ajax.postCall("configure/System/SystemLog", "savedata", function () {
                 gemini_popup.toast("Saved");
-            }, null , { DebugMode:  $('input:checked', $('#configure-page-content')).length > 0 }, null, true);
+            }, null, { DebugMode: $('input:checked', $('#configure-page-content')).length > 0 }, null, true);
         });
 
         // Delete
-        $("#truncate").unbind('click').click(function (e)
-        {
-            gemini_popup.modalConfirm("Delete all system log entries?", null, function ()
-            {
+        $("#truncate").unbind('click').click(function (e) {
+            gemini_popup.modalConfirm("Delete all system log entries?", null, function () {
                 gemini_ui.startBusy('#modal-confirm #modal-button-yes');
-                gemini_ajax.call("configure/System/SystemLog", "Delete", function (response)
-                {
-                    if (response.Success)
-                    {
-                        gemini_admin.getPage();                        
+                gemini_ajax.call("configure/System/SystemLog", "Delete", function (response) {
+                    if (response.Success) {
+                        gemini_admin.getPage();
                     }
                     gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                 }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { id: 0 }, null, true);

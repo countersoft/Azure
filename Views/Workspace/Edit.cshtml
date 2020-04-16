@@ -95,11 +95,11 @@
                     <input type="checkbox" id="share-lock" class="fancy" name="share-lock" @if (Model.Lock)
                                                                                            {<text>checked="checked"</text>} /><label for="share-lock">@GetResource(ResourceKeys.LockSync)</label>
                     </div>
-                    <div class="margin-bottom-10">
+                    @*<div class="margin-bottom-10">
                     <input type="checkbox" id="share-chat" class="fancy" name="share-chat" @if (!Model.Lock)
                                                                                            {<text>disabled="disabled"</text> }  @if (Model.EnableChat)
                                                                                                                                                  {<text>checked="checked"</text>} /><label for="share-chat">@GetResource(ResourceKeys.EnableTeamChat)</label>
-                    </div>
+                    </div>*@
                     <div class="margin-bottom-10">
                     <input type="checkbox" id="share-sequence" class="fancy" name="share-sequence" @if (Model.EnableOthersToSequence) 
                                                                                                    {<text>checked="checked"</text>} /><label for="share-sequence">@GetResource(ResourceKeys.EnableOthersToSequence)</label>

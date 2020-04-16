@@ -1,0 +1,34 @@
+﻿@model SystemSystemLogModel
+
+@using Countersoft.Gemini.Commons.System
+
+
+
+<table id="table-admin-log" class="basic">
+    <thead>
+        <tr>
+            <th>Dated</th>
+            <th class="hide">DatedSort</th>
+            <th>Source</th>
+            <th>Entry</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach ( SystemMessage item in Model.Messages )
+        {
+            <tr data-id="@item.Id">
+                <td data-edit="false" class="no-width no-wrap valign-top">@item.Created</td>
+                <td data-edit="false" class="hide">@(item.Created.Ticks / 1000000)</td>
+                <td data-edit="false">@item.Source</td>
+                <td data-edit="false">@item.Message</td>
+                <td data-edit="false" class="no-width no-wrap valign-top">@item.Username</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    gemini_admin.initDatatables("#table-admin-log", { "aoColumnDefs": [{ "iDataSort": 1, "aTargets": [0] }], "aaSorting": [[0, "desc"]] });
+</script>

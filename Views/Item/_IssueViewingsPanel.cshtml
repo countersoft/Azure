@@ -1,0 +1,25 @@
+﻿@model List<UserViewingDto>
+
+<div class="persons-viewing">
+    <h3>@GetResource(ResourceKeys.Users, Resourcing.Colon)</h3>
+    <ul>
+        @foreach (var item in Model.OrderByDescending(m=>m.ViewedDate))
+        {
+            <li><span class="fonticon-person"></span> 
+                <span>
+                    @item.UserDto.Fullname 
+                </span>
+                <span class="time-viewed"  title="@item.ViewedDate.ToString("g")">
+                    @item.ViewedDate.ToString("t")
+                </span>
+            </li>
+
+        }
+    </ul>
+</div>
+
+<script>
+    var translations = {
+        nowviewing: '@GetResource(ResourceKeys.NowViewing, Resourcing.Lower)'
+    }
+</script>
