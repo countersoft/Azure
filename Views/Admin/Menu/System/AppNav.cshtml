@@ -139,7 +139,7 @@
             gemini_commons.stopClick(e);
             try {
 
-                if ($("#Workspace").val() > 0) {
+                if ($("#Workspace").val() >= 0) {
 
                     var formData = $("#system-appnav-default-form").serialize() + "&mode=defaultws";
                     gemini_ui.startBusy('#system-appnav-default-form #system-appnav-default-save');
@@ -180,9 +180,7 @@
                 function (response) {
                     $("#user-workspace-panel").html(response.Result.Html);
                 },
-                function (response) {
-                    console.log(response);
-                },
+                null,
                 { mode: 'userworkspace', userid: userid },
                 null,
                 true);

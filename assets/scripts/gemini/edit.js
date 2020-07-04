@@ -596,7 +596,7 @@ gemini_edit = {
                     }
                     else {
                         var tempData = data;
-                        tempData += '&id=' + elm.attr('name') + '&itemid=' + items[i] + '&property=' + elm.attr('name');
+                        tempData += '&id=' + elm.attr('name') + '&itemid=' + items[i] + '&property=' + elm.attr('name') + '&updatecount=' + items.length;
 
                         gemini_ajax.postCall('inline', 'save?viewtype=' + gemini_edit.pageType, function(response) {
                             gemini_edit.InlineEditSaveResponse(response);

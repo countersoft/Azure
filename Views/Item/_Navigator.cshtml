@@ -3,29 +3,33 @@
 <div id="filter-navigator">
     @if(Model.PreviousIssue != null)
     {
-        <a href="~/workspace/@Model.WorkspaceId/item/@Model.PreviousIssue.Id" class="previous">
-           <span class="fonticon-arrow-left"></span>
-        </a>
+    <a href="~/workspace/@Model.WorkspaceId/item/@Model.PreviousIssue.Id" class="previous">
+        @IconHelper.Icon( "arrow-left", IconHelper.FontAwesomeStyles.Duotone )
+    </a>
     }
     else
     {
-        <a href="#" class="previous">
-            <span class="fonticon-arrow-left disabled"></span>
-        </a>
+    <a href="#" class="previous">
+        <span class="disabled">
+            @IconHelper.Icon( "arrow-left", IconHelper.FontAwesomeStyles.Duotone )
+        </span>
+    </a>
     }
 
     <a class="position" href="~/workspace/@Model.WorkspaceId/items?session">@Model.CurrentIssueLocation / @Model.TotalIssues</a>
 
     @if(Model.NextIssue != null)
     {
-        <a href="~/workspace/@Model.WorkspaceId/item/@Model.NextIssue.Id" class="next">
-             <span class="fonticon-arrow-right"></span>
-        </a>
+    <a href="~/workspace/@Model.WorkspaceId/item/@Model.NextIssue.Id" class="next">
+        @IconHelper.Icon( "arrow-right", IconHelper.FontAwesomeStyles.Duotone )
+    </a>
     }
     else
     {
         <a href="#" class="next">
-            <span class="fonticon-arrow-right disabled"></span>
+            <span class="disabled">
+                @IconHelper.Icon( "arrow-right", IconHelper.FontAwesomeStyles.Duotone )
+            </span>
         </a>
     }
 </div>

@@ -701,7 +701,7 @@ gemini_ui = {
             }
         });        
     },
-    inlineEdit: function (selector, getUrl, saveUrl, cssclass) {
+    inlineEdit: function (selector, getUrl, saveUrl, cssclass, postSaveAction) {
         
         $(selector).editable(csVars.Url + saveUrl, {
             placeholder: '',
@@ -731,6 +731,9 @@ gemini_ui = {
                 };
             },
             submitdata: function () {
+                if (postSaveAction) {
+                    postSaveAction();
+                }
                 var th = gemini_ui.getTableTHForTD(this);
                 var field = $(th).data('field');
                 return {

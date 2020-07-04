@@ -107,7 +107,8 @@
         $("#version-form").validate();
 
         gemini_admin.initDatatables("#project-admin-versions", { "aoColumnDefs": [{ "iDataSort": 5, "aTargets": [4] },{ "iDataSort": 7, "aTargets": [6] },{ "bSortable": false, "aTargets": [10] }],"aaSorting": [[ 0, "desc" ]], fnDrawCallback: function (value, y) {
-            gemini_ui.inlineEdit("#project-admin-versions td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/versions/getproperty", "project/" + @Model.ProjectId + "/settings/versions/setproperty");
+            gemini_ui.inlineEdit("#project-admin-versions td:not([data-edit='false'])", "project/" + @Model.ProjectId+ "/settings/versions/getproperty", "project/" + @Model.ProjectId + "/settings/versions/setproperty", null, function() { 
+                $('#inline-datepicker').DatePickerHide(); });
         }});
 
         $("#project-admin-versions_wrapper").prepend("<div id='add-button-container'><form id='version-form'><input type='text' name='name' id='name' class='margin-left-5 required' /><input id='system-options-add' type='submit' value='Add' class='button-primary'></form></div>");

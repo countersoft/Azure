@@ -1307,33 +1307,7 @@ ul.z-index-medium, .z-index-medium {z-index:10 !important;}
 
 .toolbar-icons
 {
-    .wrapper
-    {
-		display: inline-block;
-        height:30px;
-        width:30px;
-            
-        &:hover
-        {
-            cursor: pointer;
-                    
-            .action
-            {
-                opacity: 0.5 !important;
-            }
-        }
-    }
-
-    .action
-    {
-        width:20px;
-        height:16px;
-        margin:7px 0 0 0;
-        background: url('images/toolbar.png') no-repeat 0 0;
-        display: inline-block;
-		cursor: pointer;
-    }
-
+    
 	.save
     {
         background-position: 0 0;

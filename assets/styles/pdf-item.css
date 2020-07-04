@@ -29,7 +29,7 @@ img, img a
 }
 
 /* Remove the various Element that we don't want to print */
-#header, #zone-side-bar, #account-box, #versions
+#header, #account-box, #versions
 {
     display:none;
 }

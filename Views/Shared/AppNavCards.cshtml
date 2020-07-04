@@ -1,28 +1,43 @@
 ﻿@model BaseModel
+<input id="workspace-filter" type="text" placeholder="@GetResource(ResourceKeys.Search)  (Ctrl+ /)"/>
 
-<ul class="cards">
-    @foreach (NavigationCard card in Model.SavedCards)
-    {
-        string prefix = string.Empty;
-        if(card.Locked || card.CardData.Lock && card.CardData.IsShared)
+<div class="scroll-wrapper">
+    <ul class="cards" data-card-count="@Model.SavedCards.Count">
+        
+        @foreach (NavigationCard card in Model.SavedCards)
         {
-            prefix = string.Concat('[', GetResource(ResourceKeys.TeamWorkspace), "] ");
-        }
-        @:<li id="card-@card.Id" data-card-id="@card.Id" class="card @ViewHelpers.CardSystem(card)" data-counter="@card.BadgeCount" data-chat-count="@card.CardData.Chat.BadgeCount" title="@(prefix)@(card.Title)">
-        if (card.Locked || card.CardData.Lock && card.CardData.IsShared)
-        {
-            <div class="team-workspace" style="border-right-color:@card.Color"></div>
-        }
-        if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null || card.CardType == ProjectTemplatePageType.Marketing && GeminiContext.User.IsGlobalAdmin)
-        {
-                @:<a href="@card.Url"  @(card.NewWindow ? "target=_blank" : string.Empty ) >
+            string prefix = string.Empty;
+            if (card.Locked || card.CardData.Lock && card.CardData.IsShared)
+            {
+                prefix = string.Concat('[', GetResource(ResourceKeys.TeamWorkspace), "] ");
             }
-        else
-        {
-                @:<a href="@(GeminiContext.Url)workspace/@(card.Id)/@card.Url">
-            }
-                    <div class="card-box">
-                        <span class="img-container @ViewHelpers.CardLetters(card)" style="background-color:@(card.Color) !important;" data-color="@(card.Color)">
+            <li id="card-@card.Id" data-card-id="@card.Id" class="card @ViewHelpers.CardSystem(card)" 
+                data-key="@card.Key.ToLower()" data-title="@card.Title.ToLower()"
+                data-counter="@card.BadgeCount" title="@(prefix)@(card.Title)">
+                @if (card.Locked || card.CardData.Lock && card.CardData.IsShared)
+                {
+                    <i class="fad fa-share workspace-shared"></i>
+                }
+
+                @{
+                    var url = string.Empty;
+                    var target = string.Empty;
+
+                    if (card.CardType == ProjectTemplatePageType.Custom && card.UserId == null || card.CardType == ProjectTemplatePageType.Marketing && GeminiContext.User.IsGlobalAdmin)
+                    {
+                        url = card.Url;
+                        target = card.NewWindow ? "target=\"_blank\"" : string.Empty;
+
+                    }
+                    else
+                    {
+                        url = GeminiContext.Url + "workspace/" + card.Id + "/" + card.Url;
+                    }
+                }
+
+                <a href="@url" @target>
+                    <div class="card-box ">
+                        <span class="img-container key @ViewHelpers.CardLetters(card)" style="background-color: @(card.Color) !important;" data-color="@(card.Color)">
                             @if (card.LastSeen == null)
                             {
                                 @:<span class="not-seen">!!</span>
@@ -31,10 +46,19 @@
                             {
                                 @:<span id="badge-@card.Id" class="badge" data-badge-id="@card.Id" data-counter="@card.TotalBadgeCount">@card.BadgeCountLabel</span>
                             }
-                            <span class="key">@(card.Key)</span>
+                            @if (card.CardType == ProjectTemplatePageType.Marketing)
+                            {
+                                <i class="fad fa-shopping-cart"></i>
+                            }
+                            <span class="">@(card.Key)</span>
+
                         </span>
+                        <span class="title">@card.Title</span>
+
                     </div>
-                @:</a>      
-        @:</li>
-    }
-</ul>
+
+                </a>
+            </li>
+        }
+    </ul>
+</div>

@@ -28,7 +28,7 @@
     }
 
     /* Remove the various Element that we don't want to print */
-    #header, #zone-side-bar, #panel, #account-box
+    #header, #panel, #account-box
     {
         display:none;
     }

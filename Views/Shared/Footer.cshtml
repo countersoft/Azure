@@ -1,31 +1,6 @@
 ﻿@model BaseModel
 
-<div id="appnav-toolbar">
-    <div class="code"></div>
-    <div class="title"></div>
 
-    @if (Model.CurrentPageCard.CardData.ShowBadgeCounts)
-    {
-        <div id="appnav-toolbar-badge-changes" @if(Model.CurrentPageCard.BadgeCount == 0){<text>class="hide"</text>}><span>@Model.CurrentPageCard.BadgeCountLabel</span></div>
-    }
-
-    <div class="toolbar-icons actions no-select">
-    @if (Model.PageType != ProjectTemplatePageType.Item)
-{
-    if (!Model.CurrentPageCard.Locked)
-    {
-        <div class="pos-relative">
-            <input class="button-secondary button-small" id="appnav-toolbar-save" type="button" title="@(GetResource(ResourceKeys.Save))" value="@(GetResource(ResourceKeys.Save))" />
-            <div class="save-small action"></div>
-        </div>
-    }
-        else
-        {
-            <div id="appnav-toolbar-locked" class="wrapper" title="@GetResource(ResourceKeys.Locked)"><div class="action locked"></div></div>
-        }
-    }
-    </div>
-</div>
 
 <div id="footer-messaging">
 

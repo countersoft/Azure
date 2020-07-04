@@ -111,7 +111,6 @@ gemini_people =
 
         $.unsubscribe('side-pane');
         $.subscribe('side-pane', function (data) {
-            //console.log(data);
             if ($('#side-pane .side-pane-tabs .tab.selected').data('action') != 'people') return;
             gemini_people.refreshPeopleTabIfVisible(data);
             

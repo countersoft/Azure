@@ -1954,126 +1954,6 @@ div.wysiwyg-container {
 	border-bottom: 4px solid $color-red;
 }
 
-#instant-filter-new-field
-{
-	margin: 5px 10px 0 0;
-}
-.instant-filter-box
-{
-	border: 1px solid $color-grayscale3;
-	background-color: $color-grayscale4;
-	font-size: 13px;
-	margin: 5px 10px 0 0;
-	padding: 0px 4px 0px 0px;
-	.instant-filter-header
-	{
-		white-space: nowrap;
-		overflow: hidden;
-		cursor: default;
-		height:22px;
-		max-width:200px;
-		text-overflow: ellipsis;  
-        text-overflow: ellipsis-word;
-		padding: 7px 0px 1px 4px;
-		
-		.instant-filter-title 
-		{
-			display: inline-block;
-			font-weight: bold;
-			margin-right: 7px;
-		}
-		
-		.instant-filter-caption
-		{
-			font-size:11px;
-		}
-	}
-	.fonticon-dropdown
-	{
-		font-size: 13px;
-		color: $color-grayscale2;
-		vertical-align: text-bottom;
-		padding-left:5px;
-		position:relative;
-		top:7px;
-	}
-	.fonticon-cross
-	{
-		font-size: 11px;
-		color: $color-grayscale2;
-		vertical-align: text-bottom;
-		position:relative;
-		top:7px;
-		padding-left:1px;
-	}
-	&:hover 
-	{
-		background-color:$color-grayscale3;
-		.fonticon-cross, .fonticon-dropdown
-		{
-			color: $color-grayscale1;
-		}
-	}
-
-	.instant-filter-dropdown
-	{
-		z-index:9999;
-		position:absolute;
-		margin-left:-1px;
-		margin-top:14px;
-		padding:10px;
-		font-size:11px;
-		@include border;
-		background-color:$color-grayscale4;
-		-webkit-box-shadow: 2px 2px 3px rgba(50, 50, 50, 0.5);
-		-moz-box-shadow:    2px 2px 3px rgba(50, 50, 50, 0.5);
-		box-shadow:         2px 2px 3px rgba(50, 50, 50, 0.5);
-	}
-	.instant-filter-dropdown[data-field-type="check"]
-	{
-		min-width:72px;
-	}
-	.instant-filter-dropdown[data-field-type="select"]
-	{
-		height:270px;
-	}
-	.color-grayscale2
-	{
-		color: $color-grayscale2;
-	}
-}
-#instant-filter-options
-{
-    background-color:$color-white;
-}
-#instant-filter-ProjectCode
-{
-    background-color:$primary-color;
-    border: 1px solid $primary-color;
-        
-    .fonticon-dropdown
-    {
-        color:$color-white;
-    }
-
-    .instant-filter-header
-    {
-        max-width:300px;
-        color:$color-white;
-    }
-}
-#instant-filter-tooltip
-{
-	padding:10px;
-	background-color:$color-black;
-	color: $color-grayscale4;
-	position:absolute;
-	display:none;
-	font-size:11px;
-	z-index:99999;
-}
-
-
 
 
 
@@ -2217,18 +2097,22 @@ div.wysiwyg-container {
 		#item-toolbar
 		{
 			display:none;
+            color:white;
 		}
 	}
 
 	.side-pane-toolbar #item-toolbar .wrapper
 	{
 		float:left;
+        color:white;
 		.action
 		{
 			margin:0 0 0 10px;
 			background-position-y:-16px;
+            
 		}
 	}
+
 
 	#attachmentupload-hit
     {
@@ -2316,7 +2200,7 @@ div.wysiwyg-container {
     position:fixed;
     padding:20px;
     top:0px;
-    right:77px;
+    right:0px;
     width:820px;
     overflow-y:auto;
     overflow-x:hidden;

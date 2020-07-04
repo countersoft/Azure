@@ -5,13 +5,7 @@ gemini_master =
     
     initBase: function (displayPageActions, status, projects, newWorkspace, admin) 
     {
-        $("#pin-page").click(function () {
-            gemini_appnav.newWorkspace();
-        });
-
         gemini_appnav.init(newWorkspace);
-
-        gemini_sidepane.init();
 
         gemini_sizing.appResizer();
 
@@ -19,7 +13,7 @@ gemini_master =
 
         gemini_popup.init();
 
-        gemini_add.init();
+        gemini_add.init(admin);
 
         gemini_account.bindProfile();
 
@@ -29,10 +23,13 @@ gemini_master =
 
         gemini_notifications.init();
 
+        gemini_master.initReports();
         if (admin)
         {
             gemini_logo.init();
         }
+
+        gemini_master.initWorkspaceActions();
 
         $.validator.setDefaults({
             ignore: '.ignore'
@@ -167,7 +164,7 @@ gemini_master =
         gemini_master.handleClickAway();
         gemini_master.initProjectSettings();
     },
-    
+
     handleClickAway: function ()
     {
         $(".export-to-container").click(function (e) {
@@ -209,7 +206,18 @@ gemini_master =
                 }
                
             }
+            if ($('#workspace-slider').is(":visible") && 
+                $(e.target).closest('#workspace-slider').length == 0) {
+                $('#workspace-slider').removeClass("show");
+                gemini_appnav.toggleDropdownIcon();
+            }
 
+            if ($(e.target).attr('id') != 'filter-options-content') {
+
+                if ($("#filter-form #instant-filter-options").hasClass("show")) {
+                    $("#filter-form #instant-filter-options").removeClass("show");
+                }
+            }
             //Need to check for this, because this event happens always after the dropdown is shown
             if (!$(e.target).hasClass('control-icon') && !$(e.target).hasClass('ordering')) {
                 if ($("#page-options-box .options").is(":visible")) $("#page-options-box .options").fadeOut("fast");
@@ -247,7 +255,7 @@ gemini_master =
     },
 
     initTabs: function () {
-        //Fixes hidden menu item bug if browser scrollbar is visible
+        /*//Fixes hidden menu item bug if browser scrollbar is visible
         if ($('#tabs-wrapper').width() + 30 > $('#header').width() / 2) {
             $($('#tabs-wrapper')).css('width', $('#tabs-wrapper').width() - 30);
         }
@@ -305,14 +313,14 @@ gemini_master =
         if ($('#add-menu .cs-menu-dropdown li').length <= 1)
         {
             $('#add-zone .add-dropdown').hide();
-        }
+        }*/
     },
 
     initProjectSettings: function ()
     {
-        if (!$('#project-settings', '#tabs-wrapper').length) return;
+        if (!$('#project-settings', '#main-menu').length) return;
 
-        $('#project-settings', '#tabs-wrapper').click(function (e)
+        $('#project-settings', '#main-menu').click(function (e)
         {
             gemini_commons.stopClick(e);
             $("#cs-popup-center-content").css("width", "1000px");
@@ -340,13 +348,60 @@ gemini_master =
         $("#search-bar", '#header').click(function (e) 
         {
             if (!$('#search-box', '#header').is(':visible')) {
-                $('.auto-popup').hide();
+                //$('.auto-popup').hide();
                 $('#search-box', '#header').show();
                 $('input', '#search-box', '#header').focus();
             }
             else {
                 $('#search-box', '#header').hide();
             }
+        });
+    },
+
+    initReports: function() {
+        $("#main-menu .reports").hoverIntent({
+            interval: 150,
+            over: function () {
+                gemini_reports.init();
+            }, out: function () {
+                var x = 1;
+            }
+        });
+    },
+
+    initWorkspaceActions: function() {
+
+        // Handle actions
+        $("#workspace-panel #workspace-save").unbind('click').bind('click', function (e) {
+            if (gemini_appnav.pageCard != null) {
+                gemini_appnav.update(gemini_appnav.pageCard);
+            }
+        });
+
+        $("#workspace-panel #workspace-copy").unbind('click').bind('click', function (e) {
+            if (gemini_appnav.pageCard != null) {
+                gemini_appnav.duplicate(gemini_appnav.pageCard);
+            }
+        });
+
+        $("#workspace-panel #workspace-delete").unbind("click").bind("click", function (e) {
+            gemini_appnav.removeCard(gemini_appnav.pageCard.Id);
+        });
+
+        $("#workspace-panel #workspace-configure").unbind("click").bind("click", function (e) {
+            gemini_appnav.showAppNavBox();
+        });
+
+        $("#workspace-panel #workspace-set-default").unbind("click").bind("click", function (e) {
+            gemini_appnav.makeDefault(gemini_appnav.pageCard.Id);
+        });
+
+        $("#workspace-panel #workspace-create").click(function () {
+            gemini_appnav.newWorkspace();
+        });
+
+        $('#workspace-badge-count .badge').unbind("click").bind("click", function (e) {
+            gemini_appnav.clearCount();
         });
     }
 };

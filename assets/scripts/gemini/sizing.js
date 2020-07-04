@@ -36,7 +36,6 @@ gemini_sizing = {
         $(window).resize(function () {
             waitForFinalEvent(function () { gemini_sizing.stretchWindow(); }, 500, "stretch-window");
             waitForFinalEvent(function () { gemini_item.resizeWindow(); }, 500, "item-resize");
-            waitForFinalEvent(function () { gemini_appnav.resizeWindow(); }, 500, "appnav-resize");
             waitForFinalEvent(function () { gemini_master.initTabs(); }, 200, "menu-tabs");
         });
     },

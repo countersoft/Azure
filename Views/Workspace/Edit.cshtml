@@ -4,251 +4,283 @@
 }
 <div id="edit-appnav-card">
     <form id="regular-form" action="#" method="post" enctype="multipart/form-data">
-        <input type="hidden" value="@Model.Card.Id" name="Id" id="id"/>
-           
+        <input type="hidden" value="@Model.Card.Id" name="Id" id="id" />
+
         <!-- CHANGE ID NAME TO UNIQUE -->
-        
-            <div id="tabs-left" class="left">
-                <span id="tabs-left-content">
-                    <div class="normal" data-tab="appnav-description" title="@GetResource(ResourceKeys.Workspace)">@GetResource(ResourceKeys.Workspace).ToMaxMore(12)</div>
-                    <div class="selected" data-tab="appnav-notifications" title="@GetResource(ResourceKeys.Alerts)">@GetResource(ResourceKeys.Alerts).ToMaxMore(12)</div>
-                    <div class="normal" data-tab="appnav-reports" title="@GetResource(ResourceKeys.Reports)">@GetResource(ResourceKeys.Reports).ToMaxMore(12)</div>
-                    <div class="normal" id="appnav-changes-tab" data-tab="appnav-changes" title="@GetResource(ResourceKeys.Updates)" data-update-count="@Model.CardItems.Items.Count()">@(Model.CardItems.Items.Count() > 0 ? GetResource(ResourceKeys.Updates).ToMaxMore(8) : GetResource(ResourceKeys.Updates).ToMaxMore(12)) @if(Model.CardItems.Items.Count() > 0) {<span>(@Model.CardItems.Items.Count())</span>}</div>
-                    
-                    @if(!Model.Card.Locked)
-                    {
-                    <div class="normal" data-tab="appnav-share" id="appnav-share-tab" title="@GetResource(ResourceKeys.Share)">@GetResource(ResourceKeys.Share).ToMaxMore(12)</div>
-                    }
-                    @*B.E. DisableSidebarOptions - BEGIN*@
-                    @*<div class="normal" data-tab="appnav-dashboard" title="@GetResource(ResourceKeys.Metrics)">@GetResource(ResourceKeys.Metrics).ToMaxMore(12)</div>*@
-                    @*B.E. DisableSidebarOptions - END*@
-                </span>          
-            </div>
 
-            <div id="tabs-content" class="left">
+        <div id="tabs-left" class="left">
+            <span id="tabs-left-content">
+                <div class="normal" data-tab="appnav-description" title="@GetResource(ResourceKeys.Workspace)">@GetResource( ResourceKeys.Workspace ).ToMaxMore( 12 )</div>
+                <div class="selected" data-tab="appnav-notifications" title="@GetResource(ResourceKeys.Alerts)">@GetResource( ResourceKeys.Alerts ).ToMaxMore( 12 )</div>
+                <div class="normal" data-tab="appnav-reports" title="@GetResource(ResourceKeys.Reports)">@GetResource( ResourceKeys.Reports ).ToMaxMore( 12 )</div>
+                <div class="normal" id="appnav-changes-tab" data-tab="appnav-changes" title="@GetResource(ResourceKeys.Updates)" data-update-count="@Model.CardItems.Items.Count()">
+                    @(Model.CardItems.Items.Count() > 0 ? GetResource( ResourceKeys.Updates ).ToMaxMore( 8 ) : GetResource( ResourceKeys.Updates ).ToMaxMore( 12 )) @if ( Model.CardItems.Items.Count() > 0 )
+                    {<span>(@Model.CardItems.Items.Count())</span>}
+                </div>
 
-                <div id="appnav-description">
-                    <input type="text" name="Key" id="Key" placeholder="@GetResource(ResourceKeys.Key)" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4"/>@if (Model.Owner.HasValue()) {<div class="owner">@GetResource(ResourceKeys.SharedBy) <span>@Model.Owner</span></div> }
-                    <input type="hidden" name="Color" id="Color" value="@Model.Card.Color" />
-                    <div class="swatch margin-bottom-10 clearfix">
-                        <span class="swatch-color" style="background-color: #000000;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #4863A0;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #0000A0;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #306754;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #437C17;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #6CBB3C;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #C9BE62;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #E8A317;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #6F4E37;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #C35817;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #F87431;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #E78A61;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #FF0000;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #DC381F;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #C34A2C;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #8C001A;">&nbsp;</span>
-                        <span class="swatch-color" style="background-color: #C12283;">&nbsp;</span>
-                        <div id="colorSelector" style="display:inline-block;">
-                            <div id="color-picker-color" style="background-color: @(Model.Card.Color)"></div>
-                        </div>
+                @if ( !Model.Card.Locked )
+                {
+                    <div class="normal" data-tab="appnav-share" id="appnav-share-tab" title="@GetResource(ResourceKeys.Share)">@GetResource( ResourceKeys.Share ).ToMaxMore( 12 )</div>
+                }
+                @*B.E. DisableSidebarOptions - BEGIN*@
+                @*<div class="normal" data-tab="appnav-dashboard" title="@GetResource(ResourceKeys.Metrics)">@GetResource(ResourceKeys.Metrics).ToMaxMore(12)</div>*@
+                @*B.E. DisableSidebarOptions - END*@
+            </span>
+        </div>
+
+        <div id="tabs-content" class="left">
+
+            <div id="appnav-description">
+                <input type="text" name="Key" id="Key" placeholder="@GetResource(ResourceKeys.Key)" value="@Model.Card.Key" class="required input-size3 margin-bottom-10" maxlength="4" />@if ( Model.Owner.HasValue() )
+                {<div class="owner">@GetResource( ResourceKeys.SharedBy ) <span>@Model.Owner</span></div>}
+                <input type="hidden" name="Color" id="Color" value="@Model.Card.Color" />
+                <div class="swatch margin-bottom-10 clearfix">
+                    <span class="swatch-color" style="background-color: #000000;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #4863A0;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #0000A0;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #306754;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #437C17;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #6CBB3C;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #C9BE62;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #E8A317;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #6F4E37;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #C35817;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #F87431;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #E78A61;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #FF0000;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #DC381F;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #C34A2C;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #8C001A;">&nbsp;</span>
+                    <span class="swatch-color" style="background-color: #C12283;">&nbsp;</span>
+                    <div id="colorSelector" style="display:inline-block;">
+                        <div id="color-picker-color" style="background-color: @(Model.Card.Color)"></div>
                     </div>
-                    <input type="text" name="Title" id="Title" placeholder="@GetResource(ResourceKeys.Name)" value="@Model.Card.Title" class="required input-size12 margin-bottom-10"/>
-                    <textarea name="Comment" class="input-size12" id="appnav-comment" placeholder="@GetResource(ResourceKeys.Comment)">@Model.Card.CardData.Comment</textarea>
-                @if (!GeminiContext.PermissionsManager.IsHelpdeskUser())
+                </div>
+                <input type="text" name="Title" id="Title" placeholder="@GetResource(ResourceKeys.Name)" value="@Model.Card.Title" class="required input-size12 margin-bottom-10" />
+                <textarea name="Comment" class="input-size12" id="appnav-comment" placeholder="@GetResource(ResourceKeys.Comment)">@Model.Card.CardData.Comment</textarea>
+                @if ( !GeminiContext.PermissionsManager.IsHelpdeskUser() )
                 {
                     <div class="margin-top-20 margin-bottom-10">
-                        <input type="checkbox" id="workspace-menu-grid" class="fancy" name="workspace-menu-grid" @if(Model.MenuGrid){<text>checked="checked"</text>} @if(Model.Card.Locked){<text>disabled="disabled"</text>} /><label for="workspace-menu-grid" class="margin-right-20">@GetResource(ResourceKeys.Items)</label>
-                        <input type="checkbox" id="workspace-menu-board" class="fancy" name="workspace-menu-board" @if(Model.MenuBoard){<text>checked="checked"</text>} @if(Model.Card.Locked){<text>disabled="disabled"</text>} /><label for="workspace-menu-board" class="margin-right-20">@GetResource(ResourceKeys.Planner)</label>
-                        <input type="checkbox" id="workspace-menu-calendar" class="fancy" name="workspace-menu-calendar" @if(Model.MenuCalendar){<text>checked="checked"</text>} @if(Model.Card.Locked){<text>disabled="disabled"</text>} /><label for="workspace-menu-calendar" class="margin-right-20">@GetResource(ResourceKeys.Calendar)</label>
-                        <input type="checkbox" id="workspace-menu-timeline" class="fancy" name="workspace-menu-timeline" @if(Model.MenuTimeline){<text>checked="checked"</text>} @if(Model.Card.Locked){<text>disabled="disabled"</text>} /><label for="workspace-menu-timeline" class="margin-right-20">@GetResource(ResourceKeys.Timeline)</label>
-                        <input type="checkbox" id="workspace-menu-progress" class="fancy" name="workspace-menu-progress" @if(Model.MenuProgress){<text>checked="checked"</text>} @if(Model.Card.Locked){<text>disabled="disabled"</text>} /><label for="workspace-menu-progress">@GetResource(ResourceKeys.Progress)</label>
-                        @if(Model.PageApps.Count > 0)
-                        { 
-                            <br />
-                            foreach (var app in Model.PageApps)
+                        <ul id="workspace-page-apps">
+                            <li>
+                                <input type="checkbox" id="workspace-menu-grid" class="fancy" name="workspace-menu-grid"
+                                       @if ( Model.MenuGrid ) { <text> checked="checked" </text> }
+                                       @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                <label for="workspace-menu-grid" class="margin-right-20">@GetResource( ResourceKeys.Items )</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="workspace-menu-board" class="fancy" name="workspace-menu-board"
+                                       @if ( Model.MenuBoard ) { <text> checked="checked" </text> }
+                                       @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                <label for="workspace-menu-board" class="margin-right-20">@GetResource( ResourceKeys.Planner )</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="workspace-menu-calendar" class="fancy" name="workspace-menu-calendar"
+                                       @if ( Model.MenuCalendar ) { <text> checked="checked" </text> }
+                                       @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                <label for="workspace-menu-calendar" class="margin-right-20">@GetResource( ResourceKeys.Calendar )</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="workspace-menu-timeline" class="fancy" name="workspace-menu-timeline"
+                                       @if ( Model.MenuTimeline ) { <text> checked="checked" </text> }
+                                       @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                <label for="workspace-menu-timeline" class="margin-right-20">@GetResource( ResourceKeys.Timeline )</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="workspace-menu-progress" class="fancy" name="workspace-menu-progress"
+                                       @if ( Model.MenuProgress ) { <text> checked="checked" </text> }
+                                       @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                <label for="workspace-menu-progress" class="margin-right-20">@GetResource( ResourceKeys.Progress )</label>
+                            </li>
+                            @if ( Model.PageApps.Count > 0 )
                             {
-                                <input type="checkbox" id="workspace-menu-@(app.AppId)-@(app.ControlId)" class="fancy" name="workspace-menu-@(app.AppId)-@(app.ControlId)" @if (app.Selected) { <text> checked="checked" </text>  } @if (Model.Card.Locked) { <text> disabled="disabled" </text>  } /><label for="workspace-menu-@(app.AppId)-@(app.ControlId)" class="margin-right-20">@app.Caption</label>
+                                foreach ( var app in Model.PageApps )
+                                {
+                                    <li>
+
+                                        <input type="checkbox" id="workspace-menu-@(app.AppId)-@(app.ControlId)" class="fancy" name="workspace-menu-@(app.AppId)-@(app.ControlId)"
+                                               @if ( app.Selected ) { <text> checked="checked" </text> }
+                                               @if ( Model.Card.Locked ) { <text> disabled="disabled" </text> } />
+                                        <label for="workspace-menu-@(app.AppId)-@(app.ControlId)" class="margin-right-20">@app.Caption</label>
+                                    </li>
+                                }
                             }
-                        }
+                        </ul>
+
                     </div>
                 }
                 else
                 {
-                    <div class="margin-bottom-10"/>
+                    <div class="margin-bottom-10" />
                 }
-                    <div>
-                        @if (Model.Card.Locked)
-                        {
-                            @Html.DropDownList("Taxonomy", Model.Taxonomies, new { @class = "input-size9", disabled = "disabled" })
-                        }
-                        else
-                        {
-                            @Html.DropDownList("Taxonomy", Model.Taxonomies, new { @class = "input-size9" })
-                        }
-                    </div>
-                </div>
-
-                @if (!Model.Card.Locked)
-                {
-                <div id="appnav-share"> 
-                    <div class="margin-bottom-10">
-                    <input type="checkbox" id="share-lock" class="fancy" name="share-lock" @if (Model.Lock)
-                                                                                           {<text>checked="checked"</text>} /><label for="share-lock">@GetResource(ResourceKeys.LockSync)</label>
-                    </div>
-                    @*<div class="margin-bottom-10">
-                    <input type="checkbox" id="share-chat" class="fancy" name="share-chat" @if (!Model.Lock)
-                                                                                           {<text>disabled="disabled"</text> }  @if (Model.EnableChat)
-                                                                                                                                                 {<text>checked="checked"</text>} /><label for="share-chat">@GetResource(ResourceKeys.EnableTeamChat)</label>
-                    </div>*@
-                    <div class="margin-bottom-10">
-                    <input type="checkbox" id="share-sequence" class="fancy" name="share-sequence" @if (Model.EnableOthersToSequence) 
-                                                                                                   {<text>checked="checked"</text>} /><label for="share-sequence">@GetResource(ResourceKeys.EnableOthersToSequence)</label>
-                    </div>
-                    <h2>@GetResource(ResourceKeys.Users)</h2>
-                    @Html.ListBox("InteractionUserList", Model.InteractionUsers, new { @class = selectClasses })
-                    <br />
-                    <br />
-                    <h2>@GetResource(ResourceKeys.Groups)</h2>
-                    @Html.ListBox("InteractionGroupList", Model.InteractionGroups, new { @class = "input-size9" })                   
-                </div>
-                }
-
-                <div id="appnav-changes" class="margin-bottom-10">
-                    <div class="margin-bottom-10">
-                        <input type="checkbox" id="changes-highlightchanges" class="fancy" name="changes-highlightchanges" @if (Model.HighlightChanges) { <text> checked="checked" </text> } /><label for="changes-highlightchanges">@GetResource(ResourceKeys.HighlightChanges)</label>
-                    </div>
-                    <div class="margin-bottom-25">
-                        <input type="checkbox" id="changes-showbadgecounts" class="fancy" name="changes-showbadgecounts" @if (Model.ShowBadgeCounts) { <text> checked="checked" </text> } /><label for="changes-showbadgecounts">@GetResource(ResourceKeys.ShowBadgeCounts)</label>
-                    </div>
-
-                    @if (Model.CardItems.Items.Count() > 0)
+                <div>
+                    @if ( Model.Card.Locked )
                     {
-                        <table class="updates">
-                            <thead>
-                                <tr>
-                                    <td><input type="checkbox" class="fancy" id="toggle-checkbox" name="toggle-checkbox" /></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{Html.RenderPartial("~/Views/Workspace/Notifications/_Updates.cshtml", Model.CardItems);}
-                            </tbody>
-                        </table>
-                        <br />
-
-                        <div id="ws-buttons" class="margin-left-30">
-                            <input type="button" class="btn button-secondary-disabled button-small" name="clear-items" id="clear-items" value="@GetResource(ResourceKeys.Clear)" />&nbsp;&nbsp;
-
-                            <input type="button" class="btn button-secondary-disabled button-small" name="send-items" id="send-items" value="@GetResource(ResourceKeys.Email)" />&nbsp;&nbsp;
-                            <input type="button" class="btn button-secondary-disabled button-small" name="follow-items" id="follow-items" value="@GetResource(ResourceKeys.Follow)" />
-                            <input type="button" class="btn margin-left-5 button-secondary button-small" name="clear-all-items" id="clear-all-items" data-label="@GetResource(ResourceKeys.ClearAll)" value="@GetResource(ResourceKeys.ClearAll) (@(Model.CardItems.Card.BadgeCount))" />&nbsp;&nbsp;
-                        </div>
-                        
-                        <div class="send-items-container hide">
-                            <h3>@GetResource(ResourceKeys.Groups)</h3>
-                            @Html.ListBox("EmailToListGroups", Model.EmailToGroups, new { @class = "input-size9" })
-                            <h3>@GetResource(ResourceKeys.Users)</h3>
-                            @Html.ListBox("EmailToListUsers", Model.EmailToUsers, new { @class = selectClasses })
-
-                            <input type="text" name="EmailSubject" id="email-subject" class="input-size9 margin-top-10 margin-bottom-10" value="@Model.EmailSubject" placeholder="@GetResource(ResourceKeys.Subject)" />
-                            <textarea name="EmailMessage" id="email-message" class="input-size9 margin-bottom-10" placeholder="@GetResource(ResourceKeys.Message)">@Model.EmailMessage</textarea>
-                            <input type="button" class="btn button-primary button-small" name="email-badges" id="email-badges" value="@GetResource(ResourceKeys.Send)" />
-                            <input type="button" class="btn button-secondary button-small right" name="cancel-email-badges" id="cancel-email-badges" value="@GetResource(ResourceKeys.Cancel)" />
-                            <a id="jump-to-send-email"></a>
-                        </div>
-                        
+                        @Html.DropDownList( "Taxonomy", Model.Taxonomies, new { @class = "input-size9", disabled = "disabled" } )
+                    }
+                    else
+                    {
+                        @Html.DropDownList( "Taxonomy", Model.Taxonomies, new { @class = "input-size9" } )
                     }
                 </div>
+            </div>
 
-                <div id="appnav-notifications">
-                                      
-                    <p class="margin-bottom-20">@GetResource(ResourceKeys.EmailMe, Resourcing.Colon)</p>                   
-
-                    <div class="receive-alerts-on margin-left-20">
-                        <div class="margin-bottom-10">
-                            <input type="checkbox" class="fancy" name="SubscribeOnCreated" id="subscribe-on-created" value="true" @if (Model.Card.CardData.Subscription.Created)
-                                                                                                                                  { <text>checked="checked"</text>}/>
-                            <span class="valign-top"><label for="subscribe-on-created">@GetResource(ResourceKeys.Created)</label></span>
-                        </div>
-                        <div class="margin-bottom-10">
-                            <input type="checkbox" class="fancy" name="SubscribeOnUpdated" id="subscribe-on-updated" value="true" @if (Model.Card.CardData.Subscription.Updated)
-                                                                                                                                  { <text>checked="checked"</text>}/>
-                            <span class="valign-top"><label for="subscribe-on-updated">@GetResource(ResourceKeys.Updated)</label></span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="fancy" name="SubscribeOnCommented" id="subscribe-on-commented" value="true" @if (Model.Card.CardData.Subscription.Commented)
-                                                                                                                                      { <text>checked="checked"</text>}/>
-                            <span class="valign-top"><label for="subscribe-on-commented">@GetResource(ResourceKeys.Comments)</label></span> 
-                        </div>
-                    </div>          
-             
-                    <div class="margin-top-20">
-                        <p>
-                            <input type="checkbox" class="fancy" name="IndividualAlerts" id="individual-alerts" value="true" @if (Model.Card.CardData.Subscription.IndividualAlert)
-                                                                                                                             { <text>checked="checked"</text>}/>
-                            <label class="valign-top" for="individual-alerts">@GetResource(ResourceKeys.ReceiveIndividualEmailAlerts)</label>
-                        </p>
+            @if ( !Model.Card.Locked )
+            {
+                <div id="appnav-share">
+                    <div class="margin-bottom-10">
+                        <input type="checkbox" id="share-lock" class="fancy" name="share-lock" @if ( Model.Lock ) { <text> checked="checked" </text> } /><label for="share-lock">@GetResource( ResourceKeys.LockSync )</label>
                     </div>
-
-                    <div class="margin-top-20">
-                        <p class="margin-bottom-20">@GetResource(ResourceKeys.SubscribeOthers):</p>
-                        <div class="margin-left-30">
-                            <h2>@GetResource(ResourceKeys.Users)</h2>
-                            @Html.ListBox("SubscriptionUsersList", Model.SubscriptionUsers, new { @class = selectClasses })
-                            <br />
-                            <br />  
-                            <h2>@GetResource(ResourceKeys.Groups)</h2>
-                            @Html.ListBox("SubscriptionGroupsList", Model.SubscriptionGroups, new { @class = "input-size9" })                                             
-                        </div>
+                    @*<div class="margin-bottom-10">
+                        <input type="checkbox" id="share-chat" class="fancy" name="share-chat" @if (!Model.Lock)
+                                                                                               {<text>disabled="disabled"</text> }  @if (Model.EnableChat)
+                                                                                                                                                     {<text>checked="checked"</text>} /><label for="share-chat">@GetResource(ResourceKeys.EnableTeamChat)</label>
+                        </div>*@
+                    <div class="margin-bottom-10">
+                        <input type="checkbox" id="share-sequence" class="fancy" name="share-sequence" @if ( Model.EnableOthersToSequence ) { <text> checked="checked" </text> } /><label for="share-sequence">@GetResource( ResourceKeys.EnableOthersToSequence )</label>
                     </div>
+                    <h2>@GetResource( ResourceKeys.Users )</h2>
+                    @Html.ListBox( "InteractionUserList", Model.InteractionUsers, new { @class = selectClasses } )
+                    <br />
+                    <br />
+                    <h2>@GetResource( ResourceKeys.Groups )</h2>
+                    @Html.ListBox( "InteractionGroupList", Model.InteractionGroups, new { @class = "input-size9" } )
+                </div>
+            }
+
+            <div id="appnav-changes" class="margin-bottom-10">
+                <div class="margin-bottom-10">
+                    <input type="checkbox" id="changes-highlightchanges" class="fancy" name="changes-highlightchanges" @if ( Model.HighlightChanges ) { <text> checked="checked" </text> } /><label for="changes-highlightchanges">@GetResource( ResourceKeys.HighlightChanges )</label>
+                </div>
+                <div class="margin-bottom-25">
+                    <input type="checkbox" id="changes-showbadgecounts" class="fancy" name="changes-showbadgecounts" @if ( Model.ShowBadgeCounts ) { <text> checked="checked" </text> } /><label for="changes-showbadgecounts">@GetResource( ResourceKeys.ShowBadgeCounts )</label>
                 </div>
 
-                <div id="appnav-reports">
-                    <h2>@GetResource(ResourceKeys.Reports)</h2>
-                    @Html.ListBox("ReportsExcelList", Model.ReportsExcelListItem, new { @class = "input-size9" })
-                    <br />
-                    <br /> 
-                    
-                    <h2 style="margin-bottom:4px;">@GetResource(ResourceKeys.Schedule)</h2>                                         
-                    <div id="schedule-appnav-emails" class="margin-bottom-10"></div>
-                    <input type="hidden" id="email-interval" name="EmailInterval" value="@Model.EmailInterval"/>
-                    <br /> 
-                    <h2>@GetResource(ResourceKeys.Users)</h2>
-                    @Html.ListBox("ReportsUserList", Model.ReportsUserListItem, new { @class = selectClasses })
-                    <br />               
-                    <br />
-                    <h2>@GetResource(ResourceKeys.Groups)</h2>
-                    @Html.ListBox("ReportsGroupList", Model.ReportsGroupListItem, new { @class = "input-size9" })
-                    <br />
-                    <br />
-                    <input type="button" class="btn button-secondary button-small" value="@GetResource(ResourceKeys.Test)" id="send-report" name="send-report" />
-                </div>
-
-                <div id="appnav-dashboard">
-                    <p class="margin-bottom-20">@GetResource(ResourceKeys.SelectCharts, Resourcing.Colon)</p>              
-                    <table id="dashboard-widgets" class="updates no-select">
+                @if ( Model.CardItems.Items.Count() > 0 )
+                {
+                    <table class="updates">
+                        <thead>
+                            <tr>
+                                <td><input type="checkbox" class="fancy" id="toggle-checkbox" name="toggle-checkbox" /></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </thead>
                         <tbody>
-                            @foreach (var item in Model.Dashboard.Items)
-                            {
-                                <tr>
-                                    <td class="valign-top"><span class="dragHandle fonticon-drag-handle"></span></td>
-                                    <td><input type="checkbox" id="dashboard-@item.Item1" class="item-checkboxes fancy" title="@item.Item3" name="DashboardItems" value="@item.Item1" @if (item.Item2)
-                                                                                                                                                                                      {<text>checked="checked"</text>} /></td>
-                                    <td><label title="@item.Item3" for="dashboard-@item.Item1">@item.Item3</label></td>    
-                                </tr>                        
-                            }
+                            @{Html.RenderPartial( "~/Views/Workspace/Notifications/_Updates.cshtml", Model.CardItems );}
                         </tbody>
                     </table>
+                    <br />
+
+                    <div id="ws-buttons" class="margin-left-30">
+                        <input type="button" class="btn button-secondary-disabled button-small" name="clear-items" id="clear-items" value="@GetResource(ResourceKeys.Clear)" />&nbsp;&nbsp;
+
+                        <input type="button" class="btn button-secondary-disabled button-small" name="send-items" id="send-items" value="@GetResource(ResourceKeys.Email)" />&nbsp;&nbsp;
+                        <input type="button" class="btn button-secondary-disabled button-small" name="follow-items" id="follow-items" value="@GetResource(ResourceKeys.Follow)" />
+                        <input type="button" class="btn margin-left-5 button-secondary button-small" name="clear-all-items" id="clear-all-items" data-label="@GetResource(ResourceKeys.ClearAll)" value="@GetResource(ResourceKeys.ClearAll) (@(Model.CardItems.Card.BadgeCount))" />&nbsp;&nbsp;
+                    </div>
+
+                    <div class="send-items-container hide">
+                        <h3>@GetResource( ResourceKeys.Groups )</h3>
+                        @Html.ListBox( "EmailToListGroups", Model.EmailToGroups, new { @class = "input-size9" } )
+                        <h3>@GetResource( ResourceKeys.Users )</h3>
+                        @Html.ListBox( "EmailToListUsers", Model.EmailToUsers, new { @class = selectClasses } )
+
+                        <input type="text" name="EmailSubject" id="email-subject" class="input-size9 margin-top-10 margin-bottom-10" value="@Model.EmailSubject" placeholder="@GetResource(ResourceKeys.Subject)" />
+                        <textarea name="EmailMessage" id="email-message" class="input-size9 margin-bottom-10" placeholder="@GetResource(ResourceKeys.Message)">@Model.EmailMessage</textarea>
+                        <input type="button" class="btn button-primary button-small" name="email-badges" id="email-badges" value="@GetResource(ResourceKeys.Send)" />
+                        <input type="button" class="btn button-secondary button-small right" name="cancel-email-badges" id="cancel-email-badges" value="@GetResource(ResourceKeys.Cancel)" />
+                        <a id="jump-to-send-email"></a>
+                    </div>
+
+                }
+            </div>
+
+            <div id="appnav-notifications">
+
+                <p class="margin-bottom-20">@GetResource( ResourceKeys.EmailMe, Resourcing.Colon )</p>
+
+                <div class="receive-alerts-on margin-left-20">
+                    <div class="margin-bottom-10">
+                        <input type="checkbox" class="fancy" name="SubscribeOnCreated" id="subscribe-on-created" value="true" @if ( Model.Card.CardData.Subscription.Created ) { <text> checked="checked" </text> } />
+                        <span class="valign-top"><label for="subscribe-on-created">@GetResource( ResourceKeys.Created )</label></span>
+                    </div>
+                    <div class="margin-bottom-10">
+                        <input type="checkbox" class="fancy" name="SubscribeOnUpdated" id="subscribe-on-updated" value="true" @if ( Model.Card.CardData.Subscription.Updated ) { <text> checked="checked" </text> } />
+                        <span class="valign-top"><label for="subscribe-on-updated">@GetResource( ResourceKeys.Updated )</label></span>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="fancy" name="SubscribeOnCommented" id="subscribe-on-commented" value="true" @if ( Model.Card.CardData.Subscription.Commented ) { <text> checked="checked" </text> } />
+                        <span class="valign-top"><label for="subscribe-on-commented">@GetResource( ResourceKeys.Comments )</label></span>
+                    </div>
+                </div>
+
+                <div class="margin-top-20">
+                    <p>
+                        <input type="checkbox" class="fancy" name="IndividualAlerts" id="individual-alerts" value="true" @if ( Model.Card.CardData.Subscription.IndividualAlert ) { <text> checked="checked" </text> } />
+                        <label class="valign-top" for="individual-alerts">@GetResource( ResourceKeys.ReceiveIndividualEmailAlerts )</label>
+                    </p>
+                </div>
+
+                <div class="margin-top-20">
+                    <p class="margin-bottom-20">@GetResource( ResourceKeys.SubscribeOthers ):</p>
+                    <div class="margin-left-30">
+                        <h2>@GetResource( ResourceKeys.Users )</h2>
+                        @Html.ListBox( "SubscriptionUsersList", Model.SubscriptionUsers, new { @class = selectClasses } )
+                        <br />
+                        <br />
+                        <h2>@GetResource( ResourceKeys.Groups )</h2>
+                        @Html.ListBox( "SubscriptionGroupsList", Model.SubscriptionGroups, new { @class = "input-size9" } )
+                    </div>
                 </div>
             </div>
-      
+
+            <div id="appnav-reports">
+                <h2>@GetResource( ResourceKeys.Reports )</h2>
+                @Html.ListBox( "ReportsExcelList", Model.ReportsExcelListItem, new { @class = "input-size9" } )
+                <br />
+                <br />
+
+                <h2 style="margin-bottom:4px;">@GetResource( ResourceKeys.Schedule )</h2>
+                <div id="schedule-appnav-emails" class="margin-bottom-10"></div>
+                <input type="hidden" id="email-interval" name="EmailInterval" value="@Model.EmailInterval" />
+                <br />
+                <h2>@GetResource( ResourceKeys.Users )</h2>
+                @Html.ListBox( "ReportsUserList", Model.ReportsUserListItem, new { @class = selectClasses } )
+                <br />
+                <br />
+                <h2>@GetResource( ResourceKeys.Groups )</h2>
+                @Html.ListBox( "ReportsGroupList", Model.ReportsGroupListItem, new { @class = "input-size9" } )
+                <br />
+                <br />
+                <input type="button" class="btn button-secondary button-small" value="@GetResource(ResourceKeys.Test)" id="send-report" name="send-report" />
+            </div>
+
+            <div id="appnav-dashboard">
+                <p class="margin-bottom-20">@GetResource( ResourceKeys.SelectCharts, Resourcing.Colon )</p>
+                <table id="dashboard-widgets" class="updates no-select">
+                    <tbody>
+                        @foreach ( var item in Model.Dashboard.Items )
+                        {
+                            <tr>
+                                <td class="valign-top"><span class="dragHandle fonticon-drag-handle"></span></td>
+                                <td>
+                                    <input type="checkbox" id="dashboard-@item.Item1" class="item-checkboxes fancy" title="@item.Item3" name="DashboardItems" value="@item.Item1" @if ( item.Item2 ) { <text> checked="checked" </text> } />
+                                </td>
+                                <td><label title="@item.Item3" for="dashboard-@item.Item1">@item.Item3</label></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </form>
-    
+
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {        
+    $(document).ready(function () {
         gemini_appnav.popup('@Model.Card.Color');
     });
 </script>

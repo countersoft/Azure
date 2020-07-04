@@ -8,23 +8,20 @@ gemini_item = {
     itemUrl: '',
     commentWasInserted: false,
     issueProjectId: null,
-    initItem: function (projectId, projectCode, issueId, pageType, canEdit,temp_dropzone, temp_delete) {
-      
+    initItem: function (projectId, projectCode, issueId, pageType, canEdit, temp_dropzone, temp_delete) {
+
         gemini_item.pageType = pageType;
 
         gemini_item.issueId = issueId;
         gemini_item.issueProjectId = projectId;
         gemini_item.itemUrl = "project/" + projectId + "/"; //Need this because view item.
 
-        gemini_item.setToolbarsLocation();
-
-        gemini_master.currentRefreshFunction = gemini_item.setToolbarsLocation;
 
         gemini_sizing.sameWidth(".touch-info .box", 10);
-      
+
         if (canEdit) {
             gemini_edit.initEdit(issueId, pageType, '#cs-popup', '#cs-popup-content');
-    
+
             $('#view-item-content-pane').on('click', '#additional-content .attribute:not(.edit-mode)', function (e) {
                 //Making sure the edit doesn't get invoked when clicking on link
 
@@ -35,8 +32,8 @@ gemini_item = {
 
             $('#item-attributes').on('click', '#attributes-wrapper .attribute:not(.edit-mode)', function (e) {
                 //Making sure the edit doesn't get invoked when clicking on link
-              
-                if (!$(e.target).is('a')) {                  
+
+                if (!$(e.target).is('a')) {
                     gemini_edit.initEditing($(this), true);
                 }
             });
@@ -49,28 +46,27 @@ gemini_item = {
 
             $('#view-item').on('click', '.progress-info .percent', function (e) {
                 //Making sure the edit doesn't get invoked when clicking on link
-                    gemini_edit.initEditing($(this), true);                
+                gemini_edit.initEditing($(this), true);
             });
 
             $('#view-item').on('click', '.progress-info .estimate', function (e) {
                 //Making sure the edit doesn't get invoked when clicking on link
-                gemini_edit.initEditing($('#view-item .progress-info .estimate:eq(0)'), true);                
+                gemini_edit.initEditing($('#view-item .progress-info .estimate:eq(0)'), true);
             });
 
             $('#view-item, #side-pane').on('click', '#add-description', function (e) {
                 //Making sure the edit doesn't get invoked when clicking on link              
                 gemini_commons.stopClick(e);
-                gemini_edit.initEditing($(this), true);                
+                gemini_edit.initEditing($(this), true);
             });
         }
-        
+
         $('#view-item-content-pane').on("click", '.tab', gemini_item.switchTab);
         gemini_item.switchTab(null, $('.tab:first', '#view-item-content-pane'));
 
         Mousetrap.bindGlobal(['ctrl+left', 'ctrl+right'], gemini_keyboard.navigateTabs);
 
-        if (!$("#tabledata").length)
-        {
+        if (!$("#tabledata").length) {
             Mousetrap.bindGlobal(['ctrl+,', 'ctrl+.'], gemini_keyboard.navigateItems);
         }
 
@@ -81,7 +77,7 @@ gemini_item = {
         $('.item-content-widget').each(function () {
             gemini_item.getAppControlValue(gemini_item.issueId, $(this).data('gemini-app-id'), $(this).data('gemini-control-id'), 'value', '');
         });
-        
+
         // Dependencies events
         gemini_item.attachDependencyEvents(issueId);
 
@@ -97,7 +93,7 @@ gemini_item = {
         // ATTACHMENT events
         var attachments = $('#attachmentupload-hit')[0];
         if (attachments != undefined && attachments != null) {
-            gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').parent().parent().attr('title'), csVars.MaxFileSize);
+            gemini_item.AttachmentFileUploader(attachments, issueId, "", $('#attachmentupload-hit').closest('div.wrapper').attr('title'), csVars.MaxFileSize);
         }
 
         gemini_item.attachmentPreview();
@@ -107,10 +103,10 @@ gemini_item = {
         if (uploadArea != undefined && uploadArea != null) {
             gemini_item.AttachmentFileUploader(uploadArea, issueId, temp_dropzone, '', csVars.MaxFileSize);
         }
-        
+
         $('#view-item').on('click', "#item-attachments span.thumbnail-close-image", function (e) {
             e.preventDefault();
-            var id = $(this).attr("data-id");            
+            var id = $(this).attr("data-id");
             var itemText = $(this).prev().html();
             gemini_commons.translateMessage("[[Delete]] " + itemText + "?", ['Delete'], function (message) {
 
@@ -121,20 +117,18 @@ gemini_item = {
                     }
                 );
             });
-            
+
         });
 
         // Issue Action type events
-        $("#item-toolbar #action-delete").on('click', function (e)
-        {
+        $("#item-toolbar #action-delete").on('click', function (e) {
             gemini_commons.stopClick(e);
             gemini_commons.translateMessage("[[Delete]]? ", ['Delete'], function (message) {
                 gemini_popup.modalConfirm(message, null,
                     function () {
                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
                         gemini_ajax.call("item", "deleteissue?issueid=" + issueId + '&issueprojectid=0', function (response) {
-                            if (response.Success)
-                            {
+                            if (response.Success) {
                                 window.location.href = response.Result.Data.redirecturl;
                             }
                         }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, null);
@@ -143,16 +137,13 @@ gemini_item = {
             });
         });
 
-        $("#item-toolbar #action-edit").on('click', function (e)
-        {
+        $("#item-toolbar #action-edit").on('click', function (e) {
             gemini_commons.stopClick(e);
             gemini_edit.initEditing($(this));
         });
 
-        $("#item-toolbar #action-move").on('click', function (e)
-        {
-            gemini_commons.translateMessage("[[Move]]", ['Move'], function (message)
-            {
+        $("#item-toolbar #action-move").on('click', function (e) {
+            gemini_commons.translateMessage("[[Move]]", ['Move'], function (message) {
                 gemini_edit.editItemRenderedCallback = function () {
                     $('#cs-popup-save', '#cs-popup').attr('data-orig-val', $('#cs-popup-save', '#cs-popup').val());
                     $('#cs-popup-save', '#cs-popup').val(message);
@@ -163,8 +154,7 @@ gemini_item = {
             });
         });
 
-        $("#item-toolbar #action-copy").on('click', function (e)
-        {
+        $("#item-toolbar #action-copy").on('click', function (e) {
             gemini_commons.stopClick(e);
             $("#cs-popup-center-content").css("width", "500px");
             $("#cs-popup-center-content").css("height", "125px");
@@ -172,8 +162,8 @@ gemini_item = {
                 gemini_popup.centerPopup("item/copy", "popup?issueid=" + issueId + "&newprojectid=0", null, null, message);
             });
         });
-        
-        $("#item-toolbar #action-vote").on('click', function (e)
+
+        /*$("#item-toolbar #action-vote").on('click', function (e)
         {
             gemini_commons.stopClick(e);
             gemini_ajax.call("item", "vote?issueid=" + issueId, function (response) {
@@ -183,15 +173,46 @@ gemini_item = {
                     gemini_popup.toast(response.Result.Data.Voted);
                 }
             });
+        });*/
+
+        $("#item-toolbar #action-vote").on('click', function (e) {
+            gemini_commons.stopClick(e);
+            gemini_ajax.call("item", "vote/" + issueId, function (response) {
+
+                if (response.Success) {
+
+                    var title = $("#action-vote", "#item-toolbar").attr('title');
+
+                    var altTitle = $("#action-vote", "#item-toolbar").attr('data-alt-title');
+                    var altClass = $("#action-vote", "#item-toolbar").attr('data-alt-class');
+
+                    $("#action-vote", "#item-toolbar").attr('title', altTitle);
+                    $("#action-vote", "#item-toolbar").attr('data-alt-title', title);
+
+                    if (altClass == "fa-thumbs-down") {
+                        $("i", "#action-vote").removeClass("fa-thumbs-up").addClass("fa-thumbs-down");
+                        $("#action-vote", "#item-toolbar").attr('data-alt-class', 'fa-thumbs-up');
+                    }
+
+                    if (altClass == "fa-thumbs-up") {
+                        $("i", "#action-vote").removeClass("fa-thumbs-down").addClass("fa-thumbs-up");
+                        $("#action-vote", "#item-toolbar").attr('data-alt-class', 'fa-thumbs-down');
+                    }
+
+                    $('#item-attributes').html(response.Result.Data.Html);
+
+                    $.publish('issue-update', [issueId, gemini_commons.PAGE_TYPE.Item]);
+                }
+            });
         });
 
-        $("#item-toolbar #action-follow-unfollow").on('click', function (e)
-        {
+        $("#item-toolbar #action-follow-unfollow").on('click', function (e) {
             gemini_commons.stopClick(e);
             gemini_ajax.call("item", "addwatcher/" + issueId + "/0", function (response) {
 
                 if (response.Success) {
-                    var title = $("#action-follow-unfollow", "#item-toolbar").text();
+
+                    var title = $("#action-follow-unfollow", "#item-toolbar").attr('title');
 
                     var altTitle = $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-title');
                     var altClass = $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-class');
@@ -199,22 +220,29 @@ gemini_item = {
                     $("#action-follow-unfollow", "#item-toolbar").attr('title', altTitle);
                     $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-title', title);
 
-                    if (altClass == "bookmark")
-                    {
-                        $("div", "#action-follow-unfollow").removeClass("bookmark").addClass("bookmark-delete");
-                        $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-class', 'bookmark-delete');
+                    if (altClass == "fa-map-marker-plus") {
+                        $("i", "#action-follow-unfollow").removeClass("fa-map-marker-minus").addClass("fa-map-marker-plus");
+                        $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-class', 'fa-map-marker-minus');
                     }
 
-                    if (altClass == "bookmark-delete")
-                    {
-                        $("div", "#action-follow-unfollow").removeClass("bookmark-delete").addClass("bookmark");
-                        $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-class', 'bookmark');
+                    if (altClass == "fa-map-marker-minus") {
+                        $("i", "#action-follow-unfollow").removeClass("fa-map-marker-plus").addClass("fa-map-marker-minus");
+                        $("#action-follow-unfollow", "#item-toolbar").attr('data-alt-class', 'fa-map-marker-plus');
                     }
 
                     gemini_item.replaceContent(response.Result.Data);
                     gemini_item.attachWatchersEvents(response.Result.Data.issueId);
                 }
             });
+        });
+
+        $("#item-toolbar #action-pin-unpin").on('click', function (e) {
+            gemini_commons.stopClick(e);
+            var menu = $(this);
+            gemini_items.addRemovePin(gemini_item.issueId,
+                function (response) {
+                    menu.toggleClass("pinned");
+                });
         });
 
         $('#item-collapse').click(function () {
@@ -227,21 +255,21 @@ gemini_item = {
                 $(this).html($(this).attr('data-text-hide'));
             }
         });
-        
+
         // COMMENTS events
         // initialize tinyMC editor for comments
         gemini_item.attachCommentsEditWindowEvents(issueId);
         //NEED PRoject ID here.
-        gemini_ui.templatedContentPlugin(gemini_ui.templateContentAreas.Comment, gemini_item.issueProjectId, issueId, function(area) {
+        gemini_ui.templatedContentPlugin(gemini_ui.templateContentAreas.Comment, gemini_item.issueProjectId, issueId, function (area) {
             gemini_item.attachCommentsTinyMcEvents(issueId, "comments-wysiwyg-content");
         });
-        
+
 
         $('#view-item').on('click', ".section-content.comments span.delete", function (e) {
             e.preventDefault();
 
             var id = $(this).attr("data-id");
-            gemini_commons.translateMessage("[[Delete]] [[Comment]]? ", ['Delete','Comment'], function (message) {
+            gemini_commons.translateMessage("[[Delete]] [[Comment]]? ", ['Delete', 'Comment'], function (message) {
                 gemini_popup.modalConfirm(message, null,
                     function () {
                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
@@ -249,22 +277,22 @@ gemini_item = {
                     }
                 );
             });
-         });
+        });
 
         $('#view-item').on('click', ".section-content.comments span.thumbnail-close-image", function (e) {
             e.preventDefault();
             var id = $(this).attr("data-id");
-            
+
             gemini_commons.translateMessage("[[Remove]] " + $(this).prev().html() + "?", ['Remove'], function (message) {
                 gemini_popup.modalConfirm(message, null,
                     function () {
                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
                         gemini_ajax.jsonCall(gemini_item.itemUrl + "item", "deleteattachment?issueid=" + issueId, gemini_item.deleteCommentAttachment, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, { attachmentId: id }, null, true);
                     }
-                );         
+                );
             });
-        });  
-                
+        });
+
         $('#view-item').on("click", "#sourcecode-content .add", function (e) {
             gemini_commons.stopClick(e);
             $("#cs-popup-center-content").css("width", "420px");
@@ -284,7 +312,7 @@ gemini_item = {
             gemini_commons.stopClick(e);
             $("#cs-popup-center-content").css("width", "500px");
             $("#cs-popup-center-content").css("height", "350px");
-            gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + issueId, { timeid: $(this).parents("tr:eq(0)").attr("data-id") } );
+            gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + issueId, { timeid: $(this).parents("tr:eq(0)").attr("data-id") });
         });
 
         $('#view-item').on("click", "#sourcecode-content .action-button-delete", function (e) {
@@ -292,15 +320,15 @@ gemini_item = {
 
             gemini_commons.translateMessage("[[Delete]] " + $(this).parents("tr:eq(0)").find("td:eq(0)").html() + "?", ['Delete'], function (message) {
                 gemini_popup.modalConfirm(message, null,
-                     function () {
-                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
-                         gemini_ajax.call("item", "deletesourcecontrol?issueid=" + issueId + '&scid=' + id,
-                             function(response) {
-                                 if (response.Success) gemini_item.replaceContent(response.Result.Data);
-                                 gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                             }
-                         ), function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }
-                     }
+                    function () {
+                        gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                        gemini_ajax.call("item", "deletesourcecontrol?issueid=" + issueId + '&scid=' + id,
+                            function (response) {
+                                if (response.Success) gemini_item.replaceContent(response.Result.Data);
+                                gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                            }
+                        ), function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }
+                    }
                 );
             });
         });
@@ -310,9 +338,9 @@ gemini_item = {
             var message = "[[Delete]] " + $(this).parents("tr:eq(0)").find("td:eq(0)").text() + " - " + $(this).parents("tr:eq(0)").find("td:eq(3)").html() + " " + $(this).parents("tr:eq(0)").find("td:eq(4)").html() + "?";
             gemini_commons.translateMessage(message, ['Delete'], function (message) {
                 gemini_popup.modalConfirm(message, null,
-                     function () {
-                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
-                         gemini_ajax.call("item", "deletetimeentry?issueid=" + issueId +"&timeid=" + id,
+                    function () {
+                        gemini_ui.startBusy('#modal-confirm #modal-button-yes');
+                        gemini_ajax.call("item", "deletetimeentry?issueid=" + issueId + "&timeid=" + id,
                             function (response) {
                                 if (response.Success) {
                                     $.publish('issue-update', ['timedelete']);
@@ -324,15 +352,15 @@ gemini_item = {
                                 }
                                 gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
                             }, function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }
-                         );
-                     }
+                        );
+                    }
                 );
             });
         });
 
         $('#view-item').on('click', "#comments-content .toolbar .button", function (e) {
             window.onbeforeunload = gemini_edit.warnLoseChanges;
-           
+
             e.preventDefault();
             if ($(".comments-wysiwyg-container").is(':visible')) {
                 $('#comments-content .cs-comment-add-close').click();
@@ -353,7 +381,7 @@ gemini_item = {
             var form = $("#comments-wysiwyg-content").parents("form:eq(0)");
             form.find(".option-row:eq(0) .file-upload-button").replaceWith("<input class='file-upload-button' type='file' name='comment-attachment' multiple='multiple' />");
             gemini_ui.validateFileSize(form.find(".file-upload-button"), csVars.MaxFileSize);
-     
+
             gemini_ui.htmlEditorCommand('mceFocus', false, null, 'comments-wysiwyg-content');
 
             gemini_sizing.sameWidth("#comments-content .comments-wysiwyg-container .buttons input");
@@ -384,57 +412,54 @@ gemini_item = {
                 else {
                     gemini_ui.startBusy('#comments-content .comments-wysiwyg-container:eq(1) .cs-comment-add-save');
                 }
-                 e.preventDefault();
-                 $('.comments-form').submit();
+                e.preventDefault();
+                $('.comments-form').submit();
 
-                 gemini_edit.pendingHtmlChanges = false;
+                gemini_edit.pendingHtmlChanges = false;
             }
         });
 
         //When you click on X for comments
-        $('#view-item').on('click', "#comments-content .cs-comment-add-close", function (e)
-        {
-            if ($(this).parents(".comment").hasClass("comment-editing-mode"))
-            {
+        $('#view-item').on('click', "#comments-content .cs-comment-add-close", function (e) {
+            if ($(this).parents(".comment").hasClass("comment-editing-mode")) {
                 $(this).parents(".comment").find(".comments-wysiwyg-container").before($(this).parents(".comment").data("content"));
                 $(this).parents(".comment").removeClass("comment-editing-mode");
                 gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
                 $(this).parents(".comments-wysiwyg-container").remove();
             }
-            else
-            {
+            else {
                 $(this).parents(".comments-wysiwyg-container").css("display", "none");
             }
             gemini_edit.pendingHtmlChanges = false;
             $("#comments-content .toolbar .button").show();
         });
 
-        if (!($("#tabledata").length))
-        {
+        if (!($("#tabledata").length)) {
             gemini_ajax.call("item", "FilterNavigator?issueid=" + issueId, function (response) {
                 $('#filter-navigator-container').html(response);
-                if($('.item-title').position().left + $('.item-title').width() > $('#filter-navigator-container').position().left) {
+                $('#mobile-filter-navigator-container').html(response);
+
+                if ($('.item-title').position().left + $('.item-title').width() > $('#filter-navigator-container').position().left) {
                     var top = $('#filter-navigator-container').height() + $('#filter-navigator-container').position().top;
-                    $('#filter-navigator-container').css('top',top + 'px');
+                    $('#filter-navigator-container').css('top', top + 'px');
                 }
             });
         }
 
-        $('#view-item').on('click', "#comments-content .email-header", function (e)
-        {
+        $('#view-item').on('click', "#comments-content .email-header", function (e) {
             var commentId = $(this).attr('data-id');
-            if($('#comment-meta').attr('data-id') == commentId) {
+            if ($('#comment-meta').attr('data-id') == commentId) {
                 $('#comment-meta').remove();
                 return;
             }
             var _this = $(this);
-            gemini_ajax.call("item","CommentMeta?issueId="+ issueId + "&commentId=" + commentId, function(response) {
-                    if(response.success) {
-                        $('#comment-meta').remove();
-                        _this.after(response.Result.Data);
-                        $('#comment-meta').css('left', _this.position().left + 'px');
-                    }
+            gemini_ajax.call("item", "CommentMeta?issueId=" + issueId + "&commentId=" + commentId, function (response) {
+                if (response.success) {
+                    $('#comment-meta').remove();
+                    _this.after(response.Result.Data);
+                    $('#comment-meta').css('left', _this.position().left + 'px');
                 }
+            }
             );
         });
 
@@ -443,8 +468,7 @@ gemini_item = {
         gemini_item.registerViewing();
     },
 
-    deleteComment: function (response)
-    {  
+    deleteComment: function (response) {
         if (response.Success) {
             $("#comments-content [data-id='" + response.Result.Data.id + "']").remove();
             var numberOfComments = parseInt($("#comments-section h3").attr('title')) - 1;
@@ -452,13 +476,13 @@ gemini_item = {
             $("#comments-section h3").attr("title", numberOfComments);
             gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
             gemini_item.replaceContent(response.Result.Data);
-            
+
             $.publish('issue-update', [gemini_item.issueId, gemini_edit.pageType]);
         }
     },
 
     AttachmentFileUploader: function (element, issueId, temp_dropzone, inputTitle, maxUploadBytes) {
-        
+
         if (maxUploadBytes === undefined) {
             maxUploadBytes = csVars.MaxFileSize;
             if (maxUploadBytes === undefined || maxUploadBytes === 0) {
@@ -466,12 +490,12 @@ gemini_item = {
             }
         }
         var template = '<li>' +
-                '<span class="qq-upload-file"></span>' +
-                '<span class="qq-upload-spinner"></span>' +
-                '<span class="qq-upload-size"></span>' +
-                '<a class="qq-upload-cancel" href="#">[[Cancel]]</a>' +
-                '<span class="qq-upload-failed-text">[[Failed]]</span>' +
-                '<span class="fonticon-cross"></span>' +
+            '<span class="qq-upload-file"></span>' +
+            '<span class="qq-upload-spinner"></span>' +
+            '<span class="qq-upload-size"></span>' +
+            '<a class="qq-upload-cancel" href="#">[[Cancel]]</a>' +
+            '<span class="qq-upload-failed-text">[[Failed]]</span>' +
+            '<span class="fonticon-cross"></span>' +
             '</li>';
 
         var messages = [];
@@ -485,10 +509,10 @@ gemini_item = {
                 action: gemini_ajax.getUrl(gemini_item.itemUrl + "Item", "UploadAttachment?issueid=" + issueId, true),
                 debug: false,
                 sizeLimit: maxUploadBytes,
-                showMessage: function (message) { gemini_popup.toast(message, true); },
+                showMessage: function (msg) { gemini_popup.toast(msg, true); },
                 messages: {
                     typeError: "{file} has invalid extension. Only {extensions} are allowed.",
-                    sizeError: messages[2],
+                    sizeError: message[2],
                     minSizeError: "{file} is too small, minimum file size is {minSizeLimit}.",
                     emptyError: "{file} is empty, please select files again without it.",
                     onLeave: "The files are being uploaded, if you leave now the upload will be cancelled."
@@ -504,8 +528,8 @@ gemini_item = {
                         $("#item-attachments .qq-upload-list .qq-upload-success").hide();
                     }
 
-                    $(".qq-upload-fail .fonticon-cross").click(function() {
-                            $(this).parent().remove();
+                    $(".qq-upload-fail .fonticon-cross").click(function () {
+                        $(this).parent().remove();
                     });
                 },
                 taxonomy: {
@@ -527,13 +551,12 @@ gemini_item = {
     },
 
     deleteItemAttachment: function (responseJSON) {
-        if (responseJSON.success)  
-        {      
+        if (responseJSON.success) {
             $("#item-attachments tr[data-id='" + responseJSON.Result.Data.id + "']").remove();
-    
+
             gemini_item.replaceContent(responseJSON.Result.Data);
             gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-        }        
+        }
     },
 
     deleteCommentAttachment: function (responseJSON) {
@@ -549,40 +572,35 @@ gemini_item = {
         eval(spinner.JS);
 
         gemini_ajax.postCall('issue/apps/submit/popup/' + issueId + '/' + appId + '/' + controlId, action,
-        function (response)
-        {
-            if (response.Success)
-            {
-                if (gemini_commons.isEmpty(response.Result.Markup))
-                {
-                    response.Result.Markup = '&nbsp;';
-                }
+            function (response) {
+                if (response.Success) {
+                    if (gemini_commons.isEmpty(response.Result.Markup)) {
+                        response.Result.Markup = '&nbsp;';
+                    }
 
-                $('#' + appId + '-' + controlId).html(response.Result.Markup);
-                if (successCallback)
-                {
-                    successCallback();
+                    $('#' + appId + '-' + controlId).html(response.Result.Markup);
+                    if (successCallback) {
+                        successCallback();
+                    }
                 }
-            }
-        }, null, formData, null, true);
+            }, null, formData, null, true);
     },
     attachCommentsTinyMcEvents: function (issueId, textareaId) {    // Create editor for comments textarea needs to come without # for tinyMCE execCommand. It can only accept ID's no classes and Id's need to come without the #
         gemini_ui.htmlEditor("#" + textareaId, null,
-           function (ed) {
-          
-               if (ed.type == 'change' && !gemini_item.commentWasInserted) {
-                   gemini_edit.pendingHtmlChanges = true;
-               }
-            
-               gemini_item.commentWasInserted = false;
-           },
-           undefined, undefined, undefined, 'templatedcontent_2' );
+            function (ed) {
+
+                if (ed.type == 'change' && !gemini_item.commentWasInserted) {
+                    gemini_edit.pendingHtmlChanges = true;
+                }
+
+                gemini_item.commentWasInserted = false;
+            },
+            undefined, undefined, undefined, 'templatedcontent_2');
 
         var options = {
             dataType: "json",
             success: function (responseText, statusText, xhr, $form) {
-                if (responseText.success)
-                {
+                if (responseText.success) {
                     gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content");
                     gemini_ui.destroyHtmlEditor("#comments-wysiwyg-content2");
                     gemini_item.replaceContent(responseText);
@@ -591,38 +609,31 @@ gemini_item = {
                     $.publish('issue-update', [gemini_item.issueId, gemini_edit.pageType]);
                     gemini_edit.pendingHtmlChanges = false;
                 }
-                else
-                {
-                    if (responseText.Message && responseText.Message.length)
-                    {
+                else {
+                    if (responseText.Message && responseText.Message.length) {
                         gemini_popup.toast(responseText.Message, true);
                     }
-                    else
-                    {
+                    else {
                         gemini_popup.toast("Couldn't save changes", true);
                     }
-                    if ($('.comments-wysiwyg-container').length == 1) 
-                    {
+                    if ($('.comments-wysiwyg-container').length == 1) {
                         gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container:eq(0) .cs-comment-add-save');
                     }
-                    else 
-                    {
+                    else {
                         gemini_ui.stopBusy('#comments-content .comments-wysiwyg-container:eq(1) .cs-comment-add-save');
                     }
                 }
             },
             error: function (responseText, statusText) { // post-submit callback  
                 gemini_ui.stopBusy('#comments-content .cs-comment-add-save');
-                if (responseText.Message && responseText.Message.length)
-                {
+                if (responseText.Message && responseText.Message.length) {
                     gemini_popup.toast(responseText.Message, true);
                 }
-                else
-                {
+                else {
                     gemini_popup.toast("Couldn't save changes", true);
                 }
             }
-            
+
         };
         if (textareaId != "comments-wysiwyg-content") {
             gemini_ui.htmlEditorCommand("mceFocus", false, textareaId);
@@ -633,13 +644,12 @@ gemini_item = {
 
     commentExpanders: function (container) {
 
-           $(container).on("click", "span.comment-expandedOrcollapsed", function (e) {
-               gemini_ui.expandCollapse($(this));
-           });
+        $(container).on("click", "span.comment-expandedOrcollapsed", function (e) {
+            gemini_ui.expandCollapse($(this));
+        });
     },
 
-    attachCommentsEditWindowEvents: function (issueId)
-    {
+    attachCommentsEditWindowEvents: function (issueId) {
         $(".section-content.comments .action-button-edit").unbind('click').click(function () {
             window.onbeforeunload = gemini_edit.warnLoseChanges;
 
@@ -660,38 +670,38 @@ gemini_item = {
                 $(TargetElem).addClass("comment-editing-mode");
 
                 var editor = "<div class='comments-wysiwyg-container'>" +
-                                "<form class='comments-form " + contentIdentifier + "' action='" + $(TargetElem).attr("data-url") + "' method='post' enctype='multipart/form-data'>" +
-                                    "<div class='wysiwyg-container'><textarea id='comments-wysiwyg-content" + contentIdentifier + "' name='commentsWysiwygContent'>" /*+ comment*/ + "</textarea></div>" +
-                                     "<div class='comment-extra-options'>" +
-                                        "<div class='option-row'><span class='left comment-label'>[[Attachments]]</span>  <input type='file' class='file-upload-button' name='comment-attachment' multiple='multiple' /></div>" +
-                                        "<div class='option-row'><span class='left comment-label'>[[Visibility]]</span></div>" +
-                                     "</div>" +
-                                     "<div class='cs-comment-wysiwyg-option'>" +
-                                         "<div class='buttons'>" +
-                                         "<input type='button' value='[[Cancel]]' class='button-secondary button-popup cs-comment-add-close right'>" +
-                                            "<input type='submit' value='[[Update]]' class='button-primary button-popup cs-comment-add-save-edit right'>" +                                            
-                                        "</div>" +
-                                    "</div>" +
-                                "</form>" +
-                            "</div>";
+                    "<form class='comments-form " + contentIdentifier + "' action='" + $(TargetElem).attr("data-url") + "' method='post' enctype='multipart/form-data'>" +
+                    "<div class='wysiwyg-container'><textarea id='comments-wysiwyg-content" + contentIdentifier + "' name='commentsWysiwygContent'>" /*+ comment*/ + "</textarea></div>" +
+                    "<div class='comment-extra-options'>" +
+                    "<div class='option-row'><span class='left comment-label'>[[Attachments]]</span>  <input type='file' class='file-upload-button' name='comment-attachment' multiple='multiple' /></div>" +
+                    "<div class='option-row'><span class='left comment-label'>[[Visibility]]</span></div>" +
+                    "</div>" +
+                    "<div class='cs-comment-wysiwyg-option'>" +
+                    "<div class='buttons'>" +
+                    "<input type='button' value='[[Cancel]]' class='button-secondary button-popup cs-comment-add-close right'>" +
+                    "<input type='submit' value='[[Update]]' class='button-primary button-popup cs-comment-add-save-edit right'>" +
+                    "</div>" +
+                    "</div>" +
+                    "</form>" +
+                    "</div>";
 
-            
+
                 gemini_commons.translateMessage(editor, ['Update', 'Attachments', 'Visibility', 'Cancel'], function (message) {
                     TargetElem.html(message);
                     TargetElem.append(attachments);
-                    gemini_ui.validateFileSize(TargetElem.find(".file-upload-button"), csVars.MaxFileSize );
+                    gemini_ui.validateFileSize(TargetElem.find(".file-upload-button"), csVars.MaxFileSize);
 
                     TargetElem.find(".comments-wysiwyg-container").css("display", "inline-block");
                     TargetElem.find(".comment-extra-options .option-row:eq(1)").append(visibility);
                     if (TargetElem.find(".comments-wysiwyg-container .option-row:eq(1) select").length == 0)
-                       TargetElem.find(".comments-wysiwyg-container .option-row:eq(1)").hide();
+                        TargetElem.find(".comments-wysiwyg-container .option-row:eq(1)").hide();
 
                     gemini_ui.chosen("#comments-content .option-row .input-size8");
                     gemini_item.attachCommentsTinyMcEvents(issueId, "comments-wysiwyg-content" + contentIdentifier);
                     gemini_item.commentWasInserted = true;
                     gemini_ui.htmlEditorCommand('mceInsertContent', false, comment);
                     gemini_item.setContentHeight();
-                    }
+                }
                 );
 
                 gemini_ui.expand($(this));
@@ -704,7 +714,7 @@ gemini_item = {
         //$("#progress-indicator").addClass('hide');
         $(response.Data).each(function () {
             if (this.Key == 'AssociatedAttachments') {
-            
+
                 var attachments = $("#item-attachments");
                 $("#item-attachments").replaceWith(this.Value);
 
@@ -735,7 +745,7 @@ gemini_item = {
                 $(".description-article").replaceWith(this.Value);
             }
             else if (this.Key == 'AssociatedHierarchy') {
-                $("#dependency-section").replaceWith(this.Value);         
+                $("#dependency-section").replaceWith(this.Value);
                 gemini_item.attachDependencyEvents(response.issueId);
             }
             else if (this.Key == 'AssociatedLinks') {
@@ -770,16 +780,14 @@ gemini_item = {
             }
         });
     },
-    replaceContentContainer: function (area, value)
-    {
+    replaceContentContainer: function (area, value) {
         var isSelected = $("#" + area + "-section").hasClass('selected');
 
-        $("#" + area + "-content").remove();       
+        $("#" + area + "-content").remove();
         $("#" + area + "-section").replaceWith(value);
         if (isSelected) $("#" + area + "-section").click();
     },
-    attachWatchersEvents: function (issueId)
-    {
+    attachWatchersEvents: function (issueId) {
         $("#watchers-find-item-container").hide();
 
         $("#watchers-find-item-container input").unbind('blur').blur(function (e) {
@@ -793,7 +801,7 @@ gemini_item = {
                 $("#watchers-find-item-container input").val("");
             }
         });
-        
+
         $("#watchers-content .toolbar .add").unbind('click').click(function (e) {
             e.preventDefault();
             var p = $("#watchers-content .add").position();
@@ -805,27 +813,26 @@ gemini_item = {
             var id = $(this).parents("tr:eq(0)").attr("data-id");
             var email = $(this).parents("tr:eq(0)").attr("data-email");
             var html = $(this).parents("tr:eq(0)").find("td:eq(0)").html();
-            if(html == null || html == undefined || html.length == 0) {
+            if (html == null || html == undefined || html.length == 0) {
                 html = $(this).parents("tr:eq(0)").find("td:eq(2)").html()
             }
             gemini_commons.translateMessage("[[Remove]] " + html + "?", ['Remove'], function (message) {
                 gemini_popup.modalConfirm(message, null, function () {
                     gemini_ui.startBusy('#colorbox2 #modal-confirm #modal-button-yes');
-                    if(email != null && email != undefined && email.length) {
-                        gemini_ajax.postCall('item', "deletewatcher?issueid=" + issueId , function (response) {
-                                    if (response.Success) {
-                                    
-                                        gemini_item.replaceContent(response.Result.Data);
-                                        gemini_item.attachWatchersEvents(response.Result.Data.issueId);
-                                    }
-                                    gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
-                            }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }, { email: email });
+                    if (email != null && email != undefined && email.length) {
+                        gemini_ajax.postCall('item', "deletewatcher?issueid=" + issueId, function (response) {
+                            if (response.Success) {
+
+                                gemini_item.replaceContent(response.Result.Data);
+                                gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                            }
+                            gemini_ui.stopBusy('#modal-confirm #modal-button-yes');
+                        }, function () { gemini_ui.stopBusy('#colorbox2 #modal-confirm #modal-button-yes'); }, { email: email });
                     }
                     else {
                         gemini_ajax.jsonCall("item", "deletewatcher?issueid=" + issueId + "&userid=" + id,
                             function (response) {
-                                if (response.Success)
-                                {
+                                if (response.Success) {
                                     gemini_item.replaceContent(response.Result.Data);
                                     gemini_item.attachWatchersEvents(response.Result.Data.issueId);
                                 }
@@ -858,16 +865,15 @@ gemini_item = {
             autoFill: false,
             select: function (e, data) {
                 $("#watchers-find-item").val(data.item.label);
-                gemini_ajax.call("item", "addwatcher/" + issueId + "/" +data.item.value, function (response) {
-                            if (response.Success)
-                            {
-                                gemini_item.replaceContent(response.Result.Data);
-                                gemini_item.attachWatchersEvents(response.Result.Data.issueId);
-                                gemini_ui.flashContent("#watchers-content [data-id='" + response.Result.Data.userId + "']");
-                            }
-                           
-                        }
-                    );
+                gemini_ajax.call("item", "addwatcher/" + issueId + "/" + data.item.value, function (response) {
+                    if (response.Success) {
+                        gemini_item.replaceContent(response.Result.Data);
+                        gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                        gemini_ui.flashContent("#watchers-content [data-id='" + response.Result.Data.userId + "']");
+                    }
+
+                }
+                );
                 return false;
             },
             focus: function (event, ui) {
@@ -880,20 +886,19 @@ gemini_item = {
         $("#watchers-find-item").bind("keydown", function (event) {
             if (event.keyCode === $.ui.keyCode.ENTER) {
                 var email = $(this).val();
-                if(gemini_commons.isEmail(email)) {
+                if (gemini_commons.isEmail(email)) {
                     gemini_ajax.postCall("item", "addwatcher/" + issueId, function (response) {
-                            if (response.Success)
-                            {
-                                gemini_item.replaceContent(response.Result.Data);
-                                gemini_item.attachWatchersEvents(response.Result.Data.issueId);
-                                gemini_ui.flashContent("#watchers-content [data-id='" + response.Result.Data.userId + "']");
-                            }
-                           
-                        }, null, {email: email});
+                        if (response.Success) {
+                            gemini_item.replaceContent(response.Result.Data);
+                            gemini_item.attachWatchersEvents(response.Result.Data.issueId);
+                            gemini_ui.flashContent("#watchers-content [data-id='" + response.Result.Data.userId + "']");
+                        }
+
+                    }, null, { email: email });
                 }
             }
         });
-        
+
     },
 
     attachDependencyEvents: function (issueId) {
@@ -903,9 +908,9 @@ gemini_item = {
                 if ($(this).hasClass("open")) $(".fonticon-plus:not(.noshow)", $(this)).css("visibility", "visible");
                 if (($(this).hasClass("open") || $(this).hasClass("closed"))) $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "visible");
                 if (($(this).hasClass("open") || $(this).hasClass("closed"))) $(".fonticon-arrow-down:not(.invisible)", $(this)).css("visibility", "visible");
-                
+
             },
-            function (e) {        
+            function (e) {
                 $(".fonticon-plus:not(.noshow)", $(this)).css("visibility", "hidden");
                 $(".fonticon-cross:not(.noshow)", $(this)).css("visibility", "hidden");
                 $(".fonticon-arrow-down:not(.invisible)").css("visibility", "hidden");
@@ -922,15 +927,18 @@ gemini_item = {
         });
 
         $("#add-dependency", '#view-item, #side-pane').unbind('click').click(function (e) {
-            e.preventDefault();          
+            e.preventDefault();
 
             $("#dependencies-find-item-container").show();
+            //$("#dependencies-find-item-container")
+            //    .css("left", $('#add-dependency').position().left)
+            //    .css("top", $('#add-dependency').position().top + 35);
             $("#dependencies-find-item-container").position({
-                "my": "right center",
-                "at": "left center",
-                "of": $('#item-toolbar'),
-                "offset": "-5 0",
-                "collision": "none"
+                "my": "left top",
+                "at": "left bottom",
+                "of": '#add-dependency',
+                "offset": "0 0",
+                "collision": "flip"
             });
 
             $("#dependencies-find-item-container input").focus();
@@ -951,22 +959,22 @@ gemini_item = {
                     popup.css("top", scroll);
                 }*/
                 popup.find("form").append("<input type='hidden' value='" + gemini_item.issueId + "' name='ParentItem' id='ParentItem' />");
-                if(firstTimeDepend && $('#ProjectName', popup).val() != gemini_item.issueProjectId) {
+                if (firstTimeDepend && $('#ProjectName', popup).val() != gemini_item.issueProjectId) {
                     $('#ProjectName', popup).val(gemini_item.issueProjectId);
                     gemini_ui.chosenUpdate($('#ProjectName', popup));
-                    firstTimeDepend=false;
-                    setTimeout(function() { $('#ProjectName', popup).change();}, 500);
+                    firstTimeDepend = false;
+                    setTimeout(function () { $('#ProjectName', popup).change(); }, 500);
                 }
             };
             gemini_add.newItemCreatedCallback = function (id) {
                 gemini_ajax.jsonCall("items", "renderdependencies?issueid=" + issueId,
-                            function (response) {
-                                if (response.Success) {
-                                    gemini_item.replaceContent(response.Result.Data);
-                                    gemini_item.dependencyExpanders('#dependency-content');
-                                }
-                            }
-                        );
+                    function (response) {
+                        if (response.Success) {
+                            gemini_item.replaceContent(response.Result.Data);
+                            gemini_item.dependencyExpanders('#dependency-content');
+                        }
+                    }
+                );
             };
             gemini_commons.showAddItem();
         });
@@ -985,7 +993,7 @@ gemini_item = {
                                     gemini_item.replaceContent(response.Result.Data);
                                     gemini_item.dependencyExpanders('#dependency-content');
                                 }
-                                setTimeout(function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, 1250);                                
+                                setTimeout(function () { gemini_ui.stopBusy('#modal-confirm #modal-button-yes'); }, 1250);
                             }
                         );
                     }
@@ -994,7 +1002,7 @@ gemini_item = {
 
         });
 
-        
+
         $("#dependencies-find-item-container input").unbind('blur').blur(function (e) {
             gemini_item.hideDependencyFindItem();
         });
@@ -1002,9 +1010,9 @@ gemini_item = {
         gemini_commons.inputKeyHandlerUnbind('#dependencies-find-item-container input');
 
         gemini_commons.inputKeyHandler("#dependencies-find-item-container input",
-            function() {
+            function () {
                 gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId + '&parentIssueId=' + baseIssueId + '&childIssueKey=' + $("#dependencies-find-item-container input").val(),
-                                            '&childIssueKey=' + gemini_commons.urlParameterEncode($("#dependencies-find-item-container input").val()),
+                    '&childIssueKey=' + gemini_commons.urlParameterEncode($("#dependencies-find-item-container input").val()),
                     function AddDependencyResponse(response) {
                         if (response.Result.Data.success) {
 
@@ -1024,7 +1032,7 @@ gemini_item = {
                 );
 
 
-            }, function() { gemini_item.hideDependencyFindItem(); });
+            }, function () { gemini_item.hideDependencyFindItem(); });
 
         gemini_item.hideDependencyFindItem();
 
@@ -1050,17 +1058,17 @@ gemini_item = {
                 }
                 else {
                     gemini_ajax.jsonCall("items", "adddependency?issueid=" + issueId +
-                                    '&parentIssueId=' + baseIssueId +
-                                    '&childIssueKey=' + gemini_commons.urlParameterEncode(data.item.value),
-                            function AddDependencyResponse(response) {
-                                if (response.Success) {
-                                    gemini_item.replaceContent(response.Result.Data);
-                                    //gemini_item.attachDependencyEvents(response.Result.Data.issueId);
-                                    gemini_ui.flashContent("#dependency-section [data-id='" + response.Result.Data.childIssueId + "']");
-                                    gemini_item.dependencyExpanders('#dependency-content');
-                                }
+                        '&parentIssueId=' + baseIssueId +
+                        '&childIssueKey=' + gemini_commons.urlParameterEncode(data.item.value),
+                        function AddDependencyResponse(response) {
+                            if (response.Success) {
+                                gemini_item.replaceContent(response.Result.Data);
+                                //gemini_item.attachDependencyEvents(response.Result.Data.issueId);
+                                gemini_ui.flashContent("#dependency-section [data-id='" + response.Result.Data.childIssueId + "']");
+                                gemini_item.dependencyExpanders('#dependency-content');
                             }
-                        );
+                        }
+                    );
                     gemini_item.hideDependencyFindItem();
                 }
             }
@@ -1090,8 +1098,7 @@ gemini_item = {
     },
 
 
-    hideDependencyFindItem: function ()
-    {
+    hideDependencyFindItem: function () {
         var data = $("#dependencies-find-item-container input").data("autocomplete");
         if (data) data.menu.activeMenu.hide();
 
@@ -1119,9 +1126,9 @@ gemini_item = {
 
             $("#links-find-item-container").show();
             $("#links-find-item-container").position({
-                "my": "right center",
-                "at": "left center",
-                "of": $('#item-toolbar'),
+                "my": "left top",
+                "at": "right bottom",
+                "of": this,
                 "offset": "-5 0",
                 "collision": "none"
             });
@@ -1182,10 +1189,10 @@ gemini_item = {
         gemini_commons.inputKeyHandlerUnbind('#links-find-item-container #links-find-item');
 
         gemini_commons.inputKeyHandler("#links-find-item-container #links-find-item",
-            function() {
+            function () {
                 $("#links-find-item-container #links-find-item-id").val($("#links-find-item-container #links-find-item").val());
                 post_link();
-            }, function() { gemini_item.hideLinkFindItem(); });
+            }, function () { gemini_item.hideLinkFindItem(); });
 
         $(".see-also .delete-link").unbind('click').click(function () {
             var deleteId = $(this).attr("data-id");
@@ -1196,8 +1203,7 @@ gemini_item = {
                         gemini_ui.startBusy('#modal-confirm #modal-button-yes');
                         gemini_ajax.jsonCall("item", "deletelink?issueid=" + issueId + '&linkissueid=' + deleteId,
                             function DeleteLinkResponse(response) {
-                                if (response.Success)
-                                {
+                                if (response.Success) {
                                     gemini_item.replaceContent(response.Result.Data);
                                     gemini_item.attachLinksEvents(response.Result.Data.issueId);
                                     gemini_ui.chosen("#link-section #links-find-item-container #linktypes");
@@ -1210,7 +1216,7 @@ gemini_item = {
             });
 
         });
-        
+
         $("#links-find-item").autocomplete({
             source: function (request, response) {
                 gemini_ajax.call("item", "getissuesdropdown?issueid=" + issueId,
@@ -1228,12 +1234,10 @@ gemini_item = {
             matchContains: "word",
             autoFill: false,
             select: function (e, data) {
-                if (e.key == "Enter")
-                {
+                if (e.key == "Enter") {
                     $("#links-find-item").val(data.item.value);
                 }
-                else
-                {
+                else {
                     $("#links-find-item-id").val(data.item.value);
                     $("#links-find-item").val(data.item.label);
                 }
@@ -1256,8 +1260,7 @@ gemini_item = {
         gemini_item.setContentHeight();
 
     },
-    setContentHeight: function (customContentHeight)
-    {
+    setContentHeight: function (customContentHeight) {
         var selectedTab = $('#view-item-content-pane .tabs .selected');
 
         if (selectedTab.length > 0) {
@@ -1299,29 +1302,14 @@ gemini_item = {
         }
     },
 
-    setToolbarsLocation: function()
-    {
-        if (!$('#view-item-slider').length) {
-            if ($('#side-pane').width() > 100) {
-                $('#item-toolbar').css('right', '415px');
-                $('#filter-navigator-container').css('right', '460px');
-            }
-            else {
-                $('#item-toolbar').css('right', '75px');
-                $('#filter-navigator-container').css('right', '120px');
-            }
-        }
-    },
-
-    attachmentPreview: function()
-    {
+    attachmentPreview: function () {
         $("#item-attachments .image-preview, #comments-content .comment-wrapper .image-preview").hoverIntent({
             interval: 250,
             over: function () {
                 var width = $(this).width();
                 var visible = $('#attachment-preview', $(this)).is(':visible');
-                $('#attachment-preview img').attr('src','');
-                $('#attachment-preview img').attr('src',$('a', this).first().attr('href'));
+                $('#attachment-preview img').attr('src', '');
+                $('#attachment-preview img').attr('src', $('a', this).first().attr('href'));
                 $('#attachment-preview').show();
                 $('#attachment-preview').position({
                     "my": "left top",
@@ -1333,7 +1321,7 @@ gemini_item = {
             },
             out: function (e) {
                 var id = $(e.relatedTarget).attr('id');
-                if(id=='attachment-preview-img' || id=='attachment-preview') return;
+                if (id == 'attachment-preview-img' || id == 'attachment-preview') return;
                 $('#attachment-preview').hide();
             }
         });
@@ -1350,12 +1338,9 @@ gemini_item = {
     },
 
     slaInterval: null,
-    initSLA: function ()
-    {
-        if($('.sla-timer'.length))
-        {
-            if (gemini_item.slaInterval)
-            {
+    initSLA: function () {
+        if ($('.sla-timer'.length)) {
+            if (gemini_item.slaInterval) {
                 clearInterval(gemini_item.slaInterval);
             }
             gemini_item.slaInterval = setInterval(gemini_item.recalcSLA, 60 * 1000);
@@ -1364,19 +1349,17 @@ gemini_item = {
 
     recalcSLA: function () {
         var ids = [gemini_item.issueId];
-        gemini_ajax.postCall('items', 'slatime', function (response)
-        {
-            if (response.Success && response.Result.Data.length)
-            {
-                $( '.sla-timer', '#touch-info-container' )
-                    .removeAttr( 'class' )
-                    .addClass( 'sla-timer' ).addClass( 'view-sla-' + response.Result.Data[0].SLAStatus )
-                    .html( response.Result.Data[0].SLATimeFull )
-                    .attr( 'data-sla-minutes', response.Result.Data[0].SLATimeMinutes )
-                    .attr( 'data-sla-state', response.Result.Data[0].SLAStatus );
-                $( '.sla-out-of-hours', '#touch-info-container' )
-                    .removeAttr( 'class' )
-                    .addClass( 'sla-out-of-hours' )
+        gemini_ajax.postCall('items', 'slatime', function (response) {
+            if (response.Success && response.Result.Data.length) {
+                $('.sla-timer', '#touch-info-container')
+                    .removeAttr('class')
+                    .addClass('sla-timer').addClass('view-sla-' + response.Result.Data[0].SLAStatus)
+                    .html(response.Result.Data[0].SLATimeFull)
+                    .attr('data-sla-minutes', response.Result.Data[0].SLATimeMinutes)
+                    .attr('data-sla-state', response.Result.Data[0].SLAStatus);
+                $('.sla-out-of-hours', '#touch-info-container')
+                    .removeAttr('class')
+                    .addClass('sla-out-of-hours')
                     .addClass('view-sla-' + response.Result.Data[0].SLAStatus);
                 $('#breach-date', '#touch-info-container')
                     .removeAttr('class')
@@ -1403,7 +1386,7 @@ gemini_item = {
 
     viewingInterval: null,
 
-    registerViewing: function() {
+    registerViewing: function () {
         var ids = [gemini_item.issueId];
         gemini_ajax.postCall('item', 'viewing', function (response) {
             if (response.Success) {
@@ -1415,7 +1398,7 @@ gemini_item = {
             var ids = [gemini_item.issueId];
 
             gemini_ajax.postCall('item', 'viewing', function (response) {
-                
+
             }, null, { issueIds: ids, viewing: false });
             clearInterval(gemini_item.viewingInterval);
         });
@@ -1437,7 +1420,7 @@ gemini_item = {
             }
         }, null, { issueIds: ids });
     },
-    updateViewerDetails: function(viewerResponseData) {
+    updateViewerDetails: function (viewerResponseData) {
         $("#viewing-container").html(viewerResponseData.html);
         var needAlert = false;
         var currentUsers = [];
@@ -1448,12 +1431,12 @@ gemini_item = {
                 if (needAlert) {
                     gemini_popup.toast("<span class='fonticon-person'></span> '" + item.UserDto.Fullname + "' " + translations.nowviewing);
                 }
-                
+
             }
             currentUsers.push(item.UserDto.BaseEntity.Id);
         });
         gemini_item.currentViewers = currentUsers;
-        
+
     }
 
 };

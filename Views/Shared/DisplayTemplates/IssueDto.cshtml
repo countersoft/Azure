@@ -30,10 +30,10 @@ else
     <table id="tabledata" border="0" >
     <thead>
         <tr>
-            <th class="items-first-column" data-id="SLA">
+            <th class="items-first-column" data-id="SLA" style="min-width: 50px">
                 @if (allowSequencing && showSequencing)
                 {
-                    <span class="fonticon-drag-handle dragHandle item-drag-handle invisible"></span>
+                
                 }
                 else if(showSLA)
                 {
@@ -82,20 +82,21 @@ else
             bool firstCol = true;
             var sequenceData = itemsModel.SequencedData[issue.Entity.Id];
 <tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
-<td class='align-left no-wrap items-first-column read-only'>
+    <td class='align-left no-wrap items-first-column read-only'>
 
-@if (allowSequencing)
-{
-<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
-}
-else if(showSLA)
-{
-    <div @if(issue.Entity.SLAStatus.HasValue) {<text>class="sla-@issue.SlaStatusCode"</text>} else if(issue.IsInSLA) {<text>class="sla-3"</text>} title="@issue.SLATimeLeftFull" >
-    <span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
-    </div>
-}
-<input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id" />
-</td>
+        @if ( allowSequencing )
+        {
+        <i class="fad fa-arrows-alt-v dragHandle"></i>
+            @*<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>*@
+        }
+        else if ( showSLA )
+        {
+            <div @if ( issue.Entity.SLAStatus.HasValue ) { <text> class="sla-@issue.SlaStatusCode" </text> } else if ( issue.IsInSLA ) { <text> class="sla-3" </text> } title="@issue.SLATimeLeftFull">
+                <span class="sla-timer valign-top" data-sla-state="@issue.Entity.SLAStatus" data-sla-minutes="@issue.SLATimeLeftMinutes">@issue.SLATimeLeft</span>
+            </div>
+        }
+        <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id" />
+    </td>
 @foreach (var coldata in sequenceData)
 {
 <td class='@coldata.cssClass'>
@@ -115,7 +116,9 @@ else if(showSLA)
         if (showSequencing || itemsModel.SequencedIssues.Count > 0)
         {
             <tr class='drop-zone'>
-            <td></td>
+                <td>
+                    <i class="fad fa-chevron-double-right drop-indicator"></i>
+                </td>
             @foreach (var property in Model.Columns)
             {
                 // Get the property
@@ -137,7 +140,7 @@ else if(showSLA)
 <td class="align-left no-wrap items-first-column read-only">
 @if (allowSequencing && showSequencing)
 {
-<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+    <i class="fad fa-arrows-alt-v dragHandle"></i>
 }
 else if (showSLA && (issue.Entity.SLAStatus.HasValue || issue.IsInSLA))
 {
@@ -178,13 +181,15 @@ foreach (var coldata in data)
 @if (IsAuthenticated)
 {
     <ul id="item-grid-context-menu" class="cs-menu-context">
-        <li><a href="#view">@GetResource(ResourceKeys.View)</a></li>
-        <li><a href="#follow">@GetResource(ResourceKeys.FollowUnfollow)</a></li>
-        <li><a href="#comment">@GetResource(ResourceKeys.Comment, Resourcing.Dotted)</a></li>
-        <li><a href="#edit">@GetResource(ResourceKeys.Edit, Resourcing.Dotted)</a></li>
-        <li><a href="#time">@GetResource(ResourceKeys.Time, Resourcing.Dotted)</a></li>
-        @if (!GeminiContext.PermissionsManager.IsHelpdeskUser())
-        { 
+        <li><a href="#view">@GetResource( ResourceKeys.View )</a></li>
+        <li><a href="#follow">@GetResource( ResourceKeys.FollowUnfollow )</a></li>
+        <li><a href="#pin">@GetResource( ResourceKeys.PinUnPin, Resourcing.None )</a></li>
+        <li><a href="#comment">@GetResource( ResourceKeys.Comment, Resourcing.Dotted )</a></li>
+        <li><a href="#edit">@GetResource( ResourceKeys.Edit, Resourcing.Dotted )</a></li>
+        <li><a href="#time">@GetResource( ResourceKeys.Time, Resourcing.Dotted )</a></li>
+        @if ( !GeminiContext.PermissionsManager.IsHelpdeskUser() )
+        {
+            <li><a href="#newdependency">@GetResource(ResourceKeys.Dependency, Resourcing.Dotted)</a></li>
             <li><a href="#sequencemenu">@GetResource(ResourceKeys.Sequence, Resourcing.Dotted)</a></li>
             <li class="highlight"><a href="#delete">@GetResource(ResourceKeys.Delete, Resourcing.Dotted)</a></li>
         }

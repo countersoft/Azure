@@ -3,80 +3,93 @@
 <div id="view-item" class="clearfix">
     
     <!-- ATTRIBUTES PANE -->    
-    <div class="left-zone">        
+    <div class="left-zone">
+        <div id="mobile-view-item-details">
+
+            <div id="mobile-filter-navigator-container" class="right"></div>
+
+            <div class="item-title" data-attribute-id="@ItemAttributeVisibility.Title.ToString()">
+                <span class="code">@Model.Issue.IssueKey</span> <span class="title">@Model.Issue.Title</span>
+            </div>
+
+            @{Html.RenderPartial( "_TouchInfo" );}
+        </div>
+
+
         <div id='item-attributes' class="attributes-pane item-pane">
-            @{Html.RenderPartial("ItemAttributesPane");}
+            @{Html.RenderPartial( "ItemAttributesPane" );}
         </div>
     </div>
 
     <!-- CONTENT PANE -->    
     <div class="right-zone">
-        @{Html.RenderPartial("_Toolbar");}
-
+        @{Html.RenderPartial( "_Toolbar" );}
         <div id="filter-navigator-container"></div>
-        
-        <div class="left">
-            <div class="item-title" data-attribute-id="@ItemAttributeVisibility.Title.ToString()">@Model.Issue.IssueKey &nbsp;<span class="title">@Model.Issue.Title</span></div>
+
+        <div class="clear-both margin-20"></div>
+
+
+            <div id="viewing-container" class="right">
+
+            </div>
+            <div class="item-title" data-attribute-id="@ItemAttributeVisibility.Title.ToString()">
+                <span class="code">@Model.Issue.IssueKey</span> <span class="title">@Model.Issue.Title</span>
+            </div>
 
             <div class="project-info">
                 <a href="@(GeminiContext.Url)workspace/0/items?projects=@(Model.Issue.Project.Id)">@(Model.Issue.Project.Name)</a>
             </div>
 
             <div id="touch-info-container">
-                @{Html.RenderPartial("_TouchInfo");}
+                @{Html.RenderPartial( "_TouchInfo" );}
             </div>
 
             <div class="margin-top-20">
-                @{Html.RenderPartial("_ProgressInfo");}
+                @{Html.RenderPartial( "_ProgressInfo" );}
             </div>
-        </div>
-        <div class="right" style="margin-top: 50px;">
-            <div id="viewing-container">
-
-            </div>
-        </div>
-        <div class="clearfix"></div>
-        @{Html.RenderPartial("_Collapse");}
         
+        <div class="clearfix"></div>
+        @{Html.RenderPartial( "_Collapse" );}
+
         <div id="links-find-item-container" class="hide">
-            <input type="hidden" id="links-find-item-id"/>
+            <input type="hidden" id="links-find-item-id" />
             <form name="links-form">
-                <span class="left">@GetResourceTemplate(ResourceKeys.Link)</span>
-                <input class="left input-size6 required" id="links-find-item" name="linksFindItem" type="text"/>        
-                @Html.DropDownList("linktypes", Model.IssueLinkTypes, new {@class="input-size5 left"})
+                <span class="left">@GetResourceTemplate( ResourceKeys.Link )</span>
+                <input class="left input-size6 required" id="links-find-item" name="linksFindItem" type="text" />
+                @Html.DropDownList( "linktypes", Model.IssueLinkTypes, new { @class = "input-size5 left" } )
                 <span class="fonticon-tick left"></span>
                 <span class="fonticon-cross left"></span>
             </form>
         </div>
 
         <div id="dependencies-find-item-container" class="hide">
-            <span>@GetResourceTemplate(ResourceKeys.Dependency)</span>
-            <input id="dependencies-find-item" name="dependencies-find-item" type="text" class="input-size7"/>
+            <span>@GetResourceTemplate( ResourceKeys.Dependency )</span>
+            <input id="dependencies-find-item" name="dependencies-find-item" type="text" class="input-size7" />
         </div>
 
-        <div id="view-item-collapse">      
-            @{Html.RenderPartial("IssueDescription");}
+        <div id="view-item-collapse">
+            @{Html.RenderPartial( "IssueDescription" );}
 
-            @if (Model[ItemAttributeVisibility.AssociatedLinks] && Model.Issue.Links.Count > 0)
+            @if ( Model[ItemAttributeVisibility.AssociatedLinks] && Model.Issue.Links.Count > 0 )
             {
                 <div class="see-also-container margin-top-10 margin-bottom-10">
-                    @{Html.RenderPartial("_SeeAlso");}
+                    @{Html.RenderPartial( "_SeeAlso" );}
                 </div>
             }
             else
             {
-                <div class="see-also-container">@{Html.RenderPartial("_SeeAlso");}</div>
+                <div class="see-also-container">@{Html.RenderPartial( "_SeeAlso" );}</div>
             }
-        
-            @if(Model[ItemAttributeVisibility.AssociatedHierarchy])
+
+            @if ( Model[ItemAttributeVisibility.AssociatedHierarchy] )
             {
-            <div class="margin-top-20 margin-left-30">          
-                @{Html.RenderPartial("IssueDependencies");}      
-            </div>
+                <div class="margin-top-20 margin-left-30">
+                    @{Html.RenderPartial( "IssueDependencies" );}
+                </div>
             }
 
             <div class="margin-top-20 margin-left-30">
-                @{Html.RenderPartial("IssueAttachments");}
+                @{Html.RenderPartial( "IssueAttachments" );}
             </div>
         </div>
         <div class="clearfix"></div>
@@ -85,10 +98,10 @@
         <div id='view-item-content-pane' class="contents-pane item-pane margin-top-10">
 
             <div class="clearfix"></div>
-    
+
             <div id='cs-template' class="margin-bottom-20">
                 <div id='cs-sections' class="tabs">
-                    @Html.Raw(Model.ContentData)   
+                    @Html.Raw( Model.ContentData )
                 </div>
             </div>
         </div>

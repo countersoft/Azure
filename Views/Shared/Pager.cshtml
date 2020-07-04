@@ -1,0 +1,130 @@
+﻿@model PagerDto
+
+@{
+
+    List<int> pagesAllows = new List<int>();
+    var sizeLimit = 7;
+
+    if ( DeviceContext.IsMobile || DeviceContext.IsPhone )
+    {
+        sizeLimit = 2;
+    }
+
+    var midCount = Model.TotalPages - 4 > 0 ? Math.Min( sizeLimit, Model.TotalPages - 4 ) : 0;
+
+    pagesAllows.Add(1);
+
+    if (Model.TotalPages> 1)
+    {
+        pagesAllows.Add( Model.CurrentPage > ( sizeLimit / 2 ) + 2 ? 0 : 2 );
+    }
+
+    int offset = (midCount - 1) / 2;
+    var largestFirstMiddle = Model.TotalPages - midCount - 1;
+    var firstPage =   Math.Max(3, Model.CurrentPage - offset); // Math.Max( ,  Model.TotalPages - sizeLimit );
+    if (firstPage > largestFirstMiddle)
+    {
+        firstPage = largestFirstMiddle;
+    }
+    for (int i = 0; i < midCount; i++)
+    {
+        pagesAllows.Add(firstPage + i);
+    }
+    if (pagesAllows.Last() < Model.TotalPages - 2)
+    {
+        pagesAllows.Add(0);
+    } else if (pagesAllows.Last() == Model.TotalPages - 2)
+    {
+        pagesAllows.Add( Model.TotalPages-1 );
+    }
+    if (Model.TotalPages > 2)
+    {
+        pagesAllows.Add( Model.TotalPages );
+    }
+
+}
+<div id="pager-wrapper" class="right">
+    <table class="pager" id="grid-pager" data-currentpage="@Model.CurrentPage">
+        <tr>
+            <td class="item-small">
+                @Model.TotalItems  @GetStandardResource( ResourceKeys.Items, Resourcing.Lower )
+            </td>
+
+            <td>
+                @if ( Model.HasPreviousPage )
+                {
+                    <i id="pager-prev" class="fad fa-chevron-square-left cursor-pointer  fa-2x" data-currentpage="@Model.CurrentPage"></i>
+                }
+            </td>
+            @if(Model.TotalPages > 1 )
+        {
+
+            foreach ( var pageNumber in pagesAllows )
+            {
+                var selectedText = string.Empty;
+                if ( pageNumber == Model.CurrentPage )
+                {
+                    selectedText = "selected";
+                }
+                <td class="@selectedText">
+                    @if ( pageNumber == 0 )
+                    {
+                        @: ...
+                    }
+                    else
+                    {
+                        <a href="#" class="pager-page" data-pageindex="@pageNumber">@pageNumber</a>
+                    }
+                </td>
+                }
+            }
+            <td>
+                @if ( Model.CurrentPage < Model.TotalPages )
+{
+    <i id="pager-next" class="fad fa-chevron-square-right cursor-pointer fa-2x" data-currentpage="@Model.CurrentPage"></i>
+}
+
+            </td>
+            @if(Model.TotalPages > 1 || Model.PageSize > 15 )
+        {
+
+        
+            <td id="pager-pagesize">
+                @GetStandardResource( ResourceKeys.Items ) / @GetStandardResource( ResourceKeys.Page )
+                <select class="no-chosen" id="pageSize">
+                    <option value="15" @if
+
+                                           (Model.PageSize == 15)
+                                       {
+                                           @:selected="selected"
+                                       }>15</option>
+                    <option value="25"@if
+
+                                          (Model.PageSize == 25)
+                                      {
+                                          @:selected="selected"
+                                      }>25</option>
+                    <option value="50"@if
+
+                                          (Model.PageSize == 50)
+                                      {
+                                          @:selected="selected"
+                                      }>50</option>
+                    <option value="75"@if
+
+                                          (Model.PageSize == 75)
+                                      {
+                                          @:selected="selected"
+                                      }>75</option>
+                    <option value="100"@if
+
+                                           (Model.PageSize == 100)
+                                       {
+                                           @:selected="selected"
+                                       }>100</option>
+                </select>
+            </td>
+        }
+        </tr>
+    </table>
+</div>

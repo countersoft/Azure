@@ -1,7 +1,7 @@
 ﻿@model ViewIssueModel
 
 
-        <div id='timelog-section' data-contentid="timelog-content" class="left tab normal"><h3>@GetResourceTemplate(ResourceKeys.Time)&nbsp;(@Model.Issue.TimeEntries.Count)</h3></div>
+        <div id='timelog-section' data-contentid="timelog-content" class="left tab normal"><h3><i class="fad fa-stopwatch"></i> @GetResourceTemplate(ResourceKeys.Time)&nbsp;(@Model.Issue.TimeEntries.Count)</h3></div>
     <div class="tab-content timelogs hide" id="timelog-content">
         @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedTime) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
         {

@@ -12,16 +12,21 @@ gemini_add =
     addUrl: false,
     postData: null,
 
-    init: function () {
-
+    init: function (isAdmin) {
+        if (isAdmin === undefined) isAdmin = false;
         gemini_add.addUrl = csVars.WorkspaceUrl;
         gemini_keyboard.initKeyboard();
+
+        if ($("#add-item, #add-item-dropdown").data("projects") == 0 && !isAdmin) {
+            $("#add-item, #add-item-dropdown").hide();
+        }
                 
         $("#add-item, #add-item-dropdown").click(function (e)
         {
-            if ($(this).attr('data-projects') == '0')
-            {
-                $("#add-project").click();
+            if ($(this).attr('data-projects') == '0') {
+                if (isAdmin) {
+                    gemini_add.addProject();
+                }
                 return;
             }
             if ($("#cs-popup-add").is(":visible"))
@@ -43,21 +48,6 @@ gemini_add =
                 gemini_add.show();
             }
         });
-
-        $("#add-project").click(function (e)
-        {
-            gemini_add.addProject();
-        });
-
-        $("#add-workspace").click(function (e)
-        {
-            gemini_appnav.newWorkspace();
-        });
-
-        $("#add-coworker").click(function (e) {
-            gemini_add.addCoWorkers();
-        });
-
     },
 
     triggerChange: function (elem) {
@@ -403,9 +393,8 @@ gemini_add =
          /*** WIZARD ***/
         gemini_add.pendingChanges = false;
         gemini_add.hide();
-
-        if ($('#pager-next').length > 0) {
-            var currentPage = $('#pager-next').data('page') - 1;
+        if ($('#pager-grid').length > 0) {
+            var currentPage = $('#pager-grid').data('currentpage') - 1;
 
             if (currentPage < 0) currentPage = 0;
 

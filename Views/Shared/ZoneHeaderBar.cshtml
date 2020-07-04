@@ -1,152 +1,346 @@
 ﻿@model BaseModel
 @{
     int loop = 0;
-    int menuItems = Model.ProjectMenu.Count;
 
     string tabName = Model.HeaderText.Count > 1 ? Model.HeaderText[1].Text : string.Empty;
-    string dashboard = GetResource(ResourceKeys.Dashboard);
-    
+    string dashboard = GetResource( ResourceKeys.Dashboard );
+
     var logo = GeminiContext.Config.Logo;
     var logoEmpty = !logo.HasValue();
-    if(logoEmpty)
+    if ( logoEmpty )
     {
         logo = "gemini.png";
     }
-    
-    var admin = GeminiContext.User.IsGlobalAdmin;
+
+    var isGlobalAdmin = GeminiContext.User.IsGlobalAdmin;
     var fullname = GeminiContext.User.Entity.Fullname;
-    if(!fullname.HasValue())
+    if ( !fullname.HasValue() )
     {
         fullname = GeminiContext.User.Entity.Username;
     }
 }
 <header id="header">
-    
-    <div id="zone-header-bar">
-        
-        <div id="tabs-wrapper" class="no-select">
-        <ul class="tabs">
-            <li id="product-logo" @if (admin) { <text> class="cursor-pointer" </text>  } @if (logoEmpty) { <text> style="display:none;" </text> }>
-                <img src="@(GeminiContext.AssetsUrl)/images/logo/@logo" />
-            </li>
 
-            <li id="all-projects-menu-box" class="dropdown @if(tabName == dashboard){<text>selected</text>}">
-                <span><a href="~/dashboard">@dashboard</a></span>
-            </li>
-            
-            @foreach (var item2 in Model.ProjectMenu)
-            {
-                if (item2.IsDivider)
-                {
-                    break;
-                }
-                        
-                loop++;
-                <li data-id="@item2.Label" class="tab @if(tabName == item2.Label){<text>selected</text>}" ><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.UrlId)/@(item2.Url)">@item2.Label</a></li>
-            }
-            @if(tabName.HasValue() && tabName != dashboard && Model.ProjectMenu.Find(m => m.Label == tabName) == null)
-            {
-                <li class="tab selected">
-                @tabName
-                </li>
-            }
-            <li id="project-menu-dropdown" class="menu-tab dropdown">
-                <span class="fonticon-dropdown"></span>
-
-                <ul class="cs-menu-dropdown">
-                    <li class="arrow"><div></div></li>
-                    @{
-                    for (int i = 0; i < Model.ProjectMenu.Count; i++ )
-                    {
-                        var item2 = Model.ProjectMenu[i];
-                                
-                        if (!item2.IsDivider)
+    <div id="zone-header-bar" class="flex-grid">
+        <div class="header-left">
+            <div class="dropdown" id="main-menu">
+                <span id="app-menu-button" class="wrapper toolbar-icons">
+                    <span style="width: 40px;" class="icon-holder">
+                        <i class="fad fa-bars fa-2x menu" title1="@GetResource(ResourceKeys.Options)" style="min-width: 40px;"></i>
+                    </span>
+                    <span>Menu</span>
+                    @*<span class="action notification"></span>*@
+                </span>
+                <div class="dropdown-content">
+                    <ul>
+                        <!--TODO - kill off Id="all-projects-menu-box" references-->
+                        <li class="@if (tabName == dashboard)
+                                   {<text>selected</text>}">
+                            <a href="~/dashboard">@IconHelper.Icon( IconHelper.IconNames.Dashboard ) @dashboard</a>
+                        </li>
+                        @if ( !GeminiApp.UserContext().PermissionsManager.IsHelpdeskUser() )
                         {
-                            <li data-id="@item2.Label" @if(i<loop){<text>class="hide"</text>}><a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.UrlId)/@(item2.Url)">@item2.Label</a></li>
+                            <li class="separator"></li>
+                            <li class="reports">
+                                <a href="#">
+                                    <span class="right">@IconHelper.Icon( IconHelper.IconNames.ExpandRight, IconHelper.FontAwesomeStyles.Solid )</span>
+                                    @IconHelper.Icon( IconHelper.IconNames.Reports ) @GetResource( ResourceKeys.Reports )
+                                </a>
+                                <ul class="dropdown-content">
+
+                                    @if ( isGlobalAdmin )
+                                    {
+                                        <li class="controls">
+                                            <div id="reportFile" align="right" style="font-size: small" data-upload-text="@GetResource(ResourceKeys.Upload)"></div>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
                         }
-                    }
 
-                    if (Model.ShowSettings)
-                    {
-                        <li id="project-settings" class="highlight"><a href="#">@GetResource(ResourceKeys.Settings)</a></li>
-                    }
-                    }
-                </ul>
-            </li>
-        </ul>
+          
+
+                        @if ( Model.ProjectMenu.Any() )
+                        {
+                            <li class="separator"></li>
+                        }
+
+                        @foreach ( var option in Model.ProjectMenu )
+                        {
+                            loop++;
+                            <li data-id="@option.Label" class="@if (tabName == option.Label)
+                                                   {<text>selected</text>}">
+                                <a href="@(GeminiContext.Url)workspace/@(Model.CurrentPageCard.UrlId)/@(option.Url)">
+                                    @IconHelper.Icon( option.Icon )
+                                    @option.Label
+                                </a>
+                            </li>
+                        }
+                        
+                        @if ( Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser() )
+                        {
+                            <li class="separator"></li>
+                            <li><a id="menu-import-data" class="cursor-pointer">@IconHelper.Icon( "file-import" ) @GetResource( ResourceKeys.ImportWizard ) </a></li>
+                        }
+
+
+                        @if ( Model.ShowSettings || isGlobalAdmin )
+                        {
+                            <li class="separator"></li>
+                        }
+
+                        @if ( Model.ShowSettings )
+                        {
+                            <li id="project-settings" class="highlight"><a href="#">
+                                @IconHelper.Icon("cog")
+                                @GetResource( ResourceKeys.Project ) @GetResource( ResourceKeys.Settings )</a></li>
+                        }
+
+                        @if ( isGlobalAdmin )
+                        {
+                            var cardId = Model.CurrentPageCard == null ? 0 : Model.CurrentPageCard.Id;
+
+                            <li>
+                                <a href="~/workspace/@(cardId)/configure" title="@GetResource(ResourceKeys.Customize)">
+                                    @IconHelper.Icon("tools") @GetResource(ResourceKeys.Configure) Gemini
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+
+
+            <span id="product-logo"
+                  @if ( isGlobalAdmin ) { <text> class="cursor-pointer" </text> }
+                  @if ( logoEmpty ) { <text> style="display: none;" </text> }>
+                <img src="@(GeminiContext.AssetsUrl)/images/logo/@logo" />
+            </span>
+
         </div>
-        <span class="user-options">
 
-            @if (IsAuthenticated)
-            { 
+
+        <div id="workspace-panel" class="header-middle">
+            <div class="dropdown" style="min-width: 32px;">
+                @if (!Model.NoPortalWorkspaceMgmt)
+                {
+                    <i class="fad fa-cog fa-2x icon-holder"></i>
+
+                }
+                <div class="dropdown-content cursor-pointer">
+                    <ul>
+
+                        @if (Model.CurrentPageCard.Id != 0)
+                        {
+                            if ( !Model.CurrentPageCard.Locked )
+                            {
+                                <li>
+                                    <a id="workspace-save">
+                                        <i class="fad fa-save"></i> @GetResource(ResourceKeys.Save)
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <a id="workspace-copy">
+                                    <i class="fad fa-copy"></i> @GetResource(ResourceKeys.Copy)
+                                </a>
+                            </li>
+                            if (!Model.CurrentPageCard.Locked)
+                            {
+                                <li>
+                                    <a id="workspace-delete">
+                                        <i class="fad fa-trash-alt"></i> @GetResource(ResourceKeys.Delete)
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <a id="workspace-configure">
+                                    <i class="fad fa-wrench"></i> @GetResource(ResourceKeys.Workspace) @GetResource(ResourceKeys.Details)
+                                </a>
+                            </li>
+                            if ( Model.CurrentPageCard.Sequence > 1 )
+                            {
+                                <li>
+                                    <a id="workspace-set-default">
+                                        <i class="fad fa-star"></i> @GetResource( ResourceKeys.SetAsHome )
+                                    </a>
+                                </li>
+                            }
+                        }
+                        <li>
+                            <a id="workspace-create">
+                                <i class="fad fa-bookmark"></i> @GetResource(ResourceKeys.CreateWorkspace)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div id="workspace-selector">
+                <div id="workspace-title">
+                    @if ( Model.CurrentPageCard.CardData.IsShared || Model.CurrentPageCard.Locked )
+                    {
+                        string prefix = string.Concat( '[', GetResource( ResourceKeys.TeamWorkspace ), "] " );
+                        <i title1="@prefix" class="fad fa-share-square shared-icon"></i>
+                        <span class="key shared">@Model.CurrentPageCard.Key.ToUpper()</span>
+                        //Temporarily using title1 to remove from the display as the text is showing before the icon is loaded.
+                    }
+
+                    else if ( Model.CurrentPageCard.Id != 0 )
+                    {
+                        string prefix = string.Concat( '[', GetResource( ResourceKeys.Workspace ), "] " );
+                        <i title1="@prefix" class="fad fa-user shared-icon"></i>
+                        <span class="key shared">@Model.CurrentPageCard.Key.ToUpper()</span>
+
+                    }
+                    
+                    @if ( Model.CurrentPageCard.Id != 0 )
+                    {
+                        <span>:</span>
+                    }
+                    <span class="title">@Model.CurrentPageCard.Title</span>
+                    <i class="fad fa-caret-square-down drop-down-icon"></i>
+
+                </div>
+               
+                <div id="workspace-slider">
+                    @{ Html.RenderPartial( "AppNavCards" ); }
+
+                    
+                </div>
+            </div>
+            <div id="workspace-tools">
+                @{
+                    var showRefresh = false;
+                    var defaultCard = Model.SavedCards.FirstOrDefault(c => c.Id == Model.CurrentPageCard.Id);
+                    var defaultUrl = defaultCard == null ? "" : defaultCard.GetCardUrl();
+
+
+                }
+                @if (Model.CurrentPageCard.Id > 0 || Model.CurrentPageCard.Title != "")
+                {
+                    showRefresh = true;
+                }
+                @if (defaultUrl == "" )
+                {
+                    
+                    defaultUrl = Request.RawUrl;
+                }
+
+
+                @if (showRefresh)
+                {
+                    <div id="workspace-refresh" class="icon-holder">
+                       
+                        <a href="@(GeminiContext.Url + defaultUrl)">
+                            <i class="fad fa-sync-alt" id="refresh-workspace-icon"></i>
+                        </a>
+                    </div>
+                }
+                @{
+                    string badgeStyle = string.Empty;
+                    if (Model.CurrentPageCard.BadgeCount == 0)
+                    {
+                        badgeStyle = "visibility:hidden;";
+                    }
+                }
+                <div id="workspace-badge-count" data-count="@Model.CurrentPageCard.BadgeCount" style="@badgeStyle">
+                    <span class="badge" style="background-color: @Model.CurrentPageCard.Color">
+                        <span>
+                            @Model.CurrentPageCard.BadgeCountLabel
+                        </span>
+                    </span>
+                    <span class="spinner"></span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+
+            @if ( IsAuthenticated )
+            {
                 <div id="add-zone" class="no-select">
-                    <div id="add-item" class="add-item" data-projects="@Model.AllProjects.Count" ><div class="add-text">@(GetResource(ResourceKeys.Add))</div></div><div class="add-dropdown"><span id="add-menu" class="fonticon-dropdown dropdown">
-                        <ul class="cs-menu-dropdown align-right">
-                            <li class="arrow"><div></div></li>
-                            @if(Model.AllProjects.Count > 0)
-                            { 
-                                <li><a id="add-item-dropdown">@GetResource(ResourceKeys.Item)</a></li>
-                            }
-                            @if (GeminiContext.Config.Sandbox || admin){<li><a id="add-project">@GetResource(ResourceKeys.Project)</a></li>}
-                            @if (Model.AllProjects.Count > 0 && !Model.NoPortalWorkspaceMgmt)
-                            {
-                                <li><a id="add-workspace">@GetResource(ResourceKeys.Workspace)</a></li>
-                            }
-                            @if(ShowAddCoworkers(false))
-                            {
-                                <li><a id="add-coworker">@GetResource(ResourceKeys.Coworkers)</a></li>
-                            }
-                            @if (Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser())
-                            {
-                            <li><a id="menu-import-data">@GetResource(ResourceKeys.ImportWizard) </a></li>
-                            }
-                        </ul>
-                    </span></div>
+                    <div id="add-item" class="add-item" data-projects="@Model.AllProjects.Count">
+                        <i class="fad fa-plus fa-2x"></i>
+                        <span>@(GetResource( ResourceKeys.Add )) </span>
+                    </div>
                 </div>
             }
-            
-            @if (admin)
-            {
-                <span class="item-small"><a href="~/configure" title="@GetResource(ResourceKeys.Customize)">@GetResource(ResourceKeys.Customize)</a></span>
-            }
-            
-            @if (!IsAuthenticated)
-            {
-                <span class="item-small"><a href="~/account/login">@GetResource(ResourceKeys.Login)</a></span>
-            }
-            else
-            {   
-                <span class="item-small"><a href="#" class="open-profile">@fullname</a></span><span id="user-menu" class="fonticon-dropdown dropdown">
-                    <ul class="cs-menu-dropdown align-right">
-                        <li class="arrow"><div></div></li>
-                        <li><a class="open-profile" href="#">@GetResource(ResourceKeys.Profile)</a></li>
-                        <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=assigned">@GetResource(ResourceKeys.Assigned)</a></li>
-                        <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=following">@GetResource(ResourceKeys.Following)</a></li>
-                        <li><a href="http://docs.countersoft.com" target="_blank">@GetResource(ResourceKeys.Help)</a></li>
-                        <li><a href="http://www.countersoft.com/videos" target="_blank">Videos</a></li>
-                                                                                                                           
-                        @if (!GeminiContext.Config.IsWindowsAuthentication)
-                        { 
-                            <li class="highlight"><a href="~/account/logout">@GetResource(ResourceKeys.Logout)</a></li> 
-                        }
-                    </ul>
-                </span>
-            }
 
-            <span>&nbsp;</span>
+            <div class="user-options">
 
-        </span>
 
-        <div id="appnav-toolbar-notifications" class="wrapper toolbar-icons"><div class="action notification" title="@GetResource(ResourceKeys.Notifications)"></div></div>
-        <div id="search-bar" class="wrapper toolbar-icons auto-popup-keep"><div class="action search-bar-icon auto-popup-keep" title="@GetResource(ResourceKeys.Search)"></div></div>
-        <div id="search-box" class="auto-popup">
-            <div class="arrow-container"><div class="arrow"></div></div>
-            <div class="search-container">
-                <form id="search-form" action="~/project/0/items" method="GET" autocomplete="off">
-                    <input id="search" name="search" type="text" class="no-outline" placeholder="@GetResource(ResourceKeys.Search)" />
-                </form>
+                @if ( !IsAuthenticated )
+                {
+                    <span class="item-small"><a href="~/account/login">@GetResource( ResourceKeys.Login )</a></span>
+                }
+                else
+                {
+                    <div class="dropdown">
+                        <a href="#" class="open-profile item-small" style="min-width: 125px;">
+                            <span id="profile-icon" style="min-width: 20px;">
+                                @IconHelper.Icon( IconHelper.IconNames.UserProfile )
+                            </span>
+                            @fullname
+                            <i class="fad fa-caret-square-down" id="user-menu" style="min-width: 15px; display:inline-block"></i>
+
+                        </a>
+                        <ul class="@*cs-menu-dropdown align-right*@ dropdown-content">
+                            <li class="arrow">
+                                <div></div>
+                            </li>
+                            <li><a class="open-profile" href="#"><i class="fad fa-user"></i> @GetResource( ResourceKeys.Profile )</a></li>
+                            <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=assigned"><i class="fad fa-user-tag"></i> @GetResource( ResourceKeys.Assigned )</a></li>
+                            <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=following"><i class="fad fa-tags"></i> @GetResource( ResourceKeys.Following )</a></li>
+                            <li><a href="~/project/@Constants.AllProjectsId/items?viewtype=mytime"><i class="fad fa-clock"></i> @GetResource( ResourceKeys.TimeLogged )</a></li>
+                            <li><a href="http://docs.countersoft.com" target="_blank"><i class="fad fa-question"></i> @GetResource( ResourceKeys.Help )</a></li>
+                            <li><a href="http://www.countersoft.com/videos" target="_blank"><i class="fad fa-video"></i> Videos</a></li>
+
+                            @if ( !GeminiContext.Config.IsWindowsAuthentication )
+                            {
+                                <li class="highlight"><a href="~/account/logout"><i class="fad fa-sign-out"></i> @GetResource( ResourceKeys.Logout )</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+
+            <div id="pinned-list">
+                <span id="spinner"></span>
+                <i class="fad fa-thumbtack icon-holder" style="min-width: 32px;"></i>
+                <span class="number" style=""></span>
+                <div id="pinned-panel">
+                    <h3>Updated Recently</h3>
+                    <ul id="updated-items"></ul>
+                    <h3>Pinned Items</h3>
+                    <ul id="pinned-items" data-remove-pin-title="@GetResource(ResourceKeys.Remove) @GetResource(ResourceKeys.Pin)"
+                        data-add-pin-title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Pin)"></ul>
+                </div>
+            </div>
+            <div id="workspace-notifications-zone" class="wrapper toolbar-icons" style="display:none"></div>
+            <div id="search-bar" class="auto-popup-keep icon-holder" style="width: 40px;">
+                <i class="fad fa-search"></i>
+                <div class="action" title="@GetResource(ResourceKeys.Search)"></div>
+            </div>
+
+            <div id="search-box" class="auto-popup">
+                <div class="arrow-container">
+                    <div class="arrow"></div>
+                </div>
+                <div class="search-container">
+                    <form id="search-form" action="~/project/0/items" method="GET" autocomplete="off">
+                        <input id="search" name="search" type="text" class="no-outline" placeholder="@GetResource(ResourceKeys.Search)" />
+                    </form>
+                </div>
             </div>
         </div>
+
     </div>
 
 </header>

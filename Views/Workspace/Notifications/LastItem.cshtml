@@ -3,10 +3,10 @@
 <div id="workspace-notifications-zone" class="workspace-notifications-zone-last-item">
     <div class="arrow-container"><div class="arrow"></div></div>
     <div class="notification-container">
-        @if (Model.Items.Count == 1)
+        @if (Model.RecentItems.Count == 1)
         {
             <ul id="notification-items">
-                <li><a href="~/@Model.Items[0].Url">@Model.Items[0].Label</a></li>
+                <li><a href="~/@Model.RecentItems[0].Url">@Model.RecentItems[0].Label</a></li>
             </ul>
         }
         else

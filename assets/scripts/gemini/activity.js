@@ -118,7 +118,6 @@ gemini_activity = {
             },
             
             eventRender: function (event, element) {
-                //console.info(element);
 
                 element.find("div.fc-event-inner").wrapInner('<div class="event-content" title="' + event.colorText + '" />');
                 element.find("div.fc-event-inner div.event-content").append("&nbsp;<span class=\"CalendarItemTitle\">" + event.description + "</span>");

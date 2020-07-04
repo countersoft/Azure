@@ -448,8 +448,8 @@
             var options3 = {
                 dataType: "json",
                 success: function (responseText, statusText, xhr, $form) {                    
-                    if (responseText.success) {                        
-                        var currentPage = $('#pager-next').attr('data-page');
+                    if (responseText.success) {       
+                        var currentPage = $('#grid-pager').data('currentpage');
                         if (currentPage != 0) currentPage -= 1;
 
                         if (isNaN(currentPage))

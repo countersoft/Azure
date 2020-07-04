@@ -1,11 +1,22 @@
 ﻿@model InstantItemFilterNumeric
-<div id="instant-filter-@(Model.Name)" data-field-name="@Model.Name" data-field-desc="@Model.Caption" class="instant-filter-box dynamic left"><div class="instant-filter-header left"><span class="instant-filter-title">@(Model.Caption)</span><span class="instant-filter-caption">@Model.SelectedCaption</span></div><span class="fonticon-dropdown"></span>@if(Model.AllowRemove){<span class="fonticon-cross"></span>}
-<div class="instant-filter-dropdown auto-popup hide" data-field-type="text" data-hide-func="gemini_filter.checkNeedsFilter()">
-@for(int i=0;i<@Model.Items.Count - 2;i++)
-{
-    <input class="fancy" data-clear="true" type="radio" name="@(Model.Name)" value="@(Model.Items[i].ItemId)" id="@(Model.Name)-@(Model.Items[i].ItemId)" @if(Model.Items[i].IsSelected) {<text>checked="checked"</text>} /><label for="@(Model.Name)-@(Model.Items[i].ItemId)">@Model.Items[i].ItemLabel</label>
-    <br />
-}
-    <input class="fancy" type="radio" name="@(Model.Name)" value="@(Model.Items[Model.Items.Count - 2].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)" @if(Model.Items[Model.Items.Count - 2].IsSelected || Model.Items[Model.Items.Count - 1].IsSelected) {<text>checked="checked"</text>} /><input class="margin-left-5" type="text" name="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)" value="@Model.Items[Model.Items.Count - 2].ItemText"  />&nbsp;-&nbsp;<input class="margin-left-5" type="text" name="@(Model.Name)-@(Model.Items[Model.Items.Count - 1].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 1].ItemId)" value="@Model.Items[Model.Items.Count - 1].ItemText"  />
-</div>
+<div id="instant-filter-@(Model.Name)" data-field-name="@Model.Name" data-field-desc="@Model.Caption" class="instant-filter-box dynamic left">
+    <div class="instant-filter-header left">
+        <span class="instant-filter-title">@(Model.Caption)</span><span 
+                                                                      class="instant-filter-caption">@Model.SelectedCaption</span>
+    </div>
+    <i class="fad fa-caret-down fa-2x"></i>
+    @if (Model.AllowRemove)
+    {<i class="fad fa-times-square"></i>}
+    <div class="instant-filter-dropdown auto-popup hide" data-field-type="text" data-hide-func="gemini_filter.checkNeedsFilter()">
+        @for (int i = 0; i < @Model.Items.Count - 2; i++)
+        {
+            <input class="fancy" data-clear="true" type="radio" name="@(Model.Name)" value="@(Model.Items[i].ItemId)" id="@(Model.Name)-@(Model.Items[i].ItemId)"
+                   @if (Model.Items[i].IsSelected)
+                   {<text>checked="checked"</text>}/><label for="@(Model.Name)-@(Model.Items[i].ItemId)">@Model.Items[i].ItemLabel</label>
+            <br/>
+        }
+        <input class="fancy" type="radio" name="@(Model.Name)" value="@(Model.Items[Model.Items.Count - 2].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)"
+               @if (Model.Items[Model.Items.Count - 2].IsSelected || Model.Items[Model.Items.Count - 1].IsSelected)
+               {<text>checked="checked"</text>}/><input class="margin-left-5" type="text" name="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 2].ItemId)" value="@Model.Items[Model.Items.Count - 2].ItemText"/>&nbsp;-&nbsp;<input class="margin-left-5" type="text" name="@(Model.Name)-@(Model.Items[Model.Items.Count - 1].ItemId)" id="@(Model.Name)-@(Model.Items[Model.Items.Count - 1].ItemId)" value="@Model.Items[Model.Items.Count - 1].ItemText"/>
+    </div>
 </div>

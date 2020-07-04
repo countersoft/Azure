@@ -1,58 +1,115 @@
 ﻿@model ViewIssueModel
 
-@if (@IsAuthenticated)
+@if ( @IsAuthenticated )
 {
-    <div id="item-toolbar" class="no-select toolbar-icons">
+    <div id="item-toolbar" class="no-select toolbar-icons clear-both">
 
-        @if (@Model.CanEditIssue)
+        @if ( @Model.CanEditIssue )
         {
-            <div id="action-edit" class="wrapper" title="@GetResource(ResourceKeys.Edit)"><div class="action edit"></div></div>
+            <div id="action-edit" class="wrapper" title="@GetResource(ResourceKeys.Edit)">
+                <i class="fad fa-pen-square fa-2x"></i>
+            </div>
         }
 
-        @if (CanDoItemAction(UserAction.Edit, ItemAttributeVisibility.Description))
+        @if ( CanDoItemAction( UserAction.Edit, ItemAttributeVisibility.Description ) )
         {
-            <div data-attribute-id="@ItemAttributeVisibility.Description.ToString()" id="add-description" class="wrapper" title="@GetResource(ResourceKeys.Description)"><div class="action edit-2"></div></div>
+            <div data-attribute-id="@ItemAttributeVisibility.Description.ToString()" id="add-description" class="wrapper"
+                 title="@GetResource(ResourceKeys.Description)">
+                <i class="fad fa-edit fa-2x"></i>
+            </div>
         }
 
-        @if (@Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser() && !GeminiContext.PermissionsManager.IsProjectReadOnly(Model.Issue.Project))
+        @if ( @Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser() &&
+             !GeminiContext.PermissionsManager.IsProjectReadOnly( Model.Issue.Project ) || true )
         {
-            <div id="action-move" class="wrapper" title="@GetResource(ResourceKeys.Move)"><div class="action move"></div></div>
-            <div id="action-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)"><div class="action copy-2"></div></div>
+            <div id="action-move" class="wrapper" title="@GetResource(ResourceKeys.Move)">
+                <i class="fad fa-external-link-square fa-2x"></i>
+            </div>
+            <div id="action-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)">
+                <i class="fad fa-copy fa-2x"></i>
+            </div>
         }
 
-        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedLinks) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        @if ( CanDoItemAction( UserAction.Create, ItemAttributeVisibility.AssociatedLinks ) && !GeminiContext.PermissionsManager.IsHelpdeskUser() )
         {
-            <div id="add-link" class="wrapper" title="@GetResource(ResourceKeys.Link)"><div class="action linked"></div></div>
+            <div id="add-link" class="wrapper" title="@GetResource(ResourceKeys.Link)">
+                <i class="fad fa-link fa-2x"></i>
+            </div>
         }
 
-        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy) && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        @if ( CanDoItemAction( UserAction.Create, ItemAttributeVisibility.AssociatedHierarchy ) && !GeminiContext.PermissionsManager.IsHelpdeskUser() )
         {
-            <div id="add-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependencies)"><div class="action dependency-find"></div></div>
-            <div id="add-new-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependency)"><div class="action dependency-new"></div></div>
+            <div id="add-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependencies)">
+                <i class="fad fa-sitemap fa-2x"></i>
+
+            </div>
+            <div id="add-new-dependency" class="wrapper" title="@GetResource(ResourceKeys.Dependency)">
+                <span class="fa-stack">
+                    <i class="fad fa-sitemap fa-stack-2x"></i>
+                    <i class="fas fa-plus-octagon fa-stack-1x fa-inverse"></i>
+                </span>
+
+            </div>
         }
 
-        @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedAttachments))
+        @if ( CanDoItemAction( UserAction.Create, ItemAttributeVisibility.AssociatedAttachments ) )
         {
-            <div class="wrapper" title="@GetResource(ResourceKeys.Attachments)"><div class="action attachment"><span id="attachmentupload-hit" data-max-file="@Model.MaxFileUpload"></span></div></div>
-        }
-        
-        @if (@Model.HasUserVoted == null && @Model.CanUserVote)
-        {
-            <div id="action-vote" class="wrapper" title="@GetResource(ResourceKeys.Vote)"><div class="action vote"></div></div>
+            <div class="wrapper" title="@GetResource(ResourceKeys.Attachments)" style="position:relative">
+                <i class="fad fa-paperclip fa-2x"></i>
+                <span id="attachmentupload-hit" data-max-file="@Model.MaxFileUpload" style="position: absolute; top:0"></span>
+
+            </div>
         }
 
-        @if (@Model.Issue.Watchers.Find(w => w.Entity.UserId == GeminiContext.User.Entity.Id) == null)
+        @if ( @Model.HasUserVoted == null && @Model.CanUserVote )
         {
-            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Unfollow)" data-alt-class="bookmark" class="wrapper" title="@GetResource(ResourceKeys.Follow)"><div class="action bookmark"></div></div>
+            <div id="action-vote" data-alt-title="@GetResource(ResourceKeys.Voted)"
+                 data-alt-class="fa-thumbs-down" class="wrapper" title="@GetResource(ResourceKeys.Vote)">
+                <i class="fad fa-thumbs-up fa-2x"></i>
+            </div>
+        }
+        else if ( Model.CanUserVote )
+        {
+            <div id="action-vote" data-alt-title="@GetResource(ResourceKeys.Vote)"
+                 data-alt-class="fa-thumbs-up" class="wrapper" title="@GetResource(ResourceKeys.Voted)">
+                <i class="fad fa-thumbs-down fa-2x"></i>
+            </div>
+        }
+
+
+        @if ( @Model.Issue.Watchers.Find( w => w.Entity.UserId == GeminiContext.User.Entity.Id ) == null )
+        {
+            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Unfollow)"
+                 data-alt-class="fa-map-marker-minus" class="wrapper" title="@GetResource(ResourceKeys.Follow)">
+
+                <i class="fad fa-map-marker-plus fa-2x"></i>
+            </div>
         }
         else
         {
-            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Follow)"  data-alt-class="bookmark-delete" class="wrapper" title="@GetResource(ResourceKeys.Unfollow)"><div class="action bookmark-delete"></div></div>
+            <div id="action-follow-unfollow" data-alt-title="@GetResource(ResourceKeys.Follow)"
+                 data-alt-class="fa-map-marker-plus" class="wrapper" title="@GetResource(ResourceKeys.Unfollow)">
+                <i class="fad fa-map-marker-minus fa-2x"></i>
+            </div>
         }
 
-        @if (@Model.CanDeleteIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser())
+        @{
+            var pinnedClass = "";
+            if ( Model.HasPinnedItem )
+            {
+                pinnedClass = "pinned";
+            }
+        }
+            <div id="action-pin-unpin" class="wrapper @pinnedClass">
+                <i class="fad fa-thumbtack fa-2x "></i>
+            </div>
+
+
+        @if ( @Model.CanDeleteIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser() )
         {
-            <div id="action-delete" class="wrapper" title="@GetResource(ResourceKeys.Delete)"><div class="action delete"></div></div>
+            <div id="action-delete" class="wrapper" title="@GetResource(ResourceKeys.Delete)">
+                <i class="fad fa-times fa-2x"></i>
+            </div>
         }
 
     </div>

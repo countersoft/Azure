@@ -175,7 +175,7 @@
                                         {
                                             <tr>
                                                 <td class="hide"></td>
-                                                <td>@(action.Type == Countersoft.Gemini.Commons.Entity.SLA.Action.ActionType.SwitchSLA ? "Switch SLA" : EnumHelper.FromCamel(action.Type))&nbsp;@Model.ActionParameters[aid++]<div class="action-button-delete cursor-pointer right type-action margin-left" title="Delete" data-id="@(++actionIndex)"></div></td>
+                                                <td>@(action.Type == Countersoft.Gemini.Commons.Entity.SLA.Action.ActionType.SwitchSLA ? "Switch SLA" : Countersoft.Gemini.Infrastructure.Helpers.EnumHelper.FromCamel(action.Type))&nbsp;@Model.ActionParameters[aid++]<div class="action-button-delete cursor-pointer right type-action margin-left" title="Delete" data-id="@(++actionIndex)"></div></td>
                                             </tr>
                                         }
                                     }

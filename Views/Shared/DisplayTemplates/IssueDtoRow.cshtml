@@ -32,7 +32,9 @@ string dependant = hierarchy != null && hierarchy.DependancySpacing.ContainsKey(
 {
 if (allowSequencing && showSequencing)
 {
-<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+
+    <i class="fad fa-arrows-alt-v dragHandle"></i>
+
 <input type="checkbox" class="checked-items fancy" value="@issue.Entity.Id"/>
 }
 else
@@ -53,7 +55,7 @@ else
 {
 if (allowSequencing && showSequencing)
 {
-<span class="fonticon-drag-handle dragHandle item-drag-handle"></span>
+    <i class="fad fa-arrows-alt-v dragHandle"></i>
 }
 if(showSLA && (issue.IsInSLA || issue.Entity.SLAStatus.HasValue))
 { 
@@ -80,7 +82,7 @@ for (int i = 0; i < hierarchy.DependancySpacing[issue.Entity.Id] - 2; i++)
 {
 @:&nbsp;
 }
-<span class="indented">L</span>
+<span class="indented"><i class="fad fa-chevron-double-down"></i></span>
 }
 }
 @Html.Raw(coldata.FormattedData)

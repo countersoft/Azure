@@ -72,7 +72,10 @@ gemini_filter = {
         var data = '';
         var notText = $('#not_ProjectCode').attr('data-text') + ' ';
         $('option:selected', parent).each(function () {
-            data += $(this).text() + ', ';
+            var optiontext = $(this).text();
+            if (optiontext != null) {
+                data += optiontext.trim() + ', ';
+            }
         });
         data = data.replace(new RegExp(String.fromCharCode(160), 'g'), '');
         data = data.replace(new RegExp(', $', 'g'), '');
@@ -200,7 +203,7 @@ gemini_filter = {
         });
 
         // Show / Hide the filter box
-        $('#filter-form').on('click', '.instant-filter-box .instant-filter-header, .instant-filter-box .fonticon-dropdown', function (e) {
+        $('#filter-form').on('click', '.instant-filter-box .instant-filter-header, .instant-filter-box .fa-caret-down', function (e) {
             gemini_commons.stopClick(e);
             $('#instant-filter-tooltip').hide();
             gemini_filter.checkNeedsFilter();
@@ -259,7 +262,15 @@ gemini_filter = {
             }
         });
 
-        $('#filter-form').on('ifChanged', '.instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="checkbox"], .instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="radio"]', function (e) {
+        $('#filter-form').on('ifChanged', '#instant-filter-options .dropdown-content[data-field-type="custom"] input[type="checkbox"],' +
+            '#instant-filter-options .dropdown-content[data-field-type="custom"] input[type="radio"]', function (e) {
+                
+                gemini_filter.populateCaptionFromCustom($(this).closest("#instant-filter-options"));
+                gemini_filter.executeFilter();
+        });
+
+        $('#filter-form').on('ifChanged', '.instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="checkbox"], ' +
+            '.instant-filter-box .instant-filter-dropdown[data-field-type="custom"] input[type="radio"]', function (e) {
             gemini_filter.populateCaptionFromCustom($(this).parent().parent().parent());
             gemini_filter.executeFilter();
         });
@@ -389,7 +400,7 @@ gemini_filter = {
         gemini_ui.fancyInputs('#filter-form .fancy');
 
         // Remove attribute!
-        $('#filter-form').on('click', '.instant-filter-box .fonticon-cross', function (e) {
+        $('#filter-form').on('click', '.instant-filter-box .fa-times-square', function (e) {
             gemini_commons.stopClick(e);
             var _this = $(this);
             var parent = _this.parent();
@@ -401,6 +412,10 @@ gemini_filter = {
             $('#instant-filter-tooltip').hide();
             gemini_filter.executeFilter();
             $('#instant-filter-new-field').focus().click();
+        });
+
+        $("#filter-form #instant-filter-options .instant-filter-box").click(function() {
+            $("#filter-form #instant-filter-options").toggleClass("show");
         });
 
         // User looking for new field!
@@ -438,7 +453,7 @@ gemini_filter = {
             else if (event.keyCode == 8) {
                 var data = $('#instant-filter-new-field').val();
                 if (data == null || data == undefined || data.length == 0) {
-                    var cross = $('.fonticon-cross:last', '#filter-form');
+                    var cross = $('.fa-times-square:last', '#filter-form');
                     if (cross.length > 0) {
                         cross.click(); 
                     }
@@ -510,14 +525,22 @@ gemini_filter = {
         }       
 
         $('#data').on('click', '#pager-next', function () {
-            var currentPage = $('#pager-next').data('page');
+            var currentPage = $('#pager-next').data('currentpage');
             gemini_filter.getFilteredItemsPage(currentPage);
         });
 
         $('#data').on('click', '#pager-prev', function () {
-            var currentPage = $('#pager-prev').data('page') - 2;
+            var currentPage = $('#pager-prev').data('currentpage') - 2;
             if(currentPage >= 0) gemini_filter.getFilteredItemsPage(currentPage);
         });
+
+        $('#data').on('click',
+            '.pager-page',
+            function (e) {
+                e.preventDefault();
+                var currentPage = $(this).data('pageindex')-1;
+                if (currentPage >= 0) gemini_filter.getFilteredItemsPage(currentPage);
+            });
        
         if (gemini_filter.pageType != gemini_commons.PAGE_TYPE.Planner && gemini_filter.pageType != gemini_commons.PAGE_TYPE.Burndown && gemini_filter.pageType != gemini_commons.PAGE_TYPE.Calendar) {
             gemini_filter.initDataTable();
@@ -670,7 +693,7 @@ gemini_filter = {
                                         gemini_filter.executeFilter();
                                     }
                                     else {
-                                        var currentPage = $('#pager-next').data('page');
+                                        var currentPage = $('#grid-pager').data('currentpage');
                                         gemini_filter.getFilteredItemsPage(currentPage - 1);
                                         var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Items']));
                                         card.DisplayColumns = response.Result.Data;
@@ -728,20 +751,12 @@ gemini_filter = {
         $('#tabledata').tableDnD({
             dragHandle: ".dragHandle",
             onDrop: function (table, row) {
+                $(".drop-zone").removeClass("show-drop-zone");
                 var dropZoneIndex = $('.drop-zone').index();
                 if (dropZoneIndex < row.rowIndex && gemini_filter.rowDragIndex > row.rowIndex) {
                     return;
                 }
-                //alert('issue id: ' + $(row).data('issue-id')+ ' moved to ' + row.rowIndex + ' from ' + gemini_filter.rowDragIndex);
-                if (dropZoneIndex < row.rowIndex) {
-                    $('.dragHandle', row).addClass('item-drag-handle');
-                    $('.dragHandle', row).removeClass('item-drag-handle-selected');
-                }
-                else {
-                    $('.dragHandle', row).addClass('item-drag-handle-selected');
-                    $('.dragHandle', row).removeClass('item-drag-handle');
-                }
-
+                
                 gemini_ajax.postCall("items", "resequence", function ()
                 {
                         /*** WIZARD ***/
@@ -769,7 +784,11 @@ gemini_filter = {
             },
             onDragStart: function (table, row) {
                 gemini_filter.rowDragIndex = row.parentNode.parentNode.rowIndex;
+                $(".drop-zone").addClass("show-drop-zone");
                 $('.dependant', '#tabledata').remove();
+            },
+            onDragStop: function() {
+                $(".drop-zone").removeClass("show-drop-zone");
             },
             onDragClass: 'highlight-hover'
             /*onAllowDrop: function(draggedRow, dropTargetRow) {
@@ -788,7 +807,7 @@ gemini_filter = {
     },
     
     getFilteredItemsCurrentPage: function () {
-        gemini_filter.getFilteredItemsPage($('#pager-next').data('page') - 1);
+        gemini_filter.getFilteredItemsPage($('#grid-pager').data('currentpage') - 1);
     },
     
     getFilteredItemsPage: function (page) {
@@ -800,8 +819,9 @@ gemini_filter = {
                                                 function (response) {
                                                     gemini_filter.currentExecuteRequest = null;
                                                     if (response.Success) {
-                                                        $('#pager-next').data('page', response.Result.CurrentPage);
-                                                        $('#pager-prev').data('page', response.Result.CurrentPage);
+                                                        $('#grid-pager').data('currentpage', response.Result.CurrentPage);
+                                                        $('#pager-next').data('currentpage', response.Result.CurrentPage);
+                                                        $('#pager-prev').data('currentpage', response.Result.CurrentPage);
                                                         $('#data').html(response.Result.Data);
                                                         gemini_filter.initDataTable();
                                                         gemini_ui.fancyInputs('#tabledata .fancy');
@@ -1011,7 +1031,7 @@ gemini_filter = {
                                                 gemini_filter.gridColumnRefreshCallback(response);
                                             }
                                             else {
-                                                var currentPage = $('#pager-next').data('page') - 1;
+                                                var currentPage = $('#grid-pager').data('currentpage') - 1;
                                                 if (currentPage < 0) currentPage = 0;
                                                 var card = $.parseJSON(gemini_commons.htmlDecode(gemini_appnav.pageCard.Options['Items']));
                                                 card.DisplayColumns = response.Result.Data;

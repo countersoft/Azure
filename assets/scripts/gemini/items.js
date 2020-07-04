@@ -70,10 +70,12 @@ gemini_items = {
                 
         /// View item
         $('#data').on('click', '#split-view-item', function () {
+            
             gemini_items.splitView(this);
             gemini_items.setCardDisplayMode(1);
         });
         $('#data').on('click', '#split-view-grid', function () {
+            $("#pager-wrapper").removeClass("left pager-small").addClass("right");
             $('#items-grid tr').removeClass('view-issue-highlight');
             $('#DisplayMode', '#filter-form').val('Table');
             $(this).find('.grid-button').addClass('split-view-selected');
@@ -136,11 +138,10 @@ gemini_items = {
     splitViewShow: function(e, elem) {
         var issue;
         var project = 0;
-        if (e == null || !e.ctrlKey)
-        {
+        if (e == null || !e.ctrlKey) {
             issue = $(elem).parents('tr:eq(0)').attr('data-issue-id');
             project = $(elem).parents('tr:eq(0)').attr('data-project-id');
-                    
+
             if (issue == undefined) {
                 $('#view-item-slider').empty().hide();
                 return;
@@ -156,7 +157,7 @@ gemini_items = {
                     if (fromPageType != gemini_commons.PAGE_TYPE.Item) return;
                     // Ok, we have to update a row!
                     var url = 'items';
-                    gemini_ajax.call(url, 'refreshrow?issueid=' + issueId +'&viewtype=' + gemini_items.pageType, function (response) {
+                    gemini_ajax.call(url, 'refreshrow?issueid=' + issueId + '&viewtype=' + gemini_items.pageType, function (response) {
                         if (response.success) {
                             gemini_items.refreshRow(response, issueId, true);
                             $("tr[id^='tr-issue-'] td", '#tabledata').destroyContextMenu();
@@ -164,7 +165,7 @@ gemini_items = {
                         }
                     });
                 });
-                $.subscribe('issue-delete.items', function (_, issueIds) {                            
+                $.subscribe('issue-delete.items', function (_, issueIds) {
                     var viewedDeleted = false;
                     if (issueIds instanceof Array) {
                         for (var l = 0; l < issueIds.length; l++) {
@@ -184,7 +185,10 @@ gemini_items = {
                 });
                 gemini_items.subscribed = true;
             }
+            $("#pager-wrapper").addClass("left pager-small").removeClass("right");
+
         }
+        
         if (gemini_items.currentViewXHR != null) {
             gemini_items.currentViewXHR.abort();
         }
@@ -234,13 +238,12 @@ gemini_items = {
         $('#data').off('click', '#tabledata tr:not(.drop-zone) td:not(:first-child):not(.read-only):not(.edit-mode)');
     },
     
-    initPageSize:function(){
-        gemini_commons.inputKeyHandler("#pageSize",
-                        function () {
-                            var n = $('#pageSize').val();
-
-                            if (!isNaN(n) && parseInt(n) == n && n.indexOf('.') == -1 && n > 0) gemini_filter.executeFilter();
-                        });
+    initPageSize: function () {
+        $("#pageSize").change(function() {
+            var n = $('#pageSize').val();
+            if (!isNaN(n) && parseInt(n) == n && n.indexOf('.') == -1 && n > 0) gemini_filter.executeFilter();
+        });
+        
     },
     
     initShiftSelect: function()
@@ -369,7 +372,7 @@ gemini_items = {
             {
                 if (oldTr.hasClass('dependant')) { //If it's a dependent item do this                    
                     newTr.attr('class', 'dependant')
-                    $('<span class="indented">L &nbsp;</span>').insertBefore($('.items-first-column', newTr).next().find('a'))
+                    $('<span class="indented"><i class="fad fa-chevron-double-down"></i>&nbsp;</span>').insertBefore($('.items-first-column', newTr).next().find('a'))
                 }
                 else if (oldTr.find('.parent.expander.fonticon-arrow-up').length > 0) //If it's a parent item do this
                 {                   
@@ -410,7 +413,7 @@ gemini_items = {
         }
         else {
             if (response.Success) {
-                var currentPage = $('#pager-next').data('page') - 1;
+                var currentPage = $('#grid-pager').data('currentpage') - 1;
                 $("#card-holder").html(response.Result.Data.navdata);
                 gemini_filter.getFilteredItemsPage(currentPage);
 
@@ -454,8 +457,8 @@ gemini_items = {
                             $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
                                 checked_items[index++] = $(value).val();
                             });
-                            gemini_ajax.postCall("item", "addwatchers", function(response) { gemini_popup.toast(response.Result.Data); }, null, { items: checked_items });
-                           
+                            gemini_ajax.postCall("item", "addwatchers", function (response) { gemini_popup.toast(response.Result.Data); }, null, { items: checked_items });
+
                         }
                         else {
                             gemini_ajax.call("item", "addwatcher/" + issueId + "/0");
@@ -467,22 +470,56 @@ gemini_items = {
                         gemini_popup.centerPopup("item/edittimeentry", "popup?issueid=" + issueId, { timeid: 0 });
                     }
                     else if (action == "sequencemenu" && !$('#item-grid-context-menu a[href="#sequencemenu"]').parent().hasClass('disabled')) {
-                        gemini_ajax.postCall("items", "resequence", function ()
-                        {
-                            gemini_filter.getFilteredItemsCurrentPage();                    
+                        gemini_ajax.postCall("items", "resequence", function () {
+                            gemini_filter.getFilteredItemsCurrentPage();
                         },
-                        function (xhr, ajaxOptions, thrownError) {
-                        gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
-                        },
-                        {
-                            issueId: issueId, afterIssueId: 0, newIndex: -2,  oldIndex: 0
-                        });
+                            function (xhr, ajaxOptions, thrownError) {
+                                gemini_diag.log('FAILED, Status=' + xhr.status + ' -> ' + thrownError);
+                            },
+                            {
+                                issueId: issueId, afterIssueId: 0, newIndex: -2, oldIndex: 0
+                            });
                     }
                     else if (action == "delete" && !$('#item-grid-context-menu a[href="#delete"]').parent().hasClass('disabled')) {
-                        gemini_popup.modalConfirm("Delete Item "+ projectCode + "-" + issueId + "?", null,
+                        gemini_popup.modalConfirm("Delete Item " + projectCode + "-" + issueId + "?", null,
                             function () {
                                 gemini_items.postDeleteProj(issueId, projectId);
                             });
+                    } else if (action == "pin") {
+                        if ($('.checked-items:checked', $('#items-grid')).length > 0) {
+                            var checked_items = new Array();
+                            var index = 0;
+                            $('.checked-items:checked', $('#items-grid')).each(function (index, value) {
+                                checked_items[index++] = $(value).val();
+                            });
+                            gemini_ajax.postCall("item", "togglepins", function(response) {
+                                gemini_popup.toast(response.Result.Data.html);
+                                gemini_notifications.refreshCount(response.Result.Data.count);
+                                },
+                                null, { items: checked_items });
+
+                        }
+                        else {
+                            gemini_items.addRemovePin(issueId);
+                        }
+                    }
+                    else if (action == "newdependency") {
+                        gemini_add.hidePlan = true;
+                        gemini_add.hideProject = true;
+                        firstTimeDepend = true;
+                        gemini_add.newItemRenderedCallback = function () {
+
+                            var popup = $("#cs-popup-add");
+
+                            popup.find("form").append("<input type='hidden' value='" + issueId + "' name='ParentItem' id='ParentItem' />");
+                            if (firstTimeDepend && $('#ProjectName', popup).val() != projectId) {
+                                $('#ProjectName', popup).val(projectId);
+                                gemini_ui.chosenUpdate($('#ProjectName', popup));
+                                firstTimeDepend = false;
+                                setTimeout(function () { $('#ProjectName', popup).change(); }, 500);
+                            }
+                        };
+                        gemini_commons.showAddItem();
                     }
                 },
                 function (before) {
@@ -505,6 +542,8 @@ gemini_items = {
                             else
                                 $('#item-grid-context-menu').disableContextMenuItems('#delete');
 
+                            $('#item-grid-context-menu').enableContextMenuItems('#pin');
+
                             if (response.Result.Data.cancomment)
                                 $('#item-grid-context-menu').enableContextMenuItems('#comment');
                             else
@@ -515,6 +554,12 @@ gemini_items = {
                             }
                             else
                                 $('#item-grid-context-menu').disableContextMenuItems('#time');
+
+                            if (response.Result.Data.canadddependency) {
+                                $('#item-grid-context-menu').enableContextMenuItems('#newdependency');
+                            }
+                            else
+                                $('#item-grid-context-menu').disableContextMenuItems('#newdependency');
 
                             if ($('#ShowSequenced', '#filter-form').is(':checked') && !$(before).parent().hasClass('sequenced-issue') && response.Result.Data.cansequence) {
                                 $('#item-grid-context-menu').enableContextMenuItems('#sequencemenu');
@@ -528,6 +573,18 @@ gemini_items = {
 
                 }
             );
+    },
+
+    addRemovePin: function(itemId, callback) {
+        gemini_ajax.call("item",
+            "togglepin/" + itemId,
+            function(response) {
+                gemini_popup.toast(response.Result.Data.html);
+                gemini_notifications.refreshCount(response.Result.Data.count);
+                if (callback != undefined) {
+                    callback(response);
+                }
+            });
     },
 
     getCurrentItem: function()

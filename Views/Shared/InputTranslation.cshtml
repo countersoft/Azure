@@ -1,7 +1,7 @@
 ﻿@model InputTranslationsModel
 
 @{
-    if ( Model.Types.Any( t => t.Text == EnumHelper.FromCamel( TranslatableEntities.CustomField.ToString() ) ) )
+    if ( Model.Types.Any( t => t.Text == Countersoft.Gemini.Infrastructure.Helpers.EnumHelper.FromCamel( TranslatableEntities.CustomField.ToString() ) ) )
     {
         Html.RenderPartial( "~/Views/Admin/Menu/Templates/_Template.cshtml", Model.Templates );
     }

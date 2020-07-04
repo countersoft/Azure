@@ -239,7 +239,6 @@ gemini_reports = {
             $("#TimeReportExtraControls").hide();
         }
 
-        //console.info("pdf url", options.PdfUrl);
         $("#pdf-action").data("pdf", options.PdfUrl);
         gemini_ui.cursorDefault();
 

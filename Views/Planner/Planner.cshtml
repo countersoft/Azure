@@ -4,10 +4,11 @@
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
 }
 
-<div id="cs-template">
-<div id="filter" class="clearfix">
-    @{Html.RenderPartial("InstantFilter", Model.Filter);}
+<div id="filter" class="filter-container">
+    @{Html.RenderPartial( "InstantFilter", Model.Filter );}
 </div>
+
+<div id="cs-template">
 
 <div id='planner-control-box'>
     <form id = "PlanForm">

@@ -2,7 +2,7 @@
 
         
                 <div id='comments-section' data-contentid="comments-content" class="left tab normal" title="@GetResourceTemplate(ResourceKeys.Comments)">
-                    <h3 title="@Model.Issue.Comments.Count">@GetResourceTemplate(ResourceKeys.Comments)&nbsp;(@Model.Issue.Comments.Count)</h3>
+                    <h3 title="@Model.Issue.Comments.Count"><i class="fad fa-comments"></i> @GetResourceTemplate(ResourceKeys.Comments)&nbsp;(@Model.Issue.Comments.Count)</h3>
                 </div>
 <div class="tab-content hide" id="comments-content">
                 @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedComments))

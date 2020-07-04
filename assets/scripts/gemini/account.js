@@ -165,6 +165,10 @@ gemini_account = {
     {
         $(".table-scroll", "#personal-dashboard").jScrollPane('reinitialise');
 
+        $(window).resize(function () {
+            $(".table-scroll", "#personal-dashboard").jScrollPane('reinitialise');
+        });
+
         $('#Labels').change(function () {
             var labelId = $(this).val();
 
@@ -189,7 +193,7 @@ gemini_account = {
 
             var availableHeight = gemini_sizing.availableHeight();        
             $("#cs-popup-center-content").css("width", '700px');
-            $("#cs-popup-center-content").css("height", '450px');
+            $("#cs-popup-center-content").css("height", '500px');
             
             gemini_commons.translateMessage("[[Save]],[[Cancel]]", ['Save', 'Cancel'], function (message) {
                 var translations = message.split(",");

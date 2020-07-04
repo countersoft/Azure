@@ -1,5 +1,5 @@
 ﻿    
-    <div id='section-widget-@Model.ControlId' data-contentid="content-widget-@Model.ControlId" data-gemini-control-id='@Model.ControlId' data-gemini-app-id='@Model.AppId' class="left tab normal item-content-widget item-tabs-data"><h3>@Model.Title</h3></div>
+<div id='section-widget-@Model.ControlId' data-contentid="content-widget-@Model.ControlId" data-gemini-control-id='@Model.ControlId' data-gemini-app-id='@Model.AppId' class="left tab normal item-content-widget item-tabs-data"><h3>@if(!string.IsNullOrWhiteSpace(Model.Icon) ){<i class="fad fa-@Model.Icon"></i><text> </text>}@Model.Title</h3></div>
     <div class="tab-content hide" id="content-widget-@Model.ControlId" >
         <div class="toolbar actions">
             @foreach (var button in Model.Buttons) { <a class="button add" href="#" data-gemini-action='@button.Action' onclick="@button.OnClick">@GetResource(Countersoft.Gemini.ResourceKeys.Add)</a> }

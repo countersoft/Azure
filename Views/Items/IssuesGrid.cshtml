@@ -1,104 +1,104 @@
 ﻿@model ItemsGridModel
 
-@if (Model.Issues.Count > 0 || Model.SequencedIssues.Count > 0)
+@if ( Model.Issues.Count > 0 || Model.SequencedIssues.Count > 0 )
 {
-<div id="items-grid-control-box">
-    <div id="grid-pager" class="left pad-top-20">
-        @Model.Pager.TotalItems @GetResource(ResourceKeys.ItemsFound, Resourcing.Lower) @if(Model.Pager.TotalItems > 0) {
-        <text>(@GetResource(ResourceKeys.Page) @Model.Pager.CurrentPage @GetResource(ResourceKeys.Of, Resourcing.Lower)
-        @Model.Pager.TotalPages)</text> }
-    </div>
-    <div id="page-options-box" class="right">
-        <div class="box-right size-0">
-            <div>
-                <div class="option vertical-align margin-top-5">
-                    <div id="split-view-grid" title="@GetResource(ResourceKeys.Items)">
-                        <div class="grid-button split-view-selected">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                    </div>
-                    <div id="split-view-item" title="@GetResource(ResourceKeys.Item)">
-                        <div class="grid-button">
-                            <div class="details">
+    <div id="items-grid-control-box">
+
+        <div id="page-options-box" class="right">
+            <div class="box-right size-0">
+                <div>
+                    <div class="option vertical-align margin-top-5">
+                        <div id="split-view-grid" title="@GetResource(ResourceKeys.Items)">
+                            <div class="grid-button split-view-selected">
+                                <div></div>
                                 <div></div>
                                 <div></div>
                                 <div></div>
                             </div>
-                            <div class="box"></div>
+                        </div>
+                        <div id="split-view-item" title="@GetResource(ResourceKeys.Item)">
+                            <div class="grid-button">
+                                <div class="details">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                                <div class="box"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="divider">
-                </div>
-                <div class="option" style="margin-top:5px; margin-right: 10px;">
-                    <div id='pageSizeContainer'>
-                        <input type="text" name='pageSize' id='pageSize' class='input-size2' value="@Model.Filter.PageSize"/>
-                        <span style="display:inline-block;margin-top:3px;">@GetResource(ResourceKeys.Items, Resourcing.Lower)</span>
+                    <div class="option vertical-align">
                     </div>
-                </div>
-                <div class="option vertical-align">
-                    <input class="button-primary button-small" id='pager-prev' type="button" title="@GetResource(ResourceKeys.Prev)" value="<" data-page="@Model.Pager.CurrentPage" />
-                    <input class="button-primary button-small" id='pager-next' type="button" title="@GetResource(ResourceKeys.Next)" value=">" data-page="@Model.Pager.CurrentPage" />
-                </div>
-                @if (Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser())
-                {
-                <div class="divider">
-                </div>
-                <div class="option vertical-align">
-                    <input class="button-secondary button-small" id='bulk-delete' type="button" title="@GetResource(ResourceKeys.Delete)" value="@GetResource(ResourceKeys.Delete)" />
-                </div>
-                }
-                <div class="divider">
-                </div>
-                <div class="option vertical-align">
-                    <div id="grid-column-picker" class="control-icon gear" title="@GetResource(ResourceKeys.Columns)">
+                    <div class="divider">
+                    </div>
+                    <div class="option">
+                        <div id="exports">
+                            <a href="~/workspace/@Model.CurrentPageCard.UrlId/Items/prepareexport?option=csv"><i class="fad fa-file-csv fa-2x  pad-top-5 cursor-pointer" title="CSV"></i></a>
+                            <a href="~/workspace/@Model.CurrentPageCard.UrlId/Items/prepareexport?option=xlsx"><i class="fad fa-file-spreadsheet fa-2x pad-top-5 cursor-pointer" title="Excel"></i></a>
+                            <a href="~/workspace/@Model.CurrentPageCard.UrlId/Items/prepareexport?option=html"><i class="fad fa-file-code fa-2x pad-top-5 cursor-pointer" title="HTML"></i></a>
+                        </div>
+                    </div>
+
+
+                    @if ( Model.CanPerformBulkOperations && !GeminiContext.PermissionsManager.IsHelpdeskUser() )
+                    {
+                        <div class="divider">
+                        </div>
+                        <div class="option vertical-align">
+                            <input class="button-secondary button-small" id='bulk-delete' type="button" title="@GetResource(ResourceKeys.Delete)" value="@GetResource(ResourceKeys.Delete)" />
+                        </div>
+                    }
+                    <div class="divider">
+                    </div>
+                    <div class="option vertical-align">
+                        <i class="fad fa-eye fa-2x pad-top-5 cursor-pointer" id="grid-column-picker" title="@GetResource(ResourceKeys.Columns)"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="clear-both">
-</div>
-<div id="items-grid">
-    @Html.DisplayFor(m => m, "IssueDto")
-</div>
-{
-    var url = GeminiContext.Url;
-    if(GeminiContext.Card.Id > 0)
+    <div class="clear-both">
+    </div>
+    <div id="items-grid">
+        @Html.DisplayFor( m => m, "IssueDto" )
+    </div>
+
+
+    @Html.Partial( "Pager", Model.Pager )
+
     {
-        url = string.Concat(url, "workspace/", GeminiContext.Card.Id);
+        var url = GeminiContext.Url;
+        if ( GeminiContext.Card.Id > 0 )
+        {
+            url = string.Concat( url, "workspace/", GeminiContext.Card.Id );
+        }
+        else
+        {
+            url = string.Concat( url, "project/", GeminiContext.Project.Entity.Id );
+        }
+
     }
-    else
+    if ( Model.SavedCards.Count == 0 && Model.Ajax )
     {
-        url = string.Concat(url, "project/", GeminiContext.Project.Entity.Id);
+        Html.RenderPartial( "~/Views/Shared/EmptyState/_Image.cshtml", "workspace.png" );
     }
-    
+    else if ( ShowAddCoworkers() )
+    {
+        Html.RenderPartial( "~/Views/Shared/EmptyState/_Image.cshtml", "coworkers.png" );
+    }
+    <div id='column-picker'>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            gemini_filter.gridColumnPickerInit();
+        });
+    </script>
 }
-if(Model.SavedCards.Count == 0 && Model.Ajax)
+else if ( GeminiContext.User.Entity.HasExperienced( Countersoft.Gemini.Commons.Entity.User.UserExperience.AddItem ) )
 {
-    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "workspace.png"); 
-}
-else if (ShowAddCoworkers())
-{
-    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "coworkers.png"); 
-}
-<div id='column-picker'>
-</div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        gemini_filter.gridColumnPickerInit();
-    });
-</script>
-}
-else if (GeminiContext.User.Entity.HasExperienced(Countersoft.Gemini.Commons.Entity.User.UserExperience.AddItem))
-{
-    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "no-issues.png"); // Already created an item
+    Html.RenderPartial( "~/Views/Shared/EmptyState/_Image.cshtml", "no-issues.png" ); // Already created an item
 }
 else
 {
-    Html.RenderPartial("~/Views/Shared/EmptyState/_Image.cshtml", "issue.png"); // Never created an item
+    Html.RenderPartial( "~/Views/Shared/EmptyState/_Image.cshtml", "issue.png" ); // Never created an item
 }
