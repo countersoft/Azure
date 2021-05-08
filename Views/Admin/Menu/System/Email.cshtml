@@ -7,90 +7,153 @@
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="AlertsEnabled" name="AlertsEnabled" @if(Model.AlertsEnabled){ <text>checked="checked"</text> } /><label for="AlertsEnabled">Send email alerts</label></td>
+                <td><input type="checkbox" class="fancy" id="AlertsEnabled" name="AlertsEnabled" @if ( Model.AlertsEnabled ) { <text> checked="checked" </text> } /><label for="AlertsEnabled">Send email alerts</label></td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="EmailCreator" name="EmailCreator" @if(Model.EmailCreator){ <text>checked="checked"</text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
+                <td><input type="checkbox" class="fancy" id="EmailCreator" name="EmailCreator" @if ( Model.EmailCreator ) { <text> checked="checked" </text> } /><label for="EmailCreator">Auto-email creator/reporter</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="EmailResource" name="EmailResource" @if(Model.EmailResource){ <text>checked="checked"</text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
+                <td><input type="checkbox" class="fancy" id="EmailResource" name="EmailResource" @if ( Model.EmailResource ) { <text> checked="checked" </text> } /><label for="EmailResource">Auto-email assigned resource</label></td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
 
             <tr>
                 <td>From Email Address</td>
-                <td><input type="text" id="From" name="From" class="input-size9 required" value="@Model.From"/></td>
+                <td><input type="text" id="From" name="From" class="input-size9 required" value="@Model.From" /></td>
             </tr>
             <tr>
                 <td>From Display Name</td>
-                <td><input type="text" id="DisplayName" name="DisplayName" class="input-size9 required" value="@Model.DisplayName"/></td>
+                <td><input type="text" id="DisplayName" name="DisplayName" class="input-size9 required" value="@Model.DisplayName" /></td>
             </tr>
 
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
 
             <tr>
                 <td>Smtp Server</td>
-                <td><input type="text" id="SmtpServer" name="SmtpServer" class="input-size9 required" value="@Model.SmtpServer"/></td>
+                <td><input type="text" id="SmtpServer" name="SmtpServer" class="input-size9 required" value="@Model.SmtpServer" /></td>
             </tr>
             <tr>
                 <td>Smtp Port</td>
-                <td><input type="text" id="SmtpPort" name="SmtpPort" class="input-size2 required" value="@Model.SmtpPort"/></td>
+                <td><input type="text" id="SmtpPort" name="SmtpPort" class="input-size2 required" value="@Model.SmtpPort" /></td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
-            
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+
             <tr>
                 <td>Authentication Mode</td>
-                <td>@Html.DropDownList("AuthMode", Model.AuthenticationMode, new {@class="input-size5"})</td>
+                <td>@Html.DropDownList( "AuthMode", Model.AuthenticationMode, new { @class = "input-size5" } )</td>
             </tr>
+            @*OAuth Section*@
+            <tr class="oauth-control">
+                <td>
+                    OAuth2 Provider
+                </td>
+                <td>
+                    @Html.DropDownList( "OAuthProvider", Model.OAuthProviders, new { @class = "input-size6 required", id = "oauth-provider" } )
+                </td>
+            </tr>
+            <tr class="oauth-control">
+                <td title="Microsoft 365 Only">
+                    Tenant Id
+                </td>
+                <td>
+                    <input type="text" id="TenantId" name="TenantId"
+                           class="input-field input-size9" value="@Model.TenantId" />
+                </td>
+            </tr>
+            <tr class="oauth-control">
+                <td>
+                    Client Id
+                </td>
+                <td>
+                    <input type="text" id="ClientId" name="ClientId"
+                           class="input-field input-size9" value="@Model.ClientId" />
+                </td>
+            </tr>
+            <tr class="oauth-control">
+                <td>
+                    Client Secret
+                </td>
+                <td>
+                    <input type="password" id="ClientSecret" name="ClientSecret"
+                           class="input-field input-size9" value="@Model.ClientSecret" />
+                </td>
+            </tr>
+            <tr class="oauth-control">
+                <td>
+                    Scopes
+                </td>
+                <td>
+                    <input type="text" id="Scopes" name="Scopes"
+                           class="input-field input-size9" value="@Model.Scopes" />
+                </td>
+            </tr>
+
+            @*End OAuth Section*@
             <tr>
                 <td>Authentication Username</td>
-                <td><input type="text" id="AuthenticationUsername" name="AuthenticationUsername" class="input-size9" value="@Model.AuthenticationUsername"/></td>
+                <td><input type="text" id="AuthenticationUsername" name="AuthenticationUsername" class="input-size9" value="@Model.AuthenticationUsername" /></td>
             </tr>
             <tr>
                 <td>Authentication Password</td>
-                <td><input type="password" id="AuthenticationPassword" name="AuthenticationPassword" class="ignore input-size9" value="@Model.AuthenticationPassword"/></td>
+                <td><input type="password" id="AuthenticationPassword" name="AuthenticationPassword" class="ignore input-size9" value="@Model.AuthenticationPassword" /></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="PopBeforeSend" name="PopBeforeSend" @if(Model.PopBeforeSend){ <text>checked="checked"</text> } /><label for="PopBeforeSend">Call POP3 Before Sending Emails</label></td>
+                <td><input type="checkbox" class="fancy" id="PopBeforeSend" name="PopBeforeSend" @if (Model.PopBeforeSend) { <text> checked="checked" </text> } /><label for="PopBeforeSend">Call POP3 Before Sending Emails</label></td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
-            
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" class="fancy" id="Ssl" name="Ssl" @if(Model.Ssl){ <text>checked="checked"</text> } /><label for="Ssl">Use SSL</label></td>
+                <td><input type="checkbox" class="fancy" id="Ssl" name="Ssl" @if (Model.Ssl) { <text> checked="checked" </text> } /><label for="Ssl">Use SSL</label></td>
             </tr>
             <tr>
                 <td>SSL Protocol</td>
-                <td>@Html.DropDownList("SslMode", Model.SslProtocol, new {@class="input-size5"})</td>
+                <td>@Html.DropDownList( "SslMode", Model.SslProtocol, new { @class = "input-size5" } )</td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>              
-            
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+
             <tr>
                 <td>Encoding</td>
-                <td>@Html.DropDownList("EncodingType", Model.Encoding, new {@class="input-size5"})</td>
+                <td>@Html.DropDownList( "EncodingType", Model.Encoding, new { @class = "input-size5" } )</td>
             </tr>
-            <tr><td colspan="2"><div class="divider"></div></td></tr>     
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
 
             <tr class="button-row">
                 <td colspan="2" align="right">
                     <input id="system-email-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
                 </td>
             </tr>
-            
+
             <tr>
-                <td colspan="2"><p id="system-email-trace" class="info-label-2"></p></td>
+                <td colspan="2"><p id="system-email-trace" class="info-label-2">@Model.Message</p></td>
             </tr>
-              
+
         </table>
     </form>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $("#oauth-provider").change(function () {
+            switch ($(this).val()) {
+                case "M365":
+                    setValueIfEmpty("#Discovery", "https://login.microsoftonline.com/{tenantid}/v2.0")
+                    setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/SMTP.Send")
+                    break;
+            }
+        });
+
+        function setValueIfEmpty(selector, value) {
+            if ($(selector).val() == '') {
+                $(selector).val(value);
+            }
+        }
+
 
         $("#system-email-form").validate();
 
@@ -105,7 +168,7 @@
 
         $("#system-email-save").click(function (e) {
             gemini_commons.stopClick(e);
-            
+
             try {
                 if (!$("#system-email-form").valid()) { return; }
                 $("#system-email-trace").hide();
@@ -115,14 +178,63 @@
                 gemini_ajax.postCall("configure/System/Email", "savedata",
                 function (response) {
                     gemini_admin.saveFinished("#system-email-save");
-                     $("#system-email-trace").html(response.Result).fadeIn('fast');
-                    gemini_ui.stopBusy('#cs-adhoc-page #system-email-save');
+                    if (response.success && response.Result.startsWith("https")) {
+                        window.location = response.Result;
+                    } else {
+                        $("#system-email-trace").html(response.Result).fadeIn('fast');
+                        gemini_ui.stopBusy('#cs-adhoc-page #system-email-save');
+                    }
                 }, function () { gemini_ui.stopBusy('#cs-adhoc-page #system-email-save'); }, formData, null, true);
-            } 
+            }
             catch (e) {
             }
 
         });
+
+        $(".oauth-control").hide();
+        $("#AuthMode").change(function () {
+            authModeChanged();
+        });
+
+        authModeChanged();
+        function authModeChanged() {
+
+            if ($("#AuthMode").val() == 'None') {
+                $("#Username").attr('class', 'input-field input-size9');
+                $("#AuthenticationPassword").attr('class', 'input-field input-size9');
+                $("#AuthenticationPassword").closest("tr").show();
+                $("#AuthenticationUsername").closest("tr").show();
+
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+                $(".oauth-control").hide();
+            }
+            else if ($("#AuthMode").val() == 'OAuth2') {
+                $("#AuthenticationPassword").closest("tr").hide();
+                $("#AuthenticationUsername").closest("tr").hide();
+                $("#TenantId").addClass('required');
+                $("#ClientId").addClass('required');
+                $("#ClientSecret").addClass('required');
+                $("#oauth-provider").addClass('required');
+                $(".oauth-control").show();
+                //oauth-authorize
+            }
+            else {
+                $("#Username").attr('class', 'input-field required input-size9');
+                $("#AuthenticationPassword").attr('class', 'input-field required input-size9');
+                $("#AuthenticationPassword").closest("tr").show();
+                $("#AuthenticationUsername").closest("tr").show();
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+                $(".oauth-control").hide();
+            }
+            $("#BreezeQueuesItemContainer").jScrollPane('reinitialise');
+        }
+
     });
-    
+
 </script>

@@ -358,8 +358,9 @@ gemini_item = {
             });
         });
 
-        $('#view-item').on('click', "#comments-content .toolbar .button", function (e) {
+        $('#view-item').on('click', "#comments-content .toolbar .add", function (e) {
             window.onbeforeunload = gemini_edit.warnLoseChanges;
+            $("#comments-content .toolbar.actions ").hide();
 
             e.preventDefault();
             if ($(".comments-wysiwyg-container").is(':visible')) {
@@ -370,8 +371,6 @@ gemini_item = {
             gemini_ui.expand("#comments-section");
 
             $(".comments-wysiwyg-container").css("display", "inline-block");
-
-            $("#comments-content .toolbar .button").hide();
 
             // resetting main editors input fields
             $("#comments-wysiwyg-content").val("");
@@ -387,6 +386,34 @@ gemini_item = {
             gemini_sizing.sameWidth("#comments-content .comments-wysiwyg-container .buttons input");
             gemini_item.setContentHeight();
         });
+
+        $('#view-item').on('click', "#comments-content .toolbar .collapse", function (e) {
+            $("#comments-content .toolbar .collapse").hide();
+            $("#comments-content .toolbar .expand").show();
+
+            $(".comment-wrapper .section-content.expanded").each(function (index, item) {
+                var collapsibleItems = $(item).parent().find("span.comment-expandedOrcollapsed");
+                collapsibleItems.each(function (i, section) {
+                    gemini_ui.expandCollapse(section);
+                });
+            })
+            e.preventDefault();
+        });
+
+        $('#view-item').on('click', "#comments-content .toolbar .expand", function (e) {
+            $("#comments-content .toolbar .collapse").show();
+            $("#comments-content .toolbar .expand").hide();
+
+            $(".comment-wrapper .section-content.collapsed").each(function (index, item) {
+                console.log(item);
+                var collapsibleItems = $(item).parent().find("span.comment-expandedOrcollapsed");
+                collapsibleItems.each(function (i, section) {
+                    gemini_ui.expandCollapse(section);
+                });
+            })
+            e.preventDefault();
+        });
+
 
         $('#view-item').on('click', ".comments-wysiwyg-container.comment-editing-mode", function (e) {
 
@@ -431,7 +458,7 @@ gemini_item = {
                 $(this).parents(".comments-wysiwyg-container").css("display", "none");
             }
             gemini_edit.pendingHtmlChanges = false;
-            $("#comments-content .toolbar .button").show();
+            $("#comments-content .toolbar.actions ").show();
         });
 
         if (!($("#tabledata").length)) {
@@ -1409,6 +1436,7 @@ gemini_item = {
         gemini_item.viewingInterval = setInterval(gemini_item.getViewers, 20 * 1000);
     },
     currentViewers: [],
+    firstLoad: true,
     getViewers: function () {
         var ids = [gemini_item.issueId];
         gemini_ajax.postCall('item', 'getviewing', function (response) {
@@ -1424,19 +1452,19 @@ gemini_item = {
         $("#viewing-container").html(viewerResponseData.html);
         var needAlert = false;
         var currentUsers = [];
+
         $.each(viewerResponseData.users, function (index, item) {
             var userId = item.UserDto.BaseEntity.Id;
             if (gemini_item.currentViewers.indexOf(userId) === -1) {
-                needAlert = true && viewerResponseData.currentUser !== userId;
+                //user is not in the known list, so is new and needs an alert
+                needAlert = !gemini_item.firstLoad && viewerResponseData.currentUser !== userId;
                 if (needAlert) {
                     gemini_popup.toast("<span class='fonticon-person'></span> '" + item.UserDto.Fullname + "' " + translations.nowviewing);
                 }
-
             }
             currentUsers.push(item.UserDto.BaseEntity.Id);
         });
         gemini_item.currentViewers = currentUsers;
-
+        gemini_item.firstLoad = false; //it is now not the first load
     }
-
 };

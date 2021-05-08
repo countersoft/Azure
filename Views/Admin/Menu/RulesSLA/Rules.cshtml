@@ -51,6 +51,8 @@
 
         $("#table-admin-rules_wrapper").prepend("<div id='add-button-container'><input id='system-options-add' type='button' value='Add' class='button-primary'></div>");
 
+        $("#table-admin-rules_paginate").prepend("<input id='system-options-sort' type='checkbox' value='Order All' class='button-secondary margin-left-10'> Show All");
+
         $("#table-admin-rules").off('click', ".actions span[data-method='delete']").on('click',".actions span[data-method='delete']", function () {
             var item = $(this);
             var id = item.closest("tr").data("id");
@@ -92,6 +94,15 @@
         
         $("#system-options-add").click(function () {
             gemini_popup.centerPopup("configure/RulesSLA/Rules", "Add", null, null, null, null, null, null, null, true);
+        });
+        $("#system-options-sort").click(function () {
+            $("#system-options-sort").attr("disabled", true);
+            var table = $("#table-admin-rules").dataTable();
+            var settings = table.fnSettings();
+            settings._iDisplayLength = 10000;
+            table.fnDraw();
+            gemini_admin.initTableDnD("#table-admin-rules");
+
         });
 
         $("#table-admin-rules").off('click', "#log").on('click', "#log", function () {

@@ -1,6 +1,6 @@
 ﻿@model NumericFieldModel
 
-<input type="text" title="@Model.Tooltip" data-input-type="numeric" id="@Model.Id" name="@Model.Id" value="@Model.Value" data-original="@Model.Value"  class="inline-editing @Model.Classes @(Model.Decimal ? "number" : "digits") @(Model.Required ? "required" : "")" min="@Model.MinValue" max="@Model.MaxValue" /> 
+<input type="text" title="@Model.Tooltip" data-input-type="numeric" id="@Model.Id" name="@Model.Id" value="@Model.Value" data-original="@Model.Value" data-validation="@Model.Validation"  class="inline-editing @Model.Classes @(Model.Decimal ? "number" : "digits") @(Model.Required ? "required" : "")" min="@Model.MinValue" max="@Model.MaxValue" /> 
 @if (Model.Label.HasValue())
 {
     <span class="label">@Model.Label</span>

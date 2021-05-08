@@ -68,5 +68,12 @@
         $("#system-options-add").click(function () {
             gemini_popup.centerPopup("configure/Breeze/SmtpServer", "Add", null, null, null, null, null, null, null, true);
         });
+
+        if (gemini_admin.message != '') {
+            $("#system-email-trace").html(gemini_admin.message).show();
+            gemini_admin.message = ''
+        } else {
+            $("#system-email-trace").hide();
+        }
     });
 </script>

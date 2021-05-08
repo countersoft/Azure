@@ -6,234 +6,326 @@
         <table id="table-admin-breezemailbox" class="admin-data-entry">
             <tbody>
                 <tr>
-                    <td class="field-name">Queue
+                    <td class="field-name" style="min-width:300px">
+                        Queue
                     </td>
                     <td>
-                        @Html.DropDownList("Queue", Model.Queues, new { @class = "input-size6 required" })
+                        @Html.DropDownList( "Queue", Model.Queues, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
                 <tr>
-                    <td class="field-name">Name
+                    <td class="field-name">
+                        Name
                     </td>
                     <td>
-                        <input type="text" id="Name" name="Name" 
-                               class="input-field required input-size9" value="@Model.Mailbox.Name"/>
+                        <input type="text" id="Name" name="Name"
+                               class="input-field required input-size9" value="@Model.Mailbox.Name" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="field-name">Connection Type
+                    <td class="field-name">
+                        Connection Type
                     </td>
                     <td>
-                        @Html.DropDownList("MailboxType", Model.MailboxTypes, new { @class = "input-size6 required" })
+                        @Html.DropDownList( "MailboxType", Model.MailboxTypes, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
                 <tr>
-                    <td class="field-name">Email Address
+                    <td class="field-name">
+                        Email Address
                     </td>
                     <td>
-                        <input type="text" id="EmailAddress" name="EmailAddress" 
-                               class="input-field required input-size9" value="@Model.Mailbox.EmailAddress"/>
+                        <input type="text" id="EmailAddress" name="EmailAddress"
+                               class="input-field required input-size9" value="@Model.Mailbox.EmailAddress" />
                     </td>
                 </tr>
                 <tr id="exchange-version">
-                    <td class="field-name">Exchange Version
+                    <td class="field-name">
+                        Exchange Version
                     </td>
                     <td>
-                        @Html.DropDownList("ExchangeVersion", Model.ExchangeVersions, new { @class = "input-size6 required" })
+                        @Html.DropDownList( "ExchangeVersion", Model.ExchangeVersions, new { @class = "input-size6 required" } )
+                    </td>
+                </tr>
+                <tr id="auth-mode">
+                    <td class="field-name">
+                        Authentication Mode
+                    </td>
+                    <td>
+                        @Html.DropDownList( "AuthMode", Model.AuthModes, new { @class = "input-size6 required" } )
+                    </td>
+                </tr>
+                <tr class="oauth-control" id="oauth-provider-field">
+                    <td class="field-name">
+                        OAuth2 Provider
+                    </td>
+                    <td>
+                        @Html.DropDownList( "OAuthProvider", Model.OAuthProviders, new { @class = "input-size6", id = "oauth-provider" } )
+
+                        @*<select id="oauth-provider" name="OAuthProvider" class="input-size6">
+                    <option value="0">--Select--</option>
+                    <option>G-Mail</option>
+                    <option value="M365">Microsoft 365</option>
+                </select>*@
                     </td>
                 </tr>
                 <tr>
-                    <td id="server" class="field-name">Server
+                    <td id="server" class="field-name">
+                        Server
                     </td>
                     <td>
-                        <input type="text" id="Server" name="Server" class="input-field required input-size9" value="@Model.Mailbox.Server"/>
+                        <input type="text" id="Server" name="Server" class="input-field required input-size9" value="@Model.Mailbox.Server" />
                     </td>
                 </tr>
                 <tr id="server-port">
-                    <td class="field-name">Server Port
+                    <td class="field-name">
+                        Server Port
                     </td>
                     <td>
-                        <input type="text" id="ServerPort" name="ServerPort" class="input-field required input-size2" value="@Model.Mailbox.ServerPort"/>
+                        <input type="text" id="ServerPort" name="ServerPort" class="input-field required input-size2" value="@Model.Mailbox.ServerPort" />
                     </td>
                 </tr>
                 <tr id="use-ssl">
-                    <td class="field-name">Use SSL
+                    <td class="field-name">
+                        Use SSL
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if ( Model.Mailbox.UseSsl )
-                                                                                       {
-                                                                                           @: checked="checked" 
-                                                                                       }/>
+                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if ( Model.Mailbox.UseSsl ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
                 <tr id="ssl-protocol">
                     <td>SSL Protocol</td>
                     <td>@Html.DropDownList( "SslMode", Model.SslProtocol, new { @class = "input-size5" } )</td>
                 </tr>
-                <tr id="auth-mode">
-                    <td class="field-name">Authentication Mode
+
+                <tr>
+                    <td class="field-name" id="username-label">
+                        Username
                     </td>
                     <td>
-                        @Html.DropDownList("AuthMode", Model.AuthModes, new { @class = "input-size6 required" })
+                        <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.Mailbox.Username" />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Username
+                <tr id="password-row">
+                    <td class="field-name" id="password-label">
+                        Password
                     </td>
                     <td>
-                        <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.Mailbox.Username"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="field-name">Password
-                    </td>
-                    <td>
-                        <input type="password" id="Password" name="Password" 
-                               class="input-field required input-size9" value="@Constants.NoChange"/>
+                        <input type="password" id="Password" name="Password"
+                               class="input-field required input-size9" value="@Constants.NoChange" />
                     </td>
                 </tr>
                 <tr id="domain">
-                    <td class="field-name">Domain
+                    <td class="field-name" id="domain-label">
+                        Domain
                     </td>
                     <td>
-                        <input type="text" id="Domain" name="Domain" 
-                               class="input-field input-size9" value="@Model.Mailbox.Domain"/>
+                        <input type="text" id="Domain" name="Domain"
+                               class="input-field input-size9" value="@Model.Mailbox.Domain" />
                     </td>
                 </tr>
-                <tr id="imap-folder" style="display:none;">
-                    <td class="field-name">IMAP Folder
+
+                <tr class="oauth-control">
+                    <td class="field-name" title="Microsoft 365 Only">
+                        Tenant Id
                     </td>
                     <td>
-                        <input type="text" id="ImapFolder" name="ImapFolder" class="input-field input-size9" value="@Model.Mailbox.ImapFolder"/>
+                        <input type="text" id="TenantId" name="TenantId"
+                               class="input-field input-size9" value="@Model.Mailbox.TenantId" />
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        Client Id
+                    </td>
+                    <td>
+                        <input type="text" id="ClientId" name="ClientId"
+                               class="input-field input-size9" value="@Model.Mailbox.ClientId" />
+                    </td>
+                </tr>
+                <tr class="oauth-control" id="client-secret-row">
+                    <td class="field-name">
+                        Client Secret
+                    </td>
+                    <td>
+                        <input type="password" id="ClientSecret" name="ClientSecret"
+                               class="input-field input-size9" value="@(Model.Mailbox.Id == 0 ? "": Constants.NoChange)" />
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        Scopes
+                    </td>
+                    <td>
+                        <input type="text" id="Scopes" name="Scopes"
+                               class="input-field input-size9" value="@Model.Mailbox.Scopes" />
+                        <br />use | to separate scopes
+                    </td>
+                </tr>
+                @if ( Model.Mailbox.Id == 0 )
+                {
+                    <tr class="oauth-control">
+                        <td class="field-name"></td>
+                        <td>
+                            <p>
+                                OAuth Accounts must be authenticated before additional settings can be set.
+                                Once the mailbox is created, you will be directed to the provider to authenticate, and
+                                then directed back to this mailbox page and further settings can be applied
+                            </p>
+                        </td>
+                    </tr>
+                }
+                <tr id="imap-folder" style="display:none;" class="mailbox-setting">
+                    <td class="field-name">
+                        IMAP Folder
+                    </td>
+                    <td>
+                        <input type="text" id="ImapFolder" name="ImapFolder" class="input-field input-size9" value="@Model.Mailbox.ImapFolder" />
                         <div id="pnlIMAPFolder" class="imap-folder-box input-size9" style="display:none;">
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Delete Messages
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Delete Messages
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="DeleteMessages" name="DeleteMessages" @if(Model.Mailbox.DeleteMessages)
-                                                                                         {
-                                                                                             @: checked="checked" 
-                                                                                         }/>
+                        <input type="checkbox" class="fancy" id="DeleteMessages" name="DeleteMessages" @if ( Model.Mailbox.DeleteMessages ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Block List
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Limit to Unread
+                    </td>
+                    <td>
+                        <input type="checkbox" class="fancy" id="OnlyProcessUnread" name="OnlyProcessUnread" @if ( Model.Mailbox.OnlyProcessUnread ) { @: checked="checked"
+                               } />
+                    </td>
+                </tr>
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Block List
                     </td>
                     <td>
                         <textarea id="Blacklist" name="Blacklist" class="input-field input-size9">@Model.Mailbox.BlackList</textarea>
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Allow List
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Allow List
                     </td>
                     <td>
                         <textarea id="Whitelist" name="Whitelist" class="input-field input-size9">@Model.Mailbox.WhiteList</textarea>
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">No-Reply List
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        No-Reply List
                     </td>
                     <td>
                         <textarea id="NoReplyList" name="NoReplyList" class="input-field input-size9">@Model.Mailbox.NoReplyList</textarea>
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Subject "Like" Match Expressions
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Subject "Like" Match Expressions
                     </td>
                     <td>
-                        @Html.ListBox("SubjectLikeExpressions", Model.SubjectLikeMatchExpressions, new { @class = "input-size9" })
+                        @Html.ListBox( "SubjectLikeExpressions", Model.SubjectLikeMatchExpressions, new { @class = "input-size9" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Subject "Not Like" Match Expressions
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Subject "Not Like" Match Expressions
                     </td>
                     <td>
-                        @Html.ListBox("SubjectNotLikeExpressions", Model.SubjectNotLikeMatchExpressions, new { @class = "input-size9" })
+                        @Html.ListBox( "SubjectNotLikeExpressions", Model.SubjectNotLikeMatchExpressions, new { @class = "input-size9" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Content "Replacement" Match Expressions
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Content "Replacement" Match Expressions
                     </td>
                     <td>
-                        @Html.ListBox("ReplaceExpressions", Model.ReplaceMatchExpressions, new { @class = "input-size9" })
+                        @Html.ListBox( "ReplaceExpressions", Model.ReplaceMatchExpressions, new { @class = "input-size9" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Content "Truncation" Match Expressions
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Content "Truncation" Match Expressions
                     </td>
                     <td>
-                        @Html.ListBox("TruncateExpressions", Model.TruncateMatchExpressions, new { @class = "input-size9" })
+                        @Html.ListBox( "TruncateExpressions", Model.TruncateMatchExpressions, new { @class = "input-size9" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Strip Signature
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Strip Signature
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="StripSignature" name="StripSignature" @if(Model.Mailbox.StripSignature)
-                                                                                         {
-                                                                                             @: checked="checked" 
-                                                                                         }/>
+                        <input type="checkbox" class="fancy" id="StripSignature" name="StripSignature" @if ( Model.Mailbox.StripSignature ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Ignore Attachments
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Ignore Attachments
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="IgnoreAttachments" name="IgnoreAttachments" @if (Model.Mailbox.IgnoreAttachments)
-                                                                                               {
-                                                                                                   @: checked="checked"
-                                                                                               }/>
+                        <input type="checkbox" class="fancy" id="IgnoreAttachments" name="IgnoreAttachments" @if ( Model.Mailbox.IgnoreAttachments ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Alert Template
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Alert Template
                     </td>
                     <td>
-                        @Html.DropDownList("AlertTemplate", Model.AlertTemplates, new { @class = "input-size6 required" })
+                        @Html.DropDownList( "AlertTemplate", Model.AlertTemplates, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Smtp Server
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Smtp Server
                     </td>
                     <td>
-                        @Html.DropDownList("SmtpServer", Model.SmtpServers, new { @class = "input-size6 required" })
+                        @Html.DropDownList( "SmtpServer", Model.SmtpServers, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Use Sender as Reporter
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Use Sender as Reporter
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="UseSenderAsSubmitter" name="UseSenderAsSubmitter" @if (Model.Mailbox.UseSenderAsSubmitter)
-                                                                                               {
-                                                                                                   @: checked="checked"
-                                                                                               }/>
+                        <input type="checkbox" class="fancy" id="UseSenderAsSubmitter" name="UseSenderAsSubmitter" @if ( Model.Mailbox.UseSenderAsSubmitter ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Add New Users
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Add New Users
                     </td>
                     <td>
-                        <input type="checkbox" class="fancy" id="AddNewUsers" name="AddNewUsers" @if (Model.Mailbox.Options.AddNewUsers)
-                                                                                               {
-                                                                                                   @: checked="checked"
-                                                                                               }/>
+                        <input type="checkbox" class="fancy" id="AddNewUsers" name="AddNewUsers" @if ( Model.Mailbox.Options.AddNewUsers ) { @: checked="checked"
+                               } />
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Project
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Project
                     </td>
                     <td>
-                        @Html.DropDownList("Project", Model.Projects, new { @class = "input-size6" })
+                        @Html.DropDownList( "Project", Model.Projects, new { @class = "input-size6" } )
                     </td>
                 </tr>
-                <tr>
-                    <td class="field-name">Item Type
+                <tr class="mailbox-setting">
+                    <td class="field-name">
+                        Item Type
                     </td>
                     <td id="issueTypes-container">
-                        @Html.DropDownList("IssueType", Model.IssueTypes, new { @class = "input-size6" })
+                        @Html.DropDownList( "IssueType", Model.IssueTypes, new { @class = "input-size6" } )
                     </td>
                 </tr>
             </tbody>
@@ -242,82 +334,124 @@
     </div>
 </div>
 <script type="text/javascript">
-      $(document).ready(function () {
 
-          gemini_ui.fancyInputs('#regular-form .fancy');
+    function setValueIfEmpty(selector, value) {
+        if ($(selector).val() == '' || $(selector).val() == '0') {
+            $(selector).val(value);
+            return true;
+        }
+        return false;
+    }
 
-          $("#breeze-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
+    $(document).ready(function () {
+        //Set default values when the provider is changed, provided the cells are empty
+        $("#oauth-provider").change(function () {
+            switch ($(this).val()) {
+                case "M365":
+                    setValueIfEmpty("#Server", "outlook.office365.com");
+                    if (setValueIfEmpty("#ServerPort", "993")) {
+                        $("#UseSsl").prop('checked', true).iCheck('update');
+                        $("#SslMode").val('@GeminiConfigurationOptionSslProtocol.Tls12.ToString()').trigger("chosen:updated");
+                        
+                    };
+                    setValueIfEmpty("#Username", $("#EmailAddress").val());
 
-          $('option', '#AlertTemplate').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#AlertTemplate", null, true);
-          gemini_ui.setDropdownValue("#AlertTemplate", '@(Model.Mailbox.AlertTemplateId.GetValueOrDefault())');
+                    switch ($("#MailboxType").val() ) {
+                        case 'IMAP':
+                            setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/IMAP.AccessAsUser.All")
+                            break;
+                        case 'Exchange':
+                            //This won't usually be called because OAuth provider is not available when it is EWS
+                            setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/EWS.AccessAsUser.All")
+                            break;
+                    } 
+                    break;
+            }
+        });
 
-          $('option', '#SmtpServer').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#SmtpServer", null, true);
-          gemini_ui.setDropdownValue("#SmtpServer", '@(Model.Mailbox.SmtpServerId.GetValueOrDefault())');
 
-          $('option', '#AuthMode').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#AuthMode", null, true);
-          gemini_ui.setDropdownValue("#AuthMode", '@(Model.Mailbox.AuthenticationMode)');
 
-          $('#MailboxType').on('change', function () {
-              MailboxTypeChange();
-          });
+        gemini_ui.fancyInputs('#regular-form .fancy');
 
-          $('option', '#MailboxType').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#MailboxType", null, true);
-          $("#MailboxType").trigger('change');
+        $("#breeze-form-container").jScrollPane({ autoReinitialise: true, autoReinitialiseDelay: 250 });
 
-          $('option', '#ExchangeVersion').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#ExchangeVersion", null, true);
-          gemini_ui.setDropdownValue("#ExchangeVersion", '@(Model.Mailbox.ExchangeVersion)');
+        $('option', '#AlertTemplate').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#AlertTemplate", null, true);
+        gemini_ui.setDropdownValue("#AlertTemplate", '@(Model.Mailbox.AlertTemplateId.GetValueOrDefault())');
 
-          $('option', '#Project').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#Project", null, true);
-          gemini_ui.setDropdownValue("#Project", '@(Model.Mailbox.ProjectId.GetValueOrDefault())');
+        $('option', '#SmtpServer').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#SmtpServer", null, true);
+        gemini_ui.setDropdownValue("#SmtpServer", '@(Model.Mailbox.SmtpServerId.GetValueOrDefault())');
 
-          $('option', '#IssueType').each(function () {
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#IssueType", null, true);
-          gemini_ui.setDropdownValue("#IssueType", '@(Model.Mailbox.IssueTypeId.GetValueOrDefault())');
+        $('option', '#AuthMode').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#AuthMode", null, true);
+        gemini_ui.setDropdownValue("#AuthMode", '@(Model.Mailbox.AuthenticationMode)');
 
-          $('option', '#Queue').each(function () {
-              if($(this).attr('value') == '0') $(this).attr('value', '');
-              $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
-          });
-          gemini_ui.chosen("#Queue", null, true);
+        $('#MailboxType').on('change', function () {
+            MailboxTypeChange();
+        });
 
-          gemini_ui.chosen("#SubjectLikeExpressions", null, true);
-          gemini_ui.chosen("#SubjectNotLikeExpressions", null, true);
-          gemini_ui.chosen("#TruncateExpressions", null, true);
-          gemini_ui.chosen("#ReplaceExpressions", null, true);
-          gemini_ui.chosen( "#SslMode", null, true );
 
-          //reset validation on AuthMode Change
-          $("#AuthMode").on('change', function () {
-              if ($("#AuthMode").val() == 'NONE') {
-                  $("#Username").removeClass('required');
-                  $("#Password").removeClass('required');
-              }
-              else {
-                  $("#Username").addClass('required');
-                  $("#Password").addClass('required');
-              }
-          } );
+        $('option', '#MailboxType').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#MailboxType", null, true);
+        $("#MailboxType").trigger('change');
 
+        $('option', '#ExchangeVersion').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#ExchangeVersion", null, true);
+        gemini_ui.setDropdownValue("#ExchangeVersion", '@(Model.Mailbox.ExchangeVersion)');
+        $('#ExchangeVersion').on('change', function () {
+            ExchangeVersionChange();
+        });
+        $("#scope-row").hide();
+        $("#ExchangeVersion").trigger('change');
+
+        $('option', '#Project').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#Project", null, true);
+        gemini_ui.setDropdownValue("#Project", '@(Model.Mailbox.ProjectId.GetValueOrDefault())');
+
+        $('option', '#IssueType').each(function () {
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#IssueType", null, true);
+        gemini_ui.setDropdownValue("#IssueType", '@(Model.Mailbox.IssueTypeId.GetValueOrDefault())');
+
+        $('option', '#Queue').each(function () {
+            if($(this).attr('value') == '0') $(this).attr('value', '');
+            $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
+        });
+        gemini_ui.chosen("#Queue", null, true);
+
+        gemini_ui.chosen("#SubjectLikeExpressions", null, true);
+        gemini_ui.chosen("#SubjectNotLikeExpressions", null, true);
+        gemini_ui.chosen("#TruncateExpressions", null, true);
+        gemini_ui.chosen("#ReplaceExpressions", null, true);
+        gemini_ui.chosen( "#SslMode", null, true );
+        gemini_ui.chosen("#oauth-provider", null, true);
+
+        //reset validation on AuthMode Change
+        $("#AuthMode").on('change', function () {
+            AuthModeChange();
+            
+        });
+
+
+        @if(!string.IsNullOrEmpty( Model.Mailbox.OAuthProvider ) )
+        {
+            @:gemini_ui.setDropdownValue("#oauth-provider", '@(Model.Mailbox.OAuthProvider)');
+        }
+        gemini_ui.chosen("#oauth-provider", null, true);
           
 
           $("#popup-button-yes").click(function (e) {
@@ -326,6 +460,9 @@
                   gemini_ajax.postCall("configure/Breeze/Mailbox", "SaveData", 
                       function (response)
                       {
+                          if (response.success && response.Result.startsWith("https")) {
+                              window.location = response.Result;
+                          }
                           gemini_popup.popupClose(e);
                           gemini_admin.getPage();
 
@@ -368,6 +505,77 @@
           $('#AuthMode').change();
       });
 
+
+    function AuthModeChange() {
+            if ($("#AuthMode").val() == 'NONE') {
+                $("#Username").removeClass('required');
+                $("#Password").removeClass('required');
+                $("#ImapFolder").removeClass('required');
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+                $("#password-row").show();
+                $(".oauth-control").hide();
+                $( ".mailbox-setting" ).show();
+            }
+            else if ($("#AuthMode").val() == 'OAUTH2') {
+                $("#Password").closest("tr").hide();
+                $("#ImapFolder").removeClass('required');
+                $("#TenantId").addClass('required');
+                $("#ClientId").addClass('required');
+                $("#ClientSecret").addClass('required');
+                $(".oauth-control").show();
+                $("#client-secret-row").show(); /*may be hidden from the view by Exchnage setting so show it again*/
+                $("#password-row").hide();
+                $("#oauth-provider").addClass('required');
+
+                @if(Model.Mailbox.Id == 0 )
+                {
+                    @:$(".mailbox-setting").hide();
+                }
+            }
+            else {
+                $("#Username").addClass('required');
+                $("#Password").addClass('required');
+                $("#ImapFolder").removeClass('required');
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+                $("#password-row").show();
+                $(".oauth-control").hide();
+                $(".mailbox-setting").show();
+            }
+            //TODO maybe need to replicate the scrollpane code
+            //$("#BreezeQueuesItemContainer").jScrollPane('reinitialise');
+    }
+    
+    function ExchangeVersionChange() {
+        if ($('#ExchangeVersion').val() == '@ExchangeVersion.Office365_OAuth.ToString()' ) {
+            $("#scope-row").show();
+            $(".oauth-control").show();
+                @if (Model.Mailbox.Id == 0)
+                {
+                    @:$( ".mailbox-setting" ).hide();
+                }
+            $("#password-row").hide();
+            $("#oauth-provider-field").hide();
+
+            setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/EWS.AccessAsUser.All");
+            setValueIfEmpty("#Server", "https://outlook.office365.com/EWS/Exchange.asmx");
+            setValueIfEmpty("#Username", $("#EmailAddress").val());
+
+        } else {
+
+            $(".oauth-control").hide();
+            $("#password-row").show();
+            $("#scope-row").hide();
+            $( ".mailbox-setting" ).show();
+
+        }
+    }
+    MailboxTypeChange();
     function MailboxTypeChange()
     {
         if ($('#MailboxType').val() == "IMAP") {
@@ -392,6 +600,8 @@
                 $("#auth-mode").hide();
                 $("#exchange-version").show();
                 $("#domain").show();
+                $("#oauth-provider").removeClass("required");
+                ExchangeVersionChange();
             }
             else {
                 $("#domain").hide();

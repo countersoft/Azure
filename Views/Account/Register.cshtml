@@ -35,7 +35,12 @@
                                                             <td>
                                                                 @if(!string.IsNullOrEmpty(Model.ErrorMessage))
                                                                 {
-                                                                    <div class="error" style="color:maroon">@Model.ErrorMessage</div>
+                                                                    <div class="error" style="color:maroon; padding:5px">@if ( Model.ErrorMessage.Contains( "<" ) ) { 
+                                                                        @Html.Raw( Model.ErrorMessage ) }
+                                                                    else { 
+                                                                        @Model.ErrorMessage 
+                                                                    }
+                                                                    </div>
                                                                 }
 
                                                                 <form action="register" method="post" id="regular-form" autocomplete="off">
@@ -56,7 +61,6 @@
                                                                             <td> <h3>@GetResource(ResourceKeys.Email)</h3></td>
                                                                         </tr>
                                                                          <tr>
-                                                                            <!--<td>@GetResource(ResourceKeys.Password, Resourcing.Colon)</td>-->
                                                                             <td><input type="text" id="Email" name="Email" class="input-size6 required email" value="@Model.User.Email"/> </td>
                                                                         </tr>
                                                                         
@@ -66,7 +70,10 @@
                                                                                 <td> <h3>@GetResource(ResourceKeys.Password)</h3></td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td><input type="password" id="regular-password" name="regular-password" class="input-field required input-size6" /> 
+                                                                                <td><input type="password" id="regular-password" name="regular-password" class="input-field required input-size6 password"  
+                                                                                            data-pwd-enforce="@GeminiApp.Config.EnforcePasswordPolicy.ToJSBool()" data-pwd-length="@GeminiApp.Config.MinimumLetters" 
+                                                                                            data-pwd-upper="@GeminiApp.Config.UppercaseRequired.ToJSBool()" data-pwd-lower="@GeminiApp.Config.LowercaseRequired.ToJSBool()" 
+                                                                                            data-pwd-symbol="@GeminiApp.Config.SymbolRequired.ToJSBool()" data-pwd-number="@GeminiApp.Config.NumberRequired.ToJSBool()"/> 
                                                                                     <div class="password-meter">
                                                                                         <div class="password-meter-bg">
                                                                                             <div class="password-meter-bar"></div>
@@ -81,6 +88,11 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     <input type="password" id="confirmpassword" name="confirmpassword" class="input-size6 required" />
+                                                                                </td>
+                                                                            </tr>
+                                                                             <tr id="password-rules-regular-password" style="display:none">
+                                                                                <td>
+                                                                                    @Html.Raw(Model.PasswordRules)
                                                                                 </td>
                                                                             </tr>
                                                                         }   

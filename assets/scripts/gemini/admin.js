@@ -3,6 +3,7 @@ gemini_admin = {
     currentTab: "",
     currentSubTab: "",
     currentTemplate: 0,
+    message : '',
     tabTopSelector: "#tabs-top > .tab",
     tabLeftSelector: "#tabs-left",
     currentXHR: null,
@@ -210,7 +211,8 @@ gemini_admin = {
             });
         }
     },
-
+    tablePageSize: 20,
+    currentTablePage: 1,
     initDatatables: function (selector, options)
     {
         var optionsString = {};
@@ -224,7 +226,7 @@ gemini_admin = {
             bSort: true,
             bPaginate: true,
             bLengthChange: false,
-            iDisplayLength: 20,
+            iDisplayLength: gemini_admin.tablePageSize,
             sPaginationType: "full_numbers",
             "oLanguage": {
                 "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -240,12 +242,13 @@ gemini_admin = {
         $(selector).tableDnD({
             dragHandle: ".dragHandle",
             onDrop: function (table, row) {
+                var indexOffset = (gemini_admin.currentTablePage - 1) * gemini_admin.tablePageSize;
                 gemini_ajax.postCall('configure', gemini_admin.currentTab + "/" + gemini_admin.currentSubTab+'/resequence', function () { }, null, {
                     id: $(row).data('id'),
                     template: gemini_admin.currentTemplate,
                     afterid: row.rowIndex == 1 ? 0 : $(table.rows[row.rowIndex - 1]).data('id'),
-                    newIndex: row.rowIndex - 1,
-                    oldIndex: gemini_admin.rowDragIndex - 1
+                    newIndex: row.rowIndex - 1 + indexOffset,
+                    oldIndex: gemini_admin.rowDragIndex - 1 + indexOffset
                 }, null, true);
             },
             onDragStart: function (table, row) {
@@ -256,6 +259,15 @@ gemini_admin = {
                 return $(dropTargetRow.children[0]).is('td');
             }
         });
+
+        var table = $(selector).DataTable();
+        table.on('page.dt', function (e, p) {
+            setTimeout(
+                function () {
+                    gemini_admin.initTableDnD(selector);
+                }, 1000);
+        });
+
     },
 
     initDatatablesWithEdit: function (selector, dndEnabled, editSelector, options)
@@ -277,14 +289,14 @@ gemini_admin = {
                 bSort: true,
                 bPaginate: true,
                 bLengthChange: false,
-                iDisplayLength: 20,
+                iDisplayLength: gemini_admin.tablePageSize,
                 sPaginationType: "full_numbers",
                 "oLanguage": {
                     "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
                     "sInfoEmpty": "No data."
                 },
                 fnDrawCallback: function (value, y) {
-
+                    gemini_admin.currentTablePage = value._iDisplayStart / value._iDisplayLength + 1
                     if (dnd) {
                         if (value.bFiltered || value.bSorted) {
                             $('.dragHandle').hide();

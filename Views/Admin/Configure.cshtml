@@ -1,4 +1,4 @@
-﻿@model BaseModel
+﻿@model AdminModel
 
 @{
     Layout = "~/Views/Shared/_Master.Desktop.Project.cshtml";
@@ -52,6 +52,7 @@
     }
     gemini_admin.currentTab = '@session.Get(SessionKey.ConfigureTab, "Templates")';
     gemini_admin.currentSubTab = '@session.Get(SessionKey.ConfigureSubTab, "Process")';
+    gemini_admin.message = '@(Model.Message)';
     
     gemini_admin.initGlobal(@session.Get(SessionKey.ConfigureTemplate, @ViewBag.Template.ToString()));
     gemini_ui.fancyInputs('#attribute-options-picker .fancy','background-color-white');

@@ -1183,12 +1183,16 @@ $.extend($.validator, {
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Methods/number
-		number: function(value, element) {
+        number: function (value, element) {
+            var pattern = $(element).data("validation");
+            if (pattern != undefined && pattern !== "") {
+                return this.optional(element) || new RegExp(pattern).test(value);
+            }
 			return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Methods/digits
-		digits: function(value, element) {
+        digits: function (value, element) {
 			return this.optional(element) || /^\d+$/.test(value);
 		},
 
@@ -1406,7 +1410,37 @@ $.format = $.validator.format;
 		.text($.validator.passwordRating.messages[rating.messageKey]);
         // display process bar instead of error message
 
-        //return rating.rate > 2;
+        var enforce = $(element).data("pwd-enforce");
+        if (enforce && !$(element).is(":focus")) {
+            var reqLength = $(element).data("pwd-length");
+            var reqUpper = $(element).data("pwd-upper");  //dotnet boolean format
+            var reqLower = $(element).data("pwd-lower");
+            var reqNumber = $(element).data("pwd-number");
+            var reqSymbol = $(element).data("pwd-symbol");
+            var isValid = true;
+            if (reqLength && value.length < reqLength) {
+                isValid = false;
+            }
+            if (reqUpper && !UPPER.test(value)) {
+                isValid = false;
+            }
+            if (reqLower && !LOWER.test(value)) {
+                isValid = false;
+            }
+            if (reqNumber && !DIGIT.test(value)) {
+                isValid = false;
+            }
+            if (reqSymbol && !SPECIAL.test(value)) {
+                isValid = false;
+            }
+            if (!isValid) {
+                $("#password-rules-" + element.id).slideDown();
+                return false;
+            }
+            else {
+                $("#password-rules-" + element.id).slideUp();
+            }
+        }
         return true;
     }, "&nbsp;");
     // manually add class rule, to make username param optional

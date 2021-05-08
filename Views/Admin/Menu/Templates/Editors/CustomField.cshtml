@@ -36,7 +36,7 @@
                     <td>Screen Tooltip
                     </td>
                     <td>
-                        <input type="text" id="ScreenTooltip" name="ScreenTooltip"
+                        <input type="text" id="ScreenTooltip" name="ScreenTooltip" maxlength="100"
                                class="input-field required input-size9" value="@Model.CustomField.ScreenTooltip"/>
                         @Html.Partial( "Translation/TranslationEditor",
                             new TranslationItemModel( Model.CustomField,
@@ -337,7 +337,8 @@
         }
 
         $("#popup-button-yes").click(function (e) {
-
+            //Remove all translation elements from the form for valdation
+            $(".translation-widget-details").slideUp().remove();
             $("#regular-form").validate({ ignore: ".ignorefield" });
 
             if ($("#regular-form").valid()) {

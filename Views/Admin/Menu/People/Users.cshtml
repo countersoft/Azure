@@ -14,14 +14,15 @@
         <thead>
             <tr>
                 @*<th>Fullname</th>*@
-                <th data-field="Firstname">Firstname</th>                
-                <th data-field="Surname" data-required='true'>Surname</th>                
-                <th data-field="Username" data-required='true'>Username</th>                
-                <th data-field="Email" data-required='true' data-email='true'>Email</th>                
+                <th data-field="Firstname">Firstname</th>
+                <th data-field="Surname" data-required='true'>Surname</th>
+                <th data-field="Username" data-required='true'>Username</th>
+                <th data-field="Email" data-required='true' data-email='true'>Email</th>
+                <th data-field="Organization" data-required='false' data-edit="false">Organization</th>
                 <th data-field="Active" data-edit-type="checkbox">Disabled?</th>
                 <th data-field="Locked" data-edit-type="checkbox">Locked?</th>
                 @*ADFS - B.E. - BEGIN ui*@
-                @if (GeminiApp.Config.ADFSEnabledByAdmin)
+                @if ( GeminiApp.Config.ADFSEnabledByAdmin )
                 {
                     <th data-field="ADFSSID" data-required='false'>ADFS SID</th>
                     <th data-field="LockUserValuesFromADSync" data-required='false' data-edit-type="checkbox">Lock user data</th>
@@ -37,25 +38,32 @@
             }
             @foreach (var item in Model.Users)
             {
-                <tr data-id="@item.Id">
-                    @*<td data-edit="false">@item.Fullname</td>*@
-                    <td>@item.Firstname</td>
-                    <td>@item.Surname</td>
-                    <td>@item.Username</td>
-                    <td>@item.Email</td>
-                    <td>@(item.Active ? string.Empty : "Yes")</td>
-                    <td>@(item.Locked ? "Yes" : string.Empty)</td>
+                string organisations = string.Empty;
+                if (item.Organizations.Any())
+                {
+                    organisations = string.Join( ", ", item.Organizations.Select( o => o.Name ));
+                }
+
+                <tr data-id="@item.Entity.Id">
+                    @*<td data-edit="false">@item.Entity.Fullname</td>*@
+                    <td>@item.Entity.Firstname</td>
+                    <td>@item.Entity.Surname</td>
+                    <td>@item.Entity.Username</td>
+                    <td>@item.Entity.Email</td>
+                    <td data-edit="false">@organisations</td>
+                    <td>@(item.Entity.Active ? string.Empty : "Yes")</td>
+                    <td>@(item.Entity.Locked ? "Yes" : string.Empty)</td>
 
                     @*ADFS - B.E. - BEGIN ui*@
                     @if (GeminiApp.Config.ADFSEnabledByAdmin)
                     {
-                        <td>@item.ADFSSID</td>
-                        <td>@(item.LockUserValuesFromADSync ? "Yes" : string.Empty)</td>
+                        <td>@item.Entity.ADFSSID</td>
+                        <td>@(item.Entity.LockUserValuesFromADSync ? "Yes" : string.Empty)</td>
                     }
                     @*ADFS - B.E. - END*@
                     <td data-edit="false" class="no-width"><a href="#" class="report">Report</a></td>
                     <td data-edit="false" class="actions" >
-                        @if(!systemUsers.Contains(item.Id))
+                        @if(!systemUsers.Contains(item.Entity.Id))
                         {
                             <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
                             <span class="fonticon-persons action-button-base cursor-pointer" style="color:black;" title="Merge" data-method="merge"></span>

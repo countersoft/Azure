@@ -16,7 +16,7 @@
             </tr>
         }
         <tr>
-            <td>@Html.DropDownList( "Language", Model.Languages, new {@class = "input-size5"} )</td>
+            <td>@Html.DropDownList( "Language", Model.Languages, new {@class = "input-size5 ignorefield" } )</td>
             <td colspan="2" class="no-wrap">
                 <input type="text" id="translation-text" name="translation" class="required"/>
                 <button class="btn-primary button-primary">+</button>

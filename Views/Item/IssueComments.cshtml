@@ -4,13 +4,16 @@
                 <div id='comments-section' data-contentid="comments-content" class="left tab normal" title="@GetResourceTemplate(ResourceKeys.Comments)">
                     <h3 title="@Model.Issue.Comments.Count"><i class="fad fa-comments"></i> @GetResourceTemplate(ResourceKeys.Comments)&nbsp;(@Model.Issue.Comments.Count)</h3>
                 </div>
-<div class="tab-content hide" id="comments-content">
-                @if (CanDoItemAction(UserAction.Create, ItemAttributeVisibility.AssociatedComments))
+        <div class="tab-content hide" id="comments-content">
+                
+            <div class="toolbar actions">
+                @if ( CanDoItemAction( UserAction.Create, ItemAttributeVisibility.AssociatedComments ) )
                 {
-                <div class="toolbar actions">
-                    <a class="button add" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Comment)">@GetResource(ResourceKeys.Add)</a>
-                </div>
+                    <a class="button add" href="#" title="@GetResource(ResourceKeys.Add) @GetResource(ResourceKeys.Comment)">@GetResource( ResourceKeys.Add )</a>
                 }
+                <a class="button collapse" href="#" title="@GetResource(ResourceKeys.Collapse) @GetResource(ResourceKeys.Comments)">@GetResource( ResourceKeys.Collapse )</a>
+                <a class="button expand" href="#" title="@GetResource(ResourceKeys.Show) @GetResource(ResourceKeys.Comments)" style="display:none">@GetResource( ResourceKeys.Show )</a>
+            </div>
             @if(Model.RenderCommentEditor) 
             {
             @Html.Partial("~/Views/Item/EditCommentsEditor.cshtml", Model)
@@ -49,10 +52,11 @@
                             @if (comment.Entity.OriginatorType == IssueOriginatorType.Email)
                                 {
                                   <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">Email Reply</div>
-                                }
+                            }
                             else if (comment.Entity.OriginatorType == IssueOriginatorType.Breeze)
                             {
-                                <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">Email</div>
+                                var commentMeta = comment.Entity.IsClosing ? "Closing Comment" : "Email";
+                                <div class="no-select comment-type @if(comment.Entity.OriginatorData.HasValue()) {<text>email-header cursor-pointer</text>}" data-id="@comment.Entity.Id">@commentMeta</div>
                             }
                             <div class="section-content expanded">
                                 @{

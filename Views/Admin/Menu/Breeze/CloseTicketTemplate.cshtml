@@ -1,0 +1,82 @@
+﻿@model BreezeCloseTicketTemplateModel
+
+<p id="tab-help-message"><strong>&#187;</strong>&nbsp;Specify the text a user will see when they close a ticket using the close ticket link.</p>
+<div id="cs-adhoc-page">
+    <form id="close-ticket-template-from" action="" method="post" autocomplete="off">
+        <table class="data-entry-box">
+            <tbody>
+                <tr>
+                    <td valign="top">Confirmation Text</td>
+                    <td><textarea id="close-ticket-text" name="CloseTicketText" class="required wysiwyg-editor cs-wysiwyg">@Model.Text</textarea></td>
+                </tr>
+                <tr>
+                    <td>Closed Statuses</td>
+                    <td align="left">
+                        <table>
+                            @foreach(var templateData in Model.TemplateClosedStatues)
+                            {
+
+                                <tr>
+                                    <td style="padding:10px 10px 10px 0;">
+                                        <label>@templateData.Key.Name</label>
+                                        <input type="hidden" name="template[]" value="@templateData.Key.Id" />
+                                    </td>
+                                    <td style="padding:10px 10px 10px 0;">
+                                        @*@Html.DropDownListFor(m => m.TemplateClosedStatues, templateData.Value, new { id = "TemplateClosedStatues_" + templateData.Key.Id, @class = "input-size7" })*@
+                                        @Html.DropDownList("TemplateClosedStatues[]", templateData.Value, new Dictionary<string, object> { { "class", "input-size7" }, { "id", "TemplateClosedStatues_" + templateData.Key.Id } })
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Allow Final Comment</td>
+                    <td><input type="checkbox" name="AllowFinalComment" id="AllowFinalComment" class="fancy"  @if(Model.AllowFinalComment) { <text> checked="checked" </text>  } /></td>
+                </tr>
+                <tr>
+                    <td valign="top">Comment Button Text</td>
+                    <td><input type="text" id="CommentButtonText" name="CommentButtonText" class="required input-size7" maxlength="100" value="@Model.CommentButtonText"/></td>
+                </tr>
+                <tr>
+                    <td valign="top">Comment Confirmation Text</td>
+                    <td><textarea id="final-comment-text" name="FinalCommentText" class="required wysiwyg-editor cs-wysiwyg">@Model.FinalCommentText</textarea></td>
+                </tr>
+                <tr><td colspan="2"><div class="divider"></div></td></tr>
+
+                <tr>
+                    <td colspan="2" align="right">
+                        <input id="close-ticket-template-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </form>
+</div>
+<div id="close-ticket-template-preview" class="margin-top-20 pad-10 border-all hide"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            gemini_ui.htmlEditor('#close-ticket-text');
+            gemini_ui.htmlEditor('#final-comment-text');
+            gemini_ui.fancyInputs('#close-ticket-template-from .fancy');
+        }, 100);
+
+        $("#close-ticket-template-save").click(function (e) {
+            gemini_commons.stopClick(e);
+            if (!$("#close-ticket-template-from").valid()) { return; }
+            gemini_ui.startBusy('#close-ticket-template-from #close-ticket-template-save');
+            var formData = $("#close-ticket-template-from").serialize();
+
+            gemini_ajax.postCall("configure/Breeze/CloseTicketTemplate", "savedata",
+            function (data) {
+                gemini_popup.toast("Saved");
+                gemini_ui.stopBusy('#close-ticket-template-from #close-ticket-template-save');
+                $('#close-ticket-template-preview').html(data.Result).show();
+            }, function () { gemini_ui.stopBusy('#close-ticket-template-from #close-ticket-template-save'); }, formData, null, true);
+        });
+    });
+</script>

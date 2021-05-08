@@ -3032,6 +3032,21 @@ textarea.input-size12
         }
     }
 
+    #comments-content {
+
+        .toolbar {
+            padding: 6px 3px 3px 3px;
+            display: block;
+            margin-left: -5px;
+            text-align: left;
+            vertical-align: top;
+
+            .button {
+                padding: 1px 5px;
+            }
+        }
+    }
+
     .comments {
         .thumbnail {
             width: 100px;

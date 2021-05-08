@@ -36,7 +36,7 @@
                 }
 
                 <a href="@url" @target>
-                    <div class="card-box ">
+                    <div class="card-box">
                         <span class="img-container key @ViewHelpers.CardLetters(card)" style="background-color: @(card.Color) !important;" data-color="@(card.Color)">
                             @if (card.LastSeen == null)
                             {
@@ -54,7 +54,10 @@
 
                         </span>
                         <span class="title">@card.Title</span>
-
+                        <span class="draghandle">
+                            <i class="fad fa-arrows-v"></i>
+                        </span>
+                        
                     </div>
 
                 </a>

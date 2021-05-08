@@ -100,7 +100,7 @@ gemini_appnav =
 
         });
     },
-
+    sortSequencing:'',
     initCentralWorkspaceList: function () {
         $("#workspace-title").click(function (e) {
 
@@ -132,6 +132,41 @@ gemini_appnav =
         if ($("#workspace-badge-count").data("count") === 0) {
             $("#workspace-badge-count").css("visibility", "hidden");
         }
+
+        $("#workspace-slider .cards").sortable({
+            scrollSpeed: 40,
+            start: function (event, ui) {
+                var sequence = "";
+                $("#workspace-slider .cards .card").each(function (index, item) {
+                    var id = $(item).data("card-id");
+                    if (parseInt(id)>0) {
+                        sequence += id + "|"
+                    }
+                });
+                if (sequence.length > 2) {
+                    sequence = sequence.substring(0, sequence.length - 1);
+                }
+                //generate the sequence on start to compare with drop
+                gemini_appnav.sortSequencing = sequence;
+            },
+            stop: function (event, ui) {
+                var sequence = "";
+                $("#workspace-slider .cards .card").each(function (index, item) {
+                    var id = $(item).data("card-id");
+                    sequence += id + "|"
+                });
+                if (sequence.length > 2) {
+                    sequence = sequence.substring(0, sequence.length - 1);
+                }
+                if (gemini_appnav.sortSequencing != sequence) { //if the sequence has changed, call the update. No point refreshing cache needlessly
+                    gemini_ajax.postCall("action", "sort", function (response) {
+                        if (response.Result.Data != undefined || response.Result.Data != '') {
+                            gemini_popup.toast(response.Result.Data);
+                        }
+                    }, null, { sequence: sequence }, {}, false);
+                }
+            }
+        });
     },
     resetFilterList: function() {
         $("#workspace-filter").val("");

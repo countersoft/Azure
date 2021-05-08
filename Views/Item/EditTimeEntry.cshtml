@@ -100,7 +100,7 @@
                             {
                                 if (response.Message && response.Message.length)
                                 {
-                                    $('#server-validation-error', '#cs-popup-center').html(response.Message).show();
+                                    $('#server-validation-error', '#cs-popup-center').css('max-width', '299px').attr('title', response.Message).html(response.Message).show();
                                 }
                                 else
                                 {

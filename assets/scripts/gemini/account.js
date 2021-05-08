@@ -78,7 +78,7 @@ gemini_account = {
 
     initProfile: function (saved, error)
     {
-        $("#regular-form").validate({ rules: { confirmpassword: { equalTo: "#regular-password"}} });
+        $("#regular-form").validate({ rules: { confirmpassword: { equalTo: "#the-password" } } });
         gemini_ui.fancyInputs('#regular-form .fancy');
         gemini_ui.chosen("#regular-form select", false, true);
 
@@ -257,6 +257,9 @@ gemini_account = {
                            $("#cs-profile-view #regular-form").ajaxForm(options);
 
                            $("#popup-button-yes", "#cs-popup-center").click(function (e) {
+                               if ($('#confirm-password').val() === '' && $('#current-password').val() === '') {
+                                   $("#the-password").data('pwd-enforce', false); // no need to enforce, not trying to change
+                               }
                                if ($("#cs-profile-view #regular-form").valid()) {
                                    $("#cs-profile-view #regular-form").submit();                               
                                }

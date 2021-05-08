@@ -1,86 +1,168 @@
 ﻿@model BreezeSmtpServerEditModel
-<div id="BreezeQueuesItemContainer" style="height: 365px;">
+<div id="BreezeQueuesItemContainer" @*style="height: 465px;"*@>
     <form id="regular-form">
-    <input type="hidden" value="@Model.SmtpServer.Id" name="Id" Id="Id" />
-    <table id="table-admin-breezequeue" class="admin-data-entry">
-        <tbody>
-            <tr>
-                <td class="field-name">Name
-                </td>
-                <td>
-                    <input type="text" id="Name" name="Name" 
-                               class="input-field required input-size9" value="@Model.SmtpServer.Name"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Server
-                </td>
-                <td>
-                    <input type="text" id="Server" name="Server" 
-                           class="input-field required input-size9" value="@Model.SmtpServer.Server"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Server Port
-                </td>
-                <td>
-                    <input type="text" id="ServerPort" name="ServerPort" 
-                           class="input-field required input-size2" value="@Model.SmtpServer.ServerPort"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Authentication Mode
-                </td>
-                <td>
-                     @Html.DropDownList("AuthMode", Model.AuthModes, new { @class = "input-size6 required" })
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Username
-                </td>
-                <td>
-                    <input type="text" id="Username" name="Username" 
-                           class="input-field input-size9" value="@Model.SmtpServer.Username"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Password
-                </td>
-                <td>
-                    <input type="password" id="Password" name="Password" 
-                           class="input-field input-size9" value="@Model.SmtpServer.Password"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Encoding
-                </td>
-                <td>
-                    @Html.DropDownList("EncodingType", Model.EncodingTypes, new { @class = "input-size6 required" })
-                </td>
-            </tr>
-            <tr>
-                <td class="field-name">Use SSL
-                </td>
-                <td>
-                    <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if (Model.SmtpServer.UseSsl)
-                                                                     {
-                                                                         @: checked="checked"
-                                                                     }/>
-                </td>
-            </tr>
-            <tr id="ssl-modes" style="display:none;">
-                <td class="field-name">SSL Mode
-                </td>
-                <td>
-                    @Html.DropDownList("SslMode", Model.SslModes, new { @class = "input-size6" })
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <input type="hidden" value="@Model.SmtpServer.Id" name="Id" Id="Id" />
+        <table id="table-admin-breezequeue" class="admin-data-entry">
+            <tbody>
+
+                <tr>
+                    <td class="field-name">
+                        Name
+                    </td>
+                    <td>
+                        <input type="text" id="Name" name="Name"
+                               class="input-field required input-size9" value="@Model.SmtpServer.Name" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Server
+                    </td>
+                    <td>
+                        <input type="text" id="Server" name="Server"
+                               class="input-field required input-size9" value="@Model.SmtpServer.Server" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Server Port
+                    </td>
+                    <td>
+                        <input type="text" id="ServerPort" name="ServerPort"
+                               class="input-field required input-size2" value="@Model.SmtpServer.ServerPort" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Authentication Mode
+                    </td>
+                    <td>
+                        @Html.DropDownList( "AuthMode", Model.AuthModes, new { @class = "input-size6 required" } )
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        OAuth2 Provider
+                    </td>
+                    <td>
+                        @Html.DropDownList( "OAuthProvider", Model.OAuthProviders, new { @class = "input-size6", id = "oauth-provider" } )
+
+                        @*<select id="oauth-provider" name="OAuthProvider" class="input-size6">
+                                <option value="0">--Select--</option>
+                                <option>G-Mail</option>
+                                <option value="M365">Microsoft 365</option>
+                            </select>*@
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name" title="Microsoft 365 Only">
+                        Tenant Id
+                    </td>
+                    <td>
+                        <input type="text" id="TenantId" name="TenantId"
+                               class="input-field input-size9" value="@Model.SmtpServer.TenantId" />
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        Client Id
+                    </td>
+                    <td>
+                        <input type="text" id="ClientId" name="ClientId"
+                               class="input-field input-size9" value="@Model.SmtpServer.ClientId" />
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        Client Secret
+                    </td>
+                    <td>
+                        <input type="password" id="ClientSecret" name="ClientSecret"
+                               class="input-field input-size9" value="@(Model.SmtpServer.Id == 0 ? "": Constants.NoChange )" />
+                    </td>
+                </tr>
+                <tr class="oauth-control">
+                    <td class="field-name">
+                        Scopes
+                    </td>
+                    <td>
+                        <input type="text" id="Scopes" name="Scopes"
+                               class="input-field input-size9" value="@Model.SmtpServer.Scopes" />
+                    </td>
+                </tr>
+                @*<tr class="oauth-control hide">
+                        <td class="field-name">
+                            Discovery Document Url
+                        </td>
+                        <td>
+                            <input type="text" id="Discovery" name="Discovery"
+                                   class="input-field input-size9" value="@Model.SmtpServer.DiscoveryUrl" />/.well-known/discovery-endpoint
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td class="field-name">
+                        Username
+                    </td>
+                    <td>
+                        <input type="text" id="Username" name="Username"
+                               class="input-field input-size9" value="@Model.SmtpServer.Username" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Password
+                    </td>
+                    <td>
+                        <input type="password" id="Password" name="Password"
+                               class="input-field input-size9" value="@Model.SmtpServer.Password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Encoding
+                    </td>
+                    <td>
+                        @Html.DropDownList( "EncodingType", Model.EncodingTypes, new { @class = "input-size6 required" } )
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field-name">
+                        Use SSL
+                    </td>
+                    <td>
+                        <input type="checkbox" class="fancy" id="UseSsl" name="UseSsl" @if ( Model.SmtpServer.UseSsl ) { @: checked="checked"
+                               } />
+                    </td>
+                </tr>
+                <tr id="ssl-modes" style="display:none;">
+                    <td class="field-name">
+                        SSL Mode
+                    </td>
+                    <td>
+                        @Html.DropDownList( "SslMode", Model.SslModes, new { @class = "input-size6" } )
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </form>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $("#oauth-provider").change(function () {
+            switch ($(this).val()) {
+                case "M365":
+                    setValueIfEmpty("#Discovery", "https://login.microsoftonline.com/{tenantid}/v2.0")
+                    setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/SMTP.Send")
+                    break;
+            }
+        });
+
+        function setValueIfEmpty(selector, value) {
+            if ($(selector).val() == '') {
+                $(selector).val(value);
+            }
+        }
 
         gemini_ui.fancyInputs('#BreezeQueuesItemContainer .fancy');
 
@@ -92,44 +174,87 @@
         {
             @: gemini_ui.setDropdownValue("#SslMode", '@(Model.SmtpServer.SslMode)');
         }
-        
+
         $('option', '#EncodingType').each(function () {
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
         });
         gemini_ui.chosen("#EncodingType", null, true);
-        
+
         @if (Model.SmtpServer.EncodingType != null && Model.SmtpServer.EncodingType != 0)
         {
             @: gemini_ui.setDropdownValue("#EncodingType", '@(Model.SmtpServer.EncodingType)');
         }
-        
+
         $('option', '#AuthMode').each(function () {
             $(this).html($(this).html().replace('&lt;', '<').replace('&gt;', '>'));
         });
         gemini_ui.chosen("#AuthMode", null, true);
 
-        @if (Model.SmtpServer.AuthMode != null && Model.SmtpServer.AuthMode != 0)
+
+
+
+        $(".oauth-control").hide();
+        //reset validation on AuthMode Change
+        $("#AuthMode").change(function () {
+            authModeChanged();
+        });
+
+        function authModeChanged() {
+
+            if ($("#AuthMode").val() == 'None') {
+                $("#Username").attr('class', 'input-field input-size9');
+                $("#Password").attr('class', 'input-field input-size9');
+                $("#Password").closest("tr").show();
+                $(".oauth-control").hide();
+
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+            }
+            else if ($("#AuthMode").val() == 'OAuth2') {
+                $("#Password").closest("tr").hide();
+                $(".oauth-control").show();
+                //oauth-authorize
+                $("#TenantId").addClass('required');
+                $("#ClientId").addClass('required');
+                $("#ClientSecret").addClass('required');
+                $("#oauth-provider").addClass('required');
+
+            }
+            else {
+                $("#Username").attr('class', 'input-field required input-size9');
+                $("#Password").attr('class', 'input-field required input-size9');
+                $("#Password").closest("tr").show();
+
+                $("#oauth-provider").removeClass('required');
+                $("#TenantId").removeClass('required');
+                $("#ClientId").removeClass('required');
+                $("#ClientSecret").removeClass('required');
+
+                $(".oauth-control").hide();
+            }
+            $("#BreezeQueuesItemContainer").jScrollPane('reinitialise');
+        }
+
+
+         @if (Model.SmtpServer.AuthMode != null && Model.SmtpServer.AuthMode != 0)
         {
             @:gemini_ui.setDropdownValue("#AuthMode", '@(Model.SmtpServer.AuthMode)');
+            @: authModeChanged();
+         }
+
+        @if(!string.IsNullOrEmpty( Model.SmtpServer.OAuthProvider ) )
+        {
+            @:gemini_ui.setDropdownValue("#oauth-provider", '@(Model.SmtpServer.OAuthProvider)');
         }
-        
-        //reset validation on AuthMode Change
-          $("#AuthMode").change(function() {
-              if ($("#AuthMode").val() == 'None') {
-                  $("#Username").attr('class', 'input-field input-size9');
-                  $("#Password").attr('class', 'input-field input-size9');
-              }
-              else {
-                  $("#Username").attr('class', 'input-field required input-size9');
-                  $("#Password").attr('class', 'input-field required input-size9');
-              }
-          });
+        gemini_ui.chosen("#oauth-provider", null, true);
 
         @if (Model.SmtpServer.UseSsl)
         {
             @: $("#ssl-modes").toggle();
         }
-        
+
         $("#UseSsl").bind('ifChanged', function () {
             $("#ssl-modes").toggle();
         });
@@ -138,7 +263,11 @@
             if ($("#regular-form").valid()) {
                 gemini_ui.startBusy('#colorbox #popup-button-yes');
                 gemini_ajax.postCall("configure/Breeze/SmtpServer", "SaveData", function (response) {
-                    
+
+                    if (response.success && response.Result.startsWith("https")) {
+                        window.location = response.Result;
+                    }
+
                     gemini_popup.popupClose(e);
                     gemini_admin.getPage();
 
@@ -157,5 +286,7 @@
         });
 
         $("#popup-button-no").click(function (e) { gemini_popup.popupClose(e); });
+
+        $("#BreezeQueuesItemContainer").jScrollPane({});
     });
 </script>
