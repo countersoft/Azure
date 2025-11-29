@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Resource>
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="Activity">Attività</item>
   <item id="FilePath">Percorso File</item>
   <item id="AccountLockedError">L'account è bloccato. Si prega di contattare l'amministratore Gemini e chiudere il browser.</item>
@@ -496,4 +500,6 @@
   <item id="AnotherUserModified">Un'altra persona ha modificato questo oggetto</item>
   <item id="NowViewing">Attualmente Visualizzato</item>
   <item id="ReviewAndClickSend">Rivedi le modifiche e invia di nuovo</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

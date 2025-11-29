@@ -39,7 +39,7 @@
                                class="input-field required input-size9" value="@Model.Mailbox.EmailAddress" />
                     </td>
                 </tr>
-                <tr id="exchange-version">
+                <tr id="exchange-version" class="not-graph-no-required">
                     <td class="field-name">
                         Exchange Version
                     </td>
@@ -47,7 +47,7 @@
                         @Html.DropDownList( "ExchangeVersion", Model.ExchangeVersions, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
-                <tr id="auth-mode">
+                <tr id="auth-mode" class="not-graph-no-required">
                     <td class="field-name">
                         Authentication Mode
                     </td>
@@ -55,7 +55,7 @@
                         @Html.DropDownList( "AuthMode", Model.AuthModes, new { @class = "input-size6 required" } )
                     </td>
                 </tr>
-                <tr class="oauth-control" id="oauth-provider-field">
+                <tr class="oauth-control not-graph-no-required" id="oauth-provider-field">
                     <td class="field-name">
                         OAuth2 Provider
                     </td>
@@ -69,7 +69,7 @@
                 </select>*@
                     </td>
                 </tr>
-                <tr>
+                <tr class="not-graph">
                     <td id="server" class="field-name">
                         Server
                     </td>
@@ -77,7 +77,7 @@
                         <input type="text" id="Server" name="Server" class="input-field required input-size9" value="@Model.Mailbox.Server" />
                     </td>
                 </tr>
-                <tr id="server-port">
+                <tr id="server-port" class="not-graph">
                     <td class="field-name">
                         Server Port
                     </td>
@@ -85,7 +85,7 @@
                         <input type="text" id="ServerPort" name="ServerPort" class="input-field required input-size2" value="@Model.Mailbox.ServerPort" />
                     </td>
                 </tr>
-                <tr id="use-ssl">
+                <tr id="use-ssl" class="not-graph-no-required">
                     <td class="field-name">
                         Use SSL
                     </td>
@@ -94,12 +94,12 @@
                                } />
                     </td>
                 </tr>
-                <tr id="ssl-protocol">
+                <tr id="ssl-protocol" class="not-graph-no-required">
                     <td>SSL Protocol</td>
                     <td>@Html.DropDownList( "SslMode", Model.SslProtocol, new { @class = "input-size5" } )</td>
                 </tr>
 
-                <tr>
+                <tr class="not-graph">
                     <td class="field-name" id="username-label">
                         Username
                     </td>
@@ -107,7 +107,7 @@
                         <input type="text" id="Username" name="Username" class="input-field required input-size9" value="@Model.Mailbox.Username" />
                     </td>
                 </tr>
-                <tr id="password-row">
+                <tr id="password-row" class="not-graph">
                     <td class="field-name" id="password-label">
                         Password
                     </td>
@@ -116,7 +116,7 @@
                                class="input-field required input-size9" value="@Constants.NoChange" />
                     </td>
                 </tr>
-                <tr id="domain">
+                <tr id="domain" class="not-graph-no-required">
                     <td class="field-name" id="domain-label">
                         Domain
                     </td>
@@ -153,7 +153,7 @@
                                class="input-field input-size9" value="@(Model.Mailbox.Id == 0 ? "": Constants.NoChange)" />
                     </td>
                 </tr>
-                <tr class="oauth-control">
+                <tr class="oauth-control not-graph-no-required">
                     <td class="field-name">
                         Scopes
                     </td>
@@ -165,7 +165,7 @@
                 </tr>
                 @if ( Model.Mailbox.Id == 0 )
                 {
-                    <tr class="oauth-control">
+                    <tr class="oauth-control not-graph">
                         <td class="field-name"></td>
                         <td>
                             <p>
@@ -176,7 +176,7 @@
                         </td>
                     </tr>
                 }
-                <tr id="imap-folder" style="display:none;" class="mailbox-setting">
+                <tr id="imap-folder" style="display:none;" class="mailbox-setting not-graph-no-required">
                     <td class="field-name">
                         IMAP Folder
                     </td>
@@ -352,11 +352,11 @@
                     if (setValueIfEmpty("#ServerPort", "993")) {
                         $("#UseSsl").prop('checked', true).iCheck('update');
                         $("#SslMode").val('@GeminiConfigurationOptionSslProtocol.Tls12.ToString()').trigger("chosen:updated");
-                        
+
                     };
                     setValueIfEmpty("#Username", $("#EmailAddress").val());
 
-                    switch ($("#MailboxType").val() ) {
+                    switch ($("#MailboxType").val()) {
                         case 'IMAP':
                             setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/IMAP.AccessAsUser.All")
                             break;
@@ -364,8 +364,30 @@
                             //This won't usually be called because OAuth provider is not available when it is EWS
                             setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/EWS.AccessAsUser.All")
                             break;
-                    } 
+                    }
+                    $("#TenantId").addClass("required").closest("tr").show();
                     break;
+                case "Google": {
+                    setValueIfEmpty("#Server", "imap.gmail.com");
+                    if (setValueIfEmpty("#ServerPort", "993")) {
+                        $("#UseSsl").prop('checked', true).iCheck('update');
+                        $("#SslMode").val('@GeminiConfigurationOptionSslProtocol.Auto.ToString()').trigger("chosen:updated");
+
+                    };
+                    setValueIfEmpty("#Username", $("#EmailAddress").val());
+
+                    switch ($("#MailboxType").val()) {
+                        case 'IMAP':
+                            setValueIfEmpty("#Scopes", "https://mail.google.com/")
+                            break;
+                        case 'Exchange':
+                            //This won't usually be called because OAuth provider is not available when it is EWS
+                            gemini_popup.toast("Invalid option - Exchange", true)
+                            break;
+                    }
+                    $("#TenantId").removeClass("required").closest("tr").hide();
+                    break;
+                }
             }
         });
 
@@ -483,10 +505,12 @@
           //get the IMAP folder list from the server
 
           $("#ImapFolder").click(function () {
+              gemini_ui.startBusy("#ImapFolder");
               $("#pnlIMAPFolder").toggle('fast', function () {
                   if ($(this).is(":visible")) {
                       gemini_ajax.postCall("configure/Breeze/Mailbox", "Editor", function (response) {
                           $("#pnlIMAPFolder").html(response.Result.Html);
+                          gemini_ui.stopBusy("#ImapFolder");
                       }, null, $("#regular-form").serialize() + gemini_admin.getFormTemplateId() + "&t=imap", null, true);
                   }
               });
@@ -503,10 +527,15 @@
           });
 
           $('#AuthMode').change();
+          $("#oauth-provider").trigger('change');
       });
 
 
     function AuthModeChange() {
+        if ($('#MailboxType').val() == "Graph") {
+            return;
+        }
+
             if ($("#AuthMode").val() == 'NONE') {
                 $("#Username").removeClass('required');
                 $("#Password").removeClass('required');
@@ -552,6 +581,10 @@
     }
     
     function ExchangeVersionChange() {
+        if ($('#MailboxType').val() == "Graph") {
+            return;
+        }
+
         if ($('#ExchangeVersion').val() == '@ExchangeVersion.Office365_OAuth.ToString()' ) {
             $("#scope-row").show();
             $(".oauth-control").show();
@@ -578,16 +611,32 @@
     MailboxTypeChange();
     function MailboxTypeChange()
     {
+        $('.not-graph select').addClass('required');
+        $('.not-graph td>input').addClass('required');
+        $(".not-graph-no-required").show();
+        $(".not-graph").show();
+        $(".oauth-control").hide();
+
         if ($('#MailboxType').val() == "IMAP") {
             $("#imap-folder").show();
             $("#server-port").show();
-            $( "#use-ssl" ).show();
-            $( "#ssl-protocol" ).show();
+            $("#use-ssl").show();
+            $("#ssl-protocol").show();
             $("#server").html("Server");
             $("#auth-mode").show();
             $('#ImapFolder').attr('class', 'input-field required input-size9');
             $("#exchange-version").hide();
             $("#domain").hide();
+        } else if ($('#MailboxType').val() == "Graph") {
+            $(".oauth-control").show();
+            $('.not-graph select').removeClass('required');
+            $('.not-graph input').removeClass('required');
+            $(".not-graph").hide();
+            $(".not-graph-no-required").hide();
+
+            $("#TenantId").addClass('required');
+            $("#ClientId").addClass('required');
+            $("#ClientSecret").addClass('required');
         } else {
             $("#imap-folder").hide();
             if ($('#MailboxType').val() == "Exchange") {

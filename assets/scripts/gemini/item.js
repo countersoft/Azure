@@ -8,7 +8,7 @@ gemini_item = {
     itemUrl: '',
     commentWasInserted: false,
     issueProjectId: null,
-    initItem: function (projectId, projectCode, issueId, pageType, canEdit, temp_dropzone, temp_delete) {
+    initItem: function (projectId, projectCode, issueId, pageType, canEdit, temp_dropzone, temp_delete, asOf) {
 
         gemini_item.pageType = pageType;
 
@@ -462,7 +462,7 @@ gemini_item = {
         });
 
         if (!($("#tabledata").length)) {
-            gemini_ajax.call("item", "FilterNavigator?issueid=" + issueId, function (response) {
+            gemini_ajax.call("item", "FilterNavigator?issueid=" + issueId + (asOf ? '&asof=' + asOf : ''), function (response) {
                 $('#filter-navigator-container').html(response);
                 $('#mobile-filter-navigator-container').html(response);
 
@@ -765,7 +765,7 @@ gemini_item = {
                 $("#comments-section").click();
             }
             else if (this.Key == 'Title') {
-                $('#view-item .item-title').html(this.Value);
+                $('#view-item .item-title').html(this.Value.replaceAll('<', '&lt;'));
             }
             else if (this.Key == 'Description') {
                 $(".clear-description-article").remove();

@@ -20,7 +20,11 @@
         }
         <input class="fancy" type="radio" name="@(Model.Name)" value="@(Model.Items[last - 1].ItemId)" id="@(Model.Name)-@(Model.Items[last - 1].ItemId)"
                @if (Model.Items[last - 1].IsSelected || Model.Items[last].IsSelected)
-               {<text>checked="checked"</text>}/><input type="text" name="@(Model.Name)-@(Model.Items[last - 1].ItemId)" id="@(Model.Name)-@(Model.Items[last - 1].ItemId)" value="@Model.Items[last - 1].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat"/>&nbsp;-&nbsp;<input type="text" name="@(Model.Name)-@(Model.Items[last].ItemId)" id="@(Model.Name)-@(Model.Items[last].ItemId)" value="@Model.Items[last].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat"/>
+               {<text>checked="checked"</text>}/><input type="text" name="@(Model.Name)-@(Model.Items[last - 1].ItemId)" id="@(Model.Name)-@(Model.Items[last - 1].ItemId)" value="@Model.Items[last - 1].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat"/>
+               @if(Model.ShowTo)
+               {
+                   <text>&nbsp;-&nbsp;<input type="text" name="@(Model.Name)-@(Model.Items[last].ItemId)" id="@(Model.Name)-@(Model.Items[last].ItemId)" value="@Model.Items[last].ItemText" class="margin-left-5 datepicker dateFormatted" data-date-format="@GeminiContext.User.GeminiDateFormat"/></text>
+               }
         <div class="margin-top-10 margin-left-10">today, today+7, today-1, start-month, end-month<br/> start-week, end-week</div>
     </div>
 </div>

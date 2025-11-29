@@ -2,6 +2,10 @@
 <Resource>
   <!-- Misc -->
   <!-->item id="Item">Item</item-->
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="Activity">Aktivite</item>
   <item id="AccountLockedError">Hesabınız kilitlendi. Lütfen Gemini yöneticinizle irtibata geçin ve tarayıcıyı kapatın.</item>
   <item id="ActivityByComponentName">Bileşene Göre Aktivite</item>
@@ -498,4 +502,6 @@
   <item id="AnotherUserModified">Başka bir kişi bu öğeyi değiştirdi</item>
   <item id="NowViewing">Şimdi görüntülüyor</item>
   <item id="ReviewAndClickSend">Değişiklikleri gözden geçir ve tekrar gönder</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

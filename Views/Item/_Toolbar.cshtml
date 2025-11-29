@@ -1,6 +1,6 @@
 ﻿@model ViewIssueModel
 
-@if ( @IsAuthenticated )
+@if (@IsAuthenticated && !Model.Issue.AsOf.HasValue)
 {
     <div id="item-toolbar" class="no-select toolbar-icons clear-both">
 
@@ -19,12 +19,14 @@
             </div>
         }
 
-        @if ( @Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser() &&
-             !GeminiContext.PermissionsManager.IsProjectReadOnly( Model.Issue.Project ) || true )
+        @if ( @Model.CanMoveIssue && !GeminiContext.PermissionsManager.IsHelpdeskUser())
         {
+            if(!GeminiContext.PermissionsManager.IsProjectReadOnly(Model.Issue.Project))
+            {
             <div id="action-move" class="wrapper" title="@GetResource(ResourceKeys.Move)">
                 <i class="fad fa-external-link-square fa-2x"></i>
             </div>
+            }
             <div id="action-copy" class="wrapper" title="@GetResource(ResourceKeys.Copy)">
                 <i class="fad fa-copy fa-2x"></i>
             </div>

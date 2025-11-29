@@ -44,6 +44,10 @@
   <item id="PasswordRuleNumber">Password must contain one number</item>
   <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
   <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
+
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
   
   <item id="Open">Otevřeno</item>
   <item id="Page">Stránka</item>
@@ -550,5 +554,6 @@
   <item id="AnotherUserModified">Tuto položku změnila jiná osoba</item>
   <item id="ReviewAndClickSend">Zkontrolujte změny a znovu odešlete</item>
   <item id="NowViewing">Nyní se dívám</item>
-
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

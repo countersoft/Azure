@@ -54,7 +54,7 @@
                     @Html.DropDownList( "OAuthProvider", Model.OAuthProviders, new { @class = "input-size6 required", id = "oauth-provider" } )
                 </td>
             </tr>
-            <tr class="oauth-control">
+            <tr class="oauth-control graph-control">
                 <td title="Microsoft 365 Only">
                     Tenant Id
                 </td>
@@ -63,7 +63,7 @@
                            class="input-field input-size9" value="@Model.TenantId" />
                 </td>
             </tr>
-            <tr class="oauth-control">
+            <tr class="oauth-control graph-control">
                 <td>
                     Client Id
                 </td>
@@ -72,7 +72,7 @@
                            class="input-field input-size9" value="@Model.ClientId" />
                 </td>
             </tr>
-            <tr class="oauth-control">
+            <tr class="oauth-control graph-control">
                 <td>
                     Client Secret
                 </td>
@@ -81,7 +81,7 @@
                            class="input-field input-size9" value="@Model.ClientSecret" />
                 </td>
             </tr>
-            <tr class="oauth-control">
+            <tr class="oauth-control graph-control">
                 <td>
                     Scopes
                 </td>
@@ -142,14 +142,22 @@
         $("#oauth-provider").change(function () {
             switch ($(this).val()) {
                 case "M365":
-                    setValueIfEmpty("#Discovery", "https://login.microsoftonline.com/{tenantid}/v2.0")
-                    setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/SMTP.Send")
+                    setValueIfEmpty("#Discovery", "https://login.microsoftonline.com/{tenantid}/v2.0");
+                    setValueIfEmpty("#Scopes", "offline_access|https://outlook.office.com/SMTP.Send");
+                    $("#TenantId").addClass("required").closest("tr").show();
+                    break;
+                case "Google":
+                    setValueIfEmpty("#ServerPort", "587");
+                    setValueIfEmpty("#Server", "smtp.gmail.com");
+                    setValueIfEmpty("#Scopes", "https://mail.google.com|https://www.googleapis.com/auth/gmail.send")
+                    $("#TenantId").removeClass("required").closest("tr").hide();
+                    $("#Ssl").prop('checked', true).iCheck('update');
                     break;
             }
         });
 
         function setValueIfEmpty(selector, value) {
-            if ($(selector).val() == '') {
+            if ($(selector).val() == '' || $(selector).val() == '0') {
                 $(selector).val(value);
             }
         }
@@ -197,6 +205,8 @@
         });
 
         authModeChanged();
+        $("#oauth-provider").trigger('change');
+
         function authModeChanged() {
 
             if ($("#AuthMode").val() == 'None') {
@@ -210,8 +220,7 @@
                 $("#ClientId").removeClass('required');
                 $("#ClientSecret").removeClass('required');
                 $(".oauth-control").hide();
-            }
-            else if ($("#AuthMode").val() == 'OAuth2') {
+            } else if ($("#AuthMode").val() == 'OAuth2') {
                 $("#AuthenticationPassword").closest("tr").hide();
                 $("#AuthenticationUsername").closest("tr").hide();
                 $("#TenantId").addClass('required');
@@ -220,8 +229,17 @@
                 $("#oauth-provider").addClass('required');
                 $(".oauth-control").show();
                 //oauth-authorize
-            }
-            else {
+            } else if ($("#AuthMode").val() == 'Graph') {
+                $(".oauth-control").hide();
+                $("#AuthenticationPassword").closest("tr").hide();
+                $("#AuthenticationUsername").closest("tr").hide();
+                $("#TenantId").addClass('required');
+                $("#ClientId").addClass('required');
+                $("#ClientSecret").addClass('required');
+                $("#oauth-provider").removeClass('required');
+                $(".graph-control").show();
+                //oauth-authorize
+            } else {
                 $("#Username").attr('class', 'input-field required input-size9');
                 $("#AuthenticationPassword").attr('class', 'input-field required input-size9');
                 $("#AuthenticationPassword").closest("tr").show();

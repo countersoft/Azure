@@ -2,6 +2,10 @@
 <Resource>
   <!-- Misc -->
   <!-->item id="Item">Item</item-->
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="Activity">Activité</item>
   <item id="CustomLookupData">test</item>
   <item id="AccountLockedError">Le compte est bloqué. Veuillez contacter votre administrateur Gemini et fermer le navigateur.</item>
@@ -498,4 +502,6 @@
   <item id="TypeChart">Graphique de type</item>
   <item id="VersionChart">Graphique des versions</item>
   <item id="SlaBreachDate">Date de manquement</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

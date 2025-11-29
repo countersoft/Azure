@@ -22,8 +22,8 @@
             {
                 <tr data-id="@item.Id" id="@item.Id">
                     <td>@item.Name</td>                
-                    <td>@item.Server</td>   
-                    <td>@item.ServerPort</td>
+                    <td>@(item.AuthMode == SmtpAuthenticationMode.Graph ? "Microsoft Graph" : item.Server)</td>   
+                    <td>@(item.AuthMode == SmtpAuthenticationMode.Graph ? "Microsoft Graph" : item.ServerPort.ToString())</td>
                     <td data-edit="false" class="actions" >
                         <span class="action-button-edit cursor-pointer" title="@GetResource(ResourceKeys.Edit)" data-method="edit"></span>
                         <span class="action-button-delete cursor-pointer" title="@GetResource(ResourceKeys.Delete)" data-method="delete"></span>

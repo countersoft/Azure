@@ -81,7 +81,7 @@ else
         {
             bool firstCol = true;
             var sequenceData = itemsModel.SequencedData[issue.Entity.Id];
-<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-issue-asof="@issue.AsOfString" data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='sequenced-issue @ViewHelpers.HighlightIssueRow(issue, cardIds)'>
     <td class='align-left no-wrap items-first-column read-only'>
 
         @if ( allowSequencing )
@@ -134,7 +134,7 @@ else
 @foreach (var issue in Model.Issues)
 {
     bool firstCol = true;
-<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds)'>       
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-issue-asof="@issue.AsOfString" data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds)'>       
 @{
     var data = Model.DisplayData[issue.Entity.Id];
 <td class="align-left no-wrap items-first-column read-only">

@@ -7,30 +7,32 @@
         <table class="data-entry-box">
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowRegistrations" class="fancy" name="AllowRegistrations" @if(Model.AllowRegistrations){ <text>checked="checked"</text> } /> <label for="AllowRegistrations">Allow users to self-register</label></td>
+                <td><input type="checkbox" id="AllowRegistrations" class="fancy" name="AllowRegistrations" @if (Model.AllowRegistrations) { <text> checked="checked" </text> } /> <label for="AllowRegistrations">Allow users to self-register</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowAnonymousAccess" class="fancy" name="AllowAnonymousAccess" @if(Model.AllowAnonymousAccess){ <text>checked="checked"</text> } /> <label for="AllowAnonymousAccess">Allow users to browse Gemini without logging in first</label></td>
+                <td><input type="checkbox" id="AllowAnonymousAccess" class="fancy" name="AllowAnonymousAccess" @if (Model.AllowAnonymousAccess) { <text> checked="checked" </text> } /> <label for="AllowAnonymousAccess">Allow users to browse Gemini without logging in first</label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="AllowOpenId" class="fancy" name="AllowOpenId" @if(Model.AllowOpenId){ <text>checked="checked"</text> } /> <label for="AllowOpenId">Allow users to authenticate with Gemini using Open Id </label></td>
+                <td><input type="checkbox" id="AllowOpenId" class="fancy" name="AllowOpenId" @if (Model.AllowOpenId) { <text> checked="checked" </text> } /> <label for="AllowOpenId">Allow users to authenticate with Gemini using Open Id </label></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><input type="checkbox" id="EnableFacebookIntegration" class="fancy" name="EnableFacebookIntegration" @if(Model.EnableFacebookIntegration){ <text>checked="checked"</text> } /> 
-                    <label for="EnableFacebookIntegration">Allow users to authenticate with Gemini using Facebook</label></td>
+                <td>
+                    <input type="checkbox" id="EnableFacebookIntegration" class="fancy" name="EnableFacebookIntegration" @if (Model.EnableFacebookIntegration) { <text> checked="checked" </text> } />
+                    <label for="EnableFacebookIntegration">Allow users to authenticate with Gemini using Facebook</label>
+                </td>
             </tr>
             <tr>
                 <td>Facebook App Id</td>
-                <td><input type="text" id="FacebookAppId" name="FacebookAppId" class="input-size9 @if(Model.EnableFacebookIntegration){<text>required</text>}" value="@Model.FacebookAppId"/></td>
+                <td><input type="text" id="FacebookAppId" name="FacebookAppId" class="input-size9 @if(Model.EnableFacebookIntegration){<text>required</text>}" value="@Model.FacebookAppId" /></td>
             </tr>
 
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                    <input type="checkbox" id="EnableGoogleIntegration" class="fancy" name="EnableGoogleIntegration" @if (Model.EnableGoogleIntegration)     {<text> checked="checked" </text>   } />
+                    <input type="checkbox" id="EnableGoogleIntegration" class="fancy" name="EnableGoogleIntegration" @if (Model.EnableGoogleIntegration) { <text> checked="checked" </text> } />
                     <label for="EnableGoogleIntegration">Allow users to authenticate with Gemini using Google</label>
                 </td>
             </tr>
@@ -48,7 +50,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                    <input type="checkbox" id="EnableAuth0Integration" class="fancy" name="EnableAuth0Integration" @if (Model.EnableAuth0Integration) { <text> checked="checked" </text>    } />
+                    <input type="checkbox" id="EnableAuth0Integration" class="fancy" name="EnableAuth0Integration" @if (Model.EnableAuth0Integration) { <text> checked="checked" </text> } />
                     <label for="EnableAuth0Integration">Allow users to authenticate with Gemini using Auth0</label>
                 </td>
             </tr>
@@ -68,11 +70,11 @@
                 <td><input type="text" id="Auth0Domain" name="Auth0Domain" class="input-size9 @if (Model.EnableAuth0Integration)     {<text>required</text>}" value="@Model.Auth0Domain" /></td>
             </tr>
             @*Auth0 - B.E. - END*@
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
 
             <tr>
                 <td>Reset Password Email Subject</td>
-                <td><input type="text" id="ResetPasswordEmailSubjectLine" name="ResetPasswordEmailSubjectLine" class="input-size9 required" value="@Model.ResetPasswordEmailSubjectLine"/></td>
+                <td><input type="text" id="ResetPasswordEmailSubjectLine" name="ResetPasswordEmailSubjectLine" class="input-size9 required" value="@Model.ResetPasswordEmailSubjectLine" /></td>
             </tr>
             <tr>
                 <td valign="top">Reset Password Email Text</td>
@@ -88,40 +90,45 @@
                 <td>New User Default Groups</td>
                 <td>@Html.ListBox("DefaultUserGroup", Model.DefaultUserGroups, new { @class = "input-size9" })</td>
             </tr>
-            
-            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}"><td colspan="2"><div class="divider"></div></td></tr>         
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}"><td colspan="2"><div class="divider"></div></td></tr>
+
+            <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
+                <td>Enable 2 Factor Authentication</td>
+                <td><input type="checkbox" name="Enable2FA" class="fancy" @if (Model.Enable2FA) { <text> checked="checked" </text> } /></td>
+            </tr>
 
             <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
                 <td>Force New Password Every</td>
-                <td><input type="text" id="force-password-in-days" name="ForceNewPasswordInDays" class="input-size2 digits" value="@Model.ForceNewPasswordInDays"/>&nbsp;days&nbsp;&nbsp;(0 will disable this feature)</td>
+                <td><input type="text" id="force-password-in-days" name="ForceNewPasswordInDays" class="input-size2 digits" value="@Model.ForceNewPasswordInDays" />&nbsp;days&nbsp;&nbsp;(0 will disable this feature)</td>
             </tr>
 
             <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
                 <td><label for="PreventPasswordReuse">Do Not Allow Password Reuse</label></td>
-                <td><input type="checkbox" name="PreventPasswordReuse" id="PreventPasswordReuse" class="fancy" @if (Model.PreventPasswordReuse) { <text>checked="checked"</text> }/></td>
+                <td><input type="checkbox" name="PreventPasswordReuse" id="PreventPasswordReuse" class="fancy" @if (Model.PreventPasswordReuse) { <text> checked="checked" </text> } /></td>
             </tr>
 
             <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
                 <td>Maximum Login Attempts</td>
-                <td><input type="text" id="account--lockout-threshold" name="AccountLockoutThreshold" class="input-size2 digits" value="@Model.AccountLockoutThreshold"/>&nbsp;&nbsp;(0 will disable this feature)</td>
+                <td><input type="text" id="account--lockout-threshold" name="AccountLockoutThreshold" class="input-size2 digits" value="@Model.AccountLockoutThreshold" />&nbsp;&nbsp;(0 will disable this feature)</td>
             </tr>
 
             <tr class="@if (GeminiApp.Config.IsWindowsAuthentication) { <text>hide</text>}">
                 <td><label for="enforce-password-policy">Enforce Password Format</label></td>
                 <td>
-                    <input type="checkbox" id="enforce-password-policy" class="fancy margin-bottom-5" name="EnforcePasswordPolicy" @if (Model.EnforcePasswordPolicy) { <text>checked="checked"</text> }/>                   
+                    <input type="checkbox" id="enforce-password-policy" class="fancy margin-bottom-5" name="EnforcePasswordPolicy" @if (Model.EnforcePasswordPolicy) { <text> checked="checked" </text> } />
                 </td>
             </tr>
 
             <tr class="hide" id="PasswordPolicyOptions">
                 <td></td>
                 <td>
-                    <div class="valign-top margin-bottom-10">Minimum password length <input type="text" id="minimum-letter" name="MinimumLetters" class="input-size2 margin-right-5" value="@Model.MinimumLetters"/><label>characters</label></div>
-                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="lowercase-required" name="LowercaseRequired" class="input-size1 fancy" @if (Model.LowercaseRequired)                                                                                                                                               { <text>checked="checked"</text> }/><label for="lowercase-required">Lowercase required</label></div>                    
-                    <div class="valign-top margin-bottom-5 left  margin-left-5"><input type="checkbox" id="uppercase-required" name="UppercaseRequired" class="input-size1 fancy" @if (Model.UppercaseRequired)                                                                                                                                                                { <text>checked="checked"</text> }/><label for="uppercase-required">Uppercase required</label></div>
+                    <div class="valign-top margin-bottom-10">Minimum password length <input type="text" id="minimum-letter" name="MinimumLetters" class="input-size2 margin-right-5" value="@Model.MinimumLetters" /><label>characters</label></div>
+                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="lowercase-required" name="LowercaseRequired" class="input-size1 fancy" @if (Model.LowercaseRequired) { <text> checked="checked" </text> } /><label for="lowercase-required">Lowercase required</label></div>
+                    <div class="valign-top margin-bottom-5 left  margin-left-5"><input type="checkbox" id="uppercase-required" name="UppercaseRequired" class="input-size1 fancy" @if (Model.UppercaseRequired) { <text> checked="checked" </text> } /><label for="uppercase-required">Uppercase required</label></div>
                     <div class="clearfix"></div>
-                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="number-required" name="NumberRequired" class="input-size1 fancy" @if (Model.NumberRequired)                                                                                                                                      { <text>checked="checked"</text> }/><label for="number-required">Number required</label></div>
-                    <div class="valign-top left" style="margin-left:23px;"><input type="checkbox" id="symbol-required" name="SymbolRequired" class="input-size1 fancy" @if (Model.SymbolRequired)                                                                                                                                                  { <text>checked="checked"</text> }/><label for="symbol-required">Non-alphanumeric character required (~!@@#$%^&.,-_)</label></div>
+                    <div class="valign-top margin-bottom-5 left"><input type="checkbox" id="number-required" name="NumberRequired" class="input-size1 fancy" @if (Model.NumberRequired) { <text> checked="checked" </text> } /><label for="number-required">Number required</label></div>
+                    <div class="valign-top left" style="margin-left:23px;"><input type="checkbox" id="symbol-required" name="SymbolRequired" class="input-size1 fancy" @if (Model.SymbolRequired) { <text> checked="checked" </text> } /><label for="symbol-required">Non-alphanumeric character required (~!@@#$%^&.,-_)</label></div>
                 </td>
             </tr>
 
@@ -129,32 +136,34 @@
                 <td valign="top">Browser Session Timeout</td>
                 <td>
                     <div class="wysiwyg-container wysiwyg-height1">
-                        <input type="text" id="session-timeout" name="SessionTimeOut" class="input-size2 digits" value="@Model.SessionTimeOut" @*Browser session time out per site - B.E. - BEGIN*@ @if (Model.SessionTimeOutComesFromWebConfig) { <text> disabled="disabled" </text>  } @*Browser session time out per site - B.E. END*@ />
+                        <input type="text" id="session-timeout" name="SessionTimeOut" class="input-size2 digits" value="@Model.SessionTimeOut" @*Browser session time out per site - B.E. - BEGIN*@ @if (Model.SessionTimeOutComesFromWebConfig) { <text> disabled="disabled" </text>  } @*Browser session time out per site - B.E. END*@
+                                />
                         <label for="session-timeout">minutes&nbsp;&nbsp;(0 will disable this feature)</label>
                     </div>
                 </td>
             </tr>
 
-            <tr><td colspan="2"><div class="divider"></div></td></tr>  
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
 
             <tr>
                 <td>Customer Portal User Group</td>
-                <td>@Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })
+                <td>
+                    @Html.DropDownList("PortalGroup", Model.PortalUserGroup, new { @class = "input-size9" })
                 </td>
             </tr>
 
             <tr>
                 <td></td>
                 <td>
-                @*B.E. - Disable workspace management - BEGIN*@
-                <div style="vertical-align: middle; padding-top: 5px"><input type="checkbox" id="NoPortalWorkspaceMgmt" class="fancy" name="NoPortalWorkspaceMgmt" @if (Model.NoPortalWorkspaceMgmt) { <text> checked="checked" </text>       } /> <label for="NoPortalWorkspaceMgmt">Disable Portal User Workspace Management</label></div>
-                @*B.E. - Disable workspace management - END*@
-            </td>
-        </tr>
+                    @*B.E. - Disable workspace management - BEGIN*@
+                    <div style="vertical-align: middle; padding-top: 5px"><input type="checkbox" id="NoPortalWorkspaceMgmt" class="fancy" name="NoPortalWorkspaceMgmt" @if (Model.NoPortalWorkspaceMgmt) { <text> checked="checked" </text> } /> <label for="NoPortalWorkspaceMgmt">Disable Portal User Workspace Management</label></div>
+                    @*B.E. - Disable workspace management - END*@
+                </td>
+            </tr>
 
             <tr>
                 <td>Customer Portal Welcome Title</td>
-                <td><input type="text" id="PortalWelcomeTitle" name="PortalWelcomeTitle" class="input-size9 required" value="@Model.PortalWelcomeTitle"/></td>
+                <td><input type="text" id="PortalWelcomeTitle" name="PortalWelcomeTitle" class="input-size9 required" value="@Model.PortalWelcomeTitle" /></td>
             </tr>
 
             <tr>
@@ -166,14 +175,14 @@
                 </td>
             </tr>
 
-            <tr><td colspan="2"><div class="divider"></div></td></tr> 
-             
+            <tr><td colspan="2"><div class="divider"></div></td></tr>
+
             <tr>
                 <td colspan="2" align="right">
                     <input id="people-options-save" type="button" value='@GetResource(ResourceKeys.Save)' class='button-primary' />
                 </td>
             </tr>
-              
+
         </table>
     </form>
 </div>

@@ -725,7 +725,7 @@ gemini_filter = {
         $('#tabledata').on('click', '.parent', function (e) {
             gemini_commons.stopClick(e);
             if ($(this).hasClass('fonticon-arrow-down')) {
-                gemini_ajax.postCall('items', 'fetchdependants' + '?issueid=' + $(this).parent().parent().data('issue-id'), gemini_filter.showDependants, null, { filter: $('#filter-form').serialize() });
+                gemini_ajax.postCall('items', 'fetchdependants' + '?issueid=' + $(this).parent().parent().data('issue-id') + '&asof=' + $(this).parent().parent().data('issue-asof'), gemini_filter.showDependants, null, { filter: $('#filter-form').serialize() });
                 $(this).removeClass('fonticon-arrow-down');
                 $(this).addClass('fonticon-arrow-up');
             }

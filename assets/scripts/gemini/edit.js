@@ -155,7 +155,7 @@ gemini_edit = {
             });
             $(response.Result.Sections).each(function () {
                 if (this.Key == 'Title') {
-                    $('.item-title .title', '#view-item').html(this.Value);
+                    $('.item-title .title', '#view-item').html(this.Value.replaceAll('<', '&lt;'));
                 }
                 else if (this.Key == 'reload') {
                     window.location = response.Result.RedirectUrl;
@@ -323,7 +323,7 @@ gemini_edit = {
                         '<h2 class="margin-bottom-10">' +
                         response.Result.IssueKey +
                         ' ' +
-                        response.Result.Property +
+                        gemini_commons.htmlEncode(response.Result.Property) +
                         '</h2>';
                     newContent += response.Result.Html + '</form>';
                     response.Result.Html = newContent;
@@ -465,7 +465,7 @@ gemini_edit = {
                                 gemini_item.replaceContentContainer('additional', this.Value);
                             }
                         else if (this.Key == 'Title' && ! reloading) {
-                            $('.item-title .title', '#view-item').html(this.Value);
+                            $('.item-title .title', '#view-item').html(this.Value.replaceAll('<', '&lt;'));
                         }
                     else if (this.Key == 'EstimatedEffort' && ! reloading) {
                             $('.progress-info', '#view-item').replaceWith(this.Value);

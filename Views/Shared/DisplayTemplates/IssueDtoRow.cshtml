@@ -26,7 +26,7 @@ foreach (var issue in Model.Issues)
 {
 bool firstCol = true;
 string dependant = hierarchy != null && hierarchy.DependancySpacing.ContainsKey(issue.Entity.Id) ? "dependant" : string.Empty;
-<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds) @dependant'>
+<tr id='tr-issue-@issue.Id' data-issue-id='@issue.Id' data-issue-asof="@issue.AsOfString" data-project-code='@issue.ProjectCode' data-project-id='@issue.Project.Id' class='@ViewHelpers.HighlightIssueRow(issue, cardIds) @dependant'>
 <td class="items-first-column">
 @if(hierarchy == null)
 {

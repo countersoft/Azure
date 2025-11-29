@@ -81,10 +81,10 @@ gemini_notifications =
                     var li = "<li>";
                     if (item.ItemId > 0) {
                         li += "<a href=\"" + csVars.Url + item.Url + "\">" +
-                            item.Label +
+                            item.Label.replaceAll('<', '&lt;') +
                             "</a>";
                     } else {
-                        li += item.Label;
+                        li += item.Label.replaceAll('<', '&lt;');
                     }
                     li += "</li>";
                     $("ul#updated-items").append(li);
@@ -97,13 +97,13 @@ gemini_notifications =
                     if (item.ItemId > 0) {
                         $("ul#pinned-items").append("<li class=\"pinned-item\">" +
                             "<i class=\"fad fa-thumbtack\" data-itemid=\"" + item.ItemId + "\"></i>" +
-                            "<a href=\"" + csVars.Url + item.Url + "\" title=\"" + item.Label + "\">" +
-                            item.Label +
+                            "<a href=\"" + csVars.Url + item.Url + "\" title=\"" + item.Label.replaceAll('<', '&lt;') + "\">" +
+                            item.Label.replaceAll('<', '&lt;') +
                             "</a>" +
                             "</li>" +
                             "");
                     } else {
-                        $("ul#pinned-items").append("<li>" + item.Label + "</li>");
+                        $("ul#pinned-items").append("<li>" + item.Label.replaceAll('<', '&lt;') + "</li>");
                     }
                 });
 

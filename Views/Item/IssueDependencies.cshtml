@@ -60,7 +60,7 @@
                     {
                         <span class="fonticon-plus noshow"></span>
                     }
-                    <a class="item-links" href='@Url.Action("Item", "Item", new RouteValueDictionary(new { id = GeminiContext.Card.Id, issueid = hierarchyItem.Value.Id }))'>
+                    <a class="item-links" href='@Url.Action("Item", "Item", new RouteValueDictionary(new { id = GeminiContext.Card.Id, issueid = hierarchyItem.Value.Id, asof = Model.Issue.AsOfString }))'>
                         <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value)">@hierarchyItem.Value.IssueKey</span>
                         <span class="@ViewHelpers.IssueStriked(hierarchyItem.Value) @ViewHelpers.ViewItem_SameIssue(hierarchyItem.Value, Model.Issue)"></span>
                     </a>

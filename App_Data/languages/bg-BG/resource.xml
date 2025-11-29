@@ -45,6 +45,10 @@
   <item id="PasswordRuleCharacters">Password must contain one of these symbols</item>
   <item id="SelfRegistrationRestricted">Self registration is not permitted</item>
 
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+
   <item id="Open">Отворен</item>
   <item id="Page">Страница</item>
   <item id="Of">от</item>
@@ -550,4 +554,6 @@
   <item id="AnotherUserModified">Друг човек е променил този елемент</item>
   <item id="ReviewAndClickSend">Прегледайте промените и изпратете отново</item>
   <item id="NowViewing">Сега гледаме</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

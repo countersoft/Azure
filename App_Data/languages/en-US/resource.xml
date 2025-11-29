@@ -17,6 +17,9 @@
   <item id="User">User</item>
   <item id="Username">Username</item>
   <item id="Password">Password</item>
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
   <item id="ApiKey">API Key</item>
   <item id="Reset">Reset</item>
   <item id="Register">Register</item>
@@ -549,5 +552,6 @@
   <item id="AnotherUserModified">Another person has modified this</item>
   <item id="ReviewAndClickSend">Review changes and resend</item>
   <item id="NowViewing">Now viewing</item>
-
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

@@ -91,6 +91,16 @@
         }, 200);
             </text>
         }
+
+        @if (TempData.ContainsKey("mfa") && (bool)TempData["mfa"])
+        { 
+            <text>
+            setTimeout(function() {
+                $('.user-options a').click();
+                setTimeout(function () { $('span.tab[data-tab-id="password"]').click(); }, 800);
+            }, 500);
+            </text>
+        }
     });
     @RenderSection("JavaScript", false)
     </script>

@@ -70,6 +70,11 @@ else
     <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Elapsed)</span></span> @string.Format("{0}d {1}h {2}m", span.Days, span.Hours, span.Minutes)</div>
 }
 
+@if(Model.Issue.AsOf.HasValue)
+{
+    <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.ViewingAsOf)</span></span> @Model.Issue.AsOf.Value.ToString(DateFormatString)</div>
+}
+
 @if (Model[ItemAttributeVisibility.Organization] && Model.Issue.Organization != null)
 {
     <div class="touch-info"><span class="box"><span class="label">@GetResourceTemplate(ResourceKeys.Organization)</span></span> @string.Format("{0}", Model.Issue.Organization.Name)</div>

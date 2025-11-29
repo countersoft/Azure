@@ -131,12 +131,12 @@
             showEditor(0);
         });
 
-        $(".action-button-edit", "#project-admin-templatedcontent").unbind("click").click(function() {
+        $("#project-admin-templatedcontent").off("click", ".action-button-edit").on("click", ".action-button-edit", function() {
             var itemId = $(this).closest("tr").data("id");
             showEditor(itemId);
         });
 
-        $(".action-button-delete", "#project-admin-templatedcontent").unbind("click").click(function() {
+        $("#project-admin-templatedcontent").off("click", ".action-button-delete").on("click", ".action-button-delete", function() {
             var tr = $(this).closest("tr");
             var name = tr.children('td').eq(0).text();
             gemini_popup.modalConfirm("@GetResource(ResourceKeys.Delete): " + name,
@@ -154,9 +154,6 @@
                         }, {projectId: @Model.ProjectId, templatedContentId: itemId }, null, true);
                 },
                 null);
-
-
-            
         });
 
 

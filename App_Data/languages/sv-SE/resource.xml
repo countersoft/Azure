@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Resource>
   <!-- Misc -->
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="Thanks">Tack så mycket!</item>
   <item id="Yes">Ja</item>
   <item id="No">Nej</item>
@@ -529,4 +533,6 @@
   <item id="AnotherUserModified">En annan person har ändrat den här artikeln</item>
   <item id="ReviewAndClickSend">Granska ändringarna och skicka igen</item>
   <item id="NowViewing">Visar nu</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

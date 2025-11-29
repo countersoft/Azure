@@ -138,10 +138,11 @@ gemini_items = {
     splitViewShow: function(e, elem) {
         var issue;
         var project = 0;
+        var asOf = null;
         if (e == null || !e.ctrlKey) {
             issue = $(elem).parents('tr:eq(0)').attr('data-issue-id');
             project = $(elem).parents('tr:eq(0)').attr('data-project-id');
-
+            asOf = $(elem).parents('tr:eq(0)').attr('data-issue-asof');
             if (issue == undefined) {
                 $('#view-item-slider').empty().hide();
                 return;
@@ -192,7 +193,13 @@ gemini_items = {
         if (gemini_items.currentViewXHR != null) {
             gemini_items.currentViewXHR.abort();
         }
-        gemini_items.currentViewXHR = gemini_ajax.call('item', 'grid?issueid=' + gemini_items.currentViewedIssueId, function (response) {
+
+        var asOfQuery = ''
+        if (asOf) {
+            asOfQuery = '&asof=' + asOf;
+        }
+
+        gemini_items.currentViewXHR = gemini_ajax.call('item', 'grid?issueid=' + gemini_items.currentViewedIssueId + asOfQuery, function (response) {
             gemini_items.currentViewXHR = null;
             if (tinymce.editors["comments-wysiwyg-content"])
             {
@@ -227,6 +234,9 @@ gemini_items = {
 
     initInlineEdit: function () {
         $('#data').on('click', '#tabledata tr:not(.drop-zone) td:not(:first-child):not(.read-only):not(.edit-mode)', function (e) {
+            if ($('#tabledata tr.odd').attr('data-issue-asof')) {
+                return;
+            }
             //Making sure the edit doesn't get invoked when clicking on link
             if (!$(e.target).is('a')) {
                 gemini_edit.initEditing($(this), true);

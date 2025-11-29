@@ -1053,7 +1053,7 @@ table.admin-data-entry
 }
 #edit-permissions-container
 {
-	.CanOnlyViewOwnItems, .ReadOnly, .CanOnlyViewOwnOrganizationItems, .CanOnlyDeleteOwnComment, .CanOnlyAmendOwnItems, .CanOnlyDeleteOwnItems
+	.CanOnlyViewOwnItems, .ReadOnly, .CanOnlyViewOwnOrganizationItems, .CanOnlyDeleteOwnComment, .CanOnlyAmendOwnItems, .CanOnlyDeleteOwnItems, .ReadOnlyWithComments
 	{
 		color:$color-red;
 		background-color: $color-error;

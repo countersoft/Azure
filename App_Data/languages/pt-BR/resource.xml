@@ -2,6 +2,10 @@
 <Resource>
   <!-- Misc -->
   <!-->item id="Item">Item</item-->
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="Activity">Atividade</item>
   <item id="Description"> Descrição</item>
   <item id="ActivityByComponentName">Atividade por Componente</item>
@@ -498,4 +502,6 @@
   <item id="AnotherUserModified">Outra pessoa modificou este item</item>
   <item id="NowViewing">Agora vendo</item>
   <item id="ReviewAndClickSend">Revisar alterações e reenviar</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

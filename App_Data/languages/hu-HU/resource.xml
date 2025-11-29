@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Resource>
+  <item id="MultifactorAuthentication">2 Factor Authentication</item>
+  <item id="RegisterMFA">Scan QR Code to Register for 2FA</item>
+  <item id="MFAValidationCode">Enter Your Authenticator Code</item>
+  
   <item id="AccountLockedError">Ez a fiók zárolva van. Kérjük értesítse a Gemini adminisztrátorát és zárja be a böngészőt.</item>
   <item id="Activity">Aktivitás</item>
   <item id="ActivityByComponentName">Tevékenység alkotórész szerint</item>
@@ -495,4 +499,6 @@
   <item id="VersionUnscheduled">Ütemezetlen</item>
   <item id="Weekly">Heti</item>
   <item id="Visibility">Láthatóság</item>
+  <item id="AsOf">As Of</item>
+  <item id="ViewingAsOf">Viewing As Of</item>
 </Resource>

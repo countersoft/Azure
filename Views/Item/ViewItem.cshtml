@@ -119,7 +119,7 @@
             @{
                 var dropZoneText =  String.Format("{0} - {1} {2}", GetResource(ResourceKeys.DropZoneText), Model.MaxFileUpload.ToFileSize(), GetResource(ResourceKeys.Maximum));
         }
-            gemini_item.initItem('@GeminiContext.Project.Entity.Id', '@GeminiContext.Project.Entity.Code', @Model.Issue.Entity.Id, @((int)ProjectTemplatePageType.Item), @GeminiContext.PermissionsManager.CanEditItem(Model.Issue).ToJSBool(),'@dropZoneText', '@GetResource(ResourceKeys.Delete)');
+            gemini_item.initItem('@GeminiContext.Project.Entity.Id', '@GeminiContext.Project.Entity.Code', @Model.Issue.Entity.Id, @((int)ProjectTemplatePageType.Item), @GeminiContext.PermissionsManager.CanEditItem(Model.Issue).ToJSBool(),'@dropZoneText', '@GetResource(ResourceKeys.Delete)', '@Model.Issue.AsOfString');
         });
     </script>
 }

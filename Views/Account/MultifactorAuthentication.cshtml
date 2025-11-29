@@ -1,0 +1,99 @@
+﻿@model UserModel
+@{
+Layout = "~/Views/Shared/_Master.Desktop.External.cshtml";
+ViewBag.Title = "Gemini " + @GetResource(ResourceKeys.MultifactorAuthentication);
+}
+
+<div id="login-page" class="clearfix">
+    <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            @if(DeviceContext.IsDesktop)
+            {
+            <td class="left-box">
+            
+                <table id="welcome-message-zone">
+                    <tr><td><div class="gemini-login"><img src="~/assets/images/logo.png"/></div><div class="divider-login"></div></td></tr>                    
+                    <tr><td><h1 id="welcome-title">2 Factor Authentication</h1></td></tr>
+                    <tr>
+                        <td>
+                            <div id="cs-template">
+                                <div id="welcome-message" class="cs-wysiwyg">                        
+                                    <p>Open your Microsoft Authenticator and enter your one-time password code.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>   
+          
+            </td>
+            }
+            <td class="right-box">
+          
+                    <table>
+                    @if(!DeviceContext.IsDesktop)
+                    {
+                        <tr><td><div class="gemini-login"><img src="~/assets/images/logo.png"/></div><div class="divider-login"></div></td></tr>   
+                    }
+               
+                    <tr>
+                        <td>
+                            <table> 
+                                <tr>        
+                                    <td valign="top">    
+                                        <table class="signin-form">
+                                            <tr>
+                                                <td class="regular">
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <form action="multifactorauth" method="post" id="regular-form" autocomplete="off" enctype="multipart/form-data">
+                                                                    <input type="hidden" id="Id" name="Id" value="@Model.User.Id" />
+                                                                    <input type="hidden" name="returnUrl" id="returnUrl" value="@Model.ReturnUrl" />
+                                                                    <input type="hidden" name="rememberMe" id="rememberMe" value="@(Model.RememberMe ? "True":"False")" />
+                                                                    <table id="regular-credentials" class="data-entry-box margin-zero-auto" cellpadding="5" cellspacing="5">
+                                                                        <tr>
+                                                                            <td> <h3>Pass Code for Gemini from your Authenticator</h3></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="text" name="onetimepasswordcode" class="input-size6 required" />
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td colspan="2" align="right">
+                                                                                <input id="regular-signin" type="submit" value='@GetResource(ResourceKeys.Login)' class='button-primary' />
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    </table>
+                                                                    @if (Model.ErrorMessage != string.Empty)
+                                                                    {
+                                                                        <div style="color:red;max-width:250px;font-size:12px;padding-left:12px;">@Html.Raw(Model.ErrorMessage)</div>
+                                                                    }
+                                                                </form>                                                          
+
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                    
+                                    </td>
+                                </tr>                                
+                            </table>                
+                        </td>
+                    </tr>
+
+                </table>                
+            
+            </td>
+        </tr>
+    </table>
+</div>
+
+@section DocumentReady
+{
+    $("#regular-form").validate({});
+}

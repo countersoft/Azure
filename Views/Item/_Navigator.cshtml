@@ -1,9 +1,11 @@
 ﻿@model ViewIssueModel
-
+@{
+    var asOf = Model.Issue.AsOf.HasValue ? string.Concat("?asof=", Model.Issue.AsOfString) : string.Empty;
+}
 <div id="filter-navigator">
     @if(Model.PreviousIssue != null)
     {
-    <a href="~/workspace/@Model.WorkspaceId/item/@Model.PreviousIssue.Id" class="previous">
+    <a href="~/workspace/@Model.WorkspaceId/item/@Model.PreviousIssue.Id@asOf" class="previous">
         @IconHelper.Icon( "arrow-left", IconHelper.FontAwesomeStyles.Duotone )
     </a>
     }
@@ -20,7 +22,7 @@
 
     @if(Model.NextIssue != null)
     {
-    <a href="~/workspace/@Model.WorkspaceId/item/@Model.NextIssue.Id" class="next">
+    <a href="~/workspace/@Model.WorkspaceId/item/@Model.NextIssue.Id@asOf" class="next">
         @IconHelper.Icon( "arrow-right", IconHelper.FontAwesomeStyles.Duotone )
     </a>
     }
